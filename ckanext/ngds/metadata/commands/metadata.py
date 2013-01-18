@@ -22,24 +22,6 @@ class Metadata(CkanCommand):
             
     def initdb(self):
         """Paster routine to build database tables"""
-        
-        from ckan import model
-        from ckanext.ngds.metadata.model.additional_metadata import define_tables
-        
-        party, package_meta, resource_meta = define_tables() # Define the tables
-        log.debug('Additional Metadata table defined in memory')
-        
-        def create_table(table):
-            if not table.exists():
-                try:
-                    table.create()
-                except Exception, e:
-                    raise e
-                
-        if model.package_table.exists(): # check that the Package table exists
-            for table in [party, package_meta, resource_meta]:
-                create_table(table) # Create each of the tables
-        else:
-            log.debug('Additional table creation deferred - install the base CKAN tables first.')
-    
+        from ckanext.ngds.metadata.model.additional_metadata import db_setup
+        db_setup()
         

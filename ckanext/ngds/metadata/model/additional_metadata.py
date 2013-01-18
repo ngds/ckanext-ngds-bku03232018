@@ -28,11 +28,15 @@ We need some additional information:
 * Layer within a link, where applicable
 """
 
+from ckan import model
 from ckan.model.domain_object import DomainObject
 from ckan.model import meta
 
 from sqlalchemy import types, Column, Table, ForeignKey
 from sqlalchemy.orm import relationship
+
+import logging
+log = logging.getLogger(__name__)
 
 class AdditionalPackageMetadata(DomainObject):
     """Adjustments to Package metadata"""
@@ -119,3 +123,26 @@ def define_tables():
     )
     
     return party, resource_meta, package_meta
+
+def db_setup():
+    """Create tables in the database"""
+    party, package_meta, resource_meta = define_tables() # Define the tables
+    log.debug('Additional Metadata tables defined in memory')
+    
+    def create_table(table):
+        if not table.exists():
+            try:
+                table.create()
+            except Exception, e:
+                raise e
+            log.debug('Created %s table' % table.name)
+        else:
+            log.debug('%s table already exists' % table.name)
+            pass
+        
+    if model.package_table.exists(): # check that the Package table exists
+        for table in [party, package_meta, resource_meta]:
+            create_table(table) # Create each of the tables
+    else:
+        log.debug('Additional table creation deferred - install the base CKAN tables first.')
+        pass
