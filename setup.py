@@ -24,8 +24,7 @@ setup(
 	],
 	entry_points=\
 	"""
-        [ckan.plugins]
-	# Add plugins here, eg
-	# myplugin=ckanext.ngds:PluginClass
+	[paste.paster_command]
+	ngdsmetadata=ckanext.ngds.metadata.commands.metadata:Metadata
 	""",
 )
