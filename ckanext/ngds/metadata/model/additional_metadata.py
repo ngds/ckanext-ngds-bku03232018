@@ -36,11 +36,6 @@ from sqlalchemy.orm import relationship
 
 class AdditionalPackageMetadata(DomainObject):
     """Adjustments to Package metadata"""
-    package_id = None
-    author = None
-    maintainer = None
-    pub_date = None
-    
     def __init__(self, package_id=None, **kwargs):
         self.package_id = package_id # Relate this content to a Package
         self.author = kwargs.get('author', None) # author should be a ResponsibleParty
@@ -49,10 +44,6 @@ class AdditionalPackageMetadata(DomainObject):
 
 class AdditionalResourceMetadata(DomainObject):
     """Adjustments to Resource Metadata"""
-    
-    resource_id = None
-    distributor = None
-    
     def __init__(self, resource_id=None, **kwargs):
         self.resource_id = resource_id
         self.distributor = kwargs.get('distributor', None)
@@ -62,15 +53,6 @@ class ResponsibleParty(DomainObject):
     A ResponsibleParty represents an individual or organization responsible
     for authorship, maintenance, or distribution of a resource
     """
-    
-    name = None
-    email = None
-    organization = None
-    phone = None
-    street = None
-    state = None
-    city = None
-    zip = None
     
     def __init__(self, name, email, **kwargs):
         self.name = name
