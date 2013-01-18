@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block doctype %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+{% endblock %}
+{% block title %} 
+	NGDS - National Geothermal Data System 
+{% endblock %}
+
+{% block links -%}
+  
+{% endblock -%}
+
+## Include our css resources in this block
+{% block styles %}
+	<link rel="stylesheet" type="text/css" title="Demo Stylesheet"  href="/css/default.css">  
+{% endblock %}
+{% block bodytag %}
+{%- endblock -%}
+
+{%- block page -%}
+
+   <div id="top-level-container">
+  {#
+  Override the header on a page by page basis by extending this block. If
+  making sitewide header changes it is preferable to override the header.html
+  file.
+  #}
+  {%- block header %}
+    {% include "header_ngds.html" %}
+  {% endblock -%}
+
+  {# The content block allows you to replace the content of the page if needed #}
+  <div id="body-container">
+    <div id="content-container">
+  {%- block content %}
+ 
+     
+  {% endblock -%}
+    </div>
+  </div>
+
+  {#
+  Override the footer on a page by page basis by extending this block. If
+  making sitewide header changes it is preferable to override the footer.html-u
+  file.
+  #}
+  {%- block footer %}
+    {% include "footer_ngds.html" %}
+  {% endblock -%}
+  </div>
+{%- endblock -%}
+
+{%- block scripts %}
+   <script src="/scripts/jquery.min.js"></script>
+   <script src="/scripts/scripts.js"></script>
+{% endblock -%}

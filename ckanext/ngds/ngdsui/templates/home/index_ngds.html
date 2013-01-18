@@ -1,0 +1,62 @@
+{% extends "page_ngds.html" %}
+ 
+{%- block content %}
+   
+        <div id="search-datawatch-container">
+          <div id="search-container">
+              <p class="menu-item-large menu-align">Search</p>
+              <p class="menu-caption">Find geothermal data, images, publications & more</p>
+              <select class="search-combo"><option>Map</option><option>Search</option></select>
+              <input type="text" class="search-bar"></input>
+              <button class="search-button">Go</button>
+          </div>
+          <div id="data-watch-container">
+              <p class="menu-item-large menu-align">Data Watch</p>
+              <p class="menu-caption">Recently shared with NGDS</p>
+              <div>
+                <a href="#">Selected Hydrologic Data, San Pitch River Drainage Basin, Utah</a>
+                <p class="data-watch-feed-caption">By G.B. Robinson. Published February 1, 1968</p>
+                <p class="data-watch-feed-caption">Posted October 18, 2012</p>
+              </div>
+              <div>
+                <a href="#">Maryland Oil and Gas Wells Log Metadata</a>
+                <p class="data-watch-feed-caption">By Maryland Dept. of Environment.</p>
+                <p class="data-watch-feed-caption">Posted October 18, 2012</p>
+              </div>
+              <div>
+                <a href="#">Geothermal Resources Development needs in Arizona</a>
+                <p class="data-watch-feed-caption">By Maryland Dept. of Environment.</p>
+                <p class="data-watch-feed-caption">Posted October 18, 2012</p>
+              </div>
+              <button>Get data updates via email</button>
+          </div>
+        </div> <!-- End of Search Daawatch Container -->
+      
+        <div id="showcase-find-map-container">
+          <div id="showcase-container">
+              <!-- Placeholder for the flashy image showcase widget in the middle of the home page. -->
+              <img src="/images/u4_normal.png" class="showcase-image"></img>
+          </div>
+          <div id="find-in-library-container">
+              <a href="#">
+                <img src="/images/u64_normal.png">
+                  <span class="find-it-content menu-item-large">
+                    Find in Library
+                    <img src="/images/u78_normal.png" class="star-it-pointer-img"></img>
+                  </span>
+                </img>
+              </a>
+          </div>
+          <div id="map-it-container">
+              <a href="#">
+                <img src="/images/u64_normal.png">
+                  <span class="map-it-content menu-item-large">
+                    Map It
+                    <img src="/images/u78_normal.png" class="star-it-pointer-img"></img>
+                  </span>
+                </img>
+              </a>
+          </div>
+        </div> <!-- End of Showcase, Find in Library and Map Container -->
+    
+{% endblock %}

@@ -1,0 +1,76 @@
+		{% macro shade_if_active(tab_name,active_tab) %}
+		{% if active_tab == tab_name %}
+			<span class="active">
+		{% else %}
+			<span>
+		{% endif %}
+		{% endmacro %}	
+		{#
+			pass in the tab that is being rendered and the active_tab variable that we get from the controller. This will determine which menu item is shaded.
+		#}
+		<div id="header">
+				<a href="/ngds">
+					<div id="logo-container">	
+						<img src="/images/u50_normal.png">
+							<p>REDUCE RISK, INCREASE CERTAINTY</p>
+						
+					</div>
+				</a>
+				<div id="top-nav">
+					<ul>
+						<li><a href="/ngds">HOME</a></li>
+						<li><a href="/ngds/about">ABOUT</a></li>
+						<li><a href="#">SIGN UP</a></li>
+						<li><a href="#" id="login">LOGIN</a></li> 
+						<li><a href="#">FAVORITES</a></li>
+					</ul>
+					<div id="login-popup">
+						<p>Your email address:</p>
+						<input type="text" value="username" id="username"/>
+						<p class="float-left">Your password:</p><a class="float-right fit-to-login-div">Forgot?</a>
+						<input type="password" value="password" id="password"/><br>
+						<input type="checkbox" value="__" name="login_remember_me"/><span>Remember me</span>
+						<button>Login</button>
+					</div>
+				</div>
+				<div id="main-nav"> <!-- This is a container div for the second-level menu. -->
+					<div>
+						<a href="/ngds/map">
+							{{ shade_if_active("map",active_tab) }}		
+								<p class="main-menu-item">Map</p>
+								<img src="/images/u52_normal.png">
+								<p class="main-menu-text">Find data for a specific geographic area</p>
+							</span>
+						</a>
+					</div> 
+					<div>
+						<a href="/ngds/library">
+							{{ shade_if_active("library",active_tab) }}	
+								<p class="main-menu-item">Library</p>
+								<img src="/images/u52_normal.png"/>
+								<p class="main-menu-text">Look up data, images, publications & more</p>
+							</span>
+						</a>
+					</div> 
+					<div>
+						<a href="/ngds/resources">
+							{{ shade_if_active("resources",active_tab) }}	
+								<p class="main-menu-item">Resources</p>
+								<img src="/images/u52_normal.png"/>
+								<p class="main-menu-text">Use or add to our list of websites & tools for geothermal exploration</p>
+							</span>
+						</a>
+					</div>
+					<div>
+						<a href="/ngds/contribute">
+							{{ shade_if_active("contribute",active_tab) }}	
+								<p class="main-menu-item">Contribute</p>
+								<img src="/images/u52_normal.png"/>
+								<p class="main-menu-text">Share data, learn about the National Geothermal Data System</p>
+							</span>
+						</a>
+					</div>
+				
+				</div>
+		</div> <!-- End of header -->
+
