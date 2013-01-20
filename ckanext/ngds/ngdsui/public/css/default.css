@@ -671,7 +671,40 @@ div#library-search-container div {
 	background-color: #dadada;
 	border-radius:5px;
 	-webkit-border-radius:5px;
+	position:relative;
+	top:10px;
 }	
+
+div#library-search-container div.library-search-pre {
+	float:left;
+	margin-left: 65px;
+	padding-right: 0px;
+	padding-left: 0px;
+	background-color: #fff;
+	padding-top: 10px;
+}
+
+div#library-search-container div.library-search-accordion-header {
+	float:left;
+	position: absolute;
+	left: 0;
+	text-align: center;
+	width: 240px;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+div#library-search-container div.library-search-accordion-header p {
+	margin-right: 0px;
+	margin-left: 0;
+	position: relative;
+	font-size: 18px;
+	top: 5px;
+}
+
+div#library-search-container div.library-search-pre p {
+	margin-top:10px;
+}
 
 div#library-search-container div p {
 	display: inline;
