@@ -6,7 +6,7 @@ class HomeController(BaseController):
 		"""	
 		Render the home/index page
 		"""
-		return render('home/index_ngds.html',{'active_tab':'home'})
+		return render('home/index_ngds.html')
 
 	def render_about(self):
 		"""	
@@ -20,26 +20,26 @@ class HomeController(BaseController):
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		return render('map/map.html',{'active_tab':'map'})	
+		return render('map/map.html')	
 
 	def render_library(self):
 		
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		return render('library/library.html',{'active_tab':'library'})	
+		return render('library/library.html')	
 
 	def render_contribute(self):
 		
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		return render('contribute/contribute.html',{'active_tab':'contribute'})	
+		return render('contribute/contribute.html')	
 
 	def render_resources(self):
 		
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		return render('resources/resources.html',{'active_tab':'resources'})			 				 				 		
+		return render('resources/resources.html')			 				 				 		
 		

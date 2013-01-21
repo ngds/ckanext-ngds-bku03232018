@@ -54,57 +54,29 @@ $(document).ready(function() {
 			}
 		});
 
-		var unamePasswdInitialState = "default";
-		var unamePasswdPossibleStates = ["default","blank"];
-
-		var unamePasswdSetInitialState = function() {
-			$("#username").value = "username";
-			$("#password").value = "password";
-		}
-
-		var unamePasswdTransitions = [
-			function() {
-				$("#username").value="";
-				$("#password").value="";
-			},
-			function() {
-				$("#username").value="username";
-				$("#password").value="password";
-			}
-		];
-
-
-		var usernameToggler = cycler(unamePasswdInitialState,unamePasswdPossibleStates,unamePasswdSetInitialState,unamePasswdTransitions);
-
 		$("#username").focus(function() {
-			console.log("Focus");
-			usernameToggler.cycle();
+			if(this.value==="username") {
+				this.value = "";
+			}
 		});
 
+		$("#username").blur(function() {
+			if(this.value==="") {
+				this.value = "username";
+			}
+		});
 
-		// $("#username").focus(function() {
-		// 	if(this.value==="username") {
-		// 		this.value = "";
-		// 	}
-		// });
+		$("#password").focus(function() {
+			if(this.value==="password") {
+				this.value = "";
+			}
+		});
 
-		// $("#username").blur(function() {
-		// 	if(this.value==="") {
-		// 		this.value = "username";
-		// 	}
-		// });
-
-		// $("#password").focus(function() {
-		// 	if(this.value==="password") {
-		// 		this.value = "";
-		// 	}
-		// });
-
-		// $("#password").blur(function() {
-		// 	if(this.value==="") {
-		// 		this.value = "password";
-		// 	}
-		// });
+		$("#password").blur(function() {
+			if(this.value==="") {
+				this.value = "password";
+			}
+		});
 
 		// End of event handling for the login form.
 
