@@ -21,22 +21,36 @@ body {
 
 /* Header > Logo */
 
-div#logo-container {
-	margin-top:40px;
-	margin-left:30px;
+.logo {
+	
 	float:left;
 	display:inline-block;
 }
 
-div#logo-container img {
+.logo img {
 	height:68px;
+	margin-left:10px;
 }
 
-div#logo-container p {
+.logo span {
 	font-size:15px;
 	font-family:Arial;
 	font-weight:bold;
 	margin-top:0px;
+	float:left;
+}
+
+a.logo{
+	text-decoration:none;
+	width:290px;
+}
+
+div.logo-container {
+	margin-top:40px;
+	margin-left:30px;
+	float:left;
+	width:290px;
+	height:100px;
 }
 
 
@@ -100,7 +114,7 @@ div#main-nav div {
 	text-align:left;
 }
 
-div#main-nav div a span {
+.main-nav-span {
 	float:left; 
 	margin-right:5px;
 	border-left:1px solid #a8a8a8;
@@ -128,6 +142,10 @@ div#main-nav div a span.active {
 	margin-top:5px;
 	margin-bottom:5px;
 	width:150px;
+	border:none;
+	clear:both;
+	float:left;
+
 }
 
 div#main-nav div a span img {
@@ -585,6 +603,7 @@ div#login-popup {
 	display:block;
 	font-size:12px;
 	font-family:Arial;
+	display:none;
 }
 
 div#login-popup p:first-child {
@@ -704,6 +723,7 @@ div#library-search-container div.library-search-accordion-header p {
 
 div#library-search-container div.library-search-pre p {
 	margin-top:10px;
+	margin-left:40px;
 }
 
 div#library-search-container div p {
