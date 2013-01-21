@@ -9,6 +9,8 @@ body {
 	width:1024px;
 	text-align:center;
 	display:inline-block;
+	position:relative;
+
 }
 
 #header { 
@@ -46,11 +48,11 @@ a.logo{
 }
 
 div.logo-container {
-	margin-top:40px;
-	margin-left:30px;
-	float:left;
+	top:40px;
+	left:30px;
 	width:290px;
 	height:100px;
+	position:absolute;
 }
 
 
@@ -62,9 +64,9 @@ div.logo-container {
 
 div#top-nav {
 	width:520px; 
-	height:51px; 
-	float:right;
-	margin-right:0px;
+	height:50px; 
+	right:0px;
+	position:absolute;
 }
 
 div#top-nav ul li {
@@ -103,9 +105,10 @@ div#top-nav ul li a:visited {
 /* Header > Main Navigation Menu*/
 
 div#main-nav { 
-	float:right; 
-	padding-top:15px;
-	margin-right:0px;
+	right:0px;
+	top:65px;
+	position:absolute;
+
 }
 
 div#main-nav div {
@@ -119,7 +122,8 @@ div#main-nav div {
 	margin-right:5px;
 	border-left:1px solid #a8a8a8;
 	padding-left:10px;
-	min-height:85px;
+	height:85px;
+	width:150px;
 }
 
 div#main-nav div a span.active {
@@ -188,6 +192,7 @@ div#body-container #search-container {
     padding-left:15px;
     -webkit-border-radius:5px;
     border-radius:5px;
+    position:absolute;
 }
 
 .menu-item-large {
@@ -240,6 +245,8 @@ div#data-watch-container {
     padding-left:15px;
     -webkit-border-radius:5px;
     border-radius:5px;
+    position:absolute;
+    top:140px;
 }
 
 div#data-watch-container div {
@@ -319,21 +326,19 @@ div#showcase-find-map-container {
 /* Body > Map and find in library */
 
 div#find-in-library-container {
-	margin-top:10px;
+	top:345px;
 	width:320px;
 	height:175px;
-	float:right;
-	position:relative;
-	margin-right:5px;
+	position:absolute;
+	right:5px;
 }
 
 div#map-it-container {
-	margin-top:10px;
+	top:345px;
+	right:345px;
 	width:320px;
 	height:175px;
-	float:right;
-	margin-right:30px;
-	position:relative;
+	position:absolute;
 }
 
 .map-it-content {
