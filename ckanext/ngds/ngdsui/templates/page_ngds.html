@@ -12,7 +12,8 @@
 
 ## Include our css resources in this block
 {% block styles %}
-	<link rel="stylesheet" type="text/css" title="Demo Stylesheet"  href="/css/default.css">  
+	<link rel="stylesheet" type="text/css" title="Demo Stylesheet"  href="/css/default.css">
+  <link href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css" rel="stylesheet">
 {% endblock %}
 {% block bodytag %}
 {%- endblock -%}
@@ -32,7 +33,11 @@
 
   {# The content block allows you to replace the content of the page if needed #}
   <div id="body-container">
+  {% if active_page=="library" %}
+    <div id="content-container" style="min-height:660px;">
+      {% else %}
     <div id="content-container">
+      {% endif %}
   {%- block content %}
  
      
@@ -52,6 +57,8 @@
 {%- endblock -%}
 
 {%- block scripts %}
-   <script src="/scripts/jquery.min.js" type="text/javascript>"></script>
-   <script src="/scripts/scripts.js" type="text/javascript>"></script>
+   <script src="/scripts/jquery-1.9.0.js" type="text/javascript"></script>
+   <script src="/scripts/scripts.js" type="text/javascript"></script>   
+  <script src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
 {% endblock -%}
+

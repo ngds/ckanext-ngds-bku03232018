@@ -17,7 +17,7 @@ setup(
 	license='',
 	packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
 	namespace_packages=['ckanext', 'ckanext.ngds','ckanext.ngds.ngdsui'],
-	package_data={'':['templates/*.*','templates/**/*.*','public/**/*.*']},
+	package_data={'':['templates/*.*','templates/**/*.*','public/**/*.*','public/**/**/**/**/**/**']},
 	include_package_data=True,
 	zip_safe=False,
 	install_requires=[

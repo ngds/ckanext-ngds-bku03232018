@@ -684,7 +684,7 @@ div#library-search-container p {
 	text-align: left;
 }
 
-div#library-search-container div {
+div#library-search-container div.library-search-pre, div.library-search-bar {
 	display: inline;
 	float: right;
 	padding-left: 10px;
@@ -711,11 +711,59 @@ div#library-search-container div.library-search-pre {
 div#library-search-container div.library-search-accordion-header {
 	float:left;
 	position: absolute;
-	left: 0;
-	text-align: center;
-	width: 240px;
-	padding-left: 0;
-	padding-right: 0;
+	top:74px;
+	width:240px;
+}
+
+div#library-search-container div.library-search-browse-header {
+	padding-top: 5px;
+	height: 40px;
+	background-color: #dadada;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	text-align:center;
+	margin-bottom:0px;
+}
+
+div#library-search-container div.library-search-accordion-header h4 {
+	font-size:14px;
+	font-weight:bold;
+	text-align:left;
+}
+
+div#library-search-container div.library-search-accordion-header ul li div {
+	font-size:13px;
+	text-align:left;
+	margin-top:10px;
+	margin-bottom:5px;
+	border:0px;
+	padding-top:0px;
+	padding-left:5px;
+	padding-right:0px;
+	padding-bottom:0px;
+}
+
+.ui-accordion .ui-accordion-content { overflow:hidden !important; }
+
+div#library-search-container div.library-search-accordion-header ul li div span {
+	display:block;
+}
+
+div#library-search-container div.library-search-accordion-header ul li div span input[type="text"] {
+	width:165px;
+	float:left;
+}
+
+div#library-search-container div.library-search-accordion-header ul li div span button {
+	float:right;
+}
+
+div#library-search-container div.library-search-accordion-header h4 {
+
+}
+
+div.library-search-browse-header { 
+	margin-bottom:20px;
 }
 
 div#library-search-container div.library-search-accordion-header p {
@@ -723,7 +771,7 @@ div#library-search-container div.library-search-accordion-header p {
 	margin-left: 0;
 	position: relative;
 	font-size: 18px;
-	top: 5px;
+	top: 8px;
 }
 
 div#library-search-container div.library-search-pre p {
@@ -740,7 +788,7 @@ div#library-search-container div p {
 	font-weight:bold;
 }
 
-div#library-search-container div input {
+div#library-search-container div input[type="text"] {
 	width: 500px;
 	font-size: 18px;
 	margin-right: 10px;

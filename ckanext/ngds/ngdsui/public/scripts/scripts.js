@@ -1,5 +1,14 @@
 $(document).ready(function() {
-	
+	$("#accordion").accordion({
+    	autoHeight:false,
+    	clearStyle: false,
+    	header:"h4",
+    	heightStyle:"content",
+    	active:false,
+    	collapsible:true
+	});
+	console.log("Ready");
+	// $("#accordion").accordion();
 	var cycler = function(initialState, possibleStates, setupInitialState, transitions) {
 		// Cycle between a set of states.
 		var stateIndex = $.inArray(initialState,possibleStates);
