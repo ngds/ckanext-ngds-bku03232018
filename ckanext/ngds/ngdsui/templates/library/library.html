@@ -13,8 +13,10 @@
 
 		<div class="library-search-bar">
 			<p>Search</p>
-			<input type="text">
-			<button>Go</button>
+			<form action="/library/search">
+				<input type="text">
+				<input type="submit" value="Go">
+			</form>
 		</div>
 
 		<div class="library-search-accordion-header">
@@ -26,7 +28,7 @@
          					Known geothermal resource area, latitude/longitude, geothermal area
          					<span>
          						<input type="text"></input>
-         						<button>Go</button>
+         						<form action="#"><input type="submit" value="Go"></form>
          					</span>
      					</div>
 			      </li>

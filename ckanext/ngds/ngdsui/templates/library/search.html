@@ -1,0 +1,25 @@
+{% extends "page_ngds.html" %}
+{% set active_page="library" %}
+
+{#
+	A list of variables we need in this page.
+	* is_search_mode. Has there been a successful search, ie. has a query been received and are results to be expected.
+#}
+
+{% block content %}
+<div id="library-search-container">
+	<div class="library-search-accordion-header adjusted-top-search">
+		<div class="library-search-browse-header" style="-webkit-border-radius:0;"><p>Narrow your results</p></div>	
+		<div class="search-browse-inverted-dome"></div>
+	</div>
+
+	<div class="library-search-bar adjusted-top-search">
+			<p>Search</p>
+			<form action="/library/search">
+				<input type="text" class="search-browse-big-bar">
+				<input type="submit" value="Go">
+			</form>
+	</div>
+</div>
+
+{% endblock %}

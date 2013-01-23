@@ -697,7 +697,6 @@ div#library-search-container div.library-search-pre, div.library-search-bar {
 	border-radius:5px;
 	-webkit-border-radius:5px;
 	position:absolute;
-	top:10px;
 }	
 
 div#library-search-container div.library-search-pre {
@@ -710,10 +709,25 @@ div#library-search-container div.library-search-pre {
 	padding-top: 10px;
 }
 
+div.library-search-bar form {
+	display:inline;
+}
+
+div.library-search-bar form input[type="submit"] {
+	font-size:18px;
+	font-weight:bold;
+}
+
+div.library-search-bar form input[type="text"] {
+	height:24px;
+	margin-top:2px;
+	font-size:18px;
+}
+
 div#library-search-container div.library-search-accordion-header {
 	float:left;
 	position: absolute;
-	top:74px;
+	margin-top:64px;
 	width:240px;
 }
 
@@ -798,11 +812,27 @@ div#library-search-container div input[type="text"] {
 	margin-right: 10px;
 }
 
-div#library-search-container div button {
+.search-browse-big-bar {
+	width:590px !important;  /* Good/bad practice to use this? */
+}
+
+div#library-search-container div input[type="button"] {
 	font-size: 20px;
 	font-weight: bold;
 	font-family: Arial;
 }
+
+div.adjusted-top-search {
+	margin-top:30px !important;
+}
+
+div.search-browse-inverted-dome { /* Tres cool. */
+	width: 0;
+	height: 0;
+	border-top: 25px solid #dadada;
+	border-left: 120px solid transparent;
+	border-right: 120px solid transparent;
+} 
 
 div#content-container {
 	min-height:550px;
