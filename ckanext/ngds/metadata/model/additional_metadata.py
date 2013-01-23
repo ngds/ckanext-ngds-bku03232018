@@ -38,7 +38,17 @@ from sqlalchemy.orm import relationship
 import logging
 log = logging.getLogger(__name__)
 
-class AdditionalPackageMetadata(DomainObject):
+class AdditionalMetadata(DomainObject):
+    """Base class for additional metadata classes, adds a "by_id" and "get_all" function to ckan.model.domain_object:DomainObject"""
+    @classmethod
+    def by_id(cls, pk):
+        return cls.Session.query(cls).get(pk) # self.Session defined in ckan.model.domain_object:DomainObject
+    
+    @classmethod
+    def get_all(cls):
+        return cls.Session.query(cls).all() # self.Session defined in ckan.model.domain_object:DomainObject
+    
+class AdditionalPackageMetadata(AdditionalMetadata):
     """Adjustments to Package metadata"""
     def __init__(self, package_id=None, **kwargs):
         self.package_id = package_id # Relate this content to a Package
@@ -46,13 +56,13 @@ class AdditionalPackageMetadata(DomainObject):
         self.maintainer = kwargs.get('maintainer', None) # maintainer should be a ResponsibleParty
         self.pub_date = kwargs.get('pub_date', None)
 
-class AdditionalResourceMetadata(DomainObject):
+class AdditionalResourceMetadata(AdditionalMetadata):
     """Adjustments to Resource Metadata"""
     def __init__(self, resource_id=None, **kwargs):
         self.resource_id = resource_id
         self.distributor = kwargs.get('distributor', None)
               
-class ResponsibleParty(DomainObject):
+class ResponsibleParty(AdditionalMetadata):
     """
     A ResponsibleParty represents an individual or organization responsible
     for authorship, maintenance, or distribution of a resource
@@ -98,7 +108,7 @@ def define_tables():
         meta.metadata, # Apparently just a call to sqlalchemy.MetaData(), whatever that is
         Column('package_id', types.UnicodeText, primary_key=True), # Implicit Foreign Key to the package
         Column('author_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
-        Column('maintainer_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
+        #Column('maintainer_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
         Column('pub_date', types.Date) # Publication Date
     )
     
@@ -109,8 +119,8 @@ def define_tables():
         AdditionalPackageMetadata, 
         package_meta,
         properties={
-            "author": relationship(ResponsibleParty, primaryjoin="package_additional_metadata.author_id==responsible_party.id"),
-            "maintainer": relationship(ResponsibleParty, primaryjoin="package_additional_metadata.maintainer_id==responsible_party.id")
+            "author": relationship(ResponsibleParty)#, primaryjoin="package_additional_metadata.author_id==responsible_party.id"),
+            #"maintainer": relation(ResponsibleParty, primaryjoin="package_additional_metadata.maintainer_id==responsible_party.id")
         }
     )
     
@@ -121,6 +131,11 @@ def define_tables():
             "distributor": relationship(ResponsibleParty)            
         }
     )
+    
+    # Stick these classes into the CKAN.model, for ease of access later
+    model.AdditionalPackageMetadata = AdditionalPackageMetadata
+    model.AdditionalResourceMetadata = AdditionalResourceMetadata
+    model.ResponsibleParty = ResponsibleParty
     
     return party, resource_meta, package_meta
 

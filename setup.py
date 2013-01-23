@@ -26,5 +26,8 @@ setup(
 	"""
 	[paste.paster_command]
 	metadata=ckanext.ngds.metadata.commands.metadata:Metadata
+	
+	[ckan.plugins]
+	metadata=ckanext.ngds.metadata.plugin:MetadataPlugin
 	""",
 )
