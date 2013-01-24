@@ -861,3 +861,56 @@ div#content-container section.search-results {
 	float:right;
 	width:755px;
 }
+
+div#content-container section.search-results div.search-results-container { 
+	margin-top:18px;
+	font-family:Arial;
+}
+
+div#content-container section.search-results div.sort-container {
+	margin-top:20px;
+	height: 50px;
+	border: 1px solid #a8a8a8;
+	border-radius: 5px;
+	position:relative;
+	-webkit-border-radius: 5px;
+}
+
+div#content-container section.search-results div.sort-container span {
+	top:13px;
+	position:absolute;
+	padding-left:10px;
+	font-family:Arial;
+	font-size:12px;
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-item {
+	display:table;
+	width:755px;
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-item span.row {
+	display:table-row;
+	margin-top:10px;
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-item span.cell {
+	display:table-cell;
+	width:50%;
+}
+
+
+
+div#content-container section.search-results div.sort-container span select { 
+	margin-left:5px;
+}
+
+div#content-container section.search-results div.search-results-preamble-container {
+	margin-top:10px;
+}
+
+div#content-container section.search-results div.search-results-preamble-container span {
+	font-size: 16px;
+	font-weight: bold;
+	font-family: Arial;
+}

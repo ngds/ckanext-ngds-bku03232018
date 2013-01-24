@@ -24,13 +24,27 @@
 
 
 <section class="search-results">
-  <span class="search-results-preamble">Found {{ c.page.item_count }} results for "{{ search_query_context }}"</span>
+  
+  <div class="search-results-preamble-container">
+      <span class="search-results-preamble">Found {{ c.page.item_count }} results for "{{ search_query_context }}"</span>
+  </div>
+
+  <div class="sort-container">
+      <span>Sort By 
+        <select>
+            <option>Recently Added</option>
+            <option>Geothermal Topic</option>
+            <option>Data Format</option>
+            <option>Date Published</option>
+          </select>
+      </span>
+  </div>
     <div class="search-results-container">
         {% for package in c.page.items %}
           <div class="search-results-item">
-            <span class="title"><a href="#">{{ package.title }}</a></span>
-            <span class="author">{{ package.author }}</span>
-            <span class="published-date">Published: {{ package.metadata_created }}</span>
+            <span class="title row"><a href="#">{{ package.title }}</a></span>
+            <span class="row"><span class="author cell">{{ package.author }}</span><span class="cell">Rating *****</span></span>
+            <span class="published-date cell">Published: {{ package.metadata_created }}</span>
             <span class="result-type"><img src="data=type-img">Data set</span>
           </div>
         {% endfor %}
