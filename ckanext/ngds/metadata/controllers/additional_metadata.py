@@ -1,3 +1,5 @@
+from ckan.plugins.toolkit import toolkit
+
 def dispatch(context, data_dict):
     """
     Send the action request to the correct place, based on the POST body
@@ -20,16 +22,14 @@ def dispatch(context, data_dict):
         controller = ResponsiblePartyController(context)
     elif request_model == "AdditionalPackageMetadata":
         controller = AdditionalPackageMetadataController(context)
-    elif request_model == "AdditionalResourceMetadataController":
+    elif request_model == "AdditionalResourceMetadata":
         controller = AdditionalResourceMetadataController(context)
     else:
-        # bad request, 400
-        pass
+        raise toolkit.ValidationError({}, "Please supply a 'model' attribute in the POST body. Value can be one of: ResponsibleParty, AdditionalPackageMetadata, AdditionalResourceMetadata")
     
     # execute method inspects POST body and runs the correct functions
     return controller.execute(data_dict)
     
-
 class AdditionalMetadataController():
     """Base class for controllers defined below. Subclasses must set self.model during __init__"""
     model = None # This must be set during sub-class __init__
@@ -44,28 +44,28 @@ class AdditionalMetadataController():
             return self.create(data) # Dispatch to the create function
         elif process == "read":            
             if data.get("id", None) == None: # 400 if there is no ID given                
-                pass
+                raise toolkit.ValidationError({}, "No ID was given.")
             else:
                 return self.read(data) # Dispatch to the read function
         elif process == "update":            
             if data.get("id", None) == None: # 400 if there is no ID given                
-                pass
+                raise toolkit.ValidationError({}, "No ID was given.")
             else:
                 return self.update(data) # Dispatch to the update function
         elif process == "delete":            
             if data.get("id", None) == None: # 400 if there is no ID given                
-                pass
+                raise toolkit.ValidationError({}, "No ID was given.")
             else:
                 return self.delete(data) # Dispatch to the delete function
         else: # 400 if the request didn't contain an appropriate process            
-            pass
+            raise toolkit.ValidationError({}, "Please supply a 'process' attribute in the POST body. Value can be one of: create, read, update, delete")
     
     def valid_data(self, data):
         """Check if the data contains valid information to generate a model instance"""
-        try:
+        try: # This is only a valid test if validators are defined for the model class
             self.model(**data) # try to make an instance out of it
             return True # Success, data is valid
-        except Exception, e:             
+        except Exception:             
             return False # fail! data is invalid
             
     # These functions are responsible for CRUD actions
@@ -77,7 +77,7 @@ class AdditionalMetadataController():
             instance.save() # Automatically commits, save() defined by ckan.model.domain_object:DomainObject
             return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
         else: # 400 if the data is not valid
-            pass
+            raise toolkit.ValidationError({}, "Please supply a 'data' attribute containing the appropriate content for a %s instance." % self.model.__name__)
             
     def read(self, data):
         """Read an object from the database"""        
@@ -87,7 +87,10 @@ class AdditionalMetadataController():
             return result
         else: 
             instance = self.model.by_id(pk) # by_id() defined by ckanext.ngds.metadata.model.additional_metadata:AdditionalMetadata
-            return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
+            if instance:
+                return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
+            else: # 404 if there is nothing by that ID available
+                raise toolkit.ObjectNotFound()
     
     def update(self, data):
         """Update an existing object with new data"""
@@ -104,17 +107,19 @@ class AdditionalMetadataController():
                 instance.save() # Done with the loop, save the instance to update the object
                 return instance.as_dict() # Return it
             else: # Update does not produce a valid object, 400
-                pass
+                raise toolkit.ValidationError({}, "The content supplied in the 'data' attribute would create an invalid %s instance." % self.model.__name__)
         else: # ID did not correspond to an existing object, 400
-            pass
+            raise toolkit.ObjectNotFound()
         
     def delete(self, data):
         """Delete an existing object from the database"""
         pk = data.get("id")
         instance = self.model.by_id(pk) # by_id() defined by ckanext.ngds.metadata.model.additional_metadata:AdditionalMetadata
-        instance.delete() # delete() defined by ckan.model.domain_object:DomainObject
-        instance.commit() # commit() defined by ckan.model.domain_object:DomainObject
-        
+        if instance:
+            instance.delete() # delete() defined by ckan.model.domain_object:DomainObject
+            instance.commit() # commit() defined by ckan.model.domain_object:DomainObject
+        else: # ID did not correspond to an existing instance, 400
+            raise toolkit.ObjectNotFound()
     
 class AdditionalResourceMetadataController(AdditionalMetadataController):
     """A class for controlling additional resource metadata RPC"""
