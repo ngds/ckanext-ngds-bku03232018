@@ -30,10 +30,12 @@ We need some additional information:
 
 from ckan import model
 from ckan.model.domain_object import DomainObject
-from ckan.model import meta
+from ckan.model import meta, Package, Resource
 
 from sqlalchemy import types, Column, Table, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
+
+from datetime import datetime
 
 import logging
 log = logging.getLogger(__name__)
@@ -47,21 +49,61 @@ class AdditionalMetadata(DomainObject):
     @classmethod
     def get_all(cls):
         return cls.Session.query(cls).all() # self.Session defined in ckan.model.domain_object:DomainObject
-    
+        
 class AdditionalPackageMetadata(AdditionalMetadata):
     """Adjustments to Package metadata"""
     def __init__(self, package_id=None, **kwargs):
         self.package_id = package_id # Relate this content to a Package
-        self.author = kwargs.get('author', None) # author should be a ResponsibleParty
-        self.maintainer = kwargs.get('maintainer', None) # maintainer should be a ResponsibleParty
+        self.author_id = kwargs.get('author_id', None) # author should be a ResponsibleParty
+        self.maintainer_id = kwargs.get('maintainer_id', None) # maintainer should be a ResponsibleParty
         self.pub_date = kwargs.get('pub_date', None)
 
+    @classmethod
+    def by_package(cls, package_id):
+        """Look up the AdditionalPackageMetadata for a particular package by its ID"""
+        return cls.Session.query(cls).filter(cls.package_id==package_id)
+    
+    @validates('pub_date')
+    def validate_pub_date(self, key, pub_date):
+        """Check that date was given in a valid format"""
+        date_format = "%Y-%m-%d" # expect dates in format YYYY-MM-DD
+        try:
+            datetime.strptime(pub_date, date_format) # try to convert the string to a Date object
+            return pub_date
+        except ValueError, e:
+            raise e
+        
+    @validates('package_id')
+    def validate_package_id(self, key, package_id):
+        """Check that the package_id given is valid"""
+        pkg = self.Session.query(Package).filter(Package.id==package_id).first() # Check if a package with that ID already exists
+        used = self.Session.query(AdditionalPackageMetadata).filter(AdditionalPackageMetadata.package_id==package_id).first() # Check if this package_id is already in use
+        if pkg and not used:
+            return package_id
+        else:
+            assert False
+            
 class AdditionalResourceMetadata(AdditionalMetadata):
     """Adjustments to Resource Metadata"""
     def __init__(self, resource_id=None, **kwargs):
         self.resource_id = resource_id
-        self.distributor = kwargs.get('distributor', None)
-              
+        self.distributor_id = kwargs.get('distributor_id', None)
+        
+    @classmethod
+    def by_resource(cls, resource_id):
+        """Look up the AdditionalResourceMetadata for a particular resource by its ID"""
+        return cls.Session.query(cls).filter(cls.resource_id==resource_id)
+    
+    @validates('resource_id')
+    def validate_resource_id(self, key, resource_id):
+        """Check that the package_id given is valid"""
+        pkg = self.Session.query(Resource).filter(Resource.id==resource_id).first() # Check if a resource with that ID already exists
+        used = self.Session.query(AdditionalResourceMetadata).filter(AdditionalResourceMetadata.resource_id==resource_id).first() # Check if this resource_id is already in use
+        if pkg and not used:
+            return resource_id
+        else:
+            assert False
+            
 class ResponsibleParty(AdditionalMetadata):
     """
     A ResponsibleParty represents an individual or organization responsible
@@ -108,7 +150,7 @@ def define_tables():
         meta.metadata, # Apparently just a call to sqlalchemy.MetaData(), whatever that is
         Column('package_id', types.UnicodeText, primary_key=True), # Implicit Foreign Key to the package
         Column('author_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
-        #Column('maintainer_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
+        Column('maintainer_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
         Column('pub_date', types.Date) # Publication Date
     )
     
@@ -119,8 +161,8 @@ def define_tables():
         AdditionalPackageMetadata, 
         package_meta,
         properties={
-            "author": relationship(ResponsibleParty)#, primaryjoin="package_additional_metadata.author_id==responsible_party.id"),
-            #"maintainer": relation(ResponsibleParty, primaryjoin="package_additional_metadata.maintainer_id==responsible_party.id")
+            "author": relationship(ResponsibleParty, primaryjoin=package_meta.columns.get("author_id")==party.columns.get("id")),#"package_additional_metadata.author_id==responsible_party.id"),
+            "maintainer": relationship(ResponsibleParty, primaryjoin=package_meta.columns.get("maintainer_id")==party.columns.get("id"))#"package_additional_metadata.maintainer_id==responsible_party.id")
         }
     )
     
