@@ -17,6 +17,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("library","/ngds/library",controller=home_controller,action="render_library",conditions={"method":["GET"]})
 		map.connect("contribute","/ngds/contribute",controller=home_controller,action="render_contribute",conditions={"method":["GET"]})
 		map.connect("resources","/ngds/resources",controller=home_controller,action="render_resources",conditions={"method":["GET"]})
+		map.connect("search","/ngds/library/search",controller='package',action="search")
 
 		return map
 

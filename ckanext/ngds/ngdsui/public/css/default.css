@@ -854,3 +854,10 @@ div.about-ngds p.section-title {
 	font-size:20px;
 	font-weight:bold;
 }
+
+div#content-container section.search-results {
+	position:relative;
+	top:100px;
+	float:right;
+	width:755px;
+}
