@@ -40,17 +40,9 @@ from datetime import datetime
 import logging
 log = logging.getLogger(__name__)
 
-class AdditionalMetadata(DomainObject):
-    """Base class for additional metadata classes, adds a "by_id" and "get_all" function to ckan.model.domain_object:DomainObject"""
-    @classmethod
-    def by_id(cls, pk):
-        return cls.Session.query(cls).get(pk) # self.Session defined in ckan.model.domain_object:DomainObject
-    
-    @classmethod
-    def get_all(cls):
-        return cls.Session.query(cls).all() # self.Session defined in ckan.model.domain_object:DomainObject
+from ckanext.ngds.base.model.ngds_db_object import NgdsDataObject
         
-class AdditionalPackageMetadata(AdditionalMetadata):
+class AdditionalPackageMetadata(NgdsDataObject):
     """Adjustments to Package metadata"""
     def __init__(self, package_id=None, **kwargs):
         self.package_id = package_id # Relate this content to a Package
@@ -83,7 +75,7 @@ class AdditionalPackageMetadata(AdditionalMetadata):
         else:
             assert False
             
-class AdditionalResourceMetadata(AdditionalMetadata):
+class AdditionalResourceMetadata(NgdsDataObject):
     """Adjustments to Resource Metadata"""
     def __init__(self, resource_id=None, **kwargs):
         self.resource_id = resource_id
@@ -104,7 +96,7 @@ class AdditionalResourceMetadata(AdditionalMetadata):
         else:
             assert False
             
-class ResponsibleParty(AdditionalMetadata):
+class ResponsibleParty(NgdsDataObject):
     """
     A ResponsibleParty represents an individual or organization responsible
     for authorship, maintenance, or distribution of a resource
@@ -183,32 +175,18 @@ def define_tables():
 
 def db_setup():
     """Create tables in the database"""
-    # These tables will already be defined in memory if the plugin is enabled.
-    #  IConfigurer will make call to define_tables()
+    # These tables will already be defined in memory if the metadata plugin is enabled.
+    #  IConfigurer will make a call to define_tables()
     party = meta.metadata.tables.get("responsible_party", None)
     package_meta = meta.metadata.tables.get("package_additional_metadata", None)
     resource_meta = meta.metadata.tables.get("resource_additional_metadata", None)
     
     if party == None or package_meta == None or resource_meta == None:
         # The tables have not been defined. Its likely that the plugin is not enabled in the CKAN .ini file
-        log.deubg("Could not create additional tables. Please make sure that you've added the metadata plugin to your CKAN config .ini file.")
-    
-    log.debug('Additional Metadata tables defined in memory')
-    
-    def create_table(table):
-        if not table.exists():
-            try:
-                table.create()
-            except Exception, e:
-                raise e
-            log.debug('Created %s table' % table.name)
-        else:
-            log.debug('%s table already exists' % table.name)
-            pass
+        log.debug("Could not create additional tables. Please make sure that you've added the metadata plugin to your CKAN config .ini file.")
+    else:    
+        log.debug('Additional Metadata tables defined in memory')
         
-    if model.package_table.exists(): # check that the Package table exists
-        for table in [party, package_meta, resource_meta]:
-            create_table(table) # Create each of the tables
-    else:
-        log.debug('Additional table creation deferred - install the base CKAN tables first.')
-        pass
+        # Alright. Create the tables.
+        from ckanext.ngds.base.commands.ngds_tables import create_tables
+        create_tables([party, package_meta, resource_meta], log)

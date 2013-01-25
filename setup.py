@@ -25,7 +25,7 @@ setup(
 	entry_points=\
 	"""
 	[paste.paster_command]
-	metadata=ckanext.ngds.metadata.commands.metadata:Metadata
+	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
 	
 	[ckan.plugins]
 	metadata=ckanext.ngds.metadata.plugin:MetadataPlugin
