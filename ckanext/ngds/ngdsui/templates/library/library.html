@@ -19,75 +19,7 @@
 			</form>
 		</div>
 
-		<div class="library-search-accordion-header">
-		<div class="library-search-browse-header"><p>Browse</p></div>		
-			<ul id="accordion">			 	    
-			      <li>
-			      	<h4><a href="#">Location</a></h4>
-     					<div>
-         					Known geothermal resource area, latitude/longitude, geothermal area
-         					<span>
-         						<input type="text"></input>
-         						<form action="#"><input type="submit" value="Go"></form>
-         					</span>
-     					</div>
-			      </li>
-			      <li>
-			      	<h4><a href="#">Topic</a></h4>
-     					<div>
-         					<span><input type="checkbox" value="__" name="Geology">Geology</span>
-         					<span><input type="checkbox" value="__" name="Geology">Geophysics</span>
-         					<span><input type="checkbox" value="__" name="Geology">Geochemistry</span>
-         					<span><input type="checkbox" value="__" name="Geology">Well Logs</span>
-         					<span><input type="checkbox" value="__" name="Geology">Legislature/Permitting</span>
-         					<span><input type="checkbox" value="__" name="Geology">Infrastructure</span>
-         					<span><input type="checkbox" value="__" name="Geology">Production Data</span>
-         					<span><input type="checkbox" value="__" name="Geology">Environmental</span>
-         					<span><input type="checkbox" value="__" name="Geology">Economics</span>
-         					<span><input type="checkbox" value="__" name="Geology">Land Use and Ownership</span>
-         					<span><input type="checkbox" value="__" name="Geology">Reservoir Engineering</span>
-     					</div>
-     				</li>
-			      <li>
-			      	<h4><a href="#">Data Type</a></h4>
-     					<div>
-         					Placeholder
-     					</div>
-			      </li>
-			      <li>
-			      	<h4><a href="#">Source</a></h4>
-     					<div>
-         					Placeholder
-     					</div>
-			      </li>
-			      <li>
-			      	<h4><a href="#">Data Format</a></h4>
-     					<div>
-         					Placeholder
-     					</div>
-			      </li>
-			      <li>
-			      	<h4><a href="#">Date</a></h4>
-     					<div>
-         					Placeholder
-     					</div>
-			      </li>
-			      <li>
-			      	<h4><a href="#">User Review</a></h4>
-     					<div>
-         					Placeholder
-     					</div>
-			      </li>
-			      <li>
-			      	<h4><a href="#">Tools & Apps</a></h4>
-     					<div>
-         					Placeholder
-     					</div>
-			      </li>
-
-			</ul>
-			
-		</div>	
-	</div>
+		{% include "/snippets/search_accordion.html" %}
+	</div> <!-- End library search container -->
 
 {% endblock %}

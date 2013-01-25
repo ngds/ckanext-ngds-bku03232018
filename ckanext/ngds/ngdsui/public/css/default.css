@@ -892,7 +892,7 @@ div#content-container section.search-results div.sort-container span {
 div#content-container section.search-results div.search-results-container div.search-results-item {
 	display:table;
 	width:100%;
-	border-bottom:1px solid #dadada;
+	border-bottom:1px solid #a9a9a9;
 	margin-top:20px;
 	padding-bottom:20px;
 }

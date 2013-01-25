@@ -20,6 +20,7 @@
 				<input type="submit" value="Go">
 			</form>
 	</div>
+  {% include "/snippets/search_accordion.html" %}
 </div>
 
 
@@ -46,15 +47,27 @@
               <div class="search-results-meta">
                   <p class="regular-meta-item">{{package.author}}</p>
                   <p class="regular-meta-item">Published: {{package.metadata_created}}</p>
+                  {% if package.is_dataset %}
                   <img src="/images/u179_normal.png"><p class="regular-meta-item inline raise"> Data set</p>
+                  {% elif package.is_publication %}
+                  <img src="/images/u495_normal.png"><p class="regular-meta-item inline raise"> Publication</p>
+                  {% elif package.is_document %}
+                  <img src="/images/u497_normal.png"><p class="regular-meta-item inline raise"> Document</p>
+                  {% endif %}
               </div>
               <div class="search-results-actions">
                 <img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png">
                 <img src="/images/u190_normal.png" class="left-spaced-regular"><p class="regular-meta-item inline">{{package.reviews}} reviews</p>
                 <p class="regular-meta-item">{{package.downloads}} downloads</p>
+                {% if package.is_mappable %}
                 <span><img src="/images/u230_normal.png"> <a class="regular-meta-item inline" href="#">Map</a></span>
                 <span class="action-item-spaced"><img src="/images/u140_normal.png"> <a class="regular-meta-item inline" href="#">Favorite</a></span>
+                {% else %}
+                <span><img src="/images/u140_normal.png"> <a class="regular-meta-item inline" href="#">Favorite</a></span>
+                {% endif %}
+                {% if package.is_downloadable %}
                 <span class="action-item-spaced"><img src="/images/u157_normal.png"> <a class="regular-meta-item inline" href="#">Download</a></span>
+                {% endif %}                
                 <span class="action-item-spaced"><img src="/images/u173_normal.png"> <a class="regular-meta-item inline" href="#">Send</a></span>
               </div>
           </div>
