@@ -183,7 +183,16 @@ def define_tables():
 
 def db_setup():
     """Create tables in the database"""
-    party, package_meta, resource_meta = define_tables() # Define the tables
+    # These tables will already be defined in memory if the plugin is enabled.
+    #  IConfigurer will make call to define_tables()
+    party = meta.metadata.tables.get("responsible_party", None)
+    package_meta = meta.metadata.tables.get("package_additional_metadata", None)
+    resource_meta = meta.metadata.tables.get("resource_additional_metadata", None)
+    
+    if party == None or package_meta == None or resource_meta == None:
+        # The tables have not been defined. Its likely that the plugin is not enabled in the CKAN .ini file
+        log.deubg("Could not create additional tables. Please make sure that you've added the metadata plugin to your CKAN config .ini file.")
+    
     log.debug('Additional Metadata tables defined in memory')
     
     def create_table(table):
