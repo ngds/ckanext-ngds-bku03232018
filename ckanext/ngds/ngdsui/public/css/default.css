@@ -835,7 +835,7 @@ div.search-browse-inverted-dome { /* Tres cool. */
 } 
 
 div#content-container {
-	min-height:550px;
+	min-height:410px;
 }
 
 div.about-ngds {
@@ -859,12 +859,17 @@ div#content-container section.search-results {
 	position:relative;
 	top:100px;
 	float:right;
-	width:755px;
+	width:750px;
+	padding-bottom:130px;
 }
 
 div#content-container section.search-results div.search-results-container { 
-	margin-top:18px;
 	font-family:Arial;
+}
+
+div#content-container section.search-results div.search-results-preamble-container span {
+	font-family:Arial;
+	font-size:16px;
 }
 
 div#content-container section.search-results div.sort-container {
@@ -881,36 +886,73 @@ div#content-container section.search-results div.sort-container span {
 	position:absolute;
 	padding-left:10px;
 	font-family:Arial;
-	font-size:12px;
+	font-size:13px;
 }
 
 div#content-container section.search-results div.search-results-container div.search-results-item {
 	display:table;
-	width:755px;
+	width:100%;
+	border-bottom:1px solid #dadada;
+	margin-top:20px;
+	padding-bottom:20px;
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-item span.row {
-	display:table-row;
-	margin-top:10px;
+div#content-container section.search-results div.search-results-container div.search-results-item a.title {
+	display:table-caption;
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-item span.cell {
+div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-meta {
+	display:table-cell;
+	width:50%;
+	pading-top:5px;
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions {
 	display:table-cell;
 	width:50%;
 }
 
-
-
-div#content-container section.search-results div.sort-container span select { 
-	margin-left:5px;
+div#content-container section.search-results div.search-results-container div.search-results-item .regular-meta-item {
+	margin-top:5px;
+	margin-bottom:5px;
+	font-size:13px;
 }
 
-div#content-container section.search-results div.search-results-preamble-container {
-	margin-top:10px;
+div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-meta img {
+
 }
 
-div#content-container section.search-results div.search-results-preamble-container span {
-	font-size: 16px;
-	font-weight: bold;
-	font-family: Arial;
+div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions img {
+
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions span {
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions a {
+
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-item span.title-float {
+}
+
+.raise {
+
+}
+
+.inline {
+}
+
+.left-spaced-regular {
+}
+
+.action-item-spaced {
+	margin-left:25px;
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-item .title {
+
+}
+
+div#content-container section.search-results div.search-results-container span .title {
 }

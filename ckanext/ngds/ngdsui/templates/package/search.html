@@ -42,10 +42,21 @@
     <div class="search-results-container">
         {% for package in c.page.items %}
           <div class="search-results-item">
-            <span class="title row"><a href="#">{{ package.title }}</a></span>
-            <span class="row"><span class="author cell">{{ package.author }}</span><span class="cell">Rating *****</span></span>
-            <span class="published-date cell">Published: {{ package.metadata_created }}</span>
-            <span class="result-type"><img src="data=type-img">Data set</span>
+              <a class="title" href="#">{{package.title}}</a>
+              <div class="search-results-meta">
+                  <p class="regular-meta-item">{{package.author}}</p>
+                  <p class="regular-meta-item">Published: {{package.metadata_created}}</p>
+                  <img src="/images/u179_normal.png"><p class="regular-meta-item inline raise"> Data set</p>
+              </div>
+              <div class="search-results-actions">
+                <img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png">
+                <img src="/images/u190_normal.png" class="left-spaced-regular"><p class="regular-meta-item inline">{{package.reviews}} reviews</p>
+                <p class="regular-meta-item">{{package.downloads}} downloads</p>
+                <span><img src="/images/u230_normal.png"> <a class="regular-meta-item inline" href="#">Map</a></span>
+                <span class="action-item-spaced"><img src="/images/u140_normal.png"> <a class="regular-meta-item inline" href="#">Favorite</a></span>
+                <span class="action-item-spaced"><img src="/images/u157_normal.png"> <a class="regular-meta-item inline" href="#">Download</a></span>
+                <span class="action-item-spaced"><img src="/images/u173_normal.png"> <a class="regular-meta-item inline" href="#">Send</a></span>
+              </div>
           </div>
         {% endfor %}
     </div>

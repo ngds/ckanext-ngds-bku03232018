@@ -34,7 +34,9 @@
   {# The content block allows you to replace the content of the page if needed #}
   <div id="body-container">
   {% if active_page=="library" %}
-    <div id="content-container" style="min-height:660px;">
+    <div id="content-container">
+      {% elif active_page=="home"%}
+    <div id="content-container" style="padding-bottom:130px;">
       {% else %}
     <div id="content-container">
       {% endif %}
