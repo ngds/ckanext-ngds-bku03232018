@@ -822,8 +822,12 @@ div#library-search-container div input[type="button"] {
 	font-family: Arial;
 }
 
-div.adjusted-top-search {
+.adjusted-top-search {
 	margin-top:30px !important;
+}
+
+.adjusted-bottom-search {
+	margin-bottom:40px;
 }
 
 div.search-browse-inverted-dome { /* Tres cool. */
