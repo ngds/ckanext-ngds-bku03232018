@@ -461,10 +461,9 @@ a:visited{
 */
 
 #footer {
-	height:150px;
+	height:145px;
 	position:relative;
 	margin-left:10px;
-	margin-bottom:20px;
 }
 
 div#footer-links-section {
@@ -982,3 +981,81 @@ div#content-container section.search-results div.search-results-container div.se
 .action-item-spaced {
 	margin-left:25px;
 }
+
+div.postface {
+
+}
+
+div.postface div.left {
+	float:left;
+	margin-top:5px;
+}
+
+div.postface div.right {
+	position:relative;
+	margin-top:5px;
+	display:table;
+	float:right;
+	width:320px;
+}
+
+div.postface div.left p {
+	margin-top:0px;
+	margin-left:15px;
+	font-family:Arial;
+	font-size:10px;
+}
+
+div.postface div.right a {
+	display:table-cell;
+	font-family:Arial;
+	font-size:10px;
+	text-decoration:none;
+	text-align:left;
+}
+
+div.postface div.right .center {
+	text-align:center;
+	padding-left:30px;
+}
+
+div.postface div.right .left {
+	text-align:left;
+}
+
+div.postface div.right .right {
+	text-align:right;
+}
+
+div.map-search {
+	background-color:#dadada;
+	height:120px;
+	width:320px;
+}
+
+div.map-search span.left {
+	margin-left:15px;
+}
+
+div.map-search p.map-search-desc {
+	margin-left:15px;
+	font-family:Arial;
+	font-size:12px; 
+	margin-bottom:5px;
+}
+
+div.map-search input[type="text"] {
+	margin-left:15px;
+	width:220px;
+	font-family:Arial;
+	font-size:20px;
+}
+
+div.map-search input[type="submit"] {
+	font-family:Arial;
+	font-size:20px;
+	width:50px;
+	height:20px;
+	margin-left:10px;
+}
+
