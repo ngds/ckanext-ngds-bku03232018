@@ -893,6 +893,21 @@ div#content-container section.search-results div.sort-container span {
 	font-size:13px;
 }
 
+div#content-container section.search-results div.sort-container span.left {
+	position:relative;
+	float:left;
+}
+
+div#content-container section.search-results div.sort-container span.right {
+	position:relative;
+	float:right;
+	margin-right:10px;
+}
+
+div#content-container section.search-results div.sort-container span.right button {
+	height:25px;
+}
+
 div#content-container section.search-results div.search-results-container div.search-results-item {
 	display:table;
 	width:100%;
@@ -908,7 +923,7 @@ div#content-container section.search-results div.search-results-container div.se
 div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-meta {
 	display:table-cell;
 	width:50%;
-	pading-top:5px;
+	padding-top:10px;
 }
 
 div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions {
@@ -922,41 +937,48 @@ div#content-container section.search-results div.search-results-container div.se
 	font-size:13px;
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-meta img {
-
+div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-meta .spaced {
+	/*padding-top:10px;*/
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions img {
-
+div#content-container section.search-results div.search-results-container .search-results-num-pages {
+	font-size:14px;
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions span {
+div#content-container section.search-results div.search-results-container div.search-results-pagination {
+	margin-top:25px;
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions a {
-
+div#content-container section.search-results div.search-results-container div.search-results-pagination p {
+	display:inline;
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-item span.title-float {
+div#content-container section.search-results div.search-results-container div.search-results-pagination div.search-results-page-nums {
+	margin-left:20px;
+	display:inline;
 }
 
-.raise {
-
+div#content-container section.search-results div.search-results-container div.search-results-pagination div.search-results-page-nums a {
+	font-size:13px;
+	margin-left:5px;
+	margin-right:5px;
 }
 
-.inline {
+div#content-container section.search-results div.search-results-container div.search-results-pagination div.search-results-num-items {
+	display:inline;
+	float:right;
+	margin-left:20px;
 }
 
-.left-spaced-regular {
+div#content-container section.search-results div.search-results-container div.search-results-pagination div.search-results-num-items select {
+	width:50px;
+	margin-left:10px;
+}
+
+div#content-container section.search-results div.search-results-container div.search-results-pagination div.search-results-num-items p {
+	font-size:14px;
 }
 
 .action-item-spaced {
 	margin-left:25px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-item .title {
-
-}
-
-div#content-container section.search-results div.search-results-container span .title {
 }

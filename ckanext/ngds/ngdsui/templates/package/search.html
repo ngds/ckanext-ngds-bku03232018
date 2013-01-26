@@ -32,7 +32,7 @@
   </div>
 
   <div class="sort-container">
-      <span>Sort By 
+      <span class="left">Sort By 
         <select>
             <option>Recently Added</option>
             <option>Geothermal Topic</option>
@@ -40,12 +40,16 @@
             <option>Date Published</option>
           </select>
       </span>
+      <span class="right">
+        <button>Save this Search</button>
+      </span>
+      <span>
   </div>
     <div class="search-results-container">
         {% for package in c.page.items %}
           <div class="search-results-item">
               <a class="title" href="#">{{package.title}}</a>
-              <div class="search-results-meta">
+              <div class="search-results-meta spaced">
                   <p class="regular-meta-item">{{package.author}}</p>
                   <p class="regular-meta-item">Published: {{package.metadata_created}}</p>
                   {% if package.is_dataset %}
@@ -73,6 +77,27 @@
               </div>
           </div>
         {% endfor %}
+        <div class="search-results-pagination">
+            <p class="search-results-num-pages">Page 1 of 100</p>
+                <div class="search-results-page-nums">
+                    <a href="#">&lt;&lt;</a>
+                    <a href="#">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">4</a>
+                    <p>...</p>
+                    <a href="#">100</a>
+                    <a href="#">&gt;&gt;</a>
+                </div>
+                <div class="search-results-num-items">
+                  <p>Items per page</p>
+                  <select>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>15</option>
+                  </select>
+                </div>
+        </div>
     </div>
 </section>
 
