@@ -1007,7 +1007,6 @@ div.postface div.left p {
 }
 
 div.postface div.right a {
-	display:table-cell;
 	font-family:Arial;
 	font-size:10px;
 	text-decoration:none;
@@ -1027,10 +1026,17 @@ div.postface div.right .right {
 	text-align:right;
 }
 
+div.postface div.right span {
+	display:inline;
+	display:table-cell;
+}
+
 div.map-search {
 	background-color:#dadada;
 	height:120px;
 	width:320px;
+	border-radius:5px;
+	padding-top:5px;
 }
 
 div.map-search span.left {
@@ -1055,7 +1061,7 @@ div.map-search input[type="submit"] {
 	font-family:Arial;
 	font-size:20px;
 	width:50px;
-	height:20px;
+	height:30px;
 	margin-left:10px;
 }
 
