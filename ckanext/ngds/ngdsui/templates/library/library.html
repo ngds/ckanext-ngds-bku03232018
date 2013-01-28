@@ -1,0 +1,28 @@
+{% extends "page_ngds.html" %}
+{% set active_page = "library" %}
+{% block content %}
+
+	<div id="library-search-container">
+		<p>Would you like to...</p>
+		<!-- Accordion menu goes here -->
+
+		
+		<div class="library-search-pre">
+			<p>or</p>
+		</div>
+
+		<div class="library-search-bar">
+			<p>Search</p>
+			<form action="/ngds/library/search" method="get">
+				<input type="text" name="q">
+				<input type="submit" value="Go">
+			</form>
+		</div>
+
+		<div class="library-search-accordion-header">
+		<div class="library-search-browse-header"><p>Browse</p></div>	
+			{% include "/snippets/search_accordion.html" %}
+		</div>
+	</div> <!-- End library search container -->
+
+{% endblock %}

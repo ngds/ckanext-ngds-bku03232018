@@ -1,0 +1,12 @@
+{% extends "page_ngds.html" %}
+{% set active_page = "map" %}
+{%- block content %}
+<div class="map-search">
+	<span class="main-menu-item left">Search</span>
+	<p class="map-search-desc">Known geothermal resource area, latitude/longitude, geothermal area</p>
+	<form>
+		<input type="text">
+		<input type="submit" value="Go">
+	</form>
+</div>
+{% endblock %}
