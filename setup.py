@@ -26,12 +26,15 @@ setup(
 	entry_points=\
 	"""
 	[paste.paster_command]
-    # Install NGDS Metadata tables
+    # Install NGDS additional tables
 	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
 	
 	[ckan.plugins]
     # NGDS Metadata plugin
 	metadata=ckanext.ngds.metadata.plugin:MetadataPlugin
+	
+	# NGDS Harvest plugin
+	ngdsharvest=ckanext.ngds.harvest.plugin:NgdsHarvestPlugin
 
 	# NGDS UI plugin.
 	ngdsui=ckanext.ngds.ngdsui.plugin:NgdsuiPlugin

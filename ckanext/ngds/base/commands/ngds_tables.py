@@ -26,6 +26,10 @@ class NgdsTables(CkanCommand):
         from ckanext.ngds.metadata.model.additional_metadata import db_setup as setup_metadata_tables
         setup_metadata_tables()
         
+        # Setup harvesting tables
+        from ckanext.ngds.harvest.model.harvest_node import db_setup as setup_harvest_tables
+        setup_harvest_tables()
+        
 def create_tables(tables, log):
     """Given a list of table definition objects, create those tables in the database"""
     def create_table(table):
