@@ -25,9 +25,15 @@ setup(
 	],
 	entry_points=\
 	"""
-        [ckan.plugins]	
+	[paste.paster_command]
+    # Install NGDS Metadata tables
+	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
+	
+	[ckan.plugins]
+    # NGDS Metadata plugin
+	metadata=ckanext.ngds.metadata.plugin:MetadataPlugin
+
 	# NGDS UI plugin.
 	ngdsui=ckanext.ngds.ngdsui.plugin:NgdsuiPlugin
-	
 	""",
 )
