@@ -8,6 +8,22 @@ $(document).ready(function() {
     	collapsible:true
 	});
 	console.log("Ready");
+	
+	window.not_imp_active = false;
+
+	$(".not-implemented").click(function(event) {
+		window.not_imp_active = true;
+		$("#not-implemented-popup").show();
+		return false;
+	});
+
+	$(document).click(function(){
+		if(window.not_imp_active ==true) {
+			window.not_imp_active = false;
+			$("#not-implemented-popup").hide();
+		}
+	});
+
 	// $("#accordion").accordion();
 	var cycler = function(initialState, possibleStates, setupInitialState, transitions) {
 		// Cycle between a set of states.
