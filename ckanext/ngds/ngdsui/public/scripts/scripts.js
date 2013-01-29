@@ -1,112 +1,111 @@
-$(document).ready(function() {
-	$("#accordion").accordion({
-    	autoHeight:false,
-    	clearStyle: false,
-    	header:"h4",
-    	heightStyle:"content",
-    	active:false,
-    	collapsible:true
-	});
-	console.log("Ready");
-	
-	window.not_imp_active = false;
+var ngds = ngds || { };
 
-	$(".not-implemented").click(function(event) {
-		window.not_imp_active = true;
-		$("#not-implemented-popup").show();
-		return false;
-	});
+(function() {
 
-	$(document).click(function(){
-		if(window.not_imp_active ==true) {
-			window.not_imp_active = false;
-			$("#not-implemented-popup").hide();
-		}
-	});
+	$(document).ready(function() { 
 
-	// $("#accordion").accordion();
-	var cycler = function(initialState, possibleStates, setupInitialState, transitions) {
-		// Cycle between a set of states.
-		var stateIndex = $.inArray(initialState,possibleStates);
-				if(stateIndex==-1) {
-			throw "Initial State is not in the list of possible states."
-		}
-		// Execute initial transition
-		setupInitialState();
-		++stateIndex;
-		return {
-			cycle:function() {
-				if(stateIndex==possibleStates.length-1) {
-					stateIndex = 0;
+		$(".not-implemented").click(function(event) { // Handle portions of the UI that haven't been implemented yet, display a div that says 'Not implemented Yet'.
+				ngds.not_implemented_popup_active = true;
+				$("#not-implemented-popup").show();
+				return false;
+			});
+
+		$(document).click(function(){ // Handle clicks on the document level.
+				
+				if(ngds.not_implemented_popup_active ===true) { // If The not implemented yet popup is active, hide it.
+					ngds.not_implemented_popup_active = false;
+					$("#not-implemented-popup").hide();
+				}
+
+				if(isLoginPopupVisible()) { // If the login popup is active, hide it.
+					$("#login-popup").hide();
+				}				
+			});
+
+		$(document).keyup(function(e){ // On ESC hide the Not Implemented Yet popup, if it's visible.
+			if(e.keyCode===27 && ngds.not_implemented_popup_active) {
+				$("#not-implemented-popup").hide();
+			}
+		});
+
+		(function(){ // Handle login popup events.
+
+			$("#login").click(function(){ // When clicked, toggle between visible and hidden.
+				if(isLoginPopupVisible()) {
+					$("#login-popup").hide();
 				}
 				else {
-					++stateIndex;
+					$("#login-popup").show();
 				}
-				transitions[stateIndex]();
+				return false;
+			});
+
+			$(document).keyup(function(e){ // On ESC toggle between visible and hidden.
+				if(e.keyCode===27 && isLoginPopupVisible()) {
+					$("#login-popup").hide();
+				}
+			});
+
+			$("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
+													// when a click occurs inside the div.
+				return false;
+			})
+
+		})();
+
+
+		(function(){ // Handle username and password state transitions.
+			
+			$("#username").click(function(e){
+				return false;
+			});
+
+			$("#password").click(function(e){ // Preventing the click event from firing on the document and resulting in the login popup from vanishing
+												// due to the focus event binding below.
+				return false;
+			});
+
+			$("#username").focus(function(e) {
+					if(this.value==="username") {
+						this.value = "";
+					}
+				});
+
+			$("#username").blur(function(e) {
+					if(this.value==="") {
+						this.value = "username";
+					}
+				});
+
+			$("#password").focus(function(e) {
+					if(this.value==="password") {
+						this.value = "";
+					}
+				});
+
+			$("#password").blur(function(e) {
+					if(this.value==="") {
+						this.value = "password";
+					}
+				});
+
+		})();
+
+
+		$("#accordion").accordion({ // Create and configure the library search page's accordion menu.
+		    	autoHeight:false,
+		    	clearStyle: false,
+		    	header:"h4",
+		    	heightStyle:"content",
+		    	active:false,
+		    	collapsible:true
+			});
+
+		function isLoginPopupVisible(){
+				return ($("#login-popup").css('display')!=='none');
 			}
-		}
-	};
 
-	// Run initial setup stuff for the home page. (Login dialog show/hide functionality, default text in username/password fields)
-	(function() {
-		
-		// Beginning of event handling for the login form.
-
-		var initialState = "hidden";
-		var possibleStates = ["hidden","visible"];
-		var initialStateSetup = function() {
-			$("#login-popup").hide();
-		};
-
-		var transitions = [
-			function() {
-				$("#login-popup").show();
-			},
-			function() {
-				$("#login-popup").hide();
-			}
-		];
-
-		var loginPopupToggler = cycler(initialState,possibleStates,initialStateSetup,transitions);
-		
-		$("#login").click(function() {
-			loginPopupToggler.cycle();
-		});
-
-		$(document).keyup(function(e) { // We might also want to hide that login div when the escape key is pressed while it's visible. 
- 			if(e.keyCode===27 && $("#login-popup").css('display')==="block") {
-				loginPopupToggler.cycle();
-			}
-		});
-
-		$("#username").focus(function() {
-			if(this.value==="username") {
-				this.value = "";
-			}
-		});
-
-		$("#username").blur(function() {
-			if(this.value==="") {
-				this.value = "username";
-			}
-		});
-
-		$("#password").focus(function() {
-			if(this.value==="password") {
-				this.value = "";
-			}
-		});
-
-		$("#password").blur(function() {
-			if(this.value==="") {
-				this.value = "password";
-			}
-		});
-
-		// End of event handling for the login form.
-
-	})();
+	});
 
 
-});
-
+})();

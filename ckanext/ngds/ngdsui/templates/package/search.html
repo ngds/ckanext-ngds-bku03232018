@@ -41,14 +41,14 @@
           </select>
       </span>
       <span class="right">
-        <button>Save this Search</button>
+        <button class="not-implemented">Save this Search</button>
       </span>
       <span>
   </div>
     <div class="search-results-container">
         {% for package in c.page.items %}
           <div class="search-results-item">
-              <a class="title" href="#">{{package.title}}</a>
+              <a class="title not-implemented" href="#">{{package.title}}</a>
               <div class="search-results-meta spaced">
                   <p class="regular-meta-item">{{package.author}}</p>
                   <p class="regular-meta-item">Published: {{package.metadata_created}}</p>
@@ -62,18 +62,18 @@
               </div>
               <div class="search-results-actions">
                 <img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png"><img src="/images/u448_normal.png">
-                <img src="/images/u190_normal.png" class="left-spaced-regular"><p class="regular-meta-item inline">{{package.reviews}} reviews</p>
+                <img src="/images/u190_normal.png" class="left-spaced-regular"><p class="regular-meta-item inline not-implemented">{{package.reviews}} reviews</p>
                 <p class="regular-meta-item">{{package.downloads}} downloads</p>
                 {% if package.is_mappable %}
-                <span><img src="/images/u230_normal.png"> <a class="regular-meta-item inline" href="#">Map</a></span>
-                <span class="action-item-spaced"><img src="/images/u140_normal.png"> <a class="regular-meta-item inline" href="#">Favorite</a></span>
+                <span><img src="/images/u230_normal.png"> <a class="regular-meta-item inline not-implemented" href="#">Map</a></span>
+                <span class="action-item-spaced"><img src="/images/u140_normal.png"> <a class="regular-meta-item inline not-implemented" href="#">Favorite</a></span>
                 {% else %}
-                <span><img src="/images/u140_normal.png"> <a class="regular-meta-item inline" href="#">Favorite</a></span>
+                <span><img src="/images/u140_normal.png"> <a class="regular-meta-item inline not-implemented" href="#">Favorite</a></span>
                 {% endif %}
                 {% if package.is_downloadable %}
-                <span class="action-item-spaced"><img src="/images/u157_normal.png"> <a class="regular-meta-item inline" href="#">Download</a></span>
+                <span class="action-item-spaced"><img src="/images/u157_normal.png"> <a class="regular-meta-item inline not-implemented" href="#">Download</a></span>
                 {% endif %}                
-                <span class="action-item-spaced"><img src="/images/u173_normal.png"> <a class="regular-meta-item inline" href="#">Send</a></span>
+                <span class="action-item-spaced"><img src="/images/u173_normal.png"> <a class="regular-meta-item inline not-implemented" href="#">Send</a></span>
               </div>
           </div>
         {% endfor %}
@@ -81,13 +81,13 @@
             <p class="search-results-num-pages">Page 1 of 100</p>
                 <div class="search-results-page-nums">
                     <a href="#">&lt;&lt;</a>
-                    <a href="#">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#">4</a>
+                    <a href="#" class="not-implemented">1</a>
+                    <a href="#" class="not-implemented">2</a>
+                    <a href="#" class="not-implemented">3</a>
+                    <a href="#" class="not-implemented">4</a>
                     <p>...</p>
-                    <a href="#">100</a>
-                    <a href="#">&gt;&gt;</a>
+                    <a href="#" class="not-implemented">100</a>
+                    <a href="#" class="not-implemented">&gt;&gt;</a>
                 </div>
                 <div class="search-results-num-items">
                   <p>Items per page</p>
