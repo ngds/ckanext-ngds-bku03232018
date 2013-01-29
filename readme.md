@@ -36,7 +36,7 @@ Data Fields:
 - city: City
 - zip: Zipcode
 
-# NGDS Harvesting Tables
+# New NGDS Harvesting Tables
 
 ## harvest_node
 
@@ -63,7 +63,7 @@ Data Fields:
 
 A paster function to create these tables in the database. Once `metadata` and `ngdsharvest` are added to the list of plugins in `development.ini`, tables can be created by issuing the following command:
 
-    paster --plugin=ckanext-ngds nods initdb --config=/path/to/development.ini
+    paster --plugin=ckanext-ngds ngds initdb --config=/path/to/development.ini
 
 # HTTP API for CRUD-operations on additional tables.
 
