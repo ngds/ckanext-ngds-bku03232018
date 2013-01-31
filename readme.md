@@ -46,6 +46,7 @@ Data Fields:
 
 - id: Integer Primary key
 - url: The URL for the harvest endpoint
+- title: A Title for the harvest node, for bookkeeping purposes.
 - frequency: How often we want to harvest from that endpoint. Should be one of `manual|daily|weekly|monthly`
 
 ## harvested_record
