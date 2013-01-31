@@ -772,16 +772,20 @@ div#library-search-container div.library-search-accordion-header ul li div {
 
 .ui-accordion .ui-accordion-content { overflow:hidden !important; }
 
-div#library-search-container div.library-search-accordion-header ul li div span {
+.ui-accordion .ui-accordion-content span {
 	display:block;
 }
 
-div#library-search-container div.library-search-accordion-header ul li div span input[type="text"] {
+div#library-search-container div.library-search-accordion-header ul li div div {
+	display:block;
+}
+
+div#library-search-container div.library-search-accordion-header ul li div div input[type="text"] {
 	width:170px;
 	float:left;
 }
 
-div#library-search-container div.library-search-accordion-header ul li div span button {
+div#library-search-container div.library-search-accordion-header ul li div div button {
 	float:right;
 	font-size:18px;
 }
@@ -1076,5 +1080,15 @@ div.map-search input[type="submit"] {
 	width:50px;
 	height:30px;
 	margin-left:10px;
+}
+
+
+
+/* Global styles */
+fieldset {
+	border:0px;
+	display:inline;
+	padding:0px;
+	margin:0px;
 }
 
