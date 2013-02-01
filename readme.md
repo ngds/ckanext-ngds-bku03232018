@@ -10,6 +10,7 @@ Data fields:
 - author_id: Foreign Key to a responsible_party who created the dataset
 - maintainer_id: Foreign Key to a responsible_party who is responsible for dataset maintenance
 - pub_date: The date that the dataset was published
+- resource_type: From USGIN-profile picklist
 
 ## resource_additional_metadata:
 
