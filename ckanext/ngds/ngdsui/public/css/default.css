@@ -1149,6 +1149,49 @@ div#nodes-display a:hover, div#nodes-display a:visited, div#nodes-display a:link
     text-decoration: none;
 }
 
+div#contribute-central div.existing-nodes-admin {
+	float:left;
+	position: absolute;
+	margin:10px;
+	width:750px;
+}
+
+div#contribute-central div.create-node-admin {
+	float:right;	
+	padding-top:50px;
+	padding-left:10px;
+	margin:20px;
+	width:180px;
+	min-height: 200px;
+	border-left:2px solid #a8a8a8;
+}
+
+div#manage-nodes table{
+	font-size:13px;
+	font-family:Arial;
+	width: 750px;		
+	border:1px solid #a8a8a8;
+	border-collapse: collapse;
+}
+
+div#manage-nodes tr.heading{
+	font-size:13px;
+	font-weight:bold;
+	font-family:Arial;
+}
+
+div#manage-nodes td,div#manage-nodes th{
+	padding-top: 10px;
+	padding-left: 5px;
+	padding-bottom: 10px;
+	min-width: 90px;
+}
+
+div#manage-nodes img{
+	margin: 2px;
+}
+
+
 
 /* End of contribute central*/
 
@@ -1160,5 +1203,7 @@ fieldset {
 	margin:0px;
 }
 
-
+.under_line {
+	border-bottom: 1px solid #444444;
+}
 

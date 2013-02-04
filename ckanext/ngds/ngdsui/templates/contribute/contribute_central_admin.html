@@ -1,23 +1,34 @@
 <div id="contribute-central" class="contribute-central">
 
-<p class="section-title">Contribute Data</p>
-<p>If you are interested in contributing data to NGDS, you can either go to any of the existing nodes or set up a node by yourself.</p>
-
-	<div id="existing-nodes" class="existing-nodes">
-		<p class="sub-section-title"><img src="/images/manage_nodes.png" alt="V"/>  Existing NGDS Nodes</p>
-			<div id="nodes-display">
-				<table>
+	<div class="existing-nodes-admin">
+		<p class="section-title">Manage Node</p>
+			<div id="manage-nodes">
+				<table id="manage-nodes-table">
+					<thead>
+						<tr class="heading"><th>Actions</th><th>Node Title</th><th>Contact Name</th><th>Status</th><th>Last Synchronization</th></tr>
+					</thead>
+					<tbody>
 				    {% for node in c.harvested_nodes %}
-				  	  <tr><td><img src="/images/node_default.png"/></td><td><a href="{{ node.url }}" target="_blank">{{ node.title }}</a></td></tr>	
+				    	<tr>
+				    		<td>
+				    			<img src="/images/node_edit.png" alt="Edit" title="Edit"/><img src="/images/node_view.png" alt="View" title="View"/><img src="/images/node_delete.png" alt="Delete" title="Delete"/>
+				    			<img src="/images/node_schedule.png" alt="Schedule" title="Schedule"/><img src="/images/node_refresh.png" alt="Refresh" title="Refresh"/>
+				    		</td>
+				    		<td>{{ node.title }}</td>
+				    		<td>{{ node.node_admin_id }}</td>
+				    		<td>Synchronized</td>
+				    		<td>2012-06-06</td>
+				    	</tr>
 				    {% endfor %}
+				    </tbody>
 				</table>
 			</div>
 	</div>
 
-	<div id="create-node" class="create-node">
-		<p class="sub-section-title"><img src="/images/create_node.png" alt="V"/>  Set up a node</p>
-		<p>Want to set up your own node?</p>
-		<p><a href="#" class="not-implemented">Click here</a> to view instructions on how to create a NGDS node.</p>
+	<div class="create-node-admin">
+		<p>Harvest new node? <a href="#" class="not-implemented">Click here</a></p>
 	</div>
 
 </div>
+
+

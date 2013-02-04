@@ -17,7 +17,7 @@ class ContributeController(BaseController):
 				'model': 'HarvestNode',
     			'process': 'read',
     			'data': {
-        			"id":'all'
+        			'id':'all'
 				 }             
 		}
 		
