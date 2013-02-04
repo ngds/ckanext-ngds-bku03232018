@@ -1,4 +1,5 @@
 from ckanext.ngds.base.model.ngds_db_object import NgdsDataObject
+from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty
 
 from ckan import model
 from ckan.model import meta, Package
@@ -16,7 +17,9 @@ class HarvestNode(NgdsDataObject):
     def __init__(self, url, **kwargs):
         self.url = url # A URL must be given
         self.frequency = kwargs.get('frequency', 'manual') # frequency should be one of manual|daily|weekly|monthly
-
+        self.title = kwargs.get('title', 'No Title Was Given') # A title for bookkeeping
+        self.node_admin_id = kwargs.get('node_admin_id', None) # Foreign Key to a responsible_party who maintains the remote node
+        
 class HarvestedRecord(NgdsDataObject):
     """Store relationship between a harvest node and a CKAN package"""
     def __init__(self, package_id, harvest_node_id, harvested_xml):
@@ -57,7 +60,9 @@ def define_tables():
         meta.metadata,
         Column("id", types.Integer, primary_key=True),
         Column("url", types.UnicodeText),
-        Column("frequency", types.UnicodeText)                   
+        Column("frequency", types.UnicodeText),
+        Column("title", types.UnicodeText),
+        Column("node_admin_id", types.Integer, ForeignKey("responsible_party.id"))                
     )
     
     harvest_record_table = Table(
@@ -70,7 +75,11 @@ def define_tables():
     )
     
     # Map classes to tables
-    meta.mapper(HarvestNode, node_table)
+    meta.mapper(HarvestNode, node_table,
+        properties={
+            "node_admin": relationship(ResponsibleParty)            
+        }
+    )
     
     meta.mapper(
         HarvestedRecord,

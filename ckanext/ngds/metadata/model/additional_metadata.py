@@ -49,6 +49,7 @@ class AdditionalPackageMetadata(NgdsDataObject):
         self.author_id = kwargs.get('author_id', None) # author should be a ResponsibleParty
         self.maintainer_id = kwargs.get('maintainer_id', None) # maintainer should be a ResponsibleParty
         self.pub_date = kwargs.get('pub_date', None)
+        self.resource_type = kwargs.get('resource_type', "Dataset") # Resource Type from USGIN picklist
 
     @classmethod
     def by_package(cls, package_id):
@@ -74,6 +75,35 @@ class AdditionalPackageMetadata(NgdsDataObject):
             return package_id
         else:
             assert False
+            
+    @validates('resource_type')
+    def validate_resource_type(self, key, resource_type):
+        """
+        Resource Type must be from the USGIN picklist adjusted from here: 
+        Column1, Table 1, page 14, http://lab.usgin.org/sites/default/files/profile/file/u4/USGIN_ISO_Metadata_1.1.4.pdf
+        """
+        valid_types = [
+            "Dataset", 
+            "Physical Collection",
+            "Catalog",
+            "Moving Image",
+            "Human-generated Image",
+            "Photograph",
+            "Remotely-sensed Image",
+            "Map",
+            "Text Document",
+            "Project",
+            "Extent",
+            "Physical Artifact",
+            "Service",
+            "Stand-alone Application",
+            "Interactive Resource"
+        ]
+        
+        if resource_type not in valid_types:
+            assert False
+        else:
+            return resource_type
             
 class AdditionalResourceMetadata(NgdsDataObject):
     """Adjustments to Resource Metadata"""
@@ -143,7 +173,8 @@ def define_tables():
         Column('package_id', types.UnicodeText, primary_key=True), # Implicit Foreign Key to the package
         Column('author_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
         Column('maintainer_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
-        Column('pub_date', types.Date) # Publication Date
+        Column('pub_date', types.Date), # Publication Date
+        Column('resource_type', types.UnicodeText) # Resource Type
     )
     
     # Map those tables to classes, define the additional properties for related people
