@@ -1083,6 +1083,74 @@ div.map-search input[type="submit"] {
 }
 
 
+/*Contribute Central Styles*/
+
+div.contribute-central {
+	margin-left:10px;
+	min-height:450px;
+}
+
+div.contribute-central p {
+	font-size:13px;
+	text-align:justify;
+	font-family:Arial;
+	line-height:1.5em;
+}
+
+div.contribute-central p.section-title {
+	font-size:20px;
+	font-weight:bold;
+}
+
+div.contribute-central p.sub-section-title {
+	font-size:16px;
+	font-weight:bold;
+	border-bottom: 1px solid #444444;
+	margin-right: 40px;
+	margin-bottom: 10px;	
+}
+
+
+div#contribute-central div.existing-nodes {
+	float:left;
+	position: absolute;
+	margin:10px;
+	width:660px;
+}
+
+div#contribute-central div.create-node {
+	float:right;	
+	margin:10px;
+	margin-right:20px;
+	width:320px;
+}
+
+div#nodes-display table{
+	font-size:13px;
+	text-align:justify;
+	font-family:Arial;
+	width: 600px;	
+	border-collapse: collapse;
+}
+
+div#nodes-display tr{
+	border-bottom: 1px solid #a8a8a8;
+}
+
+div#nodes-display td{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	min-width: 20px;
+}
+
+
+div#nodes-display a:hover, div#nodes-display a:visited, div#nodes-display a:link, div#nodes-display a:active    
+{
+    text-decoration: none;
+}
+
+
+/* End of contribute central*/
 
 /* Global styles */
 fieldset {
@@ -1091,4 +1159,6 @@ fieldset {
 	padding:0px;
 	margin:0px;
 }
+
+
 

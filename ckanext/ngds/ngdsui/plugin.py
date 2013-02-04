@@ -11,11 +11,12 @@ class NgdsuiPlugin(SingletonPlugin):
 		home_controller = "ckanext.ngds.ngdsui.controllers.home:HomeController"
 		map.connect("home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
 		map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
+
+		map.connect("contribute","/ngds/contribute",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="index")
 		
 		#Map related paths
 		map.connect("map","/ngds/map",controller=home_controller,action="render_map",conditions={"method":["GET"]})
 		map.connect("library","/ngds/library",controller=home_controller,action="render_library",conditions={"method":["GET"]})
-		map.connect("contribute","/ngds/contribute",controller=home_controller,action="render_contribute",conditions={"method":["GET"]})
 		map.connect("resources","/ngds/resources",controller=home_controller,action="render_resources",conditions={"method":["GET"]})
 		map.connect("search","/ngds/library/search",controller='package',action="search")
 

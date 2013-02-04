@@ -1,4 +1,9 @@
 from ckan.lib.base import *
+from ckan.lib.base import (request,
+                           render,
+                           BaseController,
+                           model,
+                           abort, h, g, c)
 
 class HomeController(BaseController):
 
@@ -28,13 +33,6 @@ class HomeController(BaseController):
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
 		return render('library/library.html')	
-
-	def render_contribute(self):
-		
-		"""
-		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
-		"""
-		return render('contribute/contribute.html')	
 
 	def render_resources(self):
 		
