@@ -13,22 +13,11 @@ class ContributeController(BaseController):
 		"""
 		Renders contribute page.
 		"""
-		data_dict = {
-				'model': 'HarvestNode',
-    			'process': 'read',
-    			'data': {
-        			'id':'all'
-				 }             
-		}
-		
-		context = {'model': model}
 
-		nodes = get_action('ngds_harvest')(context, data_dict)		
+		nodes = model.HarvestNode.get_all()
 
 		c.harvested_nodes = nodes
 		
-		print "Harvested Nodes: " , nodes
-
 		return render('contribute/contribute.html')		
 
  	def read(self):
@@ -36,20 +25,11 @@ class ContributeController(BaseController):
 		"""
 		Fetches the details about a particular node.
 		"""
+
 		node_id = 2
 
-		data_dict = {
-				'model': 'HarvestNode',
-    			'process': 'read',
-    			'data': {
-        			"id":node_id
-				 }           
-		}
-		
-		context = {'model': model}
+		node = model.HarvestNode.by_id(node_id)
 
-		nodes = get_action('ngds_harvest')(context, data_dict)		
-
-		c.harvested_nodes = nodes	
+		c.selected_node = node
 
 		return render('contribute/contribute.html')	
