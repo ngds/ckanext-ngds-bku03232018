@@ -1,5 +1,4 @@
 var ngds = ngds || { };
-
 (function() {
 
 	$(document).ready(function() { 
@@ -110,5 +109,17 @@ var ngds = ngds || { };
 
 	});
 
+  // CKAN.DatasetMap.map_type = 'osm';
+  // CKAN.DatasetMap.extent = {
+  //                           "type": "Polygon", 
+  //                           "coordinates": 
+  //                               [[[11.0878902207, 45.1602390564], 
+  //                                 [14.931640625, 40.9228515625], 
+  //                                 [0.8251953125, 41.0986328125], 
+  //                                 [7.63671875, 48.96484375], 
+  //                                 [11.0878902207, 45.1602390564]]]
+  //                       };
+  // CKAN.DatasetMap.element = '#dataset-map-container';
+  // CKAN.DatasetMap.setup();
 
 })();
