@@ -1,7 +1,7 @@
 <div id="contribute-central" class="contribute-central">
 
 	<div class="existing-nodes-admin">
-		<p class="section-title">Manage Node</p>
+		<h1>Manage Node</h1>
 			<div id="manage-nodes">
 				<table id="manage-nodes-table">
 					<thead>
@@ -11,7 +11,7 @@
 				    {% for node in c.harvested_nodes %}
 				    	<tr>
 				    		<td>
-				    			<img src="/images/node_edit.png" alt="Edit" title="Edit"/><img src="/images/node_view.png" alt="View" title="View"/><img src="/images/node_delete.png" alt="Delete" title="Delete"/>
+				    			<img src="/images/node_edit.png" alt="Edit" title="Edit" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node.id) }}', 'edit')"/><img src="/images/node_view.png" alt="View" title="View"/><img src="/images/node_delete.png" alt="Delete" title="Delete" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='delete', id=node.id) }}', 'delete')" />
 				    			<img src="/images/node_schedule.png" alt="Schedule" title="Schedule"/><img src="/images/node_refresh.png" alt="Refresh" title="Refresh"/>
 				    		</td>
 				    		<td>{{ node.title }}</td>
@@ -24,11 +24,25 @@
 				</table>
 			</div>
 	</div>
+<script type="text/javascript">
+function invokeAction(url,action)
+{
 
+	var msg = "Harevested Node will be deleted. Do you want to continue?";
+
+	if(action=='edit'){
+		msg = "Do you want to edit the harvested Node?";
+	}
+
+	if(confirm(msg)){
+		window.location.href =url;		
+	}else{
+		return false;
+	}
+}
+</script>
 	<div class="create-node-admin">
 		<p>Harvest new node? <a href="/ngds/harvest" >Click here</a></p>
 	</div>
 
 </div>
-
-

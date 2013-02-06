@@ -1143,19 +1143,19 @@ div#nodes-display a:hover, div#nodes-display a:visited, div#nodes-display a:link
 
 div#contribute-central div.existing-nodes-admin {
 	float:left;
-	position: absolute;
+	position: relative;
 	margin:10px;
 	width:750px;
+	padding-right: 10px;
+	border-right:2px solid #a8a8a8;
 }
 
 div#contribute-central div.create-node-admin {
 	float:right;	
-	padding-top:50px;
-	padding-left:10px;
-	margin:20px;
-	width:180px;
-	min-height: 200px;
-	border-left:2px solid #a8a8a8;
+	padding-top:70px;
+	padding-right:10px;
+	width:220px;
+	min-height: 200px;	
 }
 
 div#manage-nodes table{
