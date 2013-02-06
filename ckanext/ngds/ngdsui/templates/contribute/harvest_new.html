@@ -6,7 +6,7 @@
 {% set node_admin = c.node.node_admin %}
 {%- block content %}
 <div id="contribute-central" class="contribute-central">
-	<p class="section-title">Harvest a Resource</p>
+	<h1>Harvest a Resource</h1>
 	<div style="width:850px;min-height:600px;text-align:left;float:left; position:relative;">
 	<form method="post" action="/ngds/harvest/{{action}}" >
 		<input id="id" type="hidden" name="id" {% if isEdit %} value="{{ node.id }}"{% endif %}/>	

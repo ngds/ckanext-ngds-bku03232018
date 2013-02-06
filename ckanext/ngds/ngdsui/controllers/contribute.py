@@ -48,7 +48,7 @@ class ContributeController(BaseController):
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))	
 
-		node_id = data['id']
+		node_id = data['id'] or id
 
 		print "Data Dict Values on Edit: " ,data
 
@@ -70,7 +70,12 @@ class ContributeController(BaseController):
 
 		get_action('ngds_harvest')(context, data_dict)		
 
-		return self.index()			
+		#return self.read(node_id)
+
+		print " Node ID: ", node_id
+
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='read', id=node_id)
+		redirect(url)
 
 	def save(self,data=None):
 		"""
@@ -109,7 +114,9 @@ class ContributeController(BaseController):
 		get_action('ngds_harvest')(context, data_dict)		
 		"""
 
-		return self.index()
+		#return self.index()
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
+		redirect(url)		
 
 	def delete(self,id):
 
@@ -127,21 +134,20 @@ class ContributeController(BaseController):
 
 		get_action('ngds_harvest')(context, data_dict)		
 
-		return self.index()		
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
+		redirect(url)		
 
- 	def read(self):
+ 	def read(self,id):
 		
 		"""
 		Fetches the details about a particular node.
 		"""
 
-		node_id = 2
+		node = self._read_node(id)
 
-		node = self._read_node(node_id)
+		c.node = node
 
-		c.selected_node = node
-
-		return render('contribute/contribute.html')	
+		return render('contribute/harvest_read.html')
 
 	def _read_node(self,id):
 	

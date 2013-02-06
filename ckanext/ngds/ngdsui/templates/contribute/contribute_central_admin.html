@@ -11,7 +11,7 @@
 				    {% for node in c.harvested_nodes %}
 				    	<tr>
 				    		<td>
-				    			<img src="/images/node_edit.png" alt="Edit" title="Edit" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node.id) }}', 'edit')"/><img src="/images/node_view.png" alt="View" title="View"/><img src="/images/node_delete.png" alt="Delete" title="Delete" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='delete', id=node.id) }}', 'delete')" />
+				    			<img src="/images/node_edit.png" alt="Edit" title="Edit" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node.id) }}', 'edit')"/><img src="/images/node_view.png" alt="View" title="View" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='read', id=node.id) }}', 'read')"/><img src="/images/node_delete.png" alt="Delete" title="Delete" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='delete', id=node.id) }}', 'delete')" />
 				    			<img src="/images/node_schedule.png" alt="Schedule" title="Schedule"/><img src="/images/node_refresh.png" alt="Refresh" title="Refresh"/>
 				    		</td>
 				    		<td>{{ node.title }}</td>
@@ -32,6 +32,8 @@ function invokeAction(url,action)
 
 	if(action=='edit'){
 		msg = "Do you want to edit the harvested Node?";
+	} else if(action =='read'){
+		msg = "View the full details about the Node?";
 	}
 
 	if(confirm(msg)){

@@ -12,12 +12,14 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
 		map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 
-		map.connect("contribute","/ngds/contribute",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="index")
-		map.connect("harvest","/ngds/harvest",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="harvest")
-		map.connect("harvest_new","/ngds/harvest/{action}",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController")
+
+		contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
+		map.connect("contribute","/ngds/contribute",controller=contribute_controller,action="index")
+		map.connect("harvest","/ngds/harvest",controller=contribute_controller,action="harvest")
+		map.connect("harvest_new","/ngds/harvest/{action}",controller=contribute_controller)
 		#map.connect("harvest_new","/ngds/harvest/edit",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="edit")
 
-		map.connect("harvest","/ngds/harvest/{id}/{action}",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController")
+		map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
 
 		#Map related paths
 		map.connect("map","/ngds/map",controller=home_controller,action="render_map",conditions={"method":["GET"]})
