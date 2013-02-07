@@ -1298,3 +1298,42 @@ select#layer-combo {
 }
 
 /* End contribute node */
+
+
+/* Upload page */
+
+#info-tip-container {
+	display:table;	
+	float:left;
+}
+
+#info-tip-container .cell {
+	display:table-cell;
+	padding-right:5px;
+}
+
+.upload-info-tip {
+	width:180px;
+	line-height:1em;
+}
+
+.upload-info-tip p {
+	font-family:Arial;
+	font-weight:bold;
+	font-size:12px;
+	display:inline;
+	text-align:justify;
+}
+
+.upload-container {
+	width:650px;
+	float:right;
+}
+
+.upload-container div.title {
+	display:inline;
+	font-size:13px;
+	padding-right:100px;
+}
+
+/* End of Upload page */
