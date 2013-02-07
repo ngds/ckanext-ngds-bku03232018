@@ -1,7 +1,11 @@
 {% extends "page_ngds.html" %}
 {% set active_page = "map" %}
+{% block styles %}
+	 {{ super() }}
+	 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+{% endblock %}
 {%- block content %}
-<div class="map-search">
+<div class="map-search" style="float:left;">
 	<span class="main-menu-item left">Search</span>
 	<p class="map-search-desc">Known geothermal resource area, latitude/longitude, geothermal area</p>
 	<form action="#">
@@ -11,4 +15,79 @@
 		</fieldset>
 	</form>
 </div>
+
+<div id="map-container" style="width:695px; height:600px; float:right; position:relative;"></div>
+
 {% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var map = new L.Map("map-container", {
+				center: new L.LatLng(40, -100),
+				zoom: 4
+			});			
+			
+			var layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+							maxZoom: 18
+			});
+
+			map.addLayer(layer);
+			
+
+			var html = '<div id="map-widget-control-menu">';
+			html+='<select id="layer-combo">';
+			html+='<option>Layer_temp</option>';
+			html+='<option>Placeholder1</option>';
+			html+='<option>Placeholder2</option>';
+			html+='<option>Placeholder3</option>';
+			html+='</select>';
+			html+='<select id="basemap-combo">';
+			html+='<option>Basemap_temp</option>';
+			html+='<option>Basemap_temp</option>';
+			html+='<option>Basemap_temp</option>';
+			html+='</select>';
+			html+='</div>';
+
+
+			$("#map-container").append(html);
+			
+				//  We don't have any programmatic control over the select tag even though there's a great deal of control over event-bubbling and handling. We'll
+				//  need a custom element that looks and works like the selects here. 
+
+			});
+		
+	</script>
+	<style>
+		/* Must be moved to the css file. */
+
+		#map-widget-control-menu {
+			width:665px; 
+			height:50px; 
+			z-index:100; 
+			position:absolute; 
+			top:15px; 
+			left:15px; 
+			background-color:#fff;
+		}
+
+		.leaflet-container .leaflet-control-zoom {
+			margin-top:80px;
+		}
+
+		.map-widget-menu-item {
+			position:absolute;
+			height:30px;
+		}
+
+		select#layer-combo {
+			right:10px;
+			top:10px;
+			
+		}
+
+	</style>
+
+{% endblock %}    
