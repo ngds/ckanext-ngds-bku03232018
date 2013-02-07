@@ -7,7 +7,7 @@
 {%- block content %}
 <div id="contribute-central" class="contribute-central">
 	<h1>Harvest a Resource</h1>
-	<div style="width:850px;min-height:600px;text-align:left;float:left; position:relative;">
+	<div style="width:850px;min-height:480px;text-align:left;float:left; position:relative;">
 	<form method="post" action="/ngds/harvest/{{action}}" >
 		<input id="id" type="hidden" name="id" {% if isEdit %} value="{{ node.id }}"{% endif %}/>	
 		<div style="float:left;position:absolute;">
@@ -27,7 +27,7 @@
 		<label for="field-title" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Title:</label>
 		
 		<input id="title" type="text" name="title" {% if isEdit %} value="{{ node.title }}"{% endif %}/>				
-		<br><br>
+		<br><br><!--
 		<label for="field-purpose" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Purpose of registration:</label>
 		
 		<input id="purpose" type="checkbox" name="purpose" checked>Allow this resource to be synchronized</input>						
@@ -43,7 +43,7 @@
 		<input id="actions" type="checkbox" name="actions" checked>Update this resource description</input><br>
 		<input id="actions" type="checkbox" name="actions" >Copy the entire contents of this remote catalog into the local catalog</input><br>		
 		<input id="actions" type="checkbox" name="actions" >Automatically approve newly acquired resources</input>
-						<br><br>
+						<br><br> -->
 		<label for="field-freq" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">How often do you want this resource to be revisited:</label><br>
 		
 		<input id="frequency" type="checkbox" name="frequency" class="unique" value="monthly" {% if node.frequency=="monthly" %} checked {% endif %}>Once every month</input><br>

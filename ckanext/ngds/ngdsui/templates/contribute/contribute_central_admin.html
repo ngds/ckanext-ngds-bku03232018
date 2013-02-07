@@ -11,8 +11,11 @@
 				    {% for node in c.harvested_nodes %}
 				    	<tr>
 				    		<td>
-				    			<img src="/images/node_edit.png" alt="Edit" title="Edit" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node.id) }}', 'edit')"/><img src="/images/node_view.png" alt="View" title="View" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='read', id=node.id) }}', 'read')"/><img src="/images/node_delete.png" alt="Delete" title="Delete" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='delete', id=node.id) }}', 'delete')" />
-				    			<img src="/images/node_schedule.png" alt="Schedule" title="Schedule"/><img src="/images/node_refresh.png" alt="Refresh" title="Refresh"/>
+				    			<img src="/images/node_edit.png" alt="Edit" title="Edit" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node.id) }}', 'edit')" style="cursor: pointer;cursor: hand;"/>
+				    			<img src="/images/node_view.png" alt="View" title="View" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='read', id=node.id) }}', 'read')" style="cursor: pointer;cursor: hand;"/>
+				    			<img src="/images/node_delete.png" alt="Delete" title="Delete" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='delete', id=node.id) }}', 'delete')" style="cursor: pointer;cursor: hand;"/>
+				    			<img src="/images/node_schedule.png" alt="Schedule" title="Schedule" class="not-implemented" style="cursor: pointer;cursor: hand;"/>
+				    			<img src="/images/node_refresh.png" alt="Refresh" title="Refresh" class="not-implemented" style="cursor: pointer;cursor: hand;"/>
 				    		</td>
 				    		<td>{{ node.title }}</td>
 				    		<td>{{ node.node_admin.name }}</td>
@@ -28,19 +31,21 @@
 function invokeAction(url,action)
 {
 
-	var msg = "Harevested Node will be deleted. Do you want to continue?";
+/*	var msg = "Harevested Node will be deleted. Do you want to continue?";
 
 	if(action=='edit'){
 		msg = "Do you want to edit the harvested Node?";
 	} else if(action =='read'){
 		msg = "View the full details about the Node?";
+	}*/
+	if(action=='delete'){
+		if(confirm("Harevested Node will be deleted. Do you want to continue?")){
+			
+		}else{
+			return false;
+		}
 	}
-
-	if(confirm(msg)){
-		window.location.href =url;		
-	}else{
-		return false;
-	}
+	window.location.href =url;		
 }
 </script>
 	<div class="create-node-admin">
