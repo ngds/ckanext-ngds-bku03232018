@@ -29,7 +29,6 @@
 				center: new L.LatLng(40, -100),
 				zoom: 4
 			});			
-			
 			var layer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 							maxZoom: 18
 			});
@@ -51,26 +50,82 @@
 			html+='</select>';
 			html+='</div>';
 
+			html+='<div id="map-expander">';
+			html+='<p>&lt;&lt;</p>';
+			html+='</div>';
+
 
 			$("#map-container").append(html);
 			
 				//  We don't have any programmatic control over the select tag even though there's a great deal of control over event-bubbling and handling. We'll
 				//  need a custom element that looks and works like the selects here. 
 
+			(function(){
+				var expanded_flag = false;
+				var original_map_container_size = $("#map-container").css("width");
+				var expander_handle_unexpanded = '<p>&lt;&lt;</p>';
+				var expander_handle_expanded='<p>&gt;&gt;</p>';
+						console.log("Binding");
+						$("#map-expander").click(function(){
+							
+							if(expanded_flag===false){	// If the resize handle is clicked, expand if not already expanded.
+									expanded_flag=true;
+									console.log("Fired");
+									$(".map-search").hide();
+									$("#map-container").css("width",1024);
+									$("#map-expander").empty();
+									$("#map-expander").append(expander_handle_expanded);
+									map.invalidateSize();
+							}
+							else {
+								expanded_flag=false;
+								$("#map-container").css("width",original_map_container_size);
+								map.invalidateSize();	
+								$(".map-search").show();
+								$("#map-expander").empty();
+								$("#map-expander").append(expander_handle_unexpanded);
+							}
+							return false;
+						});
+			})();
+
 			});
+			
 		
 	</script>
 	<style>
 		/* Must be moved to the css file. */
 
 		#map-widget-control-menu {
-			width:665px; 
+			width:95%; 
 			height:50px; 
 			z-index:100; 
 			position:absolute; 
 			top:15px; 
 			left:15px; 
 			background-color:#fff;
+			border-radius:5px;
+			-webkit-border-radius:5px;
+		}
+
+		#map-expander {
+			width:20px;
+			height:50px;
+			z-index:100;
+			position:absolute;
+			top:45%;
+			background-color:#fff;
+			border-top-right-radius:5px;
+			border-bottom-right-radius:5px;
+			-webkit-border-top-right-radius:5px;
+			-webkit-border-bottom-right-radius:5px;
+			cursor:pointer;
+		}
+
+		#map-expander p{
+			padding-top:75%;
+			margin-top:0%;
+			margin-left:2px;
 		}
 
 		.leaflet-container .leaflet-control-zoom {
