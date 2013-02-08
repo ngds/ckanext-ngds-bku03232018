@@ -2,7 +2,6 @@ from ckan.lib.base import *
 from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
 from ckan.lib.base import (request,
                            render,
-                           BaseController,
                            model,
                            abort, h, g, c)
 from ckan.logic import get_action
@@ -11,8 +10,24 @@ from ckan.logic import (tuplize_dict,
                         parse_params,
                         flatten_to_string_key)
 from pylons import config
+from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 
-class ContributeController(BaseController):
+class ContributeController(NGDSBaseController):
+
+ 	# def _isUser_isAdmin(self):
+ 	# 	"""
+ 	# 	This method checks whether user logged in and his access details.
+ 	# 	If the user is logged in then sets c.user_logged_in as 'True'.
+ 	# 	If the user is admin then sets c.admin as 'True'
+ 	# 	"""
+ 	# 	user_access = config['user_access'] or 'admin'
+
+ 	# 	if user_access == 'admin':
+ 	# 		c.admin = True
+ 	# 	else:
+ 	# 		c.admin = False
+ 			
+ 	# 	c.user_logged_in = True
 
  	def index(self):
 		
@@ -23,14 +38,7 @@ class ContributeController(BaseController):
 		nodes = model.HarvestNode.get_all()
 
 		c.harvested_nodes = nodes
-		ngds_deployment = config['ngds_deployment'] or 'central'
-		
-		print "Deployment : "+ngds_deployment
-		
-		if ngds_deployment == 'node':
-			c.node_in_a_box = True
-		else:
-			c.central = True
+
 		return render('contribute/contribute.html',{'c':c})		
 
 	def harvest(self):

@@ -5,8 +5,14 @@
 		<div id="header">
 				<div class="logo-container">
 					<a href="/ngds" class="logo">
+							{% if c.central %} 
 							<img src="/images/u50_normal.png" alt="National Geothermal Data System. Reduce Risk, Increase Certainty."/>
 							<span>REDUCE RISK, INCREASE CERTAINTY</span>
+							 {% else %} 
+							<img src="/images/NODE_BOX.png" alt="Contributing Geothermal Data."/>
+							<span>CONTRIBUTING GEOTHERMAL DATA</span>
+							 {% endif %}
+							
 					</a>
 				</div>
 				<div id="top-nav">
@@ -57,9 +63,9 @@
 					<div>
 						<a href="/ngds/contribute">
 							{% if active_tab == "contribute" %} <span class="active main-nav-span"> {% else %} <span class="main-nav-span"> {% endif %}	
-								<span class="main-menu-item">Contribute</span>
+								<span class="main-menu-item">{% if c.central and  c.admin %} Harvest {% else %} Contribute {% endif %}</span>
 								<img src="/images/u52_normal.png" alt="V"/>
-								<span class="main-menu-text">Share data, learn about the National Geothermal Data System</span>
+								<span class="main-menu-text">{% if c.central and  c.admin %} Harvesting nodes &amp; synchronizing nodes {% else %} Share data, learn about the National Geothermal Data System {% endif %}</span>
 							</span>
 						</a>
 					</div>

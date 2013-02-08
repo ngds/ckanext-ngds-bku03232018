@@ -4,6 +4,10 @@
 	{% if c.node_in_a_box %}
 		{% include "/contribute/contribute_node.html" %}
 	{% else %}
-		{% include "/contribute/contribute_central_admin.html" %}
+		{% if c.admin %}
+			{% include "/contribute/contribute_central_admin.html" %}
+		{% else %}	
+			{% include "/contribute/contribute_central.html" %}
+		{% endif %}
 	{% endif %}
 {% endblock %}

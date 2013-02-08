@@ -3,6 +3,9 @@ var ngds = ngds || { };
 
 	$(document).ready(function() { 
 
+		$('#read-only-form :input').attr('readonly','readonly');
+		$('#read-only-form :checkbox').attr('disabled', 'disabled');
+
 		var $unique = $('input.unique');
 		$unique.click(function() {
 		    $unique.filter(':checked').not(this).removeAttr('checked');

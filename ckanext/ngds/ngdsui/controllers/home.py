@@ -5,12 +5,19 @@ from ckan.lib.base import (request,
                            model,
                            abort, h, g, c)
 
-class HomeController(BaseController):
+from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
+
+class HomeController(NGDSBaseController):
 
 	def render_index(self):
 		"""	
 		Render the home/index page
 		"""
+
+		if c.node_in_a_box:
+			return self.render_map()
+
+
 		return render('home/index_ngds.html')
 
 	def render_about(self):
