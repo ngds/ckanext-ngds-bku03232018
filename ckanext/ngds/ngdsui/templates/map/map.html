@@ -94,7 +94,7 @@
 
 
 				$.ajax({
-						url:'/api/2/search/dataset/geo?bbox=0,0,180,180',
+						url:'/api/2/search/dataset/geo?bbox=-180,-180,180,180',
 						type:"GET",
 						dataType:"JSON",
 						success:function(response){ // Get everything we have in the database with geocoded information
@@ -102,15 +102,15 @@
 								$.each(response.results,function(index,eachPackageId){
 									var ajax = $.ajax({
 										type:"POST",
-										data:{id:eachPackageId},
+										data:"{\"id\":\""+eachPackageId+"\"}",
 										url:'/api/action/package_show',
 										dataType:'JSON',
 										success:function(response){
 											if(response.result.extras[0].value===null || typeof response.result.extras[0].value==='undefined'){
 												return;
 											}
-
-											var feature = response.result.extras[0].value;								
+											console.log(response.result.extras[0].value);
+											var feature = $.parseJSON($.parseJSON(response.result.extras[0].value));								
 											geoJSONLayer.addData(feature);
 										}
 									});
