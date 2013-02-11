@@ -73,7 +73,6 @@
 							
 							if(expanded_flag===false){	// If the resize handle is clicked, expand if not already expanded.
 									expanded_flag=true;
-									console.log("Fired");
 									$(".map-search").hide();
 									$("#map-container").css("width",1024);
 									$("#map-expander").empty();
@@ -99,69 +98,26 @@
 						type:"GET",
 						dataType:"JSON",
 						success:function(response){ // Get everything we have in the database with geocoded information
+								
 								$.each(response.results,function(index,eachPackageId){
-									console.log("Processing package item :"+eachPackageId);
-									$.ajax({
+									var ajax = $.ajax({
 										type:"POST",
-										data:'{"id":'+"\""+eachPackageId+"\""+'}',
+										data:{id:eachPackageId},
 										url:'/api/action/package_show',
+										dataType:'JSON',
 										success:function(response){
 											if(response.result.extras[0].value===null || typeof response.result.extras[0].value==='undefined'){
 												return;
 											}
 
-											var feature = $.parseJSON($.parseJSON(response.result.extras[0].value));								
-											console.log("Contructed GEOJSON for item "+index+" : ");
-											console.log(feature);
-											console.log("Adding feature "+index+" to the map");
+											var feature = response.result.extras[0].value;								
 											geoJSONLayer.addData(feature);
 										}
 									});
-
 								});
 						}
 					});
-
-
-
-
-				// $.get('/api/2/search/dataset/geo?bbox=0,0,180,180',function(response){
-				// 	package_id_1=response.results[0];					
-				// 	package_id_2=response.results[1];
-				// 	console.log("Got package 1 :"+package_id_1+" and package 2 : "+package_id_2);
-
-				// 	console.log("Attempting POST with data : "+'{"id":'+"\""+package_id_1+"\""+'}');
-
-				// 	$.ajax({
-				// 		type:"POST",
-				// 		data:'{"id":'+"\""+package_id_1+"\""+'}',
-				// 		url:'/api/action/package_show',
-				// 		success:function(response){
-				// 			demo_feature_1 = $.parseJSON($.parseJSON(response.result.extras[0].value));
-				// 			console.log("Contructed GEOJSON : ");
-				// 			console.log(demo_feature_1);
-				// 			geoJSONLayer.addData(demo_feature_1);
-				// 		}
-				// 	});
-
-				// 	console.log("Attempting POST with data : "+'{"id":'+"\""+package_id_2+"\""+'}');
-
-				// 	$.ajax({
-				// 		type:"POST",
-				// 		data:'{"id":'+"\""+package_id_2+"\""+'}',
-				// 		url:'/api/action/package_show',
-				// 		success:function(response){
-				// 			demo_feature_2 = $.parseJSON($.parseJSON(response.result.extras[0].value));
-				// 			console.log("Contructed GEOJSON : ");
-				// 			console.log(demo_feature_2);
-				// 			geoJSONLayer.addData(demo_feature_2);
-				// 		}
-				// 	});
-
-				// });
-
 			})();
-
 			});
 			
 		
