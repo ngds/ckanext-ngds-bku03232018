@@ -109,7 +109,6 @@
 											if(response.result.extras[0].value===null || typeof response.result.extras[0].value==='undefined'){
 												return;
 											}
-											console.log(response.result.extras[0].value);
 											var feature = $.parseJSON($.parseJSON(response.result.extras[0].value));								
 											geoJSONLayer.addData(feature);
 										}
