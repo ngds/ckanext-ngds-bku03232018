@@ -12,6 +12,13 @@ h1 {
 	font-weight:normal;
 }
 
+h2 {
+	font-size:16px;
+	text-align:left;
+	font-family:Arial;
+	font-weight:bold;
+}
+
 #top-level-container {
 	width:1024px;
 	text-align:center;
@@ -1245,3 +1252,43 @@ select#layer-combo {
 /*
 	End of map widget
 */
+
+
+/* Contribute node */
+.contribute-menu-table {
+	display:table;
+	width:100%;
+	table-layout:fixed;
+	padding-left:0px;
+}
+
+.contribute-menu-table .cell {
+	display:table-cell;
+	padding-right:40px;
+	padding-left:0px;
+	font-family:Arial;
+	font-size:13px;
+	line-height:1.5em;
+}
+
+.contribute-menu-table .cell ul {
+	list-style-type:none;
+	padding-left:0px;
+}
+
+.contribute-menu-table .cell ul li {
+	text-decoration:none:;
+}
+
+.contribute-menu-table .cell img {
+	margin-right:10px;
+}
+
+.bordered-container {
+	border-top:1px solid black;
+	border-bottom:1px solid black;
+	min-height:220px;
+
+}
+
+/* End contribute node */
