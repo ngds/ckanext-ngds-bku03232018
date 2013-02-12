@@ -5,7 +5,8 @@
 Execute the following commands:
 - fetch latest code from ckan (git fetch)
 - activate the extension's code (python setpu.py develop)
-- edit development.ini and add the following extensions= `ckan.plugins= stats datastore datawatch ngdsui metadata csw ngdsharvest`
+- edit development.ini and add the following extensions
+`ckan.plugins= stats datastore datawatch ngdsui metadata csw ngdsharvest`
 
 
 ## package_additional_metadata:
