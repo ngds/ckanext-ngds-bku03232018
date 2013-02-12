@@ -14,7 +14,7 @@ class HomeController(NGDSBaseController):
 		Render the home/index page
 		"""
 
-		if c.node_in_a_box:
+		if g.node_in_a_box:
 			return self.render_map()
 
 
