@@ -1,5 +1,5 @@
 from ckan.plugins import implements, SingletonPlugin
-from ckan.plugins import IConfigurer
+from ckan.plugins import IConfigurer, IRoutes
 from ckanext.ngds.csw.model.csw_records import define_tables
 
 class CswPlugin(SingletonPlugin):
@@ -11,3 +11,37 @@ class CswPlugin(SingletonPlugin):
         """IConfigurable function. config is a dictionary of configuration parameters"""
         # Provides a point to do mappings from classes to database tables whenever CKAN is run
         define_tables()
+        
+    implements(IRoutes) # Allows me to add URLs to the CKAN site
+    
+    def before_map(self, map):
+        """
+        Called before the routes map is generated. ``before_map`` is before any
+        other mappings are created so can override all other mappings.
+    
+        :param map: Routes map object
+        :returns: Modified version of the map object
+        """
+        
+        # Identify the controller class for the new route
+        controller = "ckanext.ngds.csw.csw_wrapper:CswController"
+        
+        # Now build a route
+        #   ``action`` is the method to call on the controller class
+        #   ``conditions`` seem to apply conditions to the route. I don't know the limitations...
+        map.connect('csw-server',
+                    '/csw',
+                    controller=controller,
+                    action="csw",
+                    conditions={"method": ["GET", "POST"]})
+        return map
+    
+    def after_map(self, map):
+        """
+        Called after routes map is set up. ``after_map`` can be used to
+        add fall-back handlers.
+    
+        :param map: Routes map object
+        :returns: Modified version of the map object
+        """
+        return map
