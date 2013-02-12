@@ -8,7 +8,7 @@
 <div id="contribute-central" class="contribute-central">
 	<h1>Harvest a Resource</h1>
 	<div style="width:850px;min-height:480px;text-align:left;float:left; position:relative;">
-	<form method="post" action="/ngds/harvest/{{action}}" >
+	<form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action=action) }}" >
 		<input id="id" type="hidden" name="id" {% if isEdit %} value="{{ node.id }}"{% endif %}/>	
 		<div style="float:left;position:absolute;">
 		<label for="field-title" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Data Method:</label>

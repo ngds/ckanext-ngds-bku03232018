@@ -49,7 +49,7 @@ function invokeAction(url,action)
 }
 </script>
 	<div class="create-node-admin">
-		<p>Harvest new node? <a href="/ngds/harvest" >Click here</a></p>
+		<p>Harvest new node? <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='harvest') }}" >Click here</a></p>
 	</div>
 
 </div>
