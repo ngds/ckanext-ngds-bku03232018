@@ -1,9 +1,9 @@
 {% extends "page_ngds.html" %}
 {% set active_page = "contribute" %}
 {%- block content %}
-	{% if c.central_node %}
-		{% include "/contribute/contribute_central_admin.html" %}
-	{% else %}
+	{% if c.node_in_a_box %}
 		{% include "/contribute/contribute_node.html" %}
+	{% else %}
+		{% include "/contribute/contribute_central_admin.html" %}
 	{% endif %}
 {% endblock %}
