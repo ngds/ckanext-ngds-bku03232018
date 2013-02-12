@@ -13,7 +13,8 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 
 		map.connect("contribute","/ngds/contribute",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="index")
-		
+		map.connect("harvest","/ngds/harvest",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="harvest")
+		map.connect("harvest_new","/ngds/harvest/new",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="save")
 		#Map related paths
 		map.connect("map","/ngds/map",controller=home_controller,action="render_map",conditions={"method":["GET"]})
 		map.connect("library","/ngds/library",controller=home_controller,action="render_library",conditions={"method":["GET"]})

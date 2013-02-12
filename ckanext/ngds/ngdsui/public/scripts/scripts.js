@@ -3,7 +3,12 @@ var ngds = ngds || { };
 
 	$(document).ready(function() { 
 
-		
+		var $unique = $('input.unique');
+$unique.click(function() {
+    $unique.filter(':checked').not(this).removeAttr('checked');
+});
+
+
 		$("#manage-nodes-table tr:odd").css("background-color", "#fff6f6");
 
 		$(".not-implemented").click(function(event) { // Handle portions of the UI that haven't been implemented yet, display a div that says 'Not implemented Yet'.
