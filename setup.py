@@ -30,6 +30,9 @@ setup(
 	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
 	
 	[ckan.plugins]
+	# CSW plugin
+	csw=ckanext.ngds.csw.plugin:CswPlugin
+	
     # NGDS Metadata plugin
 	metadata=ckanext.ngds.metadata.plugin:MetadataPlugin
 	
