@@ -1277,7 +1277,13 @@ select#layer-combo {
 }
 
 .contribute-menu-table .cell ul li {
-	text-decoration:none:;
+	text-decoration:none;
+}
+
+.contribute-menu-table .cell p a {
+	text-decoration:none;
+	color:blue;
+	font-weight:bold;
 }
 
 .contribute-menu-table .cell img {
