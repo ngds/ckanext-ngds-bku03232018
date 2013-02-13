@@ -17,6 +17,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("contribute","/ngds/contribute",controller=contribute_controller,action="index")
 		map.connect("harvest","/ngds/harvest",controller=contribute_controller,action="harvest")
 		map.connect("harvest_new","/ngds/harvest/{action}",controller=contribute_controller)
+		map.connect("upload","/ngds/contribute/upload",controller=contribute_controller,action="upload")
 		#map.connect("harvest_new","/ngds/harvest/edit",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="edit")
 
 		map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)

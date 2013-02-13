@@ -10,6 +10,7 @@ from ckan.logic import (tuplize_dict,
                         clean_dict,
                         parse_params,
                         flatten_to_string_key)
+from pylons import config
 
 class ContributeController(BaseController):
 
@@ -22,8 +23,15 @@ class ContributeController(BaseController):
 		nodes = model.HarvestNode.get_all()
 
 		c.harvested_nodes = nodes
+		ngds_deployment = config['ngds_deployment'] or 'central'
 		
-		return render('contribute/contribute.html')		
+		print "Deployment : "+ngds_deployment
+		
+		if ngds_deployment == 'node':
+			c.node_in_a_box = True
+		else:
+			c.central = True
+		return render('contribute/contribute.html',{'c':c})		
 
 	def harvest(self):
 		"""
@@ -31,6 +39,12 @@ class ContributeController(BaseController):
 		"""
 		c.action = 'save'
 		return render('contribute/harvest_new.html')
+
+	def upload(self):
+		"""
+		Render the upload page
+		"""
+		return render('contribute/upload.html')
 
 	def edit(self,id):
 		"""
@@ -205,5 +219,3 @@ class ContributeController(BaseController):
 
 		#responsible.save()
 		return  data_dict		
-
-
