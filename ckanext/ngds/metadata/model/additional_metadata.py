@@ -54,7 +54,7 @@ class AdditionalPackageMetadata(NgdsDataObject):
     @classmethod
     def by_package(cls, package_id):
         """Look up the AdditionalPackageMetadata for a particular package by its ID"""
-        return cls.Session.query(cls).filter(cls.package_id==package_id)
+        return cls.Session.query(cls).filter(cls.package_id==package_id).first()        
     
     @validates('pub_date')
     def validate_pub_date(self, key, pub_date):
@@ -114,7 +114,7 @@ class AdditionalResourceMetadata(NgdsDataObject):
     @classmethod
     def by_resource(cls, resource_id):
         """Look up the AdditionalResourceMetadata for a particular resource by its ID"""
-        return cls.Session.query(cls).filter(cls.resource_id==resource_id)
+        return cls.Session.query(cls).filter(cls.resource_id==resource_id).first()
     
     @validates('resource_id')
     def validate_resource_id(self, key, resource_id):
