@@ -44,6 +44,7 @@ class ContributeController(BaseController):
 		"""
 		Render the upload page
 		"""
+
 		return render('contribute/upload.html')
 
 	def edit(self,id):

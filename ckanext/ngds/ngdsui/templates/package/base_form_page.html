@@ -1,0 +1,44 @@
+{% extends "page_ngds.html" %}
+
+{% block content %}
+
+
+<h1>
+  Contribute a Dataset
+</h1>
+
+<div id="info-tip-container">
+  <div class="cell icon">
+    <img src="/images/info_indicator.png">
+  </div>
+
+  <div class="cell upload-info-tip">
+    <p>Submit or manage existing datasets to share with the NGDS community.</p>
+  </div>
+</div>
+
+<div class="upload-container">
+  <div class="title">1. Create dataset</div>
+  <div class="title">2. Add data</div>
+  <div class="title">3. Additional data</div>
+</div>
+{% block primary_content %}
+
+  <section class="module">
+    <div class="module-content">
+      {% block form %}{{ c.form | safe }}{% endblock %}
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block secondary_content %}
+
+  {% block resources_module %}
+    {# TODO: Pass in a list of previously created resources and the current package dict #}
+    {% snippet "package/snippets/resources.html", pkg={}, action='new_resource' %}
+  {% endblock %}
+
+{% endblock %}
+
+{% endblock %}

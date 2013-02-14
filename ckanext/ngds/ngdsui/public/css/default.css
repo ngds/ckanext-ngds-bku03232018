@@ -1346,3 +1346,28 @@ select#layer-combo {
 }
 
 /* End of Upload page */
+
+
+/* Redundant temporary styles */ 
+.stages {
+	width:670px;
+	display:table;
+	border-collapse:separate;
+	text-align:center;
+}
+
+.first, .middle, .last {
+	display:table-cell;
+	font-size:14px;
+	font-family:Arial;
+	font-weight:bold;
+	width:100px;
+	height:35px;
+	padding-top:15px;
+	padding-bottom:0px;
+	background-color:#dadada;
+}
+
+
+
+/* Must be fixed soon */
