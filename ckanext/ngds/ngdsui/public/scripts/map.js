@@ -80,11 +80,22 @@ $(document).ready(function() {
 								url:'/api/action/package_show',
 								dataType:'JSON',
 								success:function(response){
-									if(response.result.extras[0].value===null || typeof response.result.extras[0].value==='undefined'){
+									if(response.result===null || typeof response.result==='undefined'){
 										return;
 									}
-									var feature = $.parseJSON($.parseJSON(response.result.extras[0].value));								
-									geoJSONLayer.addData(feature);
+									console.log(response.result);
+									try {
+										var dataset = ngds.CKANDataset(response.result);
+										var feature = dataset.getGeoJSON();
+									}
+									catch(e) {
+										console.log(e);
+										return;
+									}																
+									var popup = dataset.map.getPopupHTML();							
+									var geoJSONRepresentation = L.geoJson(feature);								
+									geoJSONRepresentation.bindPopup(popup);
+									geoJSONRepresentation.addTo(map);
 								}
 							});
 						});

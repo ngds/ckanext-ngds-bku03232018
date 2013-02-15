@@ -1355,11 +1355,22 @@ select#layer-combo {
 	display:table;
 	border-collapse:separate;
 	text-align:center;
+	padding-left:0px;
+	margin-left:0px;
 }
 
 section.module {
 	width:750px;
 	margin-left:250px;
+	font-family:Arial;
+	font-weight:bold;
+	font-size:18px;
+	min-height:550px;
+}
+
+div.module-content {
+	position:absolute;
+	width:700px;
 }
 
 .first, .middle, .last {
@@ -1384,12 +1395,28 @@ section.module {
 	text-align:right;
 }
 
+.control-group {
+	margin-top:20px;
+}
+
 .control-group input, .control-group textarea {
 	width:490px;
 }
 
+.control-group input {
+	height:30px;
+}
+
+.control-group textarea {
+	margin-top:10px;
+}
+
 .controls {
 	display:inline;
+}
+
+.align-left {
+	text-align:left;
 }
 
 /* Must be fixed soon */
