@@ -1348,12 +1348,18 @@ select#layer-combo {
 /* End of Upload page */
 
 
-/* Redundant temporary styles */ 
+/* These styles have to be re-examined for neccessity and appropriateness. */
+
 .stages {
 	width:670px;
 	display:table;
 	border-collapse:separate;
 	text-align:center;
+}
+
+section.module {
+	width:750px;
+	margin-left:250px;
 }
 
 .first, .middle, .last {
@@ -1368,6 +1374,22 @@ select#layer-combo {
 	background-color:#dadada;
 }
 
+.active {
+	background-color:#8A8687;
+}
 
+.control-group, .form-actions {
+	width:670px;
+	/*margin-left:250px;*/
+	text-align:right;
+}
+
+.control-group input, .control-group textarea {
+	width:490px;
+}
+
+.controls {
+	display:inline;
+}
 
 /* Must be fixed soon */
