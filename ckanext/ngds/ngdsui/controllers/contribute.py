@@ -35,11 +35,11 @@ class ContributeController(NGDSBaseController):
 		Renders contribute page.
 		"""
 
-		nodes = model.HarvestNode.get_all()
+		if g.central:
+			nodes = model.HarvestNode.get_all()
+			c.harvested_nodes = nodes
 
-		c.harvested_nodes = nodes
-
-		return render('contribute/contribute.html',{'c':c})		
+		return render('contribute/contribute.html')		
 
 	def harvest(self):
 		"""

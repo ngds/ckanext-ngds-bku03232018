@@ -12,8 +12,9 @@ class NGDSBaseController(BaseController):
 	def __before__(self, action, **env):
 		try:
 			BaseController.__before__(self, action, **env)
-			self._isUser_isAdmin()
+			
 			self._ngds_deployment()
+			self._isUser_isAdmin()			
 		except (sqlalchemy.exc.ProgrammingError,
                 sqlalchemy.exc.OperationalError), e:
 			# postgres and sqlite errors for missing tables
@@ -29,14 +30,18 @@ class NGDSBaseController(BaseController):
 
 	def _ngds_deployment(self):
 
-		ngds_deployment = config['ngds_deployment'] or 'central'
 
-		print "Deployment : "+ngds_deployment
-		
+		g.logo_text = config.get('ngds.logo_text', 'REDUCE RISK, INCREASE CERTAINTY')
+
+		ngds_deployment = config.get('ngds.deployment', 'central')
+
+		g.node_in_a_box = False
+		g.central = False
+
 		if ngds_deployment == 'node':
-			c.node_in_a_box = True
+			g.node_in_a_box = True
 		else:
-			c.central = True
+			g.central = True
 
 		
  	def _isUser_isAdmin(self):
@@ -45,8 +50,8 @@ class NGDSBaseController(BaseController):
  		If the user is logged in then sets c.user_logged_in as 'True'.
  		If the user is admin then sets c.admin as 'True'
  		"""
- 		user_access = config['user_access'] or 'admin'
-
+ 		user_access = config.get('ngds.user_access', 'admin')
+ 		
  		if user_access == 'admin':
  			c.admin = True
  		else:
