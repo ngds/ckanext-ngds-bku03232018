@@ -86,12 +86,12 @@ $(document).ready(function() {
 									try {
 										var dataset = ngds.CKANDataset(response.result);
 										var feature = dataset.getGeoJSON();
+										var popup = dataset.map.getPopupHTML();
 									}
 									catch(e) {
 										console.log(e);
 										return;
 									}																
-									var popup = dataset.map.getPopupHTML();							
 									var geoJSONRepresentation = L.geoJson(feature);								
 									geoJSONRepresentation.bindPopup(popup);
 									geoJSONRepresentation.addTo(map);

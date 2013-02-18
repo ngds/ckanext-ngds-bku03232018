@@ -1351,12 +1351,13 @@ select#layer-combo {
 /* These styles have to be re-examined for neccessity and appropriateness. */
 
 .stages {
-	width:670px;
+	width:699px;
 	display:table;
 	border-collapse:separate;
 	text-align:center;
 	padding-left:0px;
 	margin-left:0px;
+	margin-top:0px;
 }
 
 section.module {
@@ -1394,12 +1395,17 @@ div.module-content {
 	text-align:right;
 }
 
-.control-group {
-	margin-top:20px;
+.form-actions {
+	margin-top: 40px;
 }
 
-.control-group input, .control-group textarea {
-	width:490px;
+.control-group {
+	margin-top:20px;
+	position:relative;
+}
+
+.control-group input[type="text"], .control-group textarea {
+	width:420px;
 }
 
 .control-group input {
@@ -1410,12 +1416,40 @@ div.module-content {
 	margin-top:10px;
 }
 
-.controls {
+.controls, .input-prepend {
 	display:inline;
+}
+
+.controls {
+	margin-right:20px;
 }
 
 .align-left {
 	text-align:left;
 }
 
+label.control-label, span.add-on, div.form-actions a {
+	font-size:16px;
+	font-family:Arial;
+	font-weight:normal;
+	text-decoration:none;
+}
+
+label.control-label {
+	position:absolute;
+	left:130px;
+	padding-top:10px;
+}
+
+div.module-content form.dataset-form {
+	border:1px solid #dadada;
+	padding-bottom:10px;
+}
+
+select#field-license, input#field-format {
+	width:200px;
+	margin-left:225px;
+	margin-top:5px;
+	height:25px;
+}
 /* Must be fixed soon */
