@@ -1472,9 +1472,9 @@ div.controls div#bbox-map {
 	padding-left: 0px;
 }
 
-label[for="field-extras-0-remove"], label[for="field-extras-0-key"], 
+/*label[for="field-extras-0-remove"], label[for="field-extras-0-key"], 
 label[for="field-extras-0-key"], label[for="field-extras-0-value"], 
 input#field-extras-0-key, input#field-extras-0-value {
 	display:none;
-}
+}*/
 /* Must be fixed soon */
