@@ -1360,6 +1360,16 @@ select#layer-combo {
 	margin-top:0px;
 }
 
+button.highlight {
+	text-decoration: none;
+	background: transparent;
+	border: none;
+	font-size: 14px;
+	font-family: Arial;
+	font-weight: bold;
+	cursor: pointer;
+}
+
 section.module {
 	width:750px;
 	margin-left:250px;
@@ -1405,7 +1415,7 @@ div.module-content {
 }
 
 .control-group input[type="text"], .control-group textarea {
-	width:420px;
+	width:440px;
 }
 
 .control-group input {
@@ -1437,7 +1447,7 @@ label.control-label, span.add-on, div.form-actions a {
 
 label.control-label {
 	position:absolute;
-	left:130px;
+	left:60px;
 	padding-top:10px;
 }
 
@@ -1446,10 +1456,25 @@ div.module-content form.dataset-form {
 	padding-bottom:10px;
 }
 
-select#field-license, input#field-format {
+div.controls select {
 	width:200px;
-	margin-left:225px;
+	margin-left:210px;
 	margin-top:5px;
 	height:25px;
+}
+
+div.controls div#bbox-map {
+	width: 445px;
+	height: 300px;
+	border: 1px solid #CCC;
+	margin-left: 205px;
+	padding-right: 0px;
+	padding-left: 0px;
+}
+
+label[for="field-extras-0-remove"], label[for="field-extras-0-key"], 
+label[for="field-extras-0-key"], label[for="field-extras-0-value"], 
+input#field-extras-0-key, input#field-extras-0-value {
+	display:none;
 }
 /* Must be fixed soon */
