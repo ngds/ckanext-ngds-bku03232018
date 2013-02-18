@@ -14,25 +14,39 @@ $(document).ready(function() {
 
 
 	var html = '<div id="map-widget-control-menu">';
-	html+='<select id="layer-combo">';
-	html+='<option>Layer_temp</option>';
-	html+='<option>Placeholder1</option>';
-	html+='<option>Placeholder2</option>';
-	html+='<option>Placeholder3</option>';
-	html+='</select>';
-	html+='<select id="basemap-combo">';
-	html+='<option>Basemap_temp</option>';
-	html+='<option>Basemap_temp</option>';
-	html+='<option>Basemap_temp</option>';
-	html+='</select>';
+	html+='<div id="layer-combo">';
+	html+='<p>Layers</p>';
+
+	html+='<div id="layer-selector" style="display:none;">';
+	html+='<p id="satellite-layer">Satellite</p>';
+	html+='<p>Watercolor</p>';
 	html+='</div>';
+
+	html+='</div>'; //End of layer combo
+	
+	html+='<div id="basemap-combo">';
+	html+='<p>Basemap</p>';
+	html+='</div>'; // End of basemap-combo
+	
+	html+='</div>'; // End of map-widget-control-menu
 
 	html+='<div id="map-expander">';
 	html+='<p>&lt;&lt;</p>';
-	html+='</div>';
+	html+='</div>'; // End of map-expander
+
+
 
 
 	$("#map-container").append(html);
+
+	$("#layer-combo").click(function() {
+		$("#layer-selector").css('display','table');
+	});
+
+	// $("#satellite-layer").click(function() {
+	// 	map.removeLayer(layer);
+	// 	console.log("Removing layer");
+	// });
 
 		//  We don't have any programmatic control over the select tag even though there's a great deal of control over event-bubbling and handling. We'll
 		//  need a custom element that looks and works like the selects here. 
