@@ -83,7 +83,6 @@ $(document).ready(function() {
 									if(response.result===null || typeof response.result==='undefined'){
 										return;
 									}
-									console.log(response.result);
 									try {
 										var dataset = ngds.CKANDataset(response.result);
 										var feature = dataset.getGeoJSON();
