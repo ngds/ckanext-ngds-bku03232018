@@ -1516,3 +1516,7 @@ input#field-extras-0-key, input#field-extras-0-value {
 	display:none;
 }*/
 /* Must be fixed soon */
+
+.lang-select {
+	margin-top:35px;
+}
