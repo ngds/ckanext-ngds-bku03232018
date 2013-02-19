@@ -4,15 +4,15 @@
 		#}
 		<div id="header">
 				<div class="logo-container">
-					<a href="/ngds" class="logo">
-							<img src="/images/u50_normal.png" alt="National Geothermal Data System. Reduce Risk, Increase Certainty."/>
-							<span>REDUCE RISK, INCREASE CERTAINTY</span>
+					<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}" class="logo">
+							<img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }} Logo" title="{{ g.site_title }} Logo" />
+							<span>{{ g.logo_text }}</span>
 					</a>
 				</div>
 				<div id="top-nav">
 					<ul>
-						<li><a href="/ngds">HOME</a></li>
-						<li><a href="/ngds/about">ABOUT</a></li>
+						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">HOME</a></li>
+						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">ABOUT</a></li>
 						<li><a href="#" class="not-implemented">SIGN UP</a></li>
 						<li><a href="#" id="login">LOGIN</a></li> 
 						<li><a href="#" class="not-implemented">FAVORITES</a></li>
@@ -28,38 +28,38 @@
 				</div>
 				<div id="main-nav"> <!-- This is a container div for the second-level menu. -->
 					<div>
-						<a href="/ngds/map">
+						<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map' %}">
 							{% if active_tab == "map" %} <span class="active main-nav-span"> {% else %} <span class="main-nav-span"> {% endif %}
-								<span class="main-menu-item">Map</span>
+								<span class="main-menu-item">{{ _('Map') }}</span>
 								<img src="/images/u52_normal.png" alt="V"/>
-								<span class="main-menu-text">Find data for a specific geographic area</span>
+								<span class="main-menu-text">{{ _('Find data for a specific geographic area') }}</span>
 							</span>
 						</a>
 					</div> 
 					<div>
-						<a href="/ngds/library">
+						<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_library' %}">
 							{% if active_tab == "library" %} <span class="active main-nav-span"> {% else %} <span class="main-nav-span"> {% endif %}	
-								<span class="main-menu-item">Library</span>
+								<span class="main-menu-item">{{ _('Library') }}</span>
 								<img src="/images/u52_normal.png" alt="V"/>
-								<span class="main-menu-text">Look up data, images, publications &lt; more</span>
+								<span class="main-menu-text">{{ _('Look up data, images, publications & more') }}</span>
 							</span>
 						</a>
 					</div> 
 					<div>
-						<a href="/ngds/resources">
+						<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_resources' %}">
 							{% if active_tab == "resources" %} <span class="active main-nav-span"> {% else %} <span class="main-nav-span"> {% endif %}	
-								<span class="main-menu-item">Resources</span>
+								<span class="main-menu-item">{{ _('Resources') }}</span>
 								<img src="/images/u52_normal.png" alt="V"/>
-								<span class="main-menu-text">Use or add to our list of websites &lt; tools for geothermal exploration</span>
+								<span class="main-menu-text">{{ _('Use or add to our list of websites & tools for geothermal exploration') }}</span>
 							</span>
 						</a>
 					</div>
 					<div>
-						<a href="/ngds/contribute">
+						<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index' %}">
 							{% if active_tab == "contribute" %} <span class="active main-nav-span"> {% else %} <span class="main-nav-span"> {% endif %}	
-								<span class="main-menu-item">Contribute</span>
+								<span class="main-menu-item">{% if g.central and  c.admin %} {{ _('Harvest') }} {% else %} {{ _('Contribute') }} {% endif %}</span>
 								<img src="/images/u52_normal.png" alt="V"/>
-								<span class="main-menu-text">Share data, learn about the National Geothermal Data System</span>
+								<span class="main-menu-text">{% if g.central and  c.admin %} {{ _('Harvesting nodes & synchronizing nodes') }} {% else %} {{ _('Share data, learn about the National Geothermal Data System') }} {% endif %}</span>
 							</span>
 						</a>
 					</div>

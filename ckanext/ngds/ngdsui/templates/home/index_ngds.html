@@ -38,7 +38,7 @@
               <img src="/images/u4_normal.png" class="showcase-image" alt=""/>
           </div>
           <div id="map-it-container">
-              <a href="/ngds/map">
+              <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map' %}">
                 <img src="/images/u64_normal.png" alt=""/>
                   <span class="map-it-content menu-item-large">
                     Map It
@@ -48,7 +48,7 @@
           </div>
        
           <div id="find-in-library-container">
-              <a href="/ngds/library">
+              <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_library' %}">
                 <img src="/images/u64_normal.png" alt="V"/>
                   <span class="find-it-content menu-item-large">
                     Find in Library

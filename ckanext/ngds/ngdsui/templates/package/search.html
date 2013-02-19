@@ -50,7 +50,7 @@
     <div class="search-results-container">
         {% for package in c.page.items %}
           <div class="search-results-item">
-              <a class="title not-implemented" href="#">{{package.title}}</a>
+              <a class="title" href="/dataset/{{package.title}}">{{package.title}}</a>
               <div class="search-results-meta spaced">
                   <p class="regular-meta-item">{{package.author}}</p>
                   <p class="regular-meta-item">Published: {{package.metadata_created}}</p>

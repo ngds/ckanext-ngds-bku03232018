@@ -1,0 +1,67 @@
+{% extends "page_ngds.html" %}
+{% set active_page = "contribute" %}
+{% set isEdit = c.isEdit %}
+{% set action = c.action %}
+{% set node = c.node %}
+{% set node_admin = c.node.node_admin %}
+{%- block content %}
+<div id="contribute-central" class="contribute-central">
+	<h1>Harvest a Resource</h1>
+	<div style="width:850px;min-height:600px;text-align:left;float:left; position:relative;">
+	<form id="read-only-form" method="post" action="{% url_for controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index' %}" >
+		<input id="id" type="hidden" name="id"  value="{{ node.id }}"/>	
+		<div style="float:left;position:absolute;">
+		<label for="field-title" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Data Method:</label>
+		
+		<input id="data-method" type="radio" name="data-method" checked >Register resource on the network</input>
+		<br><br>
+
+		<label for="field-protocol" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Protocol:</label>
+		
+		<input id="protocol" type="radio" name="protocol"  checked >CSW</input>
+		<br><br>
+		<label for="field-protocol" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Host URL:</label>
+		
+		<input id="url" type="text" name="url"  value="{{ node.url }}"/>		
+		<br><br>
+		<label for="field-title" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Title:</label>
+		
+		<input id="title" type="text" name="title"  value="{{ node.title }}"/>				
+		<br><br>
+		<label for="field-freq" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">How often do you want this resource to be revisited:</label><br>
+		
+		<input id="frequency" type="checkbox" name="frequency" class="unique" value="monthly" {% if node.frequency=="monthly" %} checked {% endif %}>Once every month</input><br>
+		<input id="frequency" type="checkbox" name="frequency" class="unique"  value="weekly" {% if node.frequency=="weekly" %} checked {% endif %}>Once every week</input><br>		
+		<input id="frequency" type="checkbox" name="frequency"  class="unique" value="daily" {% if node.frequency=="daily" %} checked {% endif %}>Once a day</input><br>
+		<input id="frequency" type="checkbox" name="frequency"  class="unique" value="manual" {% if node.frequency=="manual" %} checked {% endif %}>Manual synchronization only</input><br><br>
+		</div>
+
+		<div style="border-left:30px;float:right;position:relative;">
+		<p class="sub-section-title">Node Admin Details:</p>
+		<input id="node_admin_id" type="hidden" name="node_admin_id"  value="{{ node.node_admin_id }}"/>	
+		<label for="field-admin-name" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Name:</label>
+		<input id="name" type="text" name="name"  value="{{ node_admin.name }}"/><br>
+		<label for="field-admin-organ" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Organization:</label>
+		<input id="organization" type="text" name="organization"  value="{{ node_admin.organization }}"/><br>
+		<label for="field-admin-email" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Email:</label>
+		<input id="email" type="text" name="email"  value="{{ node_admin.email }}"/><br>		
+		<label for="field-admin-phone" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Phone:</label>
+		<input id="phone" type="text" name="phone"  value="{{ node_admin.phone }}"/><br>
+		<label for="field-admin-street" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Street:</label>
+		<input id="street" type="text" name="street"  value="{{ node_admin.street }}"/><br>
+		<label for="field-admin-city" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">City:</label>
+		<input id="city" type="text" name="city"  value="{{ node_admin.city }}"/><br>			
+		<label for="field-admin-state" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">State:</label>
+		<input id="state" type="text" name="state"  value="{{ node_admin.state }}"/><br>		
+		<label for="field-admin-zip" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Zipcode:</label>
+		<input id="zip" type="text" name="zip"  value="{{ node_admin.zip }}"/><br>	<br>
+		<button type="submit" name="save">OK</button>
+		</div>
+
+	</form>
+
+	</div>
+</div> 
+
+{% endblock %}
+

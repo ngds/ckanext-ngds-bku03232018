@@ -3,6 +3,20 @@ body {
 	font-size:100%;
 	text-align:center; 
 	/*This text align leaves a small margin. */
+	font-family:"Arial Black";
+}
+
+h1 {
+	font-size: 20px;
+	text-align: left;
+	font-weight:normal;
+}
+
+h2 {
+	font-size:16px;
+	text-align:left;
+	font-family:Arial;
+	font-weight:bold;
 }
 
 #top-level-container {
@@ -168,7 +182,6 @@ div#main-nav div a span img {
 /* Body Container */
 
 div#body-container {
-	/*margin-top:175px;*/
 	position:relative;
 	height:auto;
 	width:1024px;
@@ -186,7 +199,6 @@ div#body-container {
 
 div#body-container #search-container {
     height: 130px;
-    /*margin-top:50px;	*/
     margin-left:10px;
     width:290px;
     border:1px solid #a8a8a8;
@@ -222,12 +234,6 @@ div#body-container #search-container {
 	text-align:left;
 }
 
-/*.large-text-emph {
-	font-weight:bold;
-	font-size:23px;
-}*/
-
-
 /* End Body Container > Search Menu */
 
 /*----------------------------------------------------*/
@@ -256,7 +262,6 @@ div#data-watch-container div {
 	margin-top:10px;
 	margin-bottom:5px;
 	padding-bottom:0px;
-	/*width:290px;*/
 	text-align:left;
 }
 
@@ -354,7 +359,6 @@ div#map-it-container a img {
 
 .map-it-content {
 	display:inline;
-	/*background:#fff url('u64_normal.png') no-repeat;*/
 	width:326px;
 	position:absolute;
 	top:10px;
@@ -364,7 +368,6 @@ div#map-it-container a img {
 
 .find-it-content {
 	display:inline;
-	/*background:#fff url('u64_normal.png') no-repeat;	*/
 	width:326px;
 	position:absolute;
 	top:10px;
@@ -494,8 +497,6 @@ div#footer-links-section {
 
 .footer-link {
 	position:relative;
-	/*margin-top:10px;*/
-	/*margin-right:150px;*/
 }
 
 div#footer-links-section div {
@@ -615,7 +616,7 @@ div#login-popup {
 	right:0; 
 	float:right; 
 	margin-right:30px; 
-	z-index:1; 
+	z-index:6; 
 	background-color:#fff; 
 	display:block;
 	font-size:12px;
@@ -688,23 +689,14 @@ div#library-search-container {
 	position: relative;
 }
 
-div#library-search-container p {
-	float: left;
-	font-size: 23px;
-	font-family: Arial Black;
-	display: inline;
-	text-align: left;
-}
-
 div#library-search-container div.library-search-pre, div.library-search-bar {
 	display: inline;
-	/*float: right;*/
 	right:0px;
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 5px;
 	height: 40px;
-	margin-top: 64px;
+	margin-top: 20px;
 	background-color: #dadada;
 	border-radius:5px;
 	-webkit-border-radius:5px;
@@ -712,7 +704,6 @@ div#library-search-container div.library-search-pre, div.library-search-bar {
 }	
 
 div#library-search-container div.library-search-pre {
-	/*float:left;*/
 	left:180px;
 	margin-left: 65px;
 	padding-right: 0px;
@@ -739,7 +730,7 @@ div.library-search-bar form input[type="text"] {
 div#library-search-container div.library-search-accordion-header {
 	float:left;
 	position: absolute;
-	margin-top:64px;
+	margin-top:20px;
 	width:240px;
 }
 
@@ -1152,19 +1143,19 @@ div#nodes-display a:hover, div#nodes-display a:visited, div#nodes-display a:link
 
 div#contribute-central div.existing-nodes-admin {
 	float:left;
-	position: absolute;
+	position: relative;
 	margin:10px;
 	width:750px;
+	padding-right: 10px;
+	border-right:2px solid #a8a8a8;
 }
 
 div#contribute-central div.create-node-admin {
 	float:right;	
-	padding-top:50px;
-	padding-left:10px;
-	margin:20px;
-	width:180px;
-	min-height: 200px;
-	border-left:2px solid #a8a8a8;
+	padding-top:70px;
+	padding-right:10px;
+	width:220px;
+	min-height: 200px;	
 }
 
 div#manage-nodes table{
@@ -1208,3 +1199,320 @@ fieldset {
 	border-bottom: 1px solid #444444;
 }
 
+
+/*
+Map widget
+*/
+#map-widget-control-menu {
+	width:95%; 
+	height:50px; 
+	z-index:5; 
+	position:absolute; 
+	top:15px; 
+	left:15px; 
+	background-color:#fff;
+	border-radius:5px;
+	-webkit-border-radius:5px;
+}
+
+#map-expander {
+	width:20px;
+	height:50px;
+	z-index:5;
+	position:absolute;
+	top:45%;
+	background-color:#fff;
+	border-top-right-radius:5px;
+	border-bottom-right-radius:5px;
+	-webkit-border-top-right-radius:5px;
+	-webkit-border-bottom-right-radius:5px;
+	cursor:pointer;
+}
+
+#map-expander p{
+	padding-top:75%;
+	margin-top:0%;
+	margin-left:2px;
+}
+
+.leaflet-container .leaflet-control-zoom {
+	margin-top:80px;
+}
+
+.map-widget-menu-item {
+	position:absolute;
+	height:30px;
+}
+
+div#layer-combo {
+	right:10px;
+	top:10px;
+	position:absolute;
+	width:130px;
+	height:30px;
+	border:1px solid black;
+	cursor:pointer;
+}
+
+div#layer-selector {
+	position:absolute;
+	right:10px;
+	top:40px;
+	width:130px;
+	height:60px;
+	border:1px solid black;
+	background-color:#fff;
+	padding-top:10px;
+}
+
+div#map-widget-control-menu p {
+	font-family:Arial;
+	font-size:14px;
+	margin-top:5px;
+	margin-bottom:0px;
+	text-align:center;
+}
+
+div#layer-selector p {
+	margin-top:0px;
+}
+
+div#basemap-combo {
+	position:absolute;
+	top:10px;
+	right:150px;
+	width:130px;
+	height:30px;
+	border:1px solid black;
+	cursor:pointer;
+}
+
+/*
+	End of map widget
+*/
+
+
+/* Contribute node */
+.contribute-menu-table {
+	display:table;
+	width:100%;
+	table-layout:fixed;
+	padding-left:0px;
+}
+
+.contribute-menu-table .cell {
+	display:table-cell;
+	padding-right:40px;
+	padding-left:0px;
+	font-family:Arial;
+	font-size:13px;
+	line-height:1.5em;
+}
+
+.contribute-menu-table .cell ul {
+	list-style-type:none;
+	padding-left:0px;
+}
+
+.contribute-menu-table .cell ul li {
+	text-decoration:none;
+}
+
+.contribute-menu-table .cell p a {
+	text-decoration:none;
+	color:blue;
+	font-weight:bold;
+}
+
+.contribute-menu-table .cell img {
+	margin-right:10px;
+}
+
+.bordered-container {
+	border-top:1px solid black;
+	border-bottom:1px solid black;
+	min-height:220px;
+
+}
+
+/* End contribute node */
+
+
+/* Upload page */
+
+#info-tip-container {
+	display:table;	
+	float:left;
+	margin-right:20px;
+}
+
+#info-tip-container .cell {
+	display:table-cell;
+	padding-right:5px;
+}
+
+.upload-info-tip {
+	width:180px;
+	line-height:1em;
+}
+
+.upload-info-tip p {
+	font-family:Arial;
+	font-weight:bold;
+	font-size:12px;
+	display:inline;
+	text-align:justify;
+}
+
+.upload-container {
+	width:670px;
+	display:table;
+	border-collapse:separate;
+	text-align:center;
+}
+
+.upload-container div.title {
+	display:table-cell;
+	font-size:14px;
+	font-family:Arial;
+	font-weight:bold;
+	width:100px;
+	height:35px;
+	padding-top:15px;
+	padding-bottom:0px;
+	background-color:#dadada;
+}
+
+/* End of Upload page */
+
+
+/* These styles have to be re-examined for neccessity and appropriateness. */
+
+.stages {
+	width:699px;
+	display:table;
+	border-collapse:separate;
+	text-align:center;
+	padding-left:0px;
+	margin-left:0px;
+	margin-top:0px;
+}
+
+button.highlight {
+	text-decoration: none;
+	background: transparent;
+	border: none;
+	font-size: 14px;
+	font-family: Arial;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+section.module {
+	width:750px;
+	margin-left:250px;
+	font-family:Arial;
+	font-weight:bold;
+	font-size:18px;
+	min-height:550px;
+}
+
+div.module-content {
+	width:700px;
+}
+
+.first, .middle, .last {
+	display:table-cell;
+	font-size:14px;
+	font-family:Arial;
+	font-weight:bold;
+	width:100px;
+	height:35px;
+	padding-top:15px;
+	padding-bottom:0px;
+	background-color:#dadada;
+}
+
+.active {
+	background-color:#8A8687;
+}
+
+.control-group, .form-actions {
+	width:670px;
+	/*margin-left:250px;*/
+	text-align:right;
+}
+
+.form-actions {
+	margin-top: 40px;
+}
+
+.control-group {
+	margin-top:20px;
+	position:relative;
+}
+
+.control-group input[type="text"], .control-group textarea {
+	width:440px;
+}
+
+.control-group input {
+	height:30px;
+}
+
+.control-group textarea {
+	margin-top:10px;
+}
+
+.controls, .input-prepend {
+	display:inline;
+}
+
+.controls {
+	margin-right:20px;
+}
+
+.align-left {
+	text-align:left;
+}
+
+label.control-label, span.add-on, div.form-actions a {
+	font-size:16px;
+	font-family:Arial;
+	font-weight:normal;
+	text-decoration:none;
+}
+
+label.control-label {
+	position:absolute;
+	left:60px;
+	padding-top:10px;
+}
+
+div.module-content form.dataset-form {
+	border:1px solid #dadada;
+	padding-bottom:10px;
+}
+
+div.controls select {
+	width:200px;
+	margin-left:210px;
+	margin-top:5px;
+	height:25px;
+}
+
+div.controls div#bbox-map {
+	width: 445px;
+	height: 300px;
+	border: 1px solid #CCC;
+	margin-left: 205px;
+	padding-right: 0px;
+	padding-left: 0px;
+}
+
+/*label[for="field-extras-0-remove"], label[for="field-extras-0-key"], 
+label[for="field-extras-0-key"], label[for="field-extras-0-value"], 
+input#field-extras-0-key, input#field-extras-0-value {
+	display:none;
+}*/
+/* Must be fixed soon */

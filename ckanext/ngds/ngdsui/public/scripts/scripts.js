@@ -3,7 +3,15 @@ var ngds = ngds || { };
 
 	$(document).ready(function() { 
 
-		
+		$('#read-only-form :input').attr('readonly','readonly');
+		$('#read-only-form :checkbox').attr('disabled', 'disabled');
+
+		var $unique = $('input.unique');
+		$unique.click(function() {
+		    $unique.filter(':checked').not(this).removeAttr('checked');
+		});
+
+
 		$("#manage-nodes-table tr:odd").css("background-color", "#fff6f6");
 
 		$(".not-implemented").click(function(event) { // Handle portions of the UI that haven't been implemented yet, display a div that says 'Not implemented Yet'.
@@ -108,18 +116,5 @@ var ngds = ngds || { };
 			}
 
 	});
-
-  // CKAN.DatasetMap.map_type = 'osm';
-  // CKAN.DatasetMap.extent = {
-  //                           "type": "Polygon", 
-  //                           "coordinates": 
-  //                               [[[11.0878902207, 45.1602390564], 
-  //                                 [14.931640625, 40.9228515625], 
-  //                                 [0.8251953125, 41.0986328125], 
-  //                                 [7.63671875, 48.96484375], 
-  //                                 [11.0878902207, 45.1602390564]]]
-  //                       };
-  // CKAN.DatasetMap.element = '#dataset-map-container';
-  // CKAN.DatasetMap.setup();
 
 })();
