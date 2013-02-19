@@ -41,7 +41,7 @@ class CswPlugin(SingletonPlugin):
         
         # Test the ISO XML output
         map.connect('iso-test',
-                    '/iso-test',
+                    '/iso-test/:package_id',
                     controller=controller,
                     action="xml_test")
         

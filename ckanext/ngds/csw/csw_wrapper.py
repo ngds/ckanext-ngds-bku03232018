@@ -105,7 +105,8 @@ class CswController(BaseController):
     
     def xml_test(self, *args, **kwargs):
         from ckan import model
-        test_package = model.Package.get("27200fb8-e450-416f-a27a-ae757f49244c")
+        # 27200fb8-e450-416f-a27a-ae757f49244c
+        test_package = model.Package.get(kwargs["package_id"])
         test_csw_package = model.CswPackage(test_package)
         kwargs["pylons"].response.content_type = "text/xml"
         return test_csw_package.to_iso_xml()
