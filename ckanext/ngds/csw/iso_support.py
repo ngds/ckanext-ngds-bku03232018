@@ -85,6 +85,7 @@ class CswPackage(object):
         def build_transfer_option(parent, distribution_info):
             transfer_option = etree.SubElement(parent, nsify("gmd", "transferOptions"), id=distribution_id_for(distribution_info.resource))
             online = add_nested_elements(transfer_option, "gmd:MD_DigitalTransferOptions/gmd:onLine")
+            add_nested_elements(online, "gmd:linkage/gmd:URL").text = distribution_info.resource.url
             
         # Create the root element of the record
         schemaLocation = nsify("xsi", "schemaLocation")
@@ -146,10 +147,12 @@ class CswPackage(object):
         topic = add_attribute(idInfo, "gmd", "topicCategory")        
         add_attribute(topic, "gmd", "MD_TopicCategoryCode").text = "geoscientificInformation"
         
-        ## Extent
+        ## Extent -- INCOMPLETE
         extent = add_nested_elements(idInfo, "gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox")
-        add_nested_elements(extent, "gmd:extentTypeCode/gco:Boolean").text = "1" # Is this really valid?
-        
+        add_nested_elements(extent, "gmd:westBoundingLongitude/gco:Decimal")
+        add_nested_elements(extent, "gmd:eastBoundingLongitude/gco:Decimal")
+        add_nested_elements(extent, "gmd:southBoundingLatitude/gco:Decimal")
+        add_nested_elements(extent, "gmd:northBoundingLatitude/gco:Decimal")
         ## Distribution Information
         distInfo = add_nested_elements(record, "gmd:distributionInfo/gmd:MD_Distribution")
         
@@ -168,16 +171,14 @@ class CswPackage(object):
             for dist in dist_info["distributions"]:
                 reference = { nsify("xlink", "href"): "#%s" % distribution_id_for(dist.resource) }
                 etree.SubElement(distributor, nsify("gmd", "distributorTransferOptions"), **reference)
-        ### Loop through one more time and add distributions
+        ### Loop through one more time and add distributions --INCOMPLETE
         [ build_transfer_option(distInfo, resource_info) for resource_info in self.additional_resource_metadata ]
         
-            
-        
         # Quality Information
-        qualInfo = add_nested_elements(record, "gmd:dataQualityInfo/gmd:DQ_DataQuality")
+        #qualInfo = add_nested_elements(record, "gmd:dataQualityInfo/gmd:DQ_DataQuality")
         
         # Usage Constraints
-        usageInfo = add_nested_elements(record, "gmd:metadataConstraints/gmd:MD_Constraints")
+        #usageInfo = add_nested_elements(record, "gmd:metadataConstraints/gmd:MD_Constraints")
         
         # Finally, return the string representation of the record
         return etree.tostring(record)
