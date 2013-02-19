@@ -89,7 +89,7 @@ $(document).ready(function() {
 
 
 		$.ajax({
-				url:'/api/2/search/dataset/geo?bbox=-90,-180,90,180',
+				url:'/api/2/search/dataset/geo?bbox=-360,-360,360,360',
 				type:"GET",
 				dataType:"JSON",
 				success:function(response){ // Get everything we have in the database with geocoded information
