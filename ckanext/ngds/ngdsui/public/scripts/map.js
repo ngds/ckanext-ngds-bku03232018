@@ -15,17 +15,16 @@ $(document).ready(function() {
 
 	var html = '<div id="map-widget-control-menu">';
 	html+='<div id="layer-combo">';
-	html+='<p>Layers</p>';
-
-	html+='<div id="layer-selector" style="display:none;">';
-	html+='<p id="satellite-layer">Satellite</p>';
-	html+='<p>Watercolor</p>';
-	html+='</div>';
+	html+='<p>Placeholder</p>';
 
 	html+='</div>'; //End of layer combo
+	// html+='<div id="layer-selector" class="not-implemented" style="display:none;">';
+	// html+='<p id="satellite-layer">Satellite</p>';
+	// html+='<p>Watercolor</p>';
+	// html+='</div>';
 	
 	html+='<div id="basemap-combo">';
-	html+='<p>Basemap</p>';
+	html+='<p>Placeholder</p>';
 	html+='</div>'; // End of basemap-combo
 	
 	html+='</div>'; // End of map-widget-control-menu
@@ -38,9 +37,17 @@ $(document).ready(function() {
 
 
 	$("#map-container").append(html);
-
+	var layer_combo_active = false;
 	$("#layer-combo").click(function() {
-		$("#layer-selector").css('display','table');
+		if(layer_combo_active===false) {
+			$("#layer-selector").css('display','table');
+			layer_combo_active = true;
+		}
+		else {
+			$("#layer-selector").css('display','none');
+			layer_combo_active = false;
+		}
+		
 	});
 
 	// $("#satellite-layer").click(function() {
