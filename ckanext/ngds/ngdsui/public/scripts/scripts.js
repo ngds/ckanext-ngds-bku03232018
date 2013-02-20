@@ -1,8 +1,18 @@
 var ngds = ngds || { };
-
 (function() {
 
 	$(document).ready(function() { 
+
+		$('#read-only-form :input').attr('readonly','readonly');
+		$('#read-only-form :checkbox').attr('disabled', 'disabled');
+
+		var $unique = $('input.unique');
+		$unique.click(function() {
+		    $unique.filter(':checked').not(this).removeAttr('checked');
+		});
+
+
+		$("#manage-nodes-table tr:odd").css("background-color", "#fff6f6");
 
 		$(".not-implemented").click(function(event) { // Handle portions of the UI that haven't been implemented yet, display a div that says 'Not implemented Yet'.
 				ngds.not_implemented_popup_active = true;
@@ -106,6 +116,5 @@ var ngds = ngds || { };
 			}
 
 	});
-
 
 })();

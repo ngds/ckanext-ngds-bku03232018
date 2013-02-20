@@ -1,0 +1,23 @@
+<div id="contribute-central" class="contribute-central">
+
+<p class="section-title">Contribute Data</p>
+<p>If you are interested in contributing data to NGDS, you can either go to any of the existing nodes or set up a node by yourself.</p>
+
+	<div id="existing-nodes" class="existing-nodes">
+		<p class="sub-section-title"><img src="/images/manage_nodes.png" alt="V"/>  Existing NGDS Nodes</p>
+			<div id="nodes-display">
+				<table>
+				    {% for node in c.harvested_nodes %}
+				  	  <tr><td><img src="/images/node_default.png"/></td><td><a href="{{ node.url }}" target="_blank">{{ node.title }}</a></td></tr>	
+				    {% endfor %}
+				</table>
+			</div>
+	</div>
+
+	<div id="create-node" class="create-node">
+		<p class="sub-section-title"><img src="/images/create_node.png" alt="V"/>  Set up a node</p>
+		<p>Want to set up your own node?</p>
+		<p><a href="#" class="not-implemented">Click here</a> to view instructions on how to create a NGDS node.</p>
+	</div>
+
+</div>

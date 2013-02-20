@@ -54,7 +54,7 @@ class AdditionalPackageMetadata(NgdsDataObject):
     @classmethod
     def by_package(cls, package_id):
         """Look up the AdditionalPackageMetadata for a particular package by its ID"""
-        return cls.Session.query(cls).filter(cls.package_id==package_id)
+        return cls.Session.query(cls).filter(cls.package_id==package_id).first()        
     
     @validates('pub_date')
     def validate_pub_date(self, key, pub_date):
@@ -114,7 +114,7 @@ class AdditionalResourceMetadata(NgdsDataObject):
     @classmethod
     def by_resource(cls, resource_id):
         """Look up the AdditionalResourceMetadata for a particular resource by its ID"""
-        return cls.Session.query(cls).filter(cls.resource_id==resource_id)
+        return cls.Session.query(cls).filter(cls.resource_id==resource_id).first()
     
     @validates('resource_id')
     def validate_resource_id(self, key, resource_id):
@@ -163,14 +163,16 @@ def define_tables():
     resource_meta = Table(
         "resource_additional_metadata", # table name
         meta.metadata, # sqlalchemy.MetaData()
-        Column("resource_id", types.UnicodeText, primary_key=True), # Implicit Foreign Key to the resource
+        Column("id", types.Integer, primary_key=True),
+        Column("resource_id", types.UnicodeText, ForeignKey("resource.id")), # Implicit Foreign Key to the resource
         Column("distributor_id", types.Integer, ForeignKey("responsible_party.id")) # Foreign Key to a ResponsibleParty                                          
     )
     
     package_meta = Table(
         'package_additional_metadata', # table name
         meta.metadata, # Apparently just a call to sqlalchemy.MetaData(), whatever that is
-        Column('package_id', types.UnicodeText, primary_key=True), # Implicit Foreign Key to the package
+        Column('id', types.Integer, primary_key=True),
+        Column('package_id', types.UnicodeText, ForeignKey("package.id")), # Implicit Foreign Key to the package
         Column('author_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
         Column('maintainer_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
         Column('pub_date', types.Date), # Publication Date
@@ -184,6 +186,7 @@ def define_tables():
         AdditionalPackageMetadata, 
         package_meta,
         properties={
+            "package": relationship(Package),
             "author": relationship(ResponsibleParty, primaryjoin=package_meta.columns.get("author_id")==party.columns.get("id")),#"package_additional_metadata.author_id==responsible_party.id"),
             "maintainer": relationship(ResponsibleParty, primaryjoin=package_meta.columns.get("maintainer_id")==party.columns.get("id"))#"package_additional_metadata.maintainer_id==responsible_party.id")
         }
@@ -193,6 +196,7 @@ def define_tables():
         AdditionalResourceMetadata, 
         resource_meta,
         properties={
+            "resource": relationship(Resource),
             "distributor": relationship(ResponsibleParty)            
         }
     )

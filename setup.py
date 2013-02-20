@@ -17,7 +17,7 @@ setup(
 	license='',
 	packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
 	namespace_packages=['ckanext', 'ckanext.ngds','ckanext.ngds.ngdsui'],
-	package_data={'':['templates/*.*','templates/**/*.*','public/**/*.*','public/**/**/**/*.*','public/**/**/**/**/*.*','public/**/**/**/**/**/**']},
+	package_data={'':['templates/*.*','templates/**/*.*','templates/**/**/*.*','public/**/*.*','public/**/**/**/*.*','public/**/**/**/**/*.*','public/**/**/**/**/**/**','public/**/**/*.*']},
 	include_package_data=True,
 	zip_safe=False,
 	install_requires=[
@@ -30,6 +30,9 @@ setup(
 	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
 	
 	[ckan.plugins]
+	# CSW plugin
+	csw=ckanext.ngds.csw.plugin:CswPlugin
+	
     # NGDS Metadata plugin
 	metadata=ckanext.ngds.metadata.plugin:MetadataPlugin
 	

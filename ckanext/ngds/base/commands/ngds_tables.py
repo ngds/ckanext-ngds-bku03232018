@@ -30,6 +30,10 @@ class NgdsTables(CkanCommand):
         from ckanext.ngds.harvest.model.harvest_node import db_setup as setup_harvest_tables
         setup_harvest_tables()
         
+        # Setup CSW table
+        from ckanext.ngds.csw.model.csw_records import db_setup as setup_csw_tables
+        setup_csw_tables()
+        
 def create_tables(tables, log):
     """Given a list of table definition objects, create those tables in the database"""
     def create_table(table):
