@@ -16,13 +16,19 @@ setup(
 	url='',
 	license='',
 	packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-	namespace_packages=['ckanext', 'ckanext.ngds','ckanext.ngds.ngdsui'],
-	package_data={'':['templates/*.*','templates/**/*.*','templates/**/**/*.*','public/**/*.*','public/**/**/**/*.*','public/**/**/**/**/*.*','public/**/**/**/**/**/**','public/**/**/*.*']},
+	namespace_packages=['ckanext'],
+	#package_data={'':['templates/*.*','templates/**/*.*','templates/**/**/*.*','public/**/*.*','public/**/**/**/*.*','public/**/**/**/**/*.*','public/**/**/**/**/**/**','public/**/**/*.*']},
 	include_package_data=True,
 	zip_safe=False,
 	install_requires=[
 		# -*- Extra requirements: -*-
 	],
+    message_extractors = {
+        'ckanext': [
+            ('**.py', 'python', None),
+            ('**.html', 'ckan', None),
+        ]
+    },		
 	entry_points=\
 	"""
 	[paste.paster_command]
@@ -41,5 +47,8 @@ setup(
 
 	# NGDS UI plugin.
 	ngdsui=ckanext.ngds.ngdsui.plugin:NgdsuiPlugin
+
+    [babel.extractors]
+	    ckan = ckan.lib.extract:extract_ckan	
 	""",
 )

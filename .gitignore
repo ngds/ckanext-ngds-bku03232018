@@ -3,3 +3,4 @@ ckanext_ngds.egg-info/
 dist/
 build/
 .DS_Store
+*.mo
