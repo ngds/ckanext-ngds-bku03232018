@@ -14,6 +14,7 @@ For hard-wired values, the user will not have to enter any content or be aware o
 
 ### Information about the Metadata Record itself
 The metadata record is the XML document that is created by our software
+
 1. Unique ID: An identifier for the metadata record itself
     - `ckan.model.Package.id`
 2. Language: What language is the metadata record itself written in?
@@ -35,6 +36,7 @@ The metadata record is the XML document that is created by our software
 
 ### Information about the Dataset
 The dataset is sort of the "intellectual work" that is being described. Contrast it to the "resources" that are files, journal articles, data services or other representations of the dataset.
+
 1. URI: Any alternative identifier for the dataset. Could be an ISBN number or DOI
     - **Additional content**
     - Default value: `ckan.model.Package URL`
@@ -97,6 +99,7 @@ The dataset is sort of the "intellectual work" that is being described. Contrast
     
 ### Information about *Online* Resources
 Resources are the files or data services are uploaded or linked to. They are digital manifestations of the dataset. Each metadata record may provide access to multiple resources.
+
 1. URL: What is the URL for the resource?
     - `ckan.model.Resource.url`
     - *Note*: For a data service, this URL should point at a self-descriptive document (OGC GetCapabilities or ESRI "REST" endpoint)
@@ -127,6 +130,7 @@ Resources are the files or data services are uploaded or linked to. They are dig
     
 ### Information about *Offline* Resources
 Sometimes, people want to write metadata records for things that are only available to order, or view a phyical copy. These are "offline" resources.
+
 1. Name: A short description of the resource, commonly used as the text within an <a> tag
     - `ckan.model.Resource.name`
 2. Description: Longer text description of the resource
