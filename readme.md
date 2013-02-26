@@ -123,3 +123,6 @@ Harvest tables are adjusted at the URL: `/api/action/ngds_harvest`
     }
 
 
+# Tests
+
+Run nose tests for server APIs from `ckanext-ngds` directory: `. test.sh`  
