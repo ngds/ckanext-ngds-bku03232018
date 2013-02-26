@@ -103,7 +103,7 @@ Resources are the files or data services are uploaded or linked to. They are dig
 1. URL: What is the URL for the resource?
     - `ckan.model.Resource.url`
     - *Note*: For a data service, this URL should point at a self-descriptive document (OGC GetCapabilities or ESRI "REST" endpoint)
-2. Name: A short description of the resource, commonly used as the text within an <a> tag
+2. Name: A short description of the resource, commonly used as the text within an anchor tag in an HTML doc
     - `ckan.model.Resource.name`
 3. Description: Longer text description of the resource
     - `ckan.model.Resource.description`
