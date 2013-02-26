@@ -8,7 +8,7 @@ I've written a comprehensive list of content required to generate a compliant US
 - specified a `hard-coded value` where appropriate for our application
 - flagged **Additional Content** that must be added to the persistence layer
 - specified default values for additional content where appropriate
-- given suggestions for user-interface widgets when the user will have to specify additional information that is not collected in the default CKAN interface
+- given suggestions for *user-interface widgets* when the user will have to specify additional information that is not collected in the default CKAN interface
 - indicated how I intend to implement the persistence of any additional content
 For hard-wired values, the user will not have to enter any content or be aware of its existence. Only those marked as **Additional Content** may require user-input.
 
@@ -46,7 +46,18 @@ The dataset is sort of the "intellectual work" that is being described. Contrast
     - **Additional content**
     - Default value: `Dataset`
     - *UI-suggestion*: a combobox containing these options
-        - TBD
+        - "Dataset"
+        - "Physical Collection"
+        - "Catalog"
+        - "Movie or video"
+        - "Drawing"
+        - "Photograph"
+        - "Remotely-sensed Image"
+        - "Map"
+        - "Text Document
+        - "Physical Artifact"
+        - "Desktop application"
+        - "Web application"
     - *Persistence via* `ckan.model.Package.extras`
 3. Title: The title of the dataset.
     - `ckan.model.Package.title`
@@ -67,12 +78,17 @@ The dataset is sort of the "intellectual work" that is being described. Contrast
     - *Persistence via* correlation table between package and responsible_party
 6. Abstract: A long-text description of the dataset
     - `ckan.model.Package.notes`
-7. Quality: A text string indicating the percieved quality of the dataset
+7. Quality: A text string indicating the percieved or measured quality of the dataset
     - **Additional Content**
-    - Default value: none, optional
+    - Default value: missing
     - *UI-suggestion*: textbox for entering optional content
     - *Persistence via* `ckan.model.Package.extras`
-7. Status: Some datasets are done while others are continually updated...
+8. Lineage: text narrative describing the origin and processing of the data
+    - **Additional Content**
+    - Default value: missing
+    - *UI-suggestion*: textbox for entering optional content
+    - *Persistence via* `ckan.model.Package.extras`
+9. Status: Some datasets are done while others are continually updated...
     - **Additional Content**
     - Default value: `completed`
     - *UI-suggestion*: a combobox with the following options:
@@ -80,21 +96,21 @@ The dataset is sort of the "intellectual work" that is being described. Contrast
         - ongoing
         - deprecated
     - *Persistence via* `ckan.model.Package.extras`
-8. Keywords: tags that describe the dataset themes
+10. Keywords: tags that describe the dataset themes
     - `ckan.model.Package.get_tags()`
-9. Language: what language is the dataset written in?
+11. Language: what language is the dataset written in?  Present user with name of language, but metadata document gets 3-letter code from ISO 639-2.
     - **Additional Content**
-    - Default value: `english`
-    - *UI-suggestion*: a typeahead with all the langauges identified by that silly ISO standard
+    - Default value: `eng`
+    - *UI-suggestion*: a typeahead with all the langauges identified by  ISO-639-2 (http://www.loc.gov/standards/iso639-2/php/code_list.php)
     - *Persistence via* `ckan.model.Package.extras`
-10. Topic: categorize the dataset into a very specific ISO category
+12. Topic: categorize the dataset into a very specific ISO category
     - `geoscientificInformation`
-11. Extent: *where* is the dataset about?
+13. Extent: *where* is the dataset about?
     - **Additional Content**
     - Default value: none, must be specified
-    - *UI-suggestion*: user may either enter a Location keyword (e.g. "California" or "The Geysers") or use a map to draw a bounding geometry (point, box or arbitray polygon)
+    - *UI-suggestion*: user may either enter a Location keyword (e.g. "California" or "The Geysers") [this should be checked against a gazeteer service (google, USGS gnis?) to see if it can be georeferenced; show bounding box on map if georeference is successful] or use a map to draw a bounding geometry (point, box or arbitray polygon)
     - *Persistence via* `ckan.model.Package.extras`
-12. Usage constraints: some information about any usage constraints
+14. Usage constraints: some information about any usage constraints: what is license on data, is authentication required and what are necessary credentials, any legal constraints.
     - `ckan.model.Package.license_id`
     
 ### Information about *Online* Resources
@@ -103,10 +119,17 @@ Resources are the files or data services are uploaded or linked to. They are dig
 1. URL: What is the URL for the resource?
     - `ckan.model.Resource.url`
     - *Note*: For a data service, this URL should point at a self-descriptive document (OGC GetCapabilities or ESRI "REST" endpoint)
-2. Name: A short description of the resource, commonly used as the text within an anchor tag in an HTML doc
-    - `ckan.model.Resource.name`
+2. Name: A short description of the resource, commonly used as the text within an anchor tag in an HTML doc. This maps into rel property on html:link element.
+    - *UI-suggestion*: a combobox with the following options, allow text to be edited:
+        - download
+        - web service description
+        - email request
+        - web service endpoint
+        - web application
+        - access information
+     - *Persistence via* `ckan.model.Resource.name`
 3. Description: Longer text description of the resource
-    - `ckan.model.Resource.description`
+    - `*Persistence via* ckan.model.Resource.description`
 4. Distributor: Who is responsible for distribution of this resource?
     - **Additional Content** -- a ResponsibleParty
     - Default value: none, must be specified
@@ -121,8 +144,11 @@ Resources are the files or data services are uploaded or linked to. They are dig
         - WFS
         - WCS
         - ESRI Map Service
+        - CSW
+        - SOS
+        - OpenDAP
     - *Persistence via* `ckan.model.Resource.extras` if possible
-6. Layer: For services with multiple layers, indicate the name of the layer that corresponds to this dataset
+6. Layer name, Feature type, or profile name: For services with multiple layers (WMS),  feature types (WFS) or for which a more proscriptive profile document needs to be referenced, indicate the name layer, feature, or the URI for the profile that corresponds to this dataset.  Fancy validation--if is OGC service, GET the capabilities document and populate pick list for layer name or feature type, if only one name, select by default and don't bother user.
     - **Additional Content**
     - Default value: none, optional
     - *UI-suggestion*: an input for the layer name, only applicable to service links 
@@ -141,11 +167,19 @@ Sometimes, people want to write metadata records for things that are only availa
     - *UI-suggestion*: typeahead to choose existing ResponsibleParty or else a form to make a new one.
     - Associated role hard-wired to `distributor`
     - *Persistence via* correlation table between resource and responsible_party
-4. Format: Categorization of the types of things that might exist as offline resources
+4. Format: Categorization of the types of things that might exist as offline resources. Maps to ISO MD_Format or MD_Medium name.
     - **Additional Content**
     - Default value: 
     - *UI-suggestion*: a combobox with the following options:
-        - TBD
+        - hand sample
+        - core
+        - drilling cuttings
+        - fluid sample
+        - page-size document
+        - CDROM, DVD or disk
+        - Magnetic tape
+        - photographic film
+        - oversize sheet
     - *Persistence via* `ckan.model.Resource.extras` if possible
 5. Ordering procedure: text describing how to order something, if appropriate
     - **Additional Content**
