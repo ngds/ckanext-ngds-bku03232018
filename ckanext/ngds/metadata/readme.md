@@ -3,9 +3,9 @@
     paster --plugin=ckanext-ngds ngds initdb --config=/path/to/development.ini
 
 ## Metadata Content for ISO+USGIN Compliance
-I've written this a comprehensive list of content required to generate a compliant USGIN-profile for ISO19139 XML doc. For each bit of content, I have:
-- indicated where the content can be read from existing information collected by CKAN, if it exists
-- specified a hard-coded value where appropriate for our application
+I've written a comprehensive list of content required to generate a compliant USGIN-profile for ISO19139 XML doc. For each bit of content, I have:
+- indicated where the `content can be read from existing information collected by CKAN`, if it exists
+- specified a `hard-coded value` where appropriate for our application
 - flagged **Additional Content** that must be added to the persistence layer
 - specified default values for additional content where appropriate
 - given suggestions for user-interface widgets when the user will have to specify additional information that is not collected in the default CKAN interface
@@ -23,8 +23,8 @@ The metadata record is the XML document that is created by our software
     - `utf-8`
 4. Contact: Who is responsible for creating/maintaining this metadata record?
     - **Additional content** -- a ResponsibleParty
-    - Default value: nothing, must be selected by editor
-    - *UI suggestion*: typeahead to choose existing ResponsibleParty or else a form to make a new one
+    - Default value: nothing [could default to the logged in user who is editing the record, or if other records have been created by the user, default to the last metadata responsible party], must be selected by editor from list of existing responsible parties.
+    - *UI suggestion*: typeahead to choose existing ResponsibleParty or else a form to make a new one; if user types name that is not in existing list, automatically open the form.
     - Associated role hard-wired to `pointOfContact`
     - *Persistence via* correlation table between package and responsible_party
 5. Updated date: When was the metadata record last updated?
@@ -32,10 +32,10 @@ The metadata record is the XML document that is created by our software
 6. Standard name: What profile of ISO does this metadata record use?
     - `ISO-NAP-USGIN`
 7. Standard version: What version of the profile does this metadata record use?
-    - `1.1.4`
+    - `1.1`
 
 ### Information about the Dataset
-The dataset is sort of the "intellectual work" that is being described. Contrast it to the "resources" that are files, journal articles, data services or other representations of the dataset.
+The dataset is sort of the "intellectual work" that is being described. Contrast it to particular representations of the work, which are files, journal articles, data services, etc.
 
 1. URI: Any alternative identifier for the dataset. Could be an ISBN number or DOI
     - **Additional content**
