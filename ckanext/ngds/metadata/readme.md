@@ -23,7 +23,7 @@ The metadata record is the XML document that is created by our software
     - `utf-8`
 4. Contact: Who is responsible for creating/maintaining this metadata record?
     - **Additional content** -- a ResponsibleParty
-    - Default value: nothing [could default to the logged in user who is editing the record, or if other records have been created by the user, default to the last metadata responsible party], must be selected by editor from list of existing responsible parties.
+    - Default value: could be correlated to currently logged-in user if correlation to ResponsibleParty exists, otherwise must be selected by editor from list of existing responsible parties.
     - *UI suggestion*: typeahead to choose existing ResponsibleParty or else a form to make a new one; if user types name that is not in existing list, automatically open the form.
     - Associated role hard-wired to `pointOfContact`
     - *Persistence via* correlation table between package and responsible_party
@@ -46,18 +46,18 @@ The dataset is sort of the "intellectual work" that is being described. Contrast
     - **Additional content**
     - Default value: `Dataset`
     - *UI-suggestion*: a combobox containing these options
-        - "Dataset"
-        - "Physical Collection"
-        - "Catalog"
-        - "Movie or video"
-        - "Drawing"
-        - "Photograph"
-        - "Remotely-sensed Image"
-        - "Map"
-        - "Text Document
-        - "Physical Artifact"
-        - "Desktop application"
-        - "Web application"
+        - Dataset
+        - Physical Collection
+        - Catalog
+        - Movie or Video
+        - Drawing
+        - Photograph
+        - Remotely-Sensed Image
+        - Map
+        - Text Document
+        - Physical Artifact
+        - Desktop Application
+        - Web Application
     - *Persistence via* `ckan.model.Package.extras`
 3. Title: The title of the dataset.
     - `ckan.model.Package.title`
@@ -98,17 +98,17 @@ The dataset is sort of the "intellectual work" that is being described. Contrast
     - *Persistence via* `ckan.model.Package.extras`
 10. Keywords: tags that describe the dataset themes
     - `ckan.model.Package.get_tags()`
-11. Language: what language is the dataset written in?  Present user with name of language, but metadata document gets 3-letter code from ISO 639-2.
+11. Language: what language is the dataset written in?
     - **Additional Content**
     - Default value: `eng`
-    - *UI-suggestion*: a typeahead with all the langauges identified by  ISO-639-2 (http://www.loc.gov/standards/iso639-2/php/code_list.php)
+    - *UI-suggestion*: a typeahead with all the langauges identified by ISO-639-2 (http://www.loc.gov/standards/iso639-2/php/code_list.php). Option text is language name, value is three-letter language identifier
     - *Persistence via* `ckan.model.Package.extras`
 12. Topic: categorize the dataset into a very specific ISO category
     - `geoscientificInformation`
 13. Extent: *where* is the dataset about?
     - **Additional Content**
     - Default value: none, must be specified
-    - *UI-suggestion*: user may either enter a Location keyword (e.g. "California" or "The Geysers") [this should be checked against a gazeteer service (google, USGS gnis?) to see if it can be georeferenced; show bounding box on map if georeference is successful] or use a map to draw a bounding geometry (point, box or arbitray polygon)
+    - *UI-suggestion*: user may either enter a Location keyword (e.g. "California" or "The Geysers", might be reverse geocoded to bbox)  or use a map to draw a bounding geometry (point, box or arbitray polygon)
     - *Persistence via* `ckan.model.Package.extras`
 14. Usage constraints: some information about any usage constraints: what is license on data, is authentication required and what are necessary credentials, any legal constraints.
     - `ckan.model.Package.license_id`
@@ -148,7 +148,7 @@ Resources are the files or data services are uploaded or linked to. They are dig
         - SOS
         - OpenDAP
     - *Persistence via* `ckan.model.Resource.extras` if possible
-6. Layer name, Feature type, or profile name: For services with multiple layers (WMS),  feature types (WFS) or for which a more proscriptive profile document needs to be referenced, indicate the name layer, feature, or the URI for the profile that corresponds to this dataset.  Fancy validation--if is OGC service, GET the capabilities document and populate pick list for layer name or feature type, if only one name, select by default and don't bother user.
+6. Layer name: For services with multiple layers, indicate the name layer that corresponds to this dataset.
     - **Additional Content**
     - Default value: none, optional
     - *UI-suggestion*: an input for the layer name, only applicable to service links 
