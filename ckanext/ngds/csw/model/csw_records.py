@@ -12,12 +12,64 @@ log = logging.getLogger(__name__)
 class CswRecord(NgdsDataObject):
     """
     Class representing CSW Records that are stored in the database and served via CSW
-    
-    INCOMPLETE
     """
     def __init__(self, package_id=None, **kwargs):
         self.package_id = package_id
-
+        self.identifier = kwargs.get("identifier", None)
+        self.typename = kwargs.get("typename", None)
+        self.schema = kwargs.get("schema", None)
+        self.mdsource = kwargs.get("mdsource", None)
+        self.insert_date = kwargs.get("insert_date", None)
+        self.xml = kwargs.get("xml", None)
+        self.anytext = kwargs.get("anytext", None)
+        self.language = kwargs.get("language", None)
+        self.type = kwargs.get("type", None)
+        self.title = kwargs.get("title", None)
+        self.title_alternate = kwargs.get("title_alternate", None)
+        self.abstract = kwargs.get("abstract", None)
+        self.keywords = kwargs.get("keywords", None)
+        self.keywordstype = kwargs.get("keywordstype", None)
+        self.parentidentifier = kwargs.get("parentidentifier", None)
+        self.relation = kwargs.get("relation", None)
+        self.time_begin = kwargs.get("time_begin", None)
+        self.time_end = kwargs.get("time_end", None)
+        self.topicategory = kwargs.get("topicategory", None)
+        self.resourcelanguage = kwargs.get("resourcelanguage", None)
+        self.creator = kwargs.get("creator", None)
+        self.publisher = kwargs.get("publisher", None)
+        self.contributor = kwargs.get("contributor", None)
+        self.organization = kwargs.get("organization", None)
+        self.securityconstraints = kwargs.get("securityconstraints", None)
+        self.accessconstraints = kwargs.get("accessconstraints", None)
+        self.otherconstraints = kwargs.get("otherconstraints", None)
+        self.date = kwargs.get("typename", None)
+        self.date_revision = kwargs.get("date_revision", None)
+        self.date_creation = kwargs.get("date_creation", None)
+        self.date_publication = kwargs.get("date_publication", None)
+        self.date_modified = kwargs.get("date_modified", None)
+        self.format = kwargs.get("format", None)
+        self.source = kwargs.get("source", None)
+        self.crs = kwargs.get("crs", None)
+        self.geodescode = kwargs.get("geodescode", None)
+        self.distanceuom = kwargs.get("distanceuom", None)
+        self.wkt_geometry = kwargs.get("wkt_geometry", None)
+        self.servicetype = kwargs.get("servicetype", None)
+        self.servicetypeversion = kwargs.get("servicetypeversion", None)
+        self.operation = kwargs.get("operation", None)
+        self.couplingtype = kwargs.get("couplingtype", None)
+        self.operateson = kwargs.get("operateson", None)
+        self.operatesonidentifier = kwargs.get("operatesonidentifier", None)
+        self.operatesoname = kwargs.get("operatesoname", None)
+        self.degree = kwargs.get("degree", None)
+        self.classification = kwargs.get("classification", None)
+        self.conditionapplyingtoaccessanduse = kwargs.get("conditionapplyingtoaccessanduse", None)
+        self.lineage = kwargs.get("lineage", None)
+        self.responsiblepartyrole = kwargs.get("responsiblepartyrole", None)
+        self.specificationtitle = kwargs.get("specificationtitle", None)
+        self.specificationdate = kwargs.get("specificationdate", None)
+        self.specificationdatetype = kwargs.get("specificationdatetype", None)
+        self.links = kwargs.get("links", None)                
+        
 def define_tables():
     """
     Create in-memory representation of the tables, configure mappings to 
