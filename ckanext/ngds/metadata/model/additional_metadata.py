@@ -29,103 +29,17 @@ We need some additional information:
 """
 
 from ckan import model
-from ckan.model.domain_object import DomainObject
-from ckan.model import meta, Package, Resource
 
-from sqlalchemy import types, Column, Table, ForeignKey
-from sqlalchemy.orm import relationship, validates
+from ckan.model import meta
 
-from datetime import datetime
+from sqlalchemy import types, Column, Table
+from sqlalchemy.orm import validates
 
 import logging
 log = logging.getLogger(__name__)
 
 from ckanext.ngds.base.model.ngds_db_object import NgdsDataObject
         
-class AdditionalPackageMetadata(NgdsDataObject):
-    """Adjustments to Package metadata"""
-    def __init__(self, package_id=None, **kwargs):
-        self.package_id = package_id # Relate this content to a Package
-        self.author_id = kwargs.get('author_id', None) # author should be a ResponsibleParty
-        self.maintainer_id = kwargs.get('maintainer_id', None) # maintainer should be a ResponsibleParty
-        self.pub_date = kwargs.get('pub_date', None)
-        self.resource_type = kwargs.get('resource_type', "Dataset") # Resource Type from USGIN picklist
-
-    @classmethod
-    def by_package(cls, package_id):
-        """Look up the AdditionalPackageMetadata for a particular package by its ID"""
-        return cls.Session.query(cls).filter(cls.package_id==package_id).first()        
-    
-    @validates('pub_date')
-    def validate_pub_date(self, key, pub_date):
-        """Check that date was given in a valid format"""
-        date_format = "%Y-%m-%d" # expect dates in format YYYY-MM-DD
-        try:
-            datetime.strptime(pub_date, date_format) # try to convert the string to a Date object
-            return pub_date
-        except ValueError, e:
-            raise e
-        
-    @validates('package_id')
-    def validate_package_id(self, key, package_id):
-        """Check that the package_id given is valid"""
-        pkg = self.Session.query(Package).filter(Package.id==package_id).first() # Check if a package with that ID already exists
-        used = self.Session.query(AdditionalPackageMetadata).filter(AdditionalPackageMetadata.package_id==package_id).first() # Check if this package_id is already in use
-        if pkg and not used:
-            return package_id
-        else:
-            assert False
-            
-    @validates('resource_type')
-    def validate_resource_type(self, key, resource_type):
-        """
-        Resource Type must be from the USGIN picklist adjusted from here: 
-        Column1, Table 1, page 14, http://lab.usgin.org/sites/default/files/profile/file/u4/USGIN_ISO_Metadata_1.1.4.pdf
-        """
-        valid_types = [
-            "Dataset", 
-            "Physical Collection",
-            "Catalog",
-            "Moving Image",
-            "Human-generated Image",
-            "Photograph",
-            "Remotely-sensed Image",
-            "Map",
-            "Text Document",
-            "Project",
-            "Extent",
-            "Physical Artifact",
-            "Service",
-            "Stand-alone Application",
-            "Interactive Resource"
-        ]
-        
-        if resource_type not in valid_types:
-            assert False
-        else:
-            return resource_type
-            
-class AdditionalResourceMetadata(NgdsDataObject):
-    """Adjustments to Resource Metadata"""
-    def __init__(self, resource_id=None, **kwargs):
-        self.resource_id = resource_id
-        self.distributor_id = kwargs.get('distributor_id', None)
-        
-    @classmethod
-    def by_resource(cls, resource_id):
-        """Look up the AdditionalResourceMetadata for a particular resource by its ID"""
-        return cls.Session.query(cls).filter(cls.resource_id==resource_id).first()
-    
-    @validates('resource_id')
-    def validate_resource_id(self, key, resource_id):
-        """Check that the package_id given is valid"""
-        pkg = self.Session.query(Resource).filter(Resource.id==resource_id).first() # Check if a resource with that ID already exists
-        used = self.Session.query(AdditionalResourceMetadata).filter(AdditionalResourceMetadata.resource_id==resource_id).first() # Check if this resource_id is already in use
-        if pkg and not used:
-            return resource_id
-        else:
-            assert False
-            
 class ResponsibleParty(NgdsDataObject):
     """
     A ResponsibleParty represents an individual or organization responsible
@@ -141,6 +55,7 @@ class ResponsibleParty(NgdsDataObject):
         self.state = kwargs.get('state', None)
         self.city = kwargs.get('city', None)
         self.zip = kwargs.get('zip', None)
+        self.country = kwargs.get('country', None)
         
 def define_tables():
     """Create the in-memory represenatation of tables, and map those tables to classes defined above"""
@@ -157,66 +72,25 @@ def define_tables():
         Column("street", types.UnicodeText),
         Column("state", types.UnicodeText),
         Column("city", types.UnicodeText),
-        Column("zip", types.UnicodeText)
-    )
-    
-    resource_meta = Table(
-        "resource_additional_metadata", # table name
-        meta.metadata, # sqlalchemy.MetaData()
-        Column("id", types.Integer, primary_key=True),
-        Column("resource_id", types.UnicodeText, ForeignKey("resource.id")), # Implicit Foreign Key to the resource
-        Column("distributor_id", types.Integer, ForeignKey("responsible_party.id")) # Foreign Key to a ResponsibleParty                                          
-    )
-    
-    package_meta = Table(
-        'package_additional_metadata', # table name
-        meta.metadata, # Apparently just a call to sqlalchemy.MetaData(), whatever that is
-        Column('id', types.Integer, primary_key=True),
-        Column('package_id', types.UnicodeText, ForeignKey("package.id")), # Implicit Foreign Key to the package
-        Column('author_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
-        Column('maintainer_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
-        Column('pub_date', types.Date), # Publication Date
-        Column('resource_type', types.UnicodeText) # Resource Type
+        Column("zip", types.UnicodeText),
+        Column("country", types.UnicodeText)
     )
     
     # Map those tables to classes, define the additional properties for related people
     meta.mapper(ResponsibleParty, party)
     
-    meta.mapper(
-        AdditionalPackageMetadata, 
-        package_meta,
-        properties={
-            "package": relationship(Package),
-            "author": relationship(ResponsibleParty, primaryjoin=package_meta.columns.get("author_id")==party.columns.get("id")),#"package_additional_metadata.author_id==responsible_party.id"),
-            "maintainer": relationship(ResponsibleParty, primaryjoin=package_meta.columns.get("maintainer_id")==party.columns.get("id"))#"package_additional_metadata.maintainer_id==responsible_party.id")
-        }
-    )
-    
-    meta.mapper(
-        AdditionalResourceMetadata, 
-        resource_meta,
-        properties={
-            "resource": relationship(Resource),
-            "distributor": relationship(ResponsibleParty)            
-        }
-    )
-    
     # Stick these classes into the CKAN.model, for ease of access later
-    model.AdditionalPackageMetadata = AdditionalPackageMetadata
-    model.AdditionalResourceMetadata = AdditionalResourceMetadata
     model.ResponsibleParty = ResponsibleParty
     
-    return party, resource_meta, package_meta
+    return party
 
 def db_setup():
     """Create tables in the database"""
     # These tables will already be defined in memory if the metadata plugin is enabled.
     #  IConfigurer will make a call to define_tables()
     party = meta.metadata.tables.get("responsible_party", None)
-    package_meta = meta.metadata.tables.get("package_additional_metadata", None)
-    resource_meta = meta.metadata.tables.get("resource_additional_metadata", None)
     
-    if party == None or package_meta == None or resource_meta == None:
+    if party == None:
         # The tables have not been defined. Its likely that the plugin is not enabled in the CKAN .ini file
         log.debug("Could not create additional tables. Please make sure that you've added the metadata plugin to your CKAN config .ini file.")
     else:    
@@ -224,4 +98,4 @@ def db_setup():
         
         # Alright. Create the tables.
         from ckanext.ngds.base.commands.ngds_tables import create_tables
-        create_tables([party, package_meta, resource_meta], log)
+        create_tables([party], log)
