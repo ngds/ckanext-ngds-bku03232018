@@ -74,16 +74,20 @@ class CswPackage(object):
             string_attribute(address, "gmd", "city", responsible_party.city)
             string_attribute(address, "gmd", "administrativeArea", responsible_party.state)
             string_attribute(address, "gmd", "postalCode", responsible_party.zip)
-            string_attribute(address, "gmd", "country", "USA")
-            string_attribute(address, "gmd", "electronicMailAddress", responsible_party.email)
+            string_attribute(address, "gmd", "country", "USA") # Steve says should not be hard-coded
+            string_attribute(address, "gmd", "electronicMailAddress", responsible_party.email)                    
             role_attr = add_attribute(party, "gmd", "role")
+            # Steve will send a new URL for the role codelist
             codelist_ele(role_attr, "gmd", "CI_RoleCode", "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode", role)
         
         def distribution_id_for(resource):
             return "distribution-%s" % resource.id
         
+        # This function needs to be beefed up.
         def build_transfer_option(parent, distribution_info):
+            # ID belongs on the MD_DigitalTransferOptions
             transfer_option = etree.SubElement(parent, nsify("gmd", "transferOptions"), id=distribution_id_for(distribution_info.resource))
+            # There is also MD_
             online = add_nested_elements(transfer_option, "gmd:MD_DigitalTransferOptions/gmd:onLine")
             add_nested_elements(online, "gmd:linkage/gmd:URL").text = distribution_info.resource.url
             
@@ -100,17 +104,27 @@ class CswPackage(object):
             "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode",
             "utf8"
         )
+        
+        # Steve doesn't want hierarchyLevel crap hard-coded
+        #    - one picklist: OUR resource category in ...Levelname, map to std value for ...Level        
         hierarchy = add_attribute(record, "gmd", "hierarchyLevel")
         codelist_ele(hierarchy, "gmd", "MD_ScopeCode",
             "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ScopeCode",
             "dataset"    
         )
         string_attribute(record, "gmd", "hierarchyLevelName", "Dataset")
-        metadata_contact = add_attribute(record, "gmd", "contact")
-        build_responsible_party(metadata_contact, self.additional_package_metadata.maintainer, "pointOfContact")
+        
+        # There is potential to read contact info from logged in users if a correlation exists
+        metadata_contact = add_attribute(record, "gmd", "contact")         
+        build_responsible_party(metadata_contact, self.additional_package_metadata.maintainer, "pointOfContact") # This is OK to hard-code
+        # Any additional originator is who initially made the thing, and is about lineage really
+        
         date_attribute(record, "gmd", "dateStamp", self.package.metadata_modified.isoformat())
         string_attribute(record, "gmd", "metadataStandardName", "ISO-NAP-USGIN")
         string_attribute(record, "gmd", "metadataStandardVersion", "1.1.4")
+        
+        # Steve says URI - about the dataset as a whole, not a representation
+        #    ISBN, ISSN, DOI, Handle, or default to package URL 
         string_attribute(record, "gmd", "dataSetUri", "http://path/to/package/page?")
         
         # Identification Information
@@ -128,31 +142,45 @@ class CswPackage(object):
             "publication"
         )
         author = add_attribute(citation, "gmd", "citedResponsibleParty")
-        build_responsible_party(author, self.additional_package_metadata.author, "originator")
-        ### gmd:otherCitationDetails as a place to put a "formal" citation?
+        # Steve wants the ability to pick from a list. There will be a new codeList URI for roles
+        #    [ author, co-author, editor, contributor ]
+        # Steve wants to designate multiple people in this position -- multiple authors/editors/contributors/etc
+        build_responsible_party(author, self.additional_package_metadata.author, "originator")  
+        
+        # Steve thinks of this as something that someone might want to include, but doesn't have to
+        #    default value is nothing: field labeled "Recommended Citation"
+        ### gmd:otherCitationDetails as a place to put a "formal" citation
         
         ## Other ID info
+        # Steve wants some delimited quality statement in the abstract. If they enter it, save it and pipe delimit "|QualityStatement:"
         string_attribute(idInfo, "gmd", "abstract", self.package.notes)
-        status = add_attribute(idInfo, "gmd", "status") # Pacakage has "state" which may play into this
+        
+        # Steve wants the ability to pick status OF THE DATASET, not the metadata record
+        #    [ completed, ongoing, deprecated ] - completed as the default
+        status = add_attribute(idInfo, "gmd", "status") # Package has "state" is about metadata, not the resource
         codelist_ele(status, "gmd", "MD_ProgressCode", "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ProgressCode", "completed")
         
         ## Keywords
+        # Steve says add a location keyword if someone doesn't want to enter a bounding box
         keywords = add_nested_elements(idInfo, "gmd:descriptiveKeywords/gmd:MD_Keywords")
         [ string_attribute(keywords, "gmd", "keyword", tag.name) for tag in self.package.get_tags() ]
         
         ## Dataset language
-        string_attribute(idInfo, "gmd", "language", "eng")
+        #     Steve says shouldn't be hard-coded -- UI typeahead user pick language, store code, default to eng
+        string_attribute(idInfo, "gmd", "language", "eng") 
         
-        ## Topic category -- this doesn't look right
+        ## Topic category -- hard-coded OK
         topic = add_attribute(idInfo, "gmd", "topicCategory")        
         add_attribute(topic, "gmd", "MD_TopicCategoryCode").text = "geoscientificInformation"
         
-        ## Extent -- INCOMPLETE
+        ## Extent -- INCOMPLETE: Look at shapely .envelope
         extent = add_nested_elements(idInfo, "gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox")
         add_nested_elements(extent, "gmd:westBoundingLongitude/gco:Decimal")
         add_nested_elements(extent, "gmd:eastBoundingLongitude/gco:Decimal")
         add_nested_elements(extent, "gmd:southBoundingLatitude/gco:Decimal")
         add_nested_elements(extent, "gmd:northBoundingLatitude/gco:Decimal")
+        # Can also add real geometry with multiple gmd:extent eles, but need to generate GML
+                
         ## Distribution Information
         distInfo = add_nested_elements(record, "gmd:distributionInfo/gmd:MD_Distribution")
         
@@ -167,13 +195,19 @@ class CswPackage(object):
         for dist_id, dist_info in distribute_obj.items():
             distributor = add_nested_elements(distInfo, "gmd:distributor/gmd:MD_Distributor")
             distContact = add_attribute(distributor, "gmd", "distributorContact")
-            build_responsible_party(distContact, dist_info["distributor"], "distributor")
+            build_responsible_party(distContact, dist_info["distributor"], "distributor") # Steve doesn't want roles hard-coded
             for dist in dist_info["distributions"]:
                 reference = { nsify("xlink", "href"): "#%s" % distribution_id_for(dist.resource) }
                 etree.SubElement(distributor, nsify("gmd", "distributorTransferOptions"), **reference)
         ### Loop through one more time and add distributions --INCOMPLETE
         [ build_transfer_option(distInfo, resource_info) for resource_info in self.additional_resource_metadata ]
         
+        # Physical artifacts go into gmd:MD_Distribution/gmd:distributionFormat and distributorFormat points at a distributionFormat
+        #    There's also a orderProcess that gets attached to the distributor
+        # There are also digitalTransferOptions that are offLine (mail me a hard-disk or CD-ROM)
+        # Table 6 is offline non-digital stuff, 
+        
+        # Steve uses these sections, but doesn't provide info about what should be in there.
         # Quality Information
         #qualInfo = add_nested_elements(record, "gmd:dataQualityInfo/gmd:DQ_DataQuality")
         
