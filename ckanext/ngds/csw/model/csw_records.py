@@ -86,7 +86,14 @@ class CswRecord(NgdsDataObject):
             links.append(link)
             
         return "^".join(links)
-        
+    
+    @classmethod
+    def format_keywords(cls, iso_package):
+        keywords = [ keyword.name for keyword in iso_package.dataset_info["keywords"] ]
+        if iso_package.dataset_info["extent_keyword"]:
+            keywords.append(iso_package.dataset_info["extent_keyword"])
+        return ",".join(keywords)
+    
     @classmethod
     def from_iso_package(cls, iso_package, save=True):
         """Create an instance of CswRecord from an ckanext.ngds.metadata.model.iso_package:IsoPackage"""
@@ -103,7 +110,7 @@ class CswRecord(NgdsDataObject):
             "type": iso_package.dataset_info["category"],
             "title": iso_package.dataset_info["title"],
             "abstract": iso_package.dataset_info["abstract"],
-            "keywords": ",".join([ keyword.name for keyword in iso_package.dataset_info["keywords"] ]),
+            "keywords": cls.format_keywords(iso_package),
             "keywordstype": "theme",
             "parentIdentifier": None,
             "relation": "",
@@ -147,8 +154,10 @@ class CswRecord(NgdsDataObject):
             "links": cls.format_links(iso_package.resources)
         }
         
-        record = cls(**creation_args)
-        if save: record.save()
+        record = cls(**creation_args)        
+        if save:
+            record = cls.Session.merge(record) 
+            record.save()
         
         return record
     
