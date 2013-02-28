@@ -60,7 +60,18 @@
 
 {%- block scripts %}
    <script type="text/javascript" src="/scripts/jquery-1.9.0.js"></script>
-   <script type="text/javascript" src="/scripts/scripts.js"></script>   
-  <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
+   <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
+   <script>
+   var ngds = ngds || { };
+    ngds.$ = $.noConflict(true);
+   </script>
+     
+  
+  <script>document.getElementsByTagName('html')[0].className += ' js';</script>
+  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/jquery.min.js"></script>
+  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/:bundle:bootstrap/js/bootstrap-transition.min.js;bootstrap/js/bootstrap-collapse.min.js;bootstrap/js/bootstrap-modal.min.js;bootstrap/js/bootstrap-alert.min.js;bootstrap/js/bootstrap-tab.min.js;bootstrap/js/bootstrap-button.min.js;bootstrap/js/bootstrap-tooltip.js;bootstrap/js/bootstrap-popover.js;bootstrap/js/bootstrap-dropdown.js;jed.min.js;select2/select2.min.js">
+  </script>
+  <script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/follow.js;modules/popover-context.js;modules/activity-stream.js;modules/dashboard.js">
+  </script>
 {% endblock -%}
 
