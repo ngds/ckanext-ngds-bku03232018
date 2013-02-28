@@ -4,15 +4,13 @@ from sqlalchemy.orm import relationship
 from ckan import model
 from ckan.model import meta, Package
 
-from ckanext.ngds.base.model.ngds_db_object import NgdsDataObject
-
 from shapely.geometry import asShape
 import json
 
 import logging
 log = logging.getLogger(__name__)
 
-class CswRecord(NgdsDataObject):
+class CswRecord(object):
     """
     Class representing CSW Records that are stored in the database and served via CSW
     """
@@ -95,7 +93,7 @@ class CswRecord(NgdsDataObject):
         return ",".join(keywords)
     
     @classmethod
-    def from_iso_package(cls, iso_package, save=True):
+    def from_iso_package(cls, iso_package):
         """Create an instance of CswRecord from an ckanext.ngds.metadata.model.iso_package:IsoPackage"""
         creation_args = {
             "package_id": iso_package.ckan_package.id,
@@ -118,9 +116,9 @@ class CswRecord(NgdsDataObject):
             "time_end": None,
             "topicategory": iso_package.dataset_info["topic"],
             "resourcelanguage": iso_package.dataset_info["language"],
-            "creator": None,
-            "publisher": None,
-            "contributor": None,
+            "creator": "creator",
+            "publisher": "publisher",
+            "contributor": "contributor",
             "organization": None,
             "securityconstraints": None,
             "accessconstraints": iso_package.dataset_info["usage"],
@@ -154,11 +152,7 @@ class CswRecord(NgdsDataObject):
             "links": cls.format_links(iso_package.resources)
         }
         
-        record = cls(**creation_args)        
-        if save:
-            record = cls.Session.merge(record) 
-            record.save()
-        
+        record = cls(**creation_args)
         return record
     
 def define_tables():
