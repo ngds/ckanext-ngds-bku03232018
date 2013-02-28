@@ -74,7 +74,7 @@ class CswPlugin(SingletonPlugin):
         from ckanext.ngds.metadata.model.iso_package import IsoPackage
         from ckanext.ngds.csw.model.csw_records import CswRecord
         
-        if isinstance(entity, Package):
+        if isinstance(entity, Package) and entity.state != "draft":
             iso = IsoPackage(entity)
             csw = CswRecord.from_iso_package(iso)
             csw = meta.Session.merge(csw)
