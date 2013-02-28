@@ -1,5 +1,7 @@
 from additional_metadata import ResponsibleParty
 from lxml import etree
+from shapely.geometry import asShape
+import json
 
 class IsoPackage(object):
     """
@@ -32,26 +34,34 @@ class IsoPackage(object):
         self.dataset_info["publication_date"] = self.ckan_package.extras.get("publication_date", self.ckan_package.metadata_modified)
         self.dataset_info["creators"] = self.get_dataset_creators()
         self.dataset_info["abstract"] = self.ckan_package.notes
-        self.dataset_info["quality"] = self.ckan_package.extras.get("quality", None)
+        self.dataset_info["quality"] = self.ckan_package.extras.get("quality")
         self.dataset_info["status"] = self.ckan_package.extras.get("status", "completed")
         self.dataset_info["keywords"] = self.ckan_package.get_tags()
         self.dataset_info["language"] = self.ckan_package.extras.get("dataset_lang", "eng")
         self.dataset_info["topic"] = "geoscientificInformation"
-        self.dataset_info["extent"] = self.ckan_package.extras.get("spatial", self.ckan_package.extras.get("spatial_word", None))
+        self.dataset_info["extent_keyword"] = self.ckan_package.extras.get("spatial_word")
+        self.dataset_info["extent"] = self.ckan_package.extras.get("spatial")
         self.dataset_info["usage"] = self.ckan_package.license_id
         
         ## Distribution info
         self.resources = [ self.make_resource(resource) for resource in self.ckan_package.resources ]
     
     def get_distributor_contact(self, ckan_resource):
-        contact_id = ckan_resource.extras.get("distributor")        
-        return self.build_contact(ResponsibleParty.by_id(contact_id), "distributor")
-    
+        contact_id = ckan_resource.extras.get("distributor")
+        if contact_id:
+            party = ResponsibleParty.by_id(contact_id)
+            return self.build_contact(party, "distributor")
+        else:
+            return None
+        
     def get_metadata_contact(self):
         contact_id = self.ckan_package.extras.get("metadata_contact")
-        party = ResponsibleParty.by_id(contact_id)
-        contact = self.build_contact(party, "pointOfContact")
-        return contact
+        if contact_id:
+            party = ResponsibleParty.by_id(contact_id)
+            contact = self.build_contact(party, "pointOfContact")
+            return contact
+        else: 
+            return None
 
     def get_dataset_creators(self):
         creators = self.ckan_package.extras.get("creators", [])
@@ -65,6 +75,7 @@ class IsoPackage(object):
         
     def make_resource(self, ckan_resource):
         return {
+            "id": ckan_resource.id,
             "name": ckan_resource.name,
             "description": ckan_resource.description,
             "url": ckan_resource.url,
@@ -74,7 +85,21 @@ class IsoPackage(object):
             "format": ckan_resource.extras.get("format", None),
             "ordering": ckan_resource.extras.get("ordering", None)
         }
-        
+    
+    def distributionHelper(self):
+        obj = {}
+        for resource in self.resources:
+            if resource["distributor"] is not None:
+                distributor_id = resource["distributor"]["person"].id
+                if distributor_id not in obj.keys():
+                    obj[distributor_id] = { "distributor": resource["distributor"], "resources": [] }
+                obj[distributor_id]["resources"].append(resource)
+            else:
+                if "no-distributor-specified" not in obj.keys():
+                    obj["no-distributor-specified"] = { "distributor": None, "resources": [] }
+                obj["no-distributor-specified"]["resources"].append(resource)
+        return obj
+            
     def to_iso_xml(self):
         """Create ISO19139 XML in accordance with the USGIN metadata profile"""
         namespaces = {
@@ -103,9 +128,9 @@ class IsoPackage(object):
             charSet = etree.Element(qualifiedName("gmd", "characterSet"))
             attr = {
                 "codeList": "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode",
-                "codeListValue": self.dataset_info["charset"]
+                "codeListValue": self.metadata_info["charset"]
             }
-            etree.SubElement(charSet, qualifiedName("gmd", "MD_CharacterSetCode"), **attr).text = self.dataset_info["charset"]
+            etree.SubElement(charSet, qualifiedName("gmd", "MD_CharacterSetCode"), **attr).text = self.metadata_info["charset"]
             return charSet
         
         def hierarchyLevel():
@@ -172,9 +197,190 @@ class IsoPackage(object):
         
         def metadataContact():
             contact = etree.Element(qualifiedName("gmd", "contact"))
-            contact.append(responsibleParty(self.metadata_info["contact"]))
+            contact_obj = self.metadata_info["contact"]
+            if contact_obj:
+                contact.append(responsibleParty(contact_obj))
             return contact
         
+        def dateStamp():
+            date = etree.Element(qualifiedName("gmd", "dateStamp"))
+            etree.SubElement(date, qualifiedName("gco", "DateTime")).text = self.metadata_info["updated"].isoformat()
+            return date
+        
+        def metadataStandardName():
+            name = etree.Element(qualifiedName("gmd", "metadataStandardName"))
+            etree.SubElement(name, qualifiedName("gco", "CharacterString")).text = self.metadata_info["standard"]
+            return name
+        
+        def metadataStandardVersion():
+            version = etree.Element(qualifiedName("gmd", "metadataStandardVersion"))
+            etree.SubElement(version, qualifiedName("gco", "CharacterString")).text = self.metadata_info["version"]
+            return version
+        
+        def datasetUri():
+            uri = etree.Element(qualifiedName("gmd", "datasetUri"))
+            etree.SubElement(uri, qualifiedName("gco", "CharacterString")).text = self.dataset_info["uri"]
+            return uri
+        
+        def title():
+            title = etree.Element(qualifiedName("gmd", "title"))
+            etree.SubElement(title, qualifiedName("gco", "CharacterString")).text = self.dataset_info["title"]
+            return title
+        
+        def publicationDate():
+            date_attr = etree.Element(qualifiedName("gmd", "date"))
+            date = etree.SubElement(date_attr, qualifiedName("gmd", "CI_Date"))
+            subDate = etree.SubElement(date, qualifiedName("gmd", "date"))
+            etree.SubElement(subDate, qualifiedName("gco", "DateTime")).text = self.dataset_info["publication_date"].isoformat()
+            dateType = etree.SubElement(date, qualifiedName("gmd", "dateType"))
+            attr = {
+                "codeList": "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+                "codeListValue": "publication"
+            }
+            etree.SubElement(dateType, qualifiedName("gmd", "CI_DateTypeCode"), **attr).text = "publication"
+            return date_attr
+        
+        def citedResponsibleParties(parent):
+            for creator in self.dataset_info["creators"]:
+                cited = etree.SubElement(parent, qualifiedName("gmd", "citedResponsibleParty"))
+                cited.append(responsibleParty(creator))
+        
+        def abstract():
+            abstract_str = self.dataset_info["abstract"]
+            if self.dataset_info["quality"]:
+                abstract_str += " QualityStatement: %s" % self.dataset_info["quality"]
+                
+            abstract = etree.Element(qualifiedName("gmd", "abstract"))
+            etree.SubElement(abstract, qualifiedName("gco", "CharacterString")).text = abstract_str
+            return abstract
+        
+        def status():
+            status = etree.Element(qualifiedName("gmd", "status"))
+            attr = {
+                "codeList": "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ProgressCode",        
+                "codeListValue": self.dataset_info["status"]
+            }
+            etree.SubElement(status, qualifiedName("gmd", "ProgressCode"), **attr).text = self.dataset_info["status"]
+            return status
+        
+        def themeKeywords():
+            keyword_attr = etree.Element(qualifiedName("gmd", "descriptiveKeywords"))
+            keywords = etree.SubElement(keyword_attr, qualifiedName("gmd", "MD_Keywords"))
+            for keyword in self.dataset_info["keywords"]:
+                attr = etree.SubElement(keywords, qualifiedName("gmd", "keyword"))
+                etree.SubElement(attr, qualifiedName("gco", "CharacterString")).text = keyword.name
+            keyword_type = etree.SubElement(keywords, qualifiedName("gmd", "type"))
+            attr = {
+                "codeList": "",
+                "codeListValue": "theme"        
+            }
+            etree.SubElement(keyword_type, qualifiedName("gmd", "MD_KeywordTypeCode"), **attr).text = "theme"
+            return keyword_attr
+        
+        def extentKeyword():
+            keyword_attr = etree.Element(qualifiedName("gmd", "descriptiveKeywords"))
+            keywords = etree.SubElement(keyword_attr, qualifiedName("gmd", "MD_Keywords"))
+            attr = etree.SubElement(keywords, qualifiedName("gmd", "keyword"))
+            etree.SubElement(attr, qualifiedName("gco", "CharacterString")).text = self.dataset_info["extent_keyword"]
+            keyword_type = etree.SubElement(keywords, qualifiedName("gmd", "type"))
+            attr = {
+                "codeList": "",
+                "codeListValue": "location"        
+            }
+            etree.SubElement(keyword_type, qualifiedName("gmd", "MD_KeywordTypeCode"), **attr).text = "location"
+            return keyword_attr
+        
+        def datasetLanguage():
+            lang = etree.Element(qualifiedName("gmd", "language"))
+            etree.SubElement(lang, qualifiedName("gco", "CharacterString")).text = self.dataset_info["language"]
+            return lang
+        
+        def topicCategory():
+            topic = etree.Element(qualifiedName("gmd", "topicCategory"))
+            etree.SubElement(topic, qualifiedName("gmd", "MD_TopicCategoryCode")).text = self.dataset_info["topic"]
+            return topic
+        
+        def bbox():
+            geo = asShape(json.loads(self.dataset_info["extent"]))
+            
+            bbox = etree.Element(qualifiedName("gmd", "EX_GeographicBoundingBox"))
+            
+            west = etree.SubElement(bbox, qualifiedName("gmd", "westBoundingLongitude"))
+            etree.SubElement(west, qualifiedName("gco", "Decimal")).text = str(geo.envelope.bounds[0])
+            
+            east = etree.SubElement(bbox, qualifiedName("gmd", "eastBoundingLongitude"))
+            etree.SubElement(east, qualifiedName("gco", "Decimal")).text = str(geo.envelope.bounds[2])
+            
+            south = etree.SubElement(bbox, qualifiedName("gmd", "southBoundingLatitude"))
+            etree.SubElement(south, qualifiedName("gco", "Decimal")).text = str(geo.envelope.bounds[1])
+            
+            north = etree.SubElement(bbox, qualifiedName("gmd", "northBoundingLatitude"))
+            etree.SubElement(north, qualifiedName("gco", "Decimal")).text = str(geo.envelope.bounds[3])
+            
+            return bbox
+            
+        def extent():
+            extent = etree.Element(qualifiedName("gmd", "extent"))
+            ex_extent = etree.SubElement(extent, qualifiedName("gmd", "EX_Extent"))
+            geo = etree.SubElement(ex_extent, qualifiedName("gmd", "geographicElement"))
+            geo.append(bbox())
+            return extent
+        
+        def distributionIdFor(resource):
+            return "distribution-%s" % resource["id"]
+            
+        def distributor(dist_info):
+            dist_attr = etree.Element(qualifiedName("gmd", "distributor"))
+            distributor = etree.SubElement(dist_attr, qualifiedName("gmd", "MD_Distributor"))
+            contact = etree.SubElement(distributor, qualifiedName("gmd", "distributorContact"))
+            contact.append(responsibleParty(dist_info["distributor"]))
+            for resource in dist_info["resources"]:
+                attr = { qualifiedName("xlink", "href"): "#%s" % distributionIdFor(resource) }
+                etree.SubElement(distributor, qualifiedName("gmd", "distributorTransferOptions"), **attr)
+            return dist_attr
+        
+        def distributors(parent):
+            helper = self.distributionHelper()
+            for dist_id, dist_info in helper.items():
+                if dist_info["distributor"] is not None:
+                    etree.SubElement(parent, distributor(dist_info))
+                    
+        def onlineResource(resource):
+            online = etree.Element(qualifiedName("gmd", "CI_OnlineResource"))
+            
+            link = etree.SubElement(online, qualifiedName("gmd", "linkage"))
+            etree.SubElement(link, qualifiedName("gmd", "URL")).text = resource["url"]
+            
+            if resource["protocol"] is not None:
+                protocol = etree.SubElement(online, qualifiedName("gmd", "protocol"))
+                etree.SubElement(protocol, qualifiedName("gco", "CharacterString")).text = resource["protocol"] 
+            
+            name = etree.SubElement(online, qualifiedName("gmd", "name"))
+            etree.SubElement(name, qualifiedName("gco", "CharacterString")).text = resource["name"]
+            
+            description = resource["description"]
+            if resource["layer"] is not None: description += "LayerName: " + resource["layer"]
+            desc = etree.SubElement(online, qualifiedName("gmd", "description"))
+            etree.SubElement(desc, qualifiedName("gco", "CharacterString")).text = description
+            
+            return online
+                    
+        def transferOption(resource):
+            option = etree.Element(qualifiedName("gmd", "transferOptions"))
+            if resource["url"] is not None:
+                attr = { "id": "#%s" % distributionIdFor(resource) }
+                digital = etree.SubElement(option, qualifiedName("gmd", "MD_DigitalTransferOptions"), **attr)
+                online = etree.SubElement(digital, qualifiedName("gmd", "onLine"))
+                online.append(onlineResource(resource))
+            else:
+                pass
+            
+            return option
+        
+        def transferOptions(parent):         
+            for resource in self.resources:
+                parent.append(transferOption(resource))
+                
         # Create the root element
         schemaLocation = { qualifiedName("xsi", "schemaLocation"): "http://www.isotc211.org/2005/gmd http://schemas.opengis.net/csw/2.0.2/profiles/apiso/1.0.0/apiso.xsd" }
         record = etree.Element(qualifiedName("gmd", "MD_Metadata"), nsmap=namespaces, **schemaLocation)
@@ -186,7 +392,36 @@ class IsoPackage(object):
         record.append(hierarchyLevel())
         record.append(hierarchyLevelName())
         record.append(metadataContact())
-
+        record.append(dateStamp())
+        record.append(metadataStandardName())
+        record.append(metadataStandardVersion())
+        record.append(datasetUri())
+        
+        # Create the identificationInfo section
+        idInfo_attr = etree.SubElement(record, qualifiedName("gmd", "identificationInfo"))
+        idInfo = etree.SubElement(idInfo_attr, qualifiedName("gmd", "MD_DatasetIdentification"))
+        
+        cit_attr = etree.SubElement(idInfo, qualifiedName("gmd", "citation"))
+        citation = etree.SubElement(cit_attr, qualifiedName("gmd", "CI_Citation"))
+        
+        citation.append(title())
+        citation.append(publicationDate())
+        citedResponsibleParties(citation)
+        citation.append(abstract())
+        citation.append(status())
+        citation.append(themeKeywords())
+        if self.dataset_info["extent_keyword"]: citation.append(extentKeyword())
+        citation.append(datasetLanguage())
+        citation.append(topicCategory())
+        citation.append(extent())
+        
+        # Create the distributionInfo section
+        distInfo_attr = etree.SubElement(record, qualifiedName("gmd", "distributionInfo"))
+        distInfo = etree.SubElement(distInfo_attr, qualifiedName("gmd", "MD_Distribution"))
+            
+        distributors(distInfo)
+        transferOptions(distInfo)
+        
         # Convert to a string and return it.
         return etree.tostring(record)
         
