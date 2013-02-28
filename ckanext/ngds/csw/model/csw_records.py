@@ -6,6 +6,9 @@ from ckan.model import meta, Package
 
 from ckanext.ngds.base.model.ngds_db_object import NgdsDataObject
 
+from shapely.geometry import asShape
+import json
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -42,7 +45,7 @@ class CswRecord(NgdsDataObject):
         self.securityconstraints = kwargs.get("securityconstraints", None)
         self.accessconstraints = kwargs.get("accessconstraints", None)
         self.otherconstraints = kwargs.get("otherconstraints", None)
-        self.date = kwargs.get("typename", None)
+        self.date = kwargs.get("date", None)
         self.date_revision = kwargs.get("date_revision", None)
         self.date_creation = kwargs.get("date_creation", None)
         self.date_publication = kwargs.get("date_publication", None)
@@ -51,6 +54,7 @@ class CswRecord(NgdsDataObject):
         self.source = kwargs.get("source", None)
         self.crs = kwargs.get("crs", None)
         self.geodescode = kwargs.get("geodescode", None)
+        self.distancevalue = kwargs.get("distancevalue", None)
         self.distanceuom = kwargs.get("distanceuom", None)
         self.wkt_geometry = kwargs.get("wkt_geometry", None)
         self.servicetype = kwargs.get("servicetype", None)
@@ -69,7 +73,85 @@ class CswRecord(NgdsDataObject):
         self.specificationdate = kwargs.get("specificationdate", None)
         self.specificationdatetype = kwargs.get("specificationdatetype", None)
         self.links = kwargs.get("links", None)                
+    
+    @classmethod
+    def format_links(cls, resources):
+        '''Format links for pycsw usage: "name,description,protocol,url[^,,,[^,,,]]"'''
+        links = []
+        for resource in resources:
+            link = "%s," % resource["name"]
+            link += "%s," % resource["description"]
+            link += "%s," % resource["protocol"]
+            link += "%s" % resource["url"]
+            links.append(link)
+            
+        return "^".join(links)
         
+    @classmethod
+    def from_iso_package(cls, iso_package, save=True):
+        """Create an instance of CswRecord from an ckanext.ngds.metadata.model.iso_package:IsoPackage"""
+        creation_args = {
+            "package_id": iso_package.ckan_package.id,
+            "identifier": iso_package.metadata_info["id"],
+            "typename": "gmd:MD_Metadata",
+            "schema": "http://www.isotc211.org/2005/gmd",
+            "mdsource": "local",
+            "insert_date": iso_package.metadata_info["updated"].replace(microsecond=0).isoformat(),
+            "xml": iso_package.to_iso_xml(),
+            "anytext": "",
+            "language": iso_package.metadata_info["language"],
+            "type": iso_package.dataset_info["category"],
+            "title": iso_package.dataset_info["title"],
+            "abstract": iso_package.dataset_info["abstract"],
+            "keywords": ",".join([ keyword.name for keyword in iso_package.dataset_info["keywords"] ]),
+            "keywordstype": "theme",
+            "parentIdentifier": None,
+            "relation": "",
+            "time_begin": None,
+            "time_end": None,
+            "topicategory": iso_package.dataset_info["topic"],
+            "resourcelanguage": iso_package.dataset_info["language"],
+            "creator": None,
+            "publisher": None,
+            "contributor": None,
+            "organization": None,
+            "securityconstraints": None,
+            "accessconstraints": None,
+            "otherconstraints": None,
+            "date": iso_package.metadata_info["updated"].replace(microsecond=0).isoformat(),
+            "date_revision": None,
+            "date_creation": None,
+            "date_publication": iso_package.dataset_info["publication_date"].replace(microsecond=0).isoformat(),
+            "date_modified": None,
+            "format": None,
+            "source": None,
+            "crs": None,
+            "geodescode": None,
+            "denominator": None,
+            "distancevalue": None,
+            "distanceuom": None,
+            "wkt_geometry": asShape(json.loads(iso_package.dataset_info["extent"])).wkt,
+            "servicetype": None,
+            "servicetypeversion": None,
+            "operation": None,
+            "couplingtype": None,
+            "operateson": None,
+            "operatesonidentifier": None,
+            "degree": None,
+            "conditionapplyingtoaccessanduse": None,
+            "lineage": None,
+            "responsiblepartyrole": "distributor", # huh?
+            "specificationtitle": None,
+            "specificationdate": None,
+            "spcificationdatetype": None,
+            "links": cls.format_links(iso_package.resources)
+        }
+        
+        record = cls(**creation_args)
+        if save: record.save()
+        
+        return record
+    
 def define_tables():
     """
     Create in-memory representation of the tables, configure mappings to 

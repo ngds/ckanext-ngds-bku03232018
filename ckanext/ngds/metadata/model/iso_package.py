@@ -29,7 +29,7 @@ class IsoPackage(object):
         
         ## Dataset info
         self.dataset_info["uri"] = self.ckan_package.extras.get("dataset_uri", "http://path/to/ckan/package")
-        self.dataset_info["category"] = self.ckan_package.extras.get("dataset_category", "Dataset")
+        self.dataset_info["category"] = self.ckan_package.extras.get("dataset_category", "dataset")
         self.dataset_info["title"] = self.ckan_package.title
         self.dataset_info["publication_date"] = self.ckan_package.extras.get("publication_date", self.ckan_package.metadata_modified)
         self.dataset_info["creators"] = self.get_dataset_creators()
@@ -423,7 +423,7 @@ class IsoPackage(object):
         transferOptions(distInfo)
         
         # Convert to a string and return it.
-        return etree.tostring(record)
+        return etree.tostring(record, encoding=unicode)
         
         
         
