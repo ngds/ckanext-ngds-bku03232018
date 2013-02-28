@@ -41,7 +41,7 @@ class IsoPackage(object):
         self.dataset_info["topic"] = "geoscientificInformation"
         self.dataset_info["extent_keyword"] = self.ckan_package.extras.get("spatial_word")
         self.dataset_info["extent"] = self.ckan_package.extras.get("spatial")
-        self.dataset_info["usage"] = self.ckan_package.license_id
+        self.dataset_info["usage"] = self.license_text()
         
         ## Distribution info
         self.resources = [ self.make_resource(resource) for resource in self.ckan_package.resources ]
@@ -99,6 +99,25 @@ class IsoPackage(object):
                     obj["no-distributor-specified"] = { "distributor": None, "resources": [] }
                 obj["no-distributor-specified"]["resources"].append(resource)
         return obj
+    
+    def license_text(self):            
+        licenses = { "cc-by": "Creative Commons Attribution",
+          "cc-by-sa": "Creative Commons Attribution Share-Alike",
+          "cc-zero": "Creative Commons CCZero",
+          "cc-nc": "Creative Commons Non-Commercial (Any)",
+          "gfdl": "GNU Free Documentation License",
+          "notspecified": "License Not Specified",
+          "odc-by": "Open Data Commons Attribution License",
+          "odc-odbl": "Open Data Commons Open Database License (ODbL)",
+          "odc-pddl": "Open Data Commons Public Domain Dedication and Licence (PDDL)",
+          "other-at": "Other (Attribution)",
+          "other-nc": "Other (Non-Commercial)",
+          "other-closed": "Other (Not Open)",
+          "other-open": "Other (Open)",
+          "other-pd": "Other (Public Domain)",
+          "uk-ogl": "UK Open Government Licence (OGL)"
+        }
+        return licenses[self.ckan_package.license_id]
             
     def to_iso_xml(self):
         """Create ISO19139 XML in accordance with the USGIN metadata profile"""
@@ -380,7 +399,12 @@ class IsoPackage(object):
         def transferOptions(parent):         
             for resource in self.resources:
                 parent.append(transferOption(resource))
-                
+                        
+        def usageConstraints():
+            usage = etree.Element(qualifiedName("gmd", "useLimitation"))
+            etree.SubElement(usage, qualifiedName("gco", "CharacterString")).text = self.dataset_info["usage"]
+            return usage
+               
         # Create the root element
         schemaLocation = { qualifiedName("xsi", "schemaLocation"): "http://www.isotc211.org/2005/gmd http://schemas.opengis.net/csw/2.0.2/profiles/apiso/1.0.0/apiso.xsd" }
         record = etree.Element(qualifiedName("gmd", "MD_Metadata"), nsmap=namespaces, **schemaLocation)
@@ -421,6 +445,11 @@ class IsoPackage(object):
             
         distributors(distInfo)
         transferOptions(distInfo)
+        
+        # Constraints
+        constraint_attr = etree.SubElement(record, qualifiedName("gmd", "metadataConstraints"))
+        constraints = etree.SubElement(constraint_attr, qualifiedName("gmd", "MD_Constraints"))
+        constraints.append(usageConstraints())
         
         # Convert to a string and return it.
         return etree.tostring(record, encoding=unicode)

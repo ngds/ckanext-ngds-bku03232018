@@ -123,7 +123,7 @@ class CswRecord(NgdsDataObject):
             "contributor": None,
             "organization": None,
             "securityconstraints": None,
-            "accessconstraints": None,
+            "accessconstraints": iso_package.dataset_info["usage"],
             "otherconstraints": None,
             "date": iso_package.metadata_info["updated"].replace(microsecond=0).isoformat(),
             "date_revision": None,
