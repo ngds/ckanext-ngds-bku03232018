@@ -22,10 +22,10 @@ CONFIGURATION = {
         'profiles': 'apiso,dif,fgdc,atom,ebrim',
     },
     'repository': {
-        'database': 'postgresql://ckanuser:secret@localhost:5432/ckan',
+        'database': 'postgresql://ckanuser:secret@localhost:5432/ckan', # read from configuration
         'table': 'csw_record'
     },
-    'metadata:main': {
+    'metadata:main': { # Read all from configuration
         'identification_title': 'NGDS CSW',
         'identification_abstract': 'NGDS is awesome',
         'identification_keywords': 'ngds,csw,ogc,catalog',
@@ -49,7 +49,7 @@ CONFIGURATION = {
         'contact_instructions': 'During hours of service.  Off on weekends.',
         'contact_role': 'pointOfContact',
     },
-    'metadata:inspire': {
+    'metadata:inspire': { # from configuration
         'enabled': 'false',
         'languages_supported': 'eng',
         'default_language': 'eng',

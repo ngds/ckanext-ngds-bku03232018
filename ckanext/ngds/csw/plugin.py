@@ -74,15 +74,17 @@ class CswPlugin(SingletonPlugin):
         from ckanext.ngds.metadata.model.iso_package import IsoPackage
         from ckanext.ngds.csw.model.csw_records import CswRecord
         
-        if isinstance(entity, Package) and entity.state != "draft":
+        if isinstance(entity, Package) and entity.state != "draft": # pacakge is in draft mode until you complete the entire set of forms
             iso = IsoPackage(entity)
             csw = CswRecord.from_iso_package(iso)
             csw = meta.Session.merge(csw)
             
-            if operation != DomainObjectOperation.deleted:
+            if operation == DomainObjectOperation.changed and entity.state == "deleted": # action package_delete only changes the package state to deleted
+                meta.Session.delete(csw)
+            elif operation != DomainObjectOperation.deleted: # This would be new or changed packages
                 meta.Session.add(csw)
-            else:
-                csw.delete()
+            else: # I don't know how to cause this, I assume it would be some kind of full delete of the package
+                meta.Session.delete(csw) 
             
         elif isinstance(entity, ResponsibleParty):
             pass
