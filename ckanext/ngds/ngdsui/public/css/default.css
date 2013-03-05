@@ -1522,40 +1522,40 @@ input#field-extras-0-key, input#field-extras-0-value {
 }
 
 .select2-results {
-margin: 4px 4px 4px 0;
-padding: 0 0 0 4px;
-position: relative;
-overflow-x: hidden;
-overflow-y: auto;
-max-height: 200px;
+	margin: 4px 4px 4px 0;
+	padding: 0 0 0 4px;
+	position: relative;
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 200px;
 }
 
 .select2-results .select2-highlighted {
-background: #3875d7;
-color: #fff;
+	background: #3875d7;
+	color: #fff;
 }
 .select2-results li {
-list-style: none;
-display: list-item;
+	list-style: none;
+	display: list-item;
 }
 
 .select2-drop {
-background: #fff;
-color: #000;
-border: 1px solid #aaa;
-border-top: 0;
-position: absolute;
-top: 100%;
--webkit-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
--moz-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
--o-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
-z-index: 9999;
-width: 100%;
-margin-top: -1px;
--webkit-border-radius: 0 0 4px 4px;
--moz-border-radius: 0 0 4px 4px;
-border-radius: 0 0 4px 4px;
+	background: #fff;
+	color: #000;
+	border: 1px solid #aaa;
+	border-top: 0;
+	position: absolute;
+	top: 100%;
+	-webkit-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+	-moz-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+	-o-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+	box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+	z-index: 9999;
+	width: 100%;
+	margin-top: -1px;
+	-webkit-border-radius: 0 0 4px 4px;
+	-moz-border-radius: 0 0 4px 4px;
+	border-radius: 0 0 4px 4px;
 }
 
 .slug-preview { 
@@ -1573,4 +1573,57 @@ border-radius: 0 0 4px 4px;
 
 .slug-preview-prefix {
 	margin-left:100px;
+}
+
+.select2-choices {
+
+}
+
+.select2-choices li {
+	list-style: none;
+}
+
+.select2-container {
+	display:inline;
+	width:100px;
+}
+
+li.select2-search-field input{
+	width:400px;
+}
+
+.input[type="file"] {
+	width: auto;
+	padding: initial;
+	line-height: initial;
+	background-color: #ffffff;
+	background-color: initial;
+	border: initial;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	height: 28px;
+	line-height: 28px;
+}
+
+.resource-upload-field input {
+	opacity: 0;
+	filter: alpha(opacity=0);
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 1;
+	margin: 0;
+	border: solid transparent;
+	border-width: 100px 0 0 200px;
+	cursor: pointer;
+	direction: ltr;
+	-moz-transform: translate(-300px, 0) scale(4);
+}
+
+.resource-upload-field {
+	position: relative;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
 }

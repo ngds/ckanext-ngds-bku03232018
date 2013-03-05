@@ -1,0 +1,80 @@
+{% extends "package/base_form_page.html" %}
+
+{% if c.userobj %}
+  {% set logged_in = true %}
+{% else %}
+  {% set logged_in = false %}
+{% endif %}
+
+{% block subtitle %}{{ _('Add data to the dataset') }}{% endblock %}
+
+{% block form %}{% snippet 'package/snippets/resource_form.html', data=data, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, allow_upload=logged_in %}{% endblock %}
+
+
+{% block secondary_content %}
+  {% if pkg_dict and pkg_dict.state != 'draft' %}
+    {% snippet 'package/snippets/info.html', pkg=pkg_dict, action='resource_new' %}
+  {% else %}  
+    <section class="module module-narrow module-shallow">
+      <h2 class="module-heading"><i class="icon-large icon-info-sign"></i> {{ _('What\'s a resource?') }}</h2>
+      <div class="module-content">
+        <p>{{ _('A resource can be any file or link to a file containing useful data.') }}</p>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/bootstrap/js/bootstrap-transition.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/bootstrap/js/bootstrap-collapse.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/bootstrap/js/bootstrap-modal.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/bootstrap/js/bootstrap-alert.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/bootstrap/js/bootstrap-tab.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/bootstrap/js/bootstrap-button.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/bootstrap/js/bootstrap-tooltip.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/bootstrap/js/bootstrap-popover.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/jed.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/select2/select2.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/jquery-fileupload/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/jquery-fileupload/jquery.fileupload.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/plugins/jquery.inherit.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/plugins/jquery.proxy-all.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/plugins/jquery.url-helpers.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/plugins/jquery.date-helpers.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/plugins/jquery.slug.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/plugins/jquery.slug-preview.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/plugins/jquery.truncator.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/plugins/jquery.form-warning.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/sandbox.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/module.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/pubsub.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/client.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/notify.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/i18n.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/main.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/select-switch.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/slug-preview.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/basic-form.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/confirm-action.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/api-info.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/autocomplete.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/custom-fields.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/related-item.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/data-viewer.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/resource-form.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/resource-upload-field.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/follow.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/popover-context.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/activity-stream.js"></script>
+<script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/modules/dashboard.js"></script></body>
+
+{% endblock %}
+
+{% block breadcrumb_content %}
+  <li>{% link_for _('Datasets'), controller='package', action='search', highlight_actions = 'new index' %}</li>
+  <li>{% link_for h.dataset_display_name(pkg_dict)|truncate(30), controller='package', action='read', id=pkg_dict.name %}</li>
+  <li class="active"><a href="">Add resource</a></li>
+{% endblock %}
+
