@@ -43,7 +43,9 @@
 
     {{ form.markdown('description', id='field-description', label=_('Description : '), placeholder=_('Some useful notes about the data'), value=data.description, error=errors.description) }}
 
-    {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
+     
+     {# set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/resource/format_autocomplete?incomplete=?'} #}
+      {% set format_attrs = {} %} <!-- This is to prevent the autocomplete feature from meddling with the page. -->
     {% call form.input('format', id='field-format', label=_('Format : '), placeholder=_('eg. CSV, XML or JSON'), value=data.format, error=errors.format, classes=['control-medium'], attrs=format_attrs) %}
     
     {% endcall %}
@@ -87,5 +89,8 @@
   </div>
 </form>
 
+<script>
+  console.log("Active");
+</script>
 
  
