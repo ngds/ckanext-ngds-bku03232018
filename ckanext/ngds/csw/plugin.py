@@ -65,16 +65,13 @@ class CswPlugin(SingletonPlugin):
         I think I'll need to listen for changes to ckan.model.Package and ckanext.ngds.metadata.model.ResponsibleParty
         
         Will be tricky to find all the packages that implement a given ResponsibleParty and update them
-        
-        I'm not sure what all the operations will be, either
-        [ new, changed, deleted ]
         """
         from ckan.model import Package
         from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty
         from ckanext.ngds.metadata.model.iso_package import IsoPackage
         from ckanext.ngds.csw.model.csw_records import CswRecord
         
-        if isinstance(entity, Package) and entity.state != "draft": # pacakge is in draft mode until you complete the entire set of forms
+        if isinstance(entity, Package) and entity.state != "draft": # package is in draft mode until you complete the entire set of forms
             iso = IsoPackage(entity)
             csw = CswRecord.from_iso_package(iso)
             csw = meta.Session.merge(csw)

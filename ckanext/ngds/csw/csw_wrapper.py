@@ -100,7 +100,7 @@ class CswController(BaseController):
         content = csw.dispatch_wsgi()
         
         # Set the response Content-type, and return the result
-        kwargs["pylons"].response.content_type = "text/xml"        
+        kwargs["pylons"].response.content_type = csw.contenttype       
         return content
     
     def xml_test(self, *args, **kwargs):
