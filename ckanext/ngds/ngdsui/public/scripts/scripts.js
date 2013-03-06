@@ -1,6 +1,5 @@
 var ngds = ngds || { };
 (function() {
-	var $ = ngds.$;
 	$(document).ready(function() { 
 
 		$('#read-only-form :input').attr('readonly','readonly');
