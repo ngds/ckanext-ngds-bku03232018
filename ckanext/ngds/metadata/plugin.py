@@ -2,6 +2,8 @@ from ckan.plugins import implements, SingletonPlugin
 from ckan.plugins import IDatasetForm, IConfigurer, IActions
 from ckanext.ngds.metadata.controllers.additional_metadata import dispatch
 from ckanext.ngds.metadata.model.additional_metadata import define_tables
+from ckan import model
+
 import os
 
 class MetadataPlugin(SingletonPlugin):
@@ -12,7 +14,8 @@ class MetadataPlugin(SingletonPlugin):
     def update_config(self, config):
         """IConfigurable function. config is a dictionary of configuration parameters"""
         # Provides a point to do mappings from classes to database tables whenever CKAN is run
-        define_tables()
+        if not hasattr(model, "ResponsibleParty"):
+            define_tables()
         
         '''
         # First find the full path to my template directory

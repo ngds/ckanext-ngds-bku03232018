@@ -1,26 +1,17 @@
 from nose.tools import ok_, eq_, raises
 import requests, json
 
-from ckan.model import meta, Package, Resource, Session
 from ckanext.ngds.metadata.tests.base import MetadataTestBase
 
 from sqlalchemy import create_engine
 
 from ckan import model
-from ckan.model import Package, Session
+from ckan.model import Package, Session, meta
 from ckanext.ngds.metadata.controllers import additional_metadata
+from datetime import datetime
 
 class TestDispatch(MetadataTestBase):
-    base_data = {
-                "name": "Genhan Chen",
-                "email": "genhan.chen@azgs.az.gov",
-                "organization": "Arizona Geological Survey",
-                "phone": "520-209-4136",
-                "street": "416 W. Congress St. Ste. 100",
-                "city": "Tucson",
-                "state": "AZ",
-                "zip": "85701"
-            }
+
     '''  
     def responsibleparty_create(self):
 
@@ -39,10 +30,25 @@ class TestDispatch(MetadataTestBase):
             self._delete_record("responsible_party", result["id"])
     '''
             
-    def test_dispatch(self):
+    def test_dispatch(self):       
+        '''
+        Test if dispatch function works for responsible_party table 
+        '''
         
-        post_data = {"model": "ResponsibleParty", "process": "create"}
-        post_data.update({"data": self.base_data})
+        post_data_rp = {
+                "model": "ResponsibleParty", 
+                "process": "create",
+                "data": {
+                    "name": "Genhan Chen",
+                    "email": "genhan.chen@azgs.az.gov",
+                    "organization": "Arizona Geological Survey",
+                    "phone": "520-209-4136",
+                    "street": "416 W. Congress St. Ste. 100",
+                    "city": "Tucson",
+                    "state": "AZ",
+                    "zip": "85701"
+                }
+        }
         
         context = {
                 "model": model,
@@ -52,11 +58,7 @@ class TestDispatch(MetadataTestBase):
             }
         
         try:
-            res = additional_metadata.dispatch(context, post_data)
-            del res['id']
-            eq_(res, self.base_data, "The dispatch function cannot determine responsible party controller!")
+            res = additional_metadata.dispatch(context, post_data_rp)
         finally:
             print "The dispatch function cannot determine responsible party controller!" 
-            
         
-         
