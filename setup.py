@@ -34,7 +34,10 @@ setup(
 	[paste.paster_command]
     # Install NGDS additional tables
 	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
-	
+    
+	[nose.plugins]
+    pylons = pylons.test:PylonsPlugin
+
 	[ckan.plugins]
 	# CSW plugin
 	csw=ckanext.ngds.csw.plugin:CswPlugin
