@@ -105,7 +105,9 @@ class CswController(BaseController):
     
     def xml_test(self, *args, **kwargs):
         from ckan import model
-        test_package = model.Package.get(kwargs["package_id"])
+        '''test_package = model.Package.get(kwargs["package_id"])
         test_csw_package = model.IsoPackage(test_package)        
         kwargs["pylons"].response.content_type = "text/xml"
-        return test_csw_package.to_iso_xml()
+        return test_csw_package.to_iso_xml()'''
+        node = model.HarvestNode("http://debug.catalog.usgin.org/geoportal/csw")
+        node.do_harvest()
