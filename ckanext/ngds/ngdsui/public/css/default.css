@@ -1638,3 +1638,8 @@ li.select2-search-field input{
 
 
 /* END CKAN STYLES THAT NEED TO BE OVERRIDEN*/ 
+
+
+.ui-menu-item a {
+	font-size:14px;
+}
