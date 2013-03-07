@@ -25,8 +25,6 @@
 
 {{ form.input('maintainer_email', label=_('Maintainer Email : '), id='field-maintainer-email', placeholder=_('joe@example.com'), value=data.maintainer_email, error=errors.maintainer_email, classes=['control-medium','condensed']) }}
 
-{% set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/user/autocomplete?q=?'} %}
-          {{ form.input('username', id='field-username', label=_('User'), placeholder=_('Username'), value='', error='', classes=['control-medium'], attrs=format_attrs) }}
 
 <div class="control-group control-medium">
     <label class="control-label">Dataset Extent : </label>
@@ -44,7 +42,3 @@
 {% block custom_fields %}
   {% snippet 'snippets/custom_form_fields.html', extras=data.extras, errors=errors, limit=3 %}
 {% endblock %}
-<script>document.getElementsByTagName('html')[0].className += ' js';</script>
-<script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-01T11:05:11.12/jquery.min.js"></script>
-<script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-01T11:05:11.12/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js"></script>
-<script type="text/javascript" src="/fanstatic/base/:version:2013-03-01T11:05:11.11/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/follow.min.js;modules/activity-stream.js;modules/dashboard.min.js"></script>

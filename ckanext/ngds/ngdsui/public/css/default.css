@@ -1627,3 +1627,14 @@ li.select2-search-field input{
 	display: inline-block;
 	vertical-align: bottom;
 }
+
+
+/* CKAN styles that need to be overriden for the autocomplete to look nice */
+
+.select2-drop {
+	
+}
+
+
+
+/* END CKAN STYLES THAT NEED TO BE OVERRIDEN*/ 
