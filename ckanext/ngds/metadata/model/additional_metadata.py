@@ -34,7 +34,7 @@ from ckan.model import meta, Package, Resource
 
 from sqlalchemy import types, Column, Table, ForeignKey
 from sqlalchemy.orm import relationship, validates
-# from sqlalchemy.sql.expression import or_ 
+from sqlalchemy.sql.expression import or_ 
 
 from datetime import datetime
 
@@ -143,22 +143,22 @@ class ResponsibleParty(NgdsDataObject):
         self.city = kwargs.get('city', None)
         self.zip = kwargs.get('zip', None)
         
-    # @classmethod
-    # def search(cls, querystr, sqlalchemy_query=None):
-    #     '''Search name, fullname, email and openid. '''
-    #     if sqlalchemy_query is None:
-    #         query = meta.Session.query(cls)
-    #     else:
-    #         query = sqlalchemy_query
+    @classmethod
+    def search(cls, querystr, sqlalchemy_query=None):
+        '''Search name, fullname, email and openid. '''
+        if sqlalchemy_query is None:
+            query = meta.Session.query(cls)
+        else:
+            query = sqlalchemy_query
         
-    #     qstr = '%' + querystr + '%'
-    #     print "qstr is : ",qstr
-    #     query = query.filter(or_(
-    #         cls.name.ilike(qstr),
-    #         cls.email.ilike(qstr)
-    #         ))
-    #     print query
-    #     return query
+        qstr = '%' + querystr + '%'
+        print "qstr is : ",qstr
+        query = query.filter(or_(
+            cls.name.ilike(qstr),
+            cls.email.ilike(qstr)
+            ))
+        print query
+        return query
     # Vivek - Put this in here temporarily to explore if this works.
 
 def define_tables():

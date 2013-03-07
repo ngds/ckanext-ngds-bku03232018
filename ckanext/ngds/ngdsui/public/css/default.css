@@ -1643,3 +1643,22 @@ li.select2-search-field input{
 .ui-menu-item a {
 	font-size:14px;
 }
+
+/*
+	Extras styles
+*/
+
+div.controls select {
+	width:464px;
+}
+
+div.controls select[id="field-extras-0-value"] {
+	margin-left:0px;
+}
+
+.control-group {
+	margin-left:0px;
+}
+/*
+	End extras styles
+*/

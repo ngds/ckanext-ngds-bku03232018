@@ -1,5 +1,9 @@
 from ckan.plugins.toolkit import toolkit
 from ckanext.ngds.base.controllers.ngds_crud_controller import NgdsCrudController
+from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty
+from pylons import c, request, response
+import ckan.lib.base as base
+import ckan.lib.jsonp as jsonp
 
 def dispatch(context, data_dict):
     """
@@ -31,7 +35,7 @@ def dispatch(context, data_dict):
     # execute method inspects POST body and runs the correct functions
     return controller.execute(data_dict)
     
-    
+
 class AdditionalResourceMetadataController(NgdsCrudController):
     """A class for controlling additional resource metadata RPC"""
     def __init__(self, context):
@@ -49,5 +53,22 @@ class ResponsiblePartyController(NgdsCrudController):
     def __init__(self, context):
         """Find the right model for this class"""
         self.model = context['model'].ResponsibleParty
+
+class Responsible_Parties_UI(base.BaseController):
+    @jsonp.jsonpify
+    def get_responsible_parties(self):
+        q = request.params.get('q', '')
+        query =ResponsibleParty.search(q).limit(10)
+        
+        user_list = []
+        for user in query.all():
+            result_dict = {}
+            for k in ['id', 'name']:
+                    result_dict[k] = getattr(user,k)
+
+            user_list.append(result_dict)
+        print "Resp list : ",user_list
+
+        return user_list
     
     

@@ -10,7 +10,7 @@ var ngds = ngds || { };
     display_key : The key to the parameter in the response that gives us the display value of the suggestion drop down
     value_key : The key to the parameter in the response that gives us the value the text box should have
   */
-ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key,value_key) {
+ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key,value_key,method) {
   
   var textbox_component = $(hash_id_elem);
   
@@ -25,9 +25,19 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
           $.getJSON(source_url, dict, response);
         },
       response:function(event,ui) {
-        $.each(ui.content,function(index,val){
-          val.label=val[display_key];
-          val.value=val[value_key];
+        $.each(ui.content,function(index,val){ 
+          
+          var t1 = (val[display_key]!==null && typeof val[display_key]!=='undefined');
+          var t2 = (val[value_key]!==null && typeof val[value_key]!=='undefined');
+          
+          if(t1 && t2) {  // scrub out values that are null or undefined since there's no point trying to display them.
+            val.label=val[display_key];
+            val.value=val[value_key];  
+          }
+          else { // console log it
+            console.log("Got null/undefined value for call :",request);
+          }
+          
         });
       }
   });

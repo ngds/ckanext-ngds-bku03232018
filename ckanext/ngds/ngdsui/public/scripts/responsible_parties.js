@@ -4,8 +4,9 @@
 
 */
 $(document).ready(function() {
-  ngds.autocomplete("#field-author","/api/2/util/user/autocomplete",'q','name','name');  
-  ngds.autocomplete("#field-maintainer","/api/2/util/user/autocomplete",'q','name','name');  
+  ngds.autocomplete("#field-author","/responsible_parties",'q','name','name');  
+  // ngds.autocomplete("#field-maintainer","/api/2/util/user/autocomplete",'q','name','name');  
+  ngds.autocomplete("#field-maintainer","/api/2/util/user/autocomplete",'q','name','name');
 });
 
 
