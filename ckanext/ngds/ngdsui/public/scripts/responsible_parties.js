@@ -4,9 +4,10 @@
 
 */
 $(document).ready(function() {
-  ngds.autocomplete("#field-author","/responsible_parties",'q','name','name');  
-  // ngds.autocomplete("#field-maintainer","/api/2/util/user/autocomplete",'q','name','name');  
-  ngds.autocomplete("#field-maintainer","/api/2/util/user/autocomplete",'q','name','name');
+  var field_author = ngds.autocomplete("#field-author-fake","/responsible_parties",'q','name','name');  
+  field_author.proxy("#field-author","id");
+  var maintainer = ngds.autocomplete("#field-maintainer-fake","/responsible_parties",'q','name','name');
+  maintainer.proxy("#field-maintainer","id");
 });
 
 

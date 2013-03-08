@@ -10,9 +10,11 @@ var ngds = ngds || { };
     display_key : The key to the parameter in the response that gives us the display value of the suggestion drop down
     value_key : The key to the parameter in the response that gives us the value the text box should have
   */
-ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key,value_key,method) {
+ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key,value_key) {
   
   var textbox_component = $(hash_id_elem);
+  var display_key = display_key;
+  var value_key = value_key;
   
   if(textbox_component.length===0) {
     throw "No such id in the DOM. Make sure you're invoking the function with something like '#an_id' (one that is valid)";
@@ -41,6 +43,17 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
         });
       }
   });
+  auto = autocomplete;
 
-  return autocomplete;
+  return {
+      autocomplete:autocomplete,
+      proxy:function(proxy_id_elem,value_key){ // If the value of the autocomplete suggestion is something that doesn't make sense to the user, 
+                                                // we can display the autocomplete value instead and use a proxy to carry the real value. 
+                                                // Keep in mind that the proxy is really the text box that we care about, so id's et al have to make sense.
+        var proxy_elem = $(proxy_id_elem);
+        autocomplete.on('autocompleteselect',function(ev,ui) {
+            proxy_elem.val(ui.item.id);
+        });
+      }
+  };
 };

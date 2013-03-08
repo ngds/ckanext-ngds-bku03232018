@@ -161,6 +161,15 @@ class ResponsibleParty(NgdsDataObject):
         return query
     # Vivek - Put this in here temporarily to explore if this works.
 
+    @classmethod
+    def get(cls, reference):
+        '''Returns a group object referenced by its id or name.'''
+        query = meta.Session.query(cls).filter(cls.id == reference)
+        member = query.first()
+        if member is None:
+            member = cls.by_name(reference)
+        return member
+
 def define_tables():
     """Create the in-memory represenatation of tables, and map those tables to classes defined above"""
     

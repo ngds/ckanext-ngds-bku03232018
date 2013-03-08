@@ -32,7 +32,5 @@ ngds.CKANDataset = function(raw) { // Exposes a set of functions and objects to 
 			}
 		}
 	}
-
 	return _ckan_dataset.construct();
-
 };

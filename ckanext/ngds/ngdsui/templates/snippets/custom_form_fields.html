@@ -59,6 +59,72 @@ Example:
     ) }}
   {% endfor #}
 
+   <!-- URI -->
+
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-0-key" name="extras__0__key" value="URI" placeholder="" style="display:none;">      
+      <input id="field-extras-0-value" type="text" name="extras__0__value" placeholder style="display:none;">
+      <script>
+        
+      </script>
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- URI end -->
+
+ <!-- Author -->
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-author" name="author" placeholder="" style="display:none;" value="{{ data.author }}">
+      <label for="field-author-fake" class="control-label">Author</label>
+      
+      <input id="field-author-fake" type="text" name="field-author-fake" placeholder value="{{ h.get_responsible_party_name(data.author) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Author end -->
+
+   <!-- Maintainer -->
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-maintainer" name="maintainer" placeholder="" style="display:none;" value="{{ data.maintainer }}">
+      <label for="field-maintainer-fake" class="control-label">Maintainer</label>
+      
+      <input id="field-maintainer-fake" type="text" name="field-maintainer-fake" placeholder value="{{ h.get_responsible_party_name(data.maintainer) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Maintainer end -->
+
+<!-- Category -->
+
 <div class="control-group control-custom">
     <div class="controls editor">
       
@@ -89,7 +155,11 @@ Example:
     </div>     
     </div>
   </div>
-  
+
+  <!-- Category End -->
+
+  <!-- URI -->
+
   <div class="control-group control-custom">
     <div class="controls editor">
       
@@ -107,6 +177,10 @@ Example:
     </div>     
     </div>
   </div>
+
+  <!-- URI end -->
+
+  <!-- Publication Date -->
 
   <div class="control-group control-custom">
     <div class="controls editor">
@@ -130,5 +204,80 @@ Example:
     </div>
   </div>
 
-</div>
+  <!-- Publication date end -->
+
+  <!-- Quality -->
+
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-4-key" name="extras__4__key" value="Quality" placeholder="" style="display:none;">
+      <label for="field-extras-4-value" class="control-label">Quality</label>
+      
+      <input id="field-extras-4-value" type="text" name="extras__4__value" placeholder value="{{ get_value("Quality",extras) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Quality end -->
+
+    <!-- Lineage -->
+
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-5-key" name="extras__5__key" value="Lineage" placeholder="" style="display:none;">
+      <label for="field-extras-5-value" class="control-label">Lineage</label>
+      
+      <input id="field-extras-5-value" type="text" name="extras__5__value" placeholder value="{{ get_value("Lineage",extras) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Lineage end -->
+
+
+  <!-- Status -->
+
+<div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-6-key" name="extras__6__key" value="Status" placeholder="" style="display:none;">
+      <label for="field-extras-6-value" class="control-label">Status</label>
+      
+      <select id="field-extras-6-value" name="extras__6__value" placeholder="">
+          <option{{ is_selected("Completed","Status",extras) }}>Completed</option>
+          <option{{ is_selected("Ongoing","Status",extras) }}>Ongoing</option>
+          <option{{ is_selected("Deprecated","Status",extras) }}>Deprecated</option>
+      </select>
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Status End -->
+
+
+
+</div> 
+<!-- Last div end -->
 

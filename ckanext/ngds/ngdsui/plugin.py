@@ -1,11 +1,11 @@
-from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit,IAuthFunctions
+from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers
 from ckanext.ngds.ngdsui.authorize import (manage_users,publish_dataset)
 from ckan.lib.base import (request,
                            render,
                            model,
                            abort, h, g, c)
 from ckan.logic import get_action,check_access
-
+from ckanext.ngds.ngdsui.misc import helpers
 import sys
 
 try:
@@ -87,7 +87,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("map","/ngds/map",controller=home_controller,action="render_map",conditions={"method":["GET"]})
 		map.connect("library","/ngds/library",controller=home_controller,action="render_library",conditions={"method":["GET"]})
 		map.connect("resources","/ngds/resources",controller=home_controller,action="render_resources",conditions={"method":["GET"]})
-		map.connect("search","/ngds/library/search",controller='package',action="search", highlight_actions='index search')
+		map.redirect("search","/ngds/library/search","/dataset", highlight_actions='index search')
 
 		user_controller = "ckanext.ngds.ngdsui.controllers.user:UserController"
 
@@ -115,4 +115,8 @@ class NgdsuiPlugin(SingletonPlugin):
 			'publish_dataset': publish_dataset,
 		}	
 
-		
+	implements(ITemplateHelpers,inherit=True)
+	def get_helpers(self):
+		return {
+			'get_responsible_party_name':helpers.get_responsible_party_name
+		}	
