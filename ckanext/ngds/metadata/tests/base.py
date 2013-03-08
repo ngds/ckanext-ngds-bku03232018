@@ -20,19 +20,20 @@ class MetadataTestBase(object):
     @classmethod
     def setup_class(cls):
         cls.sqlalchemy_url = config.get("sqlalchemy.url")
-        #cls.host = "127.0.0.1:5000"
-        
+        #cls.host = "127.0.0.1:5000"      
         
         script_path = os.path.join(os.path.dirname(os.path.abspath( __file__ )), 'scripts', 'create_tables.sql')
         script = open(script_path, 'r').read()
         cls._execute_sql(script)
         
-        '''
+        CreateTestData.create_test_user()
+        
+        
         schema = default_create_package_schema()
         context = {
                 'model': model,
                 'session': Session,
-                'user': u'admin',
+                'user': 'tester',
                 'schema': schema,
                 'api_version': 2
             }
@@ -42,9 +43,8 @@ class MetadataTestBase(object):
                 'title': 'test title'
             }
         
-       package_dict = package_create(context, package_fixture_data)
-       cls.package_id = context.get('id')
-       '''
+        package_dict = package_create(context, package_fixture_data)
+        cls.package_id = context.get('id') 
         
     
     @classmethod

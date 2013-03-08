@@ -31,10 +31,16 @@ class TestDispatch(MetadataTestBase):
     '''
             
     def test_dispatch(self):       
+        context = {
+                "model": model,
+                "session": Session,
+                "user": "tester",
+                "api_version": 2
+            }       
+        
         '''
         Test if dispatch function works for responsible_party table 
-        '''
-        
+        '''      
         post_data_rp = {
                 "model": "ResponsibleParty", 
                 "process": "create",
@@ -48,17 +54,30 @@ class TestDispatch(MetadataTestBase):
                     "state": "AZ",
                     "zip": "85701"
                 }
-        }
-        
-        context = {
-                "model": model,
-                "session": Session,
-                "user": "tester",
-                "api_version": 2
             }
         
         try:
             res = additional_metadata.dispatch(context, post_data_rp)
         finally:
             print "The dispatch function cannot determine responsible party controller!" 
+            
+        '''
+        Test if dispatch function works for package_additional_metadata table 
+        '''        
+        post_data_pam = {
+                    "model": "AdditionalPackageMetadata", 
+                    "process": "create",
+                    "data": {
+                             "package_id": self.package_id,
+                             "author_id": "1",
+                             "maintainer_id": "1",
+                             "pub_date": "2013-03-04"
+                        }
+            }
+        
+        try:
+            res = additional_metadata.dispatch(context, post_data_pam)
+        finally:
+            print "The dispatch function cannot determine package additional metadata controller!" 
+        
         
