@@ -1,9 +1,6 @@
 from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers
 from ckanext.ngds.ngdsui.authorize import (manage_users,publish_dataset)
-from ckan.lib.base import (request,
-                           render,
-                           model,
-                           abort, h, g, c)
+from ckan.lib.base import (model,abort, h, g, c)
 from ckan.logic import get_action,check_access
 from ckanext.ngds.ngdsui.misc import helpers
 import sys
@@ -119,5 +116,6 @@ class NgdsuiPlugin(SingletonPlugin):
 	implements(ITemplateHelpers,inherit=True)
 	def get_helpers(self):
 		return {
-			'get_responsible_party_name':helpers.get_responsible_party_name
+			'get_responsible_party_name':helpers.get_responsible_party_name,
+			'get_login_url':helpers.get_login_url
 		}	

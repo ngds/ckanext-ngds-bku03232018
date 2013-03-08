@@ -52,7 +52,7 @@ var ngds = ngds || { };
 				}
 
 				if(isLoginPopupVisible()) { // If the login popup is active, hide it.
-					$("#login-popup").hide();
+					$(".login-popup").hide();
 				}				
 			});
 
@@ -64,26 +64,26 @@ var ngds = ngds || { };
 
 		(function(){ // Handle login popup events.
 
-			$("#login").click(function(){ // When clicked, toggle between visible and hidden.
+			$(".login").click(function(){ // When clicked, toggle between visible and hidden.
 				if(isLoginPopupVisible()) {
-					$("#login-popup").hide();
+					$(".login-popup").hide();
 				}
 				else {
-					$("#login-popup").show();
+					$(".login-popup").show();
 				}
 				return false;
 			});
 
 			$(document).keyup(function(e){ // On ESC toggle between visible and hidden.
 				if(e.keyCode===27 && isLoginPopupVisible()) {
-					$("#login-popup").hide();
+					$(".login-popup").hide();
 				}
 			});
 
-			$("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
-													// when a click occurs inside the div.
-				return false;
-			})
+			// $("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
+			// 										// when a click occurs inside the div.
+			// 	return false;
+			// });
 
 		})();
 
@@ -136,7 +136,7 @@ var ngds = ngds || { };
 			});
 
 		function isLoginPopupVisible(){
-				return ($("#login-popup").css('display')!=='none');
+				return ($(".login-popup").css('display')!=='none');
 			}
 
 	});

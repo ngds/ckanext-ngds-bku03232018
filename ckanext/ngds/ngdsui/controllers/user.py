@@ -29,6 +29,7 @@ class UserController(NGDSBaseController):
 			#abort(401, _('Not authorized to see this page'))
 			abort(401,error.__str__())
  
+ 		group_name = g.default_group
 		group_members = self.member_list(group_name)
 
 		q = model.Session.query(model.User).\
@@ -66,7 +67,11 @@ class UserController(NGDSBaseController):
 			#abort(401, _('Not authorized to see this page'))
 			abort(401,error.__str__())
 
-		data_dict['id'] = h.default_group()
+		print "g.default_group: ",g.default_group	
+
+		group = model.Group.get(g.default_group)
+
+		data_dict['id'] = group.id
 		print "data_dict: ",data_dict
 
 		role = data_dict['role']
@@ -81,12 +86,13 @@ class UserController(NGDSBaseController):
 		redirect(url)
 
 
-	def member_list(context, group_name):
+	def member_list(self, group_name):
 
 		#model = context['model']
 		#print data_dict
 		group = model.Group.get(group_name)
-		g.group_id=group.id
+		# g.group_id=group.id
+
 		q = model.Session.query(model.Member).\
 				filter(model.Member.group_id == group.id).\
 				filter(model.Member.state    == "active").\

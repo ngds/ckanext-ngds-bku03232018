@@ -28,7 +28,7 @@ h2 {
 }
 
 #header { 
-	text-align:left;
+	text-align:right;
 	display:inline-block;
 	height:160px;
 }
@@ -606,6 +606,40 @@ div#data-contributors-container span p {
 	text-align: center;
 }
 
+/*Logged in */
+
+div#logged-in-popup {
+	width:150px; 
+	height:100px; 
+	border:1px solid black; 
+	position:relative; 
+	top:0; 
+	right:0; 
+	float:right; 
+	margin-right:0px; 
+	z-index:6; 
+	background-color:#fff; 
+	display:block;
+	font-size:12px;
+	font-family:Arial;
+	display:none;
+	text-align:left;
+}
+
+div#logged-in-popup ul {
+	padding-left:5px;
+}
+
+div#logged-in-popup ul li {
+	margin-left:0px;
+	display:block;
+	margin-top:15px;
+}
+
+
+/*Logged in end */
+
+/* Login */
 
 div#login-popup {
 	width:250px; 
@@ -615,13 +649,14 @@ div#login-popup {
 	top:0; 
 	right:0; 
 	float:right; 
-	margin-right:30px; 
+	margin-right:0px; 
 	z-index:6; 
 	background-color:#fff; 
 	display:block;
 	font-size:12px;
 	font-family:Arial;
 	display:none;
+	text-align:left;
 }
 
 div#login-popup p:first-child {
@@ -638,10 +673,6 @@ div#login-popup p {
 div#login-popup a {
 	margin-left:15px;
 	margin-top:10px;
-}
-
-div#login-popup span {
-
 }
 
 div#login-popup input[type="text"] {
@@ -666,7 +697,7 @@ div#login-popup input[type="checkbox"] {
 }
 
 
-div#login-popup button {
+div#login-popup input[type="submit"]{
 	font-family:Arial;
 	font-size:14px;
 	margin-left:15px;
@@ -684,6 +715,8 @@ div#login-popup a.float-right {
 div#login-popup a.fit-to-login-div {
 	margin-right:25px;
 }
+
+/* Login end */
 
 div#library-search-container {
 	position: relative;
@@ -1695,3 +1728,14 @@ div#manage-users td,div#manage-users th{
 	padding-bottom: 10px;
 }
 
+.ngds-button {
+  display: block;
+  width: 115px;
+  height: 25px;
+  background: #4E9CAF;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+}

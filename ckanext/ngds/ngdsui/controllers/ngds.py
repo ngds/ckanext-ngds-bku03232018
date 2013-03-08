@@ -35,6 +35,8 @@ class NGDSBaseController(BaseController):
 
 		ngds_deployment = config.get('ngds.deployment', 'central')
 
+		g.default_group = config.get('ngds.default_group_name', 'public')
+
 		g.node_in_a_box = False
 		g.central = False
 
@@ -58,3 +60,6 @@ class NGDSBaseController(BaseController):
  			c.admin = False
  			
  		c.user_logged_in = True
+
+
+# NGDSBaseController()._ngds_deployment()

@@ -1,6 +1,8 @@
-from ckan.lib.base import model
+from ckan.lib.base import model,h,g,c,request
 import ckan.lib.navl.dictization_functions as dictization_functions
 DataError = dictization_functions.DataError
+# from pylons import c,request,h
+
 
 def get_responsible_party_name(id):
 	"""
@@ -19,3 +21,16 @@ def get_responsible_party_name(id):
 			return ""
 	else:
 		return ""
+
+def get_login_url():
+	x = request.url
+	print x
+	return h.url_for(_get_repoze_handler('login_handler_path'),came_from=x)
+
+def _get_repoze_handler(handler_name):
+    '''Returns the URL that repoze.who will respond to and perform a
+    login or logout.'''
+    return getattr(request.environ['repoze.who.plugins']['friendlyform'],handler_name)
+
+def get_default_group():
+	return g.default_group

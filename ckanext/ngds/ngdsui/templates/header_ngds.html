@@ -13,18 +13,42 @@
 					<ul>
 						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">HOME</a></li>
 						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">ABOUT</a></li>
-						<li><a href="#" class="not-implemented">SIGN UP</a></li>
-						<li><a href="#" id="login">LOGIN</a></li> 
-						<li><a href="#" class="not-implemented">FAVORITES</a></li>
+						
+						{% if c.user %}
+							<li><a href="#" id="login" class="login">{{ c.user|capitalize }}</a></li>
+						{% else %}	
+							<li><a href="#" class="not-implemented">SIGN UP</a></li>
+							<li><a href="#" id="login" class="login">LOGIN</a></li> 
+						{% endif %}
+
+						
+						<!-- <li><a href="#" class="not-implemented">FAVORITES</a></li> -->
 					</ul>
-					<div id="login-popup">
-						<p>Your email address:</p>
-						<input type="text" value="username" id="username"/>
-						<p class="float-left">Your password:</p><a class="float-right fit-to-login-div not-implemented">Forgot?</a>
-						<input type="password" value="password" id="password"/><br/>
-						<input type="checkbox" value="__" name="login_remember_me"/><span>Remember me</span>
-						<button class="not-implemented">Login</button>
+					
+					{% if c.user %}
+					<div class="login-popup" id="logged-in-popup">
+						<ul>
+							<li><a href="#" class="float-left fit-to-login-div">Edit Profile</a></li>
+							{% if h.check_access('manage_users') %}
+							   <li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.user:UserController', action='manage_users' %}" class="float-left fit-to-login-div">User Management</a></li>
+							{% endif %}							
+							<li><a href="{% url_for controller='user', action='logout' %}" class="float-left fit-to-login-div">Logout</a></li>
+						</ul>
 					</div>
+					{% else %}
+					<div class="login-popup" id="login-popup">
+						<p>Your email address:</p>
+						<form name="login-form" method ="post" action="{{ h.get_login_url() }}">
+							<input type="text" id="username" name="login"/>
+							<p class="float-left">Your password:</p><a class="float-right fit-to-login-div not-implemented">Forgot?</a>
+							<input type="password" id="password" name="password"/><br/>
+							<input type="checkbox" name="remember" value="50000"/><span>Remember me</span>
+							<input type="submit" value="Login"/>
+						</form>
+					</div>					
+					{% endif %}
+
+
 				</div>
 				<div id="main-nav"> <!-- This is a container div for the second-level menu. -->
 					<div>
