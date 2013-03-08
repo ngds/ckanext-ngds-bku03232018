@@ -1,4 +1,5 @@
 var ngds = ngds || { };
+
 (function() {
 	$(document).ready(function() { 
 
