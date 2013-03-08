@@ -11,7 +11,13 @@ ngds.CKANDataset = function(raw) { // Exposes a set of functions and objects to 
 
 	_ckan_dataset = {
 		construct:function() {
-			var geojson = $.parseJSON($.parseJSON(raw.extras[0].value));
+			var spatial_extra;
+			$.each(raw.extras,function(index,val) {
+				if(val.key==='spatial')	{
+					spatial_extra = val.value;
+				}
+			});
+			var geojson = $.parseJSON(spatial_extra);
 			var description = raw.notes;
 			var popupHTML = '<p>';
 			popupHTML+='<b> Title : '+raw.title+'</b><br>';

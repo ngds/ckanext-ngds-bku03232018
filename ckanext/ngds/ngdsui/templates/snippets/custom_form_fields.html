@@ -275,7 +275,12 @@ Example:
   </div>
 
   <!-- Status End -->
-
+<script>
+  var geojson = $.parseJSON("{{ get_value("spatial",extras) }}".replace(/&#34;/g,"\""));
+  var geoJSONRespresentation =L.geoJson(geojson);  
+  geoJSONRespresentation.addTo(map);
+  writeGeoJson(JSON.stringify(geojson));
+</script>
 
 
 </div> 

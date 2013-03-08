@@ -152,7 +152,6 @@ class ResponsibleParty(NgdsDataObject):
             query = sqlalchemy_query
         
         qstr = '%' + querystr + '%'
-        print "qstr is : ",qstr
         query = query.filter(or_(
             cls.name.ilike(qstr),
             cls.email.ilike(qstr)

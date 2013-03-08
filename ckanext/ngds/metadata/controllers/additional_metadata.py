@@ -67,7 +67,6 @@ class Responsible_Parties_UI(base.BaseController):
                     result_dict[k] = getattr(user,k)
 
             user_list.append(result_dict)
-        print "Resp list : ",user_list
 
         return user_list
     

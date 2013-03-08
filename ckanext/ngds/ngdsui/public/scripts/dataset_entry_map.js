@@ -51,6 +51,7 @@ function getGeoJSON(geometryType, latLngs) {
 
 // Stupid function to put the value into the first "extra" field
 function writeGeoJson(geojson) {
+	console.log(geojson);
 	$('#field-extras-0-key').val('spatial');
 	$('#field-extras-0-value').val(geojson);
 }

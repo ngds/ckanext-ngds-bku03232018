@@ -105,7 +105,8 @@ $(document).ready(function() {
 										return;
 									}
 									try {
-										var dataset = ngds.CKANDataset(response.result);
+										x = response;
+										var dataset = ngds.CKANDataset(response.result);										
 										var feature = dataset.getGeoJSON();
 										var popup = dataset.map.getPopupHTML();
 									}
