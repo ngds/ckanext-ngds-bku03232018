@@ -117,5 +117,6 @@ class NgdsuiPlugin(SingletonPlugin):
 	def get_helpers(self):
 		return {
 			'get_responsible_party_name':helpers.get_responsible_party_name,
+			'get_default_group':helpers.get_default_group,
 			'get_login_url':helpers.get_login_url
 		}	
