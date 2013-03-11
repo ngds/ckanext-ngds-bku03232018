@@ -16,11 +16,10 @@ from ckanext.ngds.base.commands.ngds_tables import NgdsTables
 
 
 class MetadataTestBase(object):
+    sqlalchemy_url = config.get("sqlalchemy.url")
     
     @classmethod
-    def setup_class(cls):
-        cls.sqlalchemy_url = config.get("sqlalchemy.url")
-        #cls.host = "127.0.0.1:5000"      
+    def setup_class(cls):     
         
         script_path = os.path.join(os.path.dirname(os.path.abspath( __file__ )), 'scripts', 'create_tables.sql')
         script = open(script_path, 'r').read()
@@ -59,7 +58,11 @@ class MetadataTestBase(object):
         '''
         CreateTestData.create_arbitrary(package_fixture_data)
         
-    
+    @classmethod
+    def teardown_class(cls):
+        script = "DROP TABLE IF EXISTS package_additional_metadata, resource_additional_metadata, responsible_party, harvested_record, harvest_node, spatial_ref_sys, geometry_columns"
+        cls._execute_sql(script)
+
     @classmethod
     def _create_record(cls, table, data):
         #data = "(0, 'Genhan Chen', 'genhan.chen@azgs.az.gov', 'Arizona Geological Survey', '520-209-4136', '416 W. Congress St. Ste. 100', 'Tucson', 'AZ', '85701')"
