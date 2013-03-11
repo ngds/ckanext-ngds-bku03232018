@@ -1,5 +1,5 @@
 from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers
-from ckanext.ngds.ngdsui.authorize import (manage_users,publish_dataset)
+from ckanext.ngds.ngdsui import authorize
 from ckan.lib.base import (model,abort, h, g, c)
 from ckan.logic import get_action,check_access
 from ckanext.ngds.ngdsui.misc import helpers
@@ -109,8 +109,9 @@ class NgdsuiPlugin(SingletonPlugin):
 
 	def get_auth_functions(self):
 		return {
-			'manage_users': manage_users,
-			'publish_dataset': publish_dataset,
+			'manage_users': authorize.manage_users,
+			'publish_dataset': authorize.publish_dataset,
+			'manage_nodes': authorize.manage_nodes,
 		}	
 
 	implements(ITemplateHelpers,inherit=True)

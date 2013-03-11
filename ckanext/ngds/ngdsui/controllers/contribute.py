@@ -14,21 +14,6 @@ from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 
 class ContributeController(NGDSBaseController):
 
- 	# def _isUser_isAdmin(self):
- 	# 	"""
- 	# 	This method checks whether user logged in and his access details.
- 	# 	If the user is logged in then sets c.user_logged_in as 'True'.
- 	# 	If the user is admin then sets c.admin as 'True'
- 	# 	"""
- 	# 	user_access = config['user_access'] or 'admin'
-
- 	# 	if user_access == 'admin':
- 	# 		c.admin = True
- 	# 	else:
- 	# 		c.admin = False
- 			
- 	# 	c.user_logged_in = True
-
  	def index(self):
 		
 		"""
@@ -57,8 +42,15 @@ class ContributeController(NGDSBaseController):
 
 	def edit(self,id):
 		"""
-		Create new Harvest node.
+		Editing the existing Harvest node.
 		"""
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+
+		try:
+			check_access('manage_nodes',context,data_dict)
+		except NotAuthorized, error:
+			abort(401,error.__str__())
+
 		c.isEdit = True
 		c.action = 'edit_save'
 		c.node = self._read_node(id)
@@ -66,8 +58,17 @@ class ContributeController(NGDSBaseController):
 
 	def edit_save(self,id=None):
 		"""
-		Create new Harvest node.
+		Updating the edited  Harvest node.
 		"""
+
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+
+		try:
+			check_access('manage_nodes',context,data_dict)
+		except NotAuthorized, error:
+			abort(401,error.__str__())
+
+
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))	
 

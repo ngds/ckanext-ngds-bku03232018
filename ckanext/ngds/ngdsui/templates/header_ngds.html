@@ -81,9 +81,9 @@
 					<div>
 						<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index' %}">
 							{% if active_tab == "contribute" %} <span class="active main-nav-span"> {% else %} <span class="main-nav-span"> {% endif %}	
-								<span class="main-menu-item">{% if g.central and  c.admin %} {{ _('Harvest') }} {% else %} {{ _('Contribute') }} {% endif %}</span>
+								<span class="main-menu-item">{% if g.central and  h.check_access('manage_users') %} {{ _('Harvest') }} {% else %} {{ _('Contribute') }} {% endif %}</span>
 								<img src="/images/u52_normal.png" alt="V"/>
-								<span class="main-menu-text">{% if g.central and  c.admin %} {{ _('Harvesting nodes & synchronizing nodes') }} {% else %} {{ _('Share data, learn about the National Geothermal Data System') }} {% endif %}</span>
+								<span class="main-menu-text">{% if g.central and  h.check_access('manage_users') %} {{ _('Harvesting nodes & synchronizing nodes') }} {% else %} {{ _('Share data, learn about the National Geothermal Data System') }} {% endif %}</span>
 							</span>
 						</a>
 					</div>
