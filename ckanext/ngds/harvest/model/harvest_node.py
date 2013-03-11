@@ -19,6 +19,8 @@ from urllib2 import urlopen
 from lxml import etree
 from owslib.iso import MD_Metadata
 from owslib.csw import CatalogueServiceWeb
+from shapely.geometry import box
+import json
 
 class HarvestNode(NgdsDataObject):
     """Stores information about harvest endpoints"""
@@ -49,7 +51,7 @@ class HarvestNode(NgdsDataObject):
         print "Gathered %s IDs" % str(len(ids))
         for record_id in ids:
             self.get_record_by_id(record_id)
-            print "got one"
+            rec = HarvestedRecord.from_md_metadata(self.csw.records[record_id], self)
     
     def get_record_by_id(self, record_id):
         """Get a single record, by ID"""
@@ -89,31 +91,68 @@ class HarvestedRecord(NgdsDataObject):
     @classmethod
     def from_md_metadata(cls, md, harvest_node):
         """Given a MD_Metadata record parsed by owslib, create a Package and HarvestedRecord"""
-        package_parameters = {
-            "id": md.identifier, # will CKAN let us state the ID for a package?
+        def generate_geojson():
+            # If there's a bounding box this will work, otherwise it won't
+            bbox = md.identification.extent.boundingBox
+            shape = { 
+                "type": "Polygon", 
+                "coordinates": [[
+                    [float(bbox.minx), float(bbox.miny)], 
+                    [float(bbox.maxx), float(bbox.miny)], 
+                    [float(bbox.maxx), float(bbox.maxy)], 
+                    [float(bbox.minx), float(bbox.maxy)]
+                ]] 
+             }
+            return json.dumps(shape)
+        
+        
+        additional_parameters = {
+            "id": md.identifier, # will CKAN let us state the ID for a package? No.
             "metadata_modified": md.datestamp, # this is a string in owslib
-            "dataset_uri": md.dataseturi, # this can probably be an array?
-            "dataset_category": md.hierarchy,
-            "publication_date": md.identification.date[0].date, # this is a string in owslib, should find the obj in the date array where type="publication"
-            "creators": [], # complex procedure involves adding ResponsibleParties
-            "abstract": md.identification.abstract,
-            "quality": md.dataquality,
-            "status": md.identification.status,
-            "keywords": "", # tough logic that will need to amalgamate keywords. Will I loose thesaurus info?
-            "dataset_lang": md.identification.resourcelanguage, # this is an array in owslib
-            "spatial_word": "", # tough logic to find any location keywords
-            "spatial": md.identification.extent.boundingBox, # generate GeoJSON from this owslib ele
-            "usage": md.identification.useconstraints # array in owslib
+            "notes": md.identification.abstract,
+            "title": md.identification.title,
+            "tags": [
+                { "name": "my-tag", "vocabulary_id": "test" }         
+            ], # tough logic that will need to amalgamate keywords. Will I loose thesaurus info? CKAN's tag logic is confusing, too
+            "extras": [
+                { "key": "dataset_uri", "value": md.dataseturi }, # this can probably be an array?
+                { "key": "dataset_category", "value": md.hierarchy },
+                { "key": "pans", "value": md.identification.date[0].date }, # this is a string in owslib, should find the obj in the date array where type="publication"
+                { "key": "creators", "value": [] }, # complex procedure involves adding ResponsibleParties  
+                { "key": "quality", "value": md.dataquality },
+                { "key": "status", "value": md.identification.status },
+                { "key": "dataset_lang", "value": next((val for idx, val in enumerate(md.identification.resourcelanguage)), "") }, # this is an array in owslib. Tricky logic to essentially return either the first entry in the array or an empty string
+                { "key": "spatial_word", "value": "" }, # tough logic to find any location keywords
+                { "key": "spatial", "value": generate_geojson() }, 
+                { "key": "usage", "value": next((val for idx, val in enumerate(md.identification.useconstraints)), "") } # array in owslib         
+            ]
         }
         
-        '''The rest here is conceptual'''
+        package_parameters = { # These are the fields required by CKAN
+            "maintainer": "",
+            "title": "",
+            "name": md.identifier,
+            "author_email": "",
+            "notes": "",
+            "author": "",
+            "maintainer_email": "",
+            "license_id": "notspecified"
+        }
+        
+        package_parameters.update(additional_parameters)
+        
+        from ckan.logic import get_action
+        pkg = get_action('package_create')(None, package_parameters)
+        print "Made a pacakge?"
+        
+        '''The rest here is conceptual, and does not work at all
         pkg = create_package(**package_parameters) # Find out how to do this in CKAN
         pkg.save() # Save a CKAN package
         iso = ckanext.ngds.metadata.model.IsoPackage(pkg) # Create the ckan to ISO wrapper object
         cswRecord = ckanext.ngds.csw.model.CswRecord(iso) # Create the pycsw record for this guy
         cswRecord.save() # Save the pycsw record
         return cls(pkg.id, harvest_node.id, etree.tostring(md)) # Return the HarvestRecord object that binds package to harvest node with the trailing xml 
-        
+        '''
         
 '''
 This stuff is started, but not sure if I actually want to do it this way

@@ -65,6 +65,7 @@ class IsoPackage(object):
 
     def get_dataset_creators(self):
         creators = self.ckan_package.extras.get("creators", [])
+        #creators = json.loads(creators)
         return [ self.build_contact(ResponsibleParty.by_id(creator["id"]), creator["role"]) for creator in creators ]
     
     def build_contact(self, responsible_party, role):
@@ -320,6 +321,7 @@ class IsoPackage(object):
             return topic
         
         def bbox():
+            # Fails if an extent was not specified
             geo = asShape(json.loads(self.dataset_info["extent"]))
             
             bbox = etree.Element(qualifiedName("gmd", "EX_GeographicBoundingBox"))
