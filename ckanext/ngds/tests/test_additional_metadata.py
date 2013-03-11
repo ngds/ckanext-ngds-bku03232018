@@ -5,14 +5,13 @@ from ckan import model
 from ckan.model import Package, Session, meta
 from ckanext.ngds.metadata.controllers import additional_metadata
 
-class TestDispatch(MetadataTestBase):
+class TestAdditionalMetadata(MetadataTestBase):
     context = {
             "model": model,
             "session": Session,
             "user": "tester",
             "api_version": 2
-        }
-    
+        }    
      
     def create_rp_record(self):
         import random
@@ -100,4 +99,24 @@ class TestDispatch(MetadataTestBase):
         else:
             ok_(False, "The dispatch function cannot identify the invalid model!")
                   
-                
+    
+    def test_class_AdditionalResourceMetadataController(self):
+        """ Test if AdditionalResourceMetadataController can find the right model """
+        expected_model = self.context["model"].AdditionalResourceMetadata
+        model = additional_metadata.AdditionalResourceMetadataController(self.context).model
+        
+        eq_(model, expected_model, "AdditionalResourceMetadataController cannot find the right model")
+        
+    def test_class_AdditionalPackageMetadataController(self):
+        """ Test if AdditionalPackageMetadataController can find the right model """
+        expected_model = self.context["model"].AdditionalPackageMetadata
+        model = additional_metadata.AdditionalPackageMetadataController(self.context).model
+        
+        eq_(model, expected_model, "AdditionalPackageMetadataController cannot find the right model")
+        
+    def test_class_ResponsiblePartyController(self):
+        """ Test if ResponsiblePartyController can find the right model """
+        expected_model = self.context["model"].ResponsibleParty
+        model = additional_metadata.ResponsiblePartyController(self.context).model
+        
+        eq_(model, expected_model, "ResponsiblePartyController cannot find the right model")
