@@ -183,10 +183,10 @@ def define_tables():
 
         # identification
         Column('type', String(128), index=True),
-        Column('title', String(2048), index=True),
-        Column('title_alternate', String(2048), index=True),
-        Column('abstract', String(2048), index=True),
-        Column('keywords', String(2048), index=True),
+        Column('title', types.UnicodeText, index=True),
+        Column('title_alternate', types.UnicodeText, index=True),
+        Column('abstract', types.UnicodeText, index=True),
+        Column('keywords', types.UnicodeText, index=True),
         Column('keywordstype', String(256), index=True),
         Column('parentidentifier', String(32), index=True),
         Column('relation', String(256), index=True),
