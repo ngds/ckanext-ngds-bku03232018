@@ -275,6 +275,29 @@ Example:
   </div>
 
   <!-- Status End -->
+
+  <!-- Languages begin -->
+
+<div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-7-key" name="extras__7__key" value="Language" placeholder="" style="display:none;">
+      <label for="field-extras-7-value" class="control-label">Language</label>
+      
+      <input id="field-extras-7-value" type="text" name="extras__7__value" placeholder value="{{ get_value("Language",extras) }}" style="display:none;">
+      <input id="field-language-fake" type="text" name="field-language-fake" placeholder value="{{ h.get_language(get_value("Language",extras)) }}">
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+<!-- Languages End -->
+
 <script>
   var geojson = $.parseJSON("{{ get_value("spatial",extras) }}".replace(/&#34;/g,"\""));
   var geoJSONRespresentation =L.geoJson(geojson);  

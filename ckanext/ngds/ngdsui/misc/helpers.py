@@ -34,3 +34,21 @@ def _get_repoze_handler(handler_name):
 
 def get_default_group():
 	return g.default_group
+
+def get_language(id):
+	if id:
+		print "got id : "+id
+		try:
+			id_int = int(id)
+		except(ValueError):
+			return ""
+		language = model.Language.get(id)
+		print "Got language ",language
+		print language.name
+		if language:
+			return language.name
+		else:
+			return ""
+	else:
+		return ""
+

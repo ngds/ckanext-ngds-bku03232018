@@ -26,6 +26,7 @@ class MetadataPlugin(SingletonPlugin):
 
     def before_map(self,map):
         map.connect("responsible_parties","/responsible_parties",controller="ckanext.ngds.metadata.controllers.additional_metadata:Responsible_Parties_UI",action="get_responsible_parties",conditions={"method":["GET"]})   
+        map.connect("languages","/languages",controller="ckanext.ngds.metadata.controllers.additional_metadata:Languages_UI",action="get_languages",conditions={"method":["GET"]})   
         return map
     
     implements(IActions) # Allows us to build a URL and associated binding to a python function

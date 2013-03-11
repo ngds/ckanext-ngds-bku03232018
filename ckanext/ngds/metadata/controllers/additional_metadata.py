@@ -1,6 +1,6 @@
 from ckan.plugins.toolkit import toolkit
 from ckanext.ngds.base.controllers.ngds_crud_controller import NgdsCrudController
-from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty
+from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty, Language
 from pylons import c, request, response
 import ckan.lib.base as base
 import ckan.lib.jsonp as jsonp
@@ -60,14 +60,28 @@ class Responsible_Parties_UI(base.BaseController):
         q = request.params.get('q', '')
         query =ResponsibleParty.search(q).limit(10)
         
-        user_list = []
-        for user in query.all():
+        responsible_parties = []
+        for responsible_party in query.all():
             result_dict = {}
             for k in ['id', 'name']:
-                    result_dict[k] = getattr(user,k)
+                    result_dict[k] = getattr(responsible_party,k)
 
-            user_list.append(result_dict)
+            responsible_parties.append(result_dict)
 
-        return user_list
+        return responsible_parties
     
-    
+class Languages_UI(base.BaseController):
+    @jsonp.jsonpify
+    def get_languages(self):
+        q = request.params.get('q', '')
+        query =Language.search(q).limit(10)
+        
+        languages = []
+        for language in query.all():
+            result_dict = {}
+            for k in ['id', 'name','code']:
+                    result_dict[k] = getattr(language,k)
+
+            languages.append(result_dict)
+
+        return languages    
