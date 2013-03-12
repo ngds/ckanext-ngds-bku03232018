@@ -9,9 +9,11 @@ $(document).ready(function() {
   
   var maintainer = ngds.autocomplete("#field-maintainer-fake","/responsible_parties",'q','name','name');
   maintainer.proxy("#field-maintainer","id");
+  maintainer.proxy("#field-extras-1-value","id");
 
   var languages = ngds.autocomplete("#field-language-fake","/languages",'q','name','name');
-  languages.proxy("#field-extras-7-value","id");
+  languages.proxy("#field-extras-8-value","id");
+ 
 });
 
 

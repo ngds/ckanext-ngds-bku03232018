@@ -30,10 +30,6 @@ class NgdsuiPlugin(SingletonPlugin):
 
 		from ckan import new_authz 	
 
-		# Remove the existing roles
-		#del new_authz.ROLE_PERMISSIONS
-		# new_authz.ROLE_PERMISSIONS
-
 		# Initialise NGDS roles.
 		new_authz.ROLE_PERMISSIONS=OrderedDict([
 				('admin', ['admin']),

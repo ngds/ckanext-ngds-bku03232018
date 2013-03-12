@@ -43,17 +43,24 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
         });
       }
   });
+  
   auto = autocomplete;
+  
+  var proxy_list = [];
+
+  autocomplete.on('autocompleteselect',function(ev,ui) {
+            $.each(proxy_list,function(index,proxy){
+              $(proxy["proxy"]).val(ui.item[proxy["value_key"]]);
+            });
+        });
 
   return {
       autocomplete:autocomplete,
       proxy:function(proxy_id_elem,value_key){ // If the value of the autocomplete suggestion is something that doesn't make sense to the user, 
                                                 // we can display the autocomplete value instead and use a proxy to carry the real value. 
                                                 // Keep in mind that the proxy is really the text box that we care about, so id's et al have to make sense.
-        var proxy_elem = $(proxy_id_elem);
-        autocomplete.on('autocompleteselect',function(ev,ui) {
-            proxy_elem.val(ui.item.id);
-        });
+        proxy_list.push({ "proxy": proxy_id_elem,"value_key":value_key });
+        
       }
   };
 };

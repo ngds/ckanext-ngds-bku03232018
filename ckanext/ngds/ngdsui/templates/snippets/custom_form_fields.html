@@ -79,7 +79,28 @@ Example:
     </div>
   </div>
 
-  <!-- URI end -->
+  <!-- Spatial word -->
+
+    <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-9-key" name="extras__9__key" placeholder="" style="display:none;">    
+      <label for="field-extras-9-value" class="control-label">Spatial Location</label>  
+      <input id="field-extras-9-value" type="text" name="extras__9__value" placeholder value="{{ get_value("spatial_word",extras) }}" >
+      <script>
+        
+      </script>
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Spatial word end -->
 
  <!-- Author -->
   <div class="control-group control-custom">
@@ -108,6 +129,10 @@ Example:
       
     <div class="input-prepend">
       <input id="field-maintainer" name="maintainer" placeholder="" style="display:none;" value="{{ data.maintainer }}">
+      
+      <input id="field-extras-1-key" name="extras__1__key" value="metadata_contact" placeholder="" style="display:none;">
+      <input id="field-extras-1-value" type="text" name="extras__1__value" placeholder value="{{ data.maintainer }}" style="display:none;">
+
       <label for="field-maintainer-fake" class="control-label">Maintainer</label>
       
       <input id="field-maintainer-fake" type="text" name="field-maintainer-fake" placeholder value="{{ h.get_responsible_party_name(data.maintainer) }}">
@@ -129,22 +154,22 @@ Example:
     <div class="controls editor">
       
     <div class="input-prepend">
-      <input id="field-extras-1-key" name="extras__1__key" value="Category" placeholder="" style="display:none;">
-      <label for="field-extras-1-value" class="control-label">Category</label>
+      <input id="field-extras-2-key" name="extras__2__key" value="dataset_category" placeholder="" style="display:none;">
+      <label for="field-extras-2-value" class="control-label">Category</label>
       
-      <select id="field-extras-1-value" name="extras__1__value" placeholder="">
-          <option{{ is_selected("Dataset","Category",extras) }}>Dataset</option>
-          <option{{ is_selected("Physical Collection","Category",extras) }}>Physical Collection</option>
-          <option{{ is_selected("Catalog","Category",extras) }}>Catalog</option>
-          <option{{ is_selected("Movie or Video","Category",extras) }}>Movie or Video</option>
-          <option{{ is_selected("Drawing","Category",extras) }}>Drawing</option>
-          <option{{ is_selected("Photograph","Category",extras) }}>Photograph</option>
-          <option{{ is_selected("Remotely-Sensed Image","Category",extras) }}>Remotely-Sensed Image</option>
-          <option{{ is_selected("Map","Category",extras) }}>Map</option>
-          <option{{ is_selected("Text Document","Category",extras) }}>Text Document</option>
-          <option{{ is_selected("Physical Artifact","Category",extras) }}>Physical Artifact</option>
-          <option{{ is_selected("Desktop Application","Category",extras) }}>Desktop Application</option>
-          <option{{ is_selected("Web Application","Category",extras) }}>Web Application</option>
+      <select id="field-extras-1-value" name="extras__2__value" placeholder="">
+          <option{{ is_selected("Dataset","dataset_category",extras) }}>Dataset</option>
+          <option{{ is_selected("Physical Collection","dataset_category",extras) }}>Physical Collection</option>
+          <option{{ is_selected("Catalog","dataset_category",extras) }}>Catalog</option>
+          <option{{ is_selected("Movie or Video","dataset_category",extras) }}>Movie or Video</option>
+          <option{{ is_selected("Drawing","dataset_category",extras) }}>Drawing</option>
+          <option{{ is_selected("Photograph","dataset_category",extras) }}>Photograph</option>
+          <option{{ is_selected("Remotely-Sensed Image","dataset_category",extras) }}>Remotely-Sensed Image</option>
+          <option{{ is_selected("Map","dataset_category",extras) }}>Map</option>
+          <option{{ is_selected("Text Document","dataset_category",extras) }}>Text Document</option>
+          <option{{ is_selected("Physical Artifact","dataset_category",extras) }}>Physical Artifact</option>
+          <option{{ is_selected("Desktop Application","dataset_category",extras) }}>Desktop Application</option>
+          <option{{ is_selected("Web Application","dataset_category",extras) }}>Web Application</option>
 
       </select>
 <!--   For removal? 
@@ -164,10 +189,10 @@ Example:
     <div class="controls editor">
       
     <div class="input-prepend">
-      <input id="field-extras-2-key" name="extras__2__key" value="URI" placeholder="" style="display:none;">
-      <label for="field-extras-2-value" class="control-label">URI</label>
+      <input id="field-extras-3-key" name="extras__3__key" value="dataset_uri" placeholder="" style="display:none;">
+      <label for="field-extras-3-value" class="control-label">URI</label>
       
-      <input id="field-extras-2-value" type="text" name="extras__2__value" placeholder value="{{ get_value("URI",extras) }}">
+      <input id="field-extras-3-value" type="text" name="extras__3__value" placeholder value="{{ get_value("dataset_uri",extras) }}">
       
 <!--   For removal? 
         <label class="checkbox" for="field-extras-1-remove">
@@ -186,13 +211,13 @@ Example:
     <div class="controls editor">
       
     <div class="input-prepend">
-      <input id="field-extras-3-key" name="extras__3__key" value="Publication Date" placeholder="" style="display:none;">
-      <label for="field-extras-3-value" class="control-label">Publication Date</label>
+      <input id="field-extras-4-key" name="extras__4__key" value="date_publication" placeholder="" style="display:none;">
+      <label for="field-extras-4-value" class="control-label">Publication Date</label>
       
-      <input id="field-extras-3-value" type="text" name="extras__3__value" value="{{ get_value("Publication Date",extras) }}" placeholder="">
+      <input id="field-extras-4-value" type="text" name="extras__4__value" value="{{ get_value("date_publication",extras) }}" placeholder="">
       <script>
         $(document).ready(function() {
-          $( "#field-extras-3-value" ).datepicker();
+          $( "#field-extras-4-value" ).datepicker();
         });
       </script>
 <!--   For removal? 
@@ -212,10 +237,10 @@ Example:
     <div class="controls editor">
       
     <div class="input-prepend">
-      <input id="field-extras-4-key" name="extras__4__key" value="Quality" placeholder="" style="display:none;">
-      <label for="field-extras-4-value" class="control-label">Quality</label>
+      <input id="field-extras-5-key" name="extras__5__key" value="quality" placeholder="" style="display:none;">
+      <label for="field-extras-5-value" class="control-label">Quality</label>
       
-      <input id="field-extras-4-value" type="text" name="extras__4__value" placeholder value="{{ get_value("Quality",extras) }}">
+      <input id="field-extras-5-value" type="text" name="extras__5__value" placeholder value="{{ get_value("quality",extras) }}">
       
 <!--   For removal? 
         <label class="checkbox" for="field-extras-1-remove">
@@ -234,10 +259,10 @@ Example:
     <div class="controls editor">
       
     <div class="input-prepend">
-      <input id="field-extras-5-key" name="extras__5__key" value="Lineage" placeholder="" style="display:none;">
-      <label for="field-extras-5-value" class="control-label">Lineage</label>
+      <input id="field-extras-6-key" name="extras__6__key" value="lineage" placeholder="" style="display:none;">
+      <label for="field-extras-6-value" class="control-label">Lineage</label>
       
-      <input id="field-extras-5-value" type="text" name="extras__5__value" placeholder value="{{ get_value("Lineage",extras) }}">
+      <input id="field-extras-6-value" type="text" name="extras__6__value" placeholder value="{{ get_value("lineage",extras) }}">
       
 <!--   For removal? 
         <label class="checkbox" for="field-extras-1-remove">
@@ -257,13 +282,13 @@ Example:
     <div class="controls editor">
       
     <div class="input-prepend">
-      <input id="field-extras-6-key" name="extras__6__key" value="Status" placeholder="" style="display:none;">
-      <label for="field-extras-6-value" class="control-label">Status</label>
+      <input id="field-extras-7-key" name="extras__7__key" value="status" placeholder="" style="display:none;">
+      <label for="field-extras-7-value" class="control-label">Status</label>
       
-      <select id="field-extras-6-value" name="extras__6__value" placeholder="">
-          <option{{ is_selected("Completed","Status",extras) }}>Completed</option>
-          <option{{ is_selected("Ongoing","Status",extras) }}>Ongoing</option>
-          <option{{ is_selected("Deprecated","Status",extras) }}>Deprecated</option>
+      <select id="field-extras-7-value" name="extras__7__value" placeholder="">
+          <option{{ is_selected("Completed","status",extras) }}>Completed</option>
+          <option{{ is_selected("Ongoing","status",extras) }}>Ongoing</option>
+          <option{{ is_selected("Deprecated","status",extras) }}>Deprecated</option>
       </select>
 <!--   For removal? 
         <label class="checkbox" for="field-extras-1-remove">
@@ -282,11 +307,11 @@ Example:
     <div class="controls editor">
       
     <div class="input-prepend">
-      <input id="field-extras-7-key" name="extras__7__key" value="Language" placeholder="" style="display:none;">
-      <label for="field-extras-7-value" class="control-label">Language</label>
+      <input id="field-extras-8-key" name="extras__8__key" value="dataset_lang" placeholder="" style="display:none;">
+      <label for="field-extras-8-value" class="control-label">Language</label>
       
-      <input id="field-extras-7-value" type="text" name="extras__7__value" placeholder value="{{ get_value("Language",extras) }}" style="display:none;">
-      <input id="field-language-fake" type="text" name="field-language-fake" placeholder value="{{ h.get_language(get_value("Language",extras)) }}">
+      <input id="field-extras-8-value" type="text" name="extras__8__value" placeholder value="{{ get_value("dataset_lang",extras) }}" style="display:none;">
+      <input id="field-language-fake" type="text" name="field-language-fake" placeholder value="{{ h.get_language(get_value("dataset_lang",extras)) }}">
 <!--   For removal? 
         <label class="checkbox" for="field-extras-1-remove">
           <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
