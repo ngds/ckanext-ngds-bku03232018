@@ -239,7 +239,7 @@ class IsoPackage(object):
             return version
         
         def datasetUri():
-            uri = etree.Element(qualifiedName("gmd", "datasetUri"))
+            uri = etree.Element(qualifiedName("gmd", "dataSetURI"))
             etree.SubElement(uri, qualifiedName("gco", "CharacterString")).text = self.dataset_info["uri"]
             return uri
         
