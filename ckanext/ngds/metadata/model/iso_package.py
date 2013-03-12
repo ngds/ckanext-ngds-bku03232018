@@ -183,7 +183,8 @@ class IsoPackage(object):
             
             phone_attr = etree.SubElement(contact, qualifiedName("gmd", "phone"))
             phone = etree.SubElement(phone_attr, qualifiedName("gmd", "CI_Telephone"))
-            etree.SubElement(phone, qualifiedName("gmd", "voice")).text = person.phone
+            voice = etree.SubElement(phone, qualifiedName("gmd", "voice"))
+            etree.SubElement(voice, qualifiedName("gco", "CharacterString")).text = person.phone
             
             address_attr = etree.SubElement(contact, qualifiedName("gmd", "address"))
             address = etree.SubElement(address_attr, qualifiedName("gmd", "CI_Address"))
@@ -209,7 +210,7 @@ class IsoPackage(object):
             role_attr = etree.SubElement(party, qualifiedName("gmd", "role"))
             attr = {
                 "codeList": "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
-                "codeListValue": contact["role"]                
+                "codeListValue": "pointofContact" #contact["role"]                
             }
             etree.SubElement(role_attr, qualifiedName("gmd", "CI_RoleCode"), **attr).text = contact["role"]
             
@@ -364,7 +365,7 @@ class IsoPackage(object):
             helper = self.distributionHelper()
             for dist_id, dist_info in helper.items():
                 if dist_info["distributor"] is not None:
-                    etree.SubElement(parent, distributor(dist_info))
+                    parent.append(distributor(dist_info))
                     
         def onlineResource(resource):
             online = etree.Element(qualifiedName("gmd", "CI_OnlineResource"))
