@@ -1739,3 +1739,7 @@ div#manage-users td,div#manage-users th{
   color: white;
   font-weight: bold;
 }
+
+.resource-upload-field {
+	margin-left:10px;
+}
