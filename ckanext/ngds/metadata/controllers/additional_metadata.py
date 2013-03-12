@@ -1,5 +1,9 @@
 from ckan.plugins.toolkit import toolkit
 from ckanext.ngds.base.controllers.ngds_crud_controller import NgdsCrudController
+from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty, Language
+from pylons import c, request, response
+import ckan.lib.base as base
+import ckan.lib.jsonp as jsonp
 
 def dispatch(context, data_dict):
     """
@@ -27,11 +31,40 @@ def dispatch(context, data_dict):
     # execute method inspects POST body and runs the correct functions
     return controller.execute(data_dict)
     
-    
 class ResponsiblePartyController(NgdsCrudController):
     """A class for controlling responsible party RPC"""
     def __init__(self, context):
         """Find the right model for this class"""
         self.model = context['model'].ResponsibleParty
+
+class Responsible_Parties_UI(base.BaseController):
+    @jsonp.jsonpify
+    def get_responsible_parties(self):
+        q = request.params.get('q', '')
+        query =ResponsibleParty.search(q).limit(10)
+        
+        responsible_parties = []
+        for responsible_party in query.all():
+            result_dict = {}
+            for k in ['id', 'name']:
+                    result_dict[k] = getattr(responsible_party,k)
+
+            responsible_parties.append(result_dict)
+
+        return responsible_parties
     
-    
+class Languages_UI(base.BaseController):
+    @jsonp.jsonpify
+    def get_languages(self):
+        q = request.params.get('q', '')
+        query =Language.search(q).limit(10)
+        
+        languages = []
+        for language in query.all():
+            result_dict = {}
+            for k in ['id', 'name','code']:
+                    result_dict[k] = getattr(language,k)
+
+            languages.append(result_dict)
+
+        return languages    

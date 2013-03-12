@@ -10,9 +10,28 @@ Example:
 
 #}
 {% import "macros/form.html" as form %}
+{% macro is_selected(value,key,extra) %}
+  {% for extra in extras %}
+    {% if extra.key == key %}
+      {% if extra.value == value %}
+        selected
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro get_value(key,extra) -%}
+  {% for extra in extras -%}
+    {% if extra.key == key -%}
+      {{ extra.value }}
+    {%- endif %}
+  {%- endfor %}
+{%- endmacro %}
+
 
 <div data-module="custom-fields">
-  {% for extra in extras %}
+  {#
+  {# for extra in extras %}
     {% set prefix = 'extras__%d__' % loop.index0 %}
     {{ form.custom(
       names=(prefix ~ 'key', prefix ~ 'value', prefix ~ 'deleted'),
@@ -21,14 +40,14 @@ Example:
       values=(extra.key, extra.value, extra.deleted),
       error=errors[prefix ~ 'key'] or errors[prefix ~ 'value']
     ) }}
-  {% endfor %}
+  {% endfor #}
 
   {# Add a max of 3 empty columns #}
   {% set total_extras = extras|count %}
   {% set empty_extras = (limit or 3) - total_extras %}
   {% if empty_extras <= 0 %}{% set empty_extras = 1 %}{% endif %}
 
-  {% for extra in range(total_extras, total_extras + empty_extras) %}
+  {# for extra in range(total_extras, total_extras + empty_extras) %}
     {% set index = loop.index0 + (extras|count) %}
     {% set prefix = 'extras__%d__' % index %}
     {{ form.custom(
@@ -38,5 +57,255 @@ Example:
       values=(extra.key, extra.value, extra.deleted),
       error=errors[prefix ~ 'key'] or errors[prefix ~ 'value']
     ) }}
-  {% endfor %}
-</div>
+  {% endfor #}
+
+   <!-- URI -->
+
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-0-key" name="extras__0__key" placeholder="" style="display:none;">      
+      <input id="field-extras-0-value" type="text" name="extras__0__value" placeholder style="display:none;">
+      <script>
+        
+      </script>
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- URI end -->
+
+ <!-- Author -->
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-author" name="author" placeholder="" style="display:none;" value="{{ data.author }}">
+      <label for="field-author-fake" class="control-label">Author</label>
+      
+      <input id="field-author-fake" type="text" name="field-author-fake" placeholder value="{{ h.get_responsible_party_name(data.author) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Author end -->
+
+   <!-- Maintainer -->
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-maintainer" name="maintainer" placeholder="" style="display:none;" value="{{ data.maintainer }}">
+      <label for="field-maintainer-fake" class="control-label">Maintainer</label>
+      
+      <input id="field-maintainer-fake" type="text" name="field-maintainer-fake" placeholder value="{{ h.get_responsible_party_name(data.maintainer) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Maintainer end -->
+
+<!-- Category -->
+
+<div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-1-key" name="extras__1__key" value="Category" placeholder="" style="display:none;">
+      <label for="field-extras-1-value" class="control-label">Category</label>
+      
+      <select id="field-extras-1-value" name="extras__1__value" placeholder="">
+          <option{{ is_selected("Dataset","Category",extras) }}>Dataset</option>
+          <option{{ is_selected("Physical Collection","Category",extras) }}>Physical Collection</option>
+          <option{{ is_selected("Catalog","Category",extras) }}>Catalog</option>
+          <option{{ is_selected("Movie or Video","Category",extras) }}>Movie or Video</option>
+          <option{{ is_selected("Drawing","Category",extras) }}>Drawing</option>
+          <option{{ is_selected("Photograph","Category",extras) }}>Photograph</option>
+          <option{{ is_selected("Remotely-Sensed Image","Category",extras) }}>Remotely-Sensed Image</option>
+          <option{{ is_selected("Map","Category",extras) }}>Map</option>
+          <option{{ is_selected("Text Document","Category",extras) }}>Text Document</option>
+          <option{{ is_selected("Physical Artifact","Category",extras) }}>Physical Artifact</option>
+          <option{{ is_selected("Desktop Application","Category",extras) }}>Desktop Application</option>
+          <option{{ is_selected("Web Application","Category",extras) }}>Web Application</option>
+
+      </select>
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Category End -->
+
+  <!-- URI -->
+
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-2-key" name="extras__2__key" value="URI" placeholder="" style="display:none;">
+      <label for="field-extras-2-value" class="control-label">URI</label>
+      
+      <input id="field-extras-2-value" type="text" name="extras__2__value" placeholder value="{{ get_value("URI",extras) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- URI end -->
+
+  <!-- Publication Date -->
+
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-3-key" name="extras__3__key" value="Publication Date" placeholder="" style="display:none;">
+      <label for="field-extras-3-value" class="control-label">Publication Date</label>
+      
+      <input id="field-extras-3-value" type="text" name="extras__3__value" value="{{ get_value("Publication Date",extras) }}" placeholder="">
+      <script>
+        $(document).ready(function() {
+          $( "#field-extras-3-value" ).datepicker();
+        });
+      </script>
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Publication date end -->
+
+  <!-- Quality -->
+
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-4-key" name="extras__4__key" value="Quality" placeholder="" style="display:none;">
+      <label for="field-extras-4-value" class="control-label">Quality</label>
+      
+      <input id="field-extras-4-value" type="text" name="extras__4__value" placeholder value="{{ get_value("Quality",extras) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Quality end -->
+
+    <!-- Lineage -->
+
+  <div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-5-key" name="extras__5__key" value="Lineage" placeholder="" style="display:none;">
+      <label for="field-extras-5-value" class="control-label">Lineage</label>
+      
+      <input id="field-extras-5-value" type="text" name="extras__5__value" placeholder value="{{ get_value("Lineage",extras) }}">
+      
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Lineage end -->
+
+
+  <!-- Status -->
+
+<div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-6-key" name="extras__6__key" value="Status" placeholder="" style="display:none;">
+      <label for="field-extras-6-value" class="control-label">Status</label>
+      
+      <select id="field-extras-6-value" name="extras__6__value" placeholder="">
+          <option{{ is_selected("Completed","Status",extras) }}>Completed</option>
+          <option{{ is_selected("Ongoing","Status",extras) }}>Ongoing</option>
+          <option{{ is_selected("Deprecated","Status",extras) }}>Deprecated</option>
+      </select>
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+  <!-- Status End -->
+
+  <!-- Languages begin -->
+
+<div class="control-group control-custom">
+    <div class="controls editor">
+      
+    <div class="input-prepend">
+      <input id="field-extras-7-key" name="extras__7__key" value="Language" placeholder="" style="display:none;">
+      <label for="field-extras-7-value" class="control-label">Language</label>
+      
+      <input id="field-extras-7-value" type="text" name="extras__7__value" placeholder value="{{ get_value("Language",extras) }}" style="display:none;">
+      <input id="field-language-fake" type="text" name="field-language-fake" placeholder value="{{ h.get_language(get_value("Language",extras)) }}">
+<!--   For removal? 
+        <label class="checkbox" for="field-extras-1-remove">
+          <input type="checkbox" id="field-extras-1-remove" name="extras__0__deleted"> <span>Remove</span>
+        </label>
+       -->
+    </div>     
+    </div>
+  </div>
+
+<!-- Languages End -->
+
+<script>
+  var geojson = $.parseJSON("{{ get_value("spatial",extras) }}".replace(/&#34;/g,"\""));
+  var geoJSONRespresentation =L.geoJson(geojson);  
+  geoJSONRespresentation.addTo(map);
+  writeGeoJson(JSON.stringify(geojson));
+</script>
+
+
+</div> 
+<!-- Last div end -->
+

@@ -1,5 +1,6 @@
 {% extends "page_ngds.html" %}
 {% set active_page="library" %}
+{% set default_group = h.get_default_group() %}
 
 {#
 	A list of variables we need in this page.
@@ -16,7 +17,7 @@
 
 	<div class="library-search-bar adjusted-top-search">
 			<p>Search</p>
-			<form action="/ngds/library/search" method="get">
+			<form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
           <fieldset>
 				    <input type="text" class="search-browse-big-bar" name="q" value="{{search_query_context}}"/>
 				    <input type="submit" value="Go"/>
@@ -30,7 +31,7 @@
 <section class="search-results">
   
   <div class="search-results-preamble-container">
-      <span class="search-results-preamble">Found {{ c.page.item_count }} results for "{{ search_query_context }}"></span>
+      <span class="search-results-preamble">Found {{ c.page.item_count }} results for "{{ c.q }}"></span>
   </div>
 
   <div class="sort-container">

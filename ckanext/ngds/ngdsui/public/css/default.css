@@ -28,7 +28,7 @@ h2 {
 }
 
 #header { 
-	text-align:left;
+	text-align:right;
 	display:inline-block;
 	height:160px;
 }
@@ -606,6 +606,40 @@ div#data-contributors-container span p {
 	text-align: center;
 }
 
+/*Logged in */
+
+div#logged-in-popup {
+	width:150px; 
+	height:100px; 
+	border:1px solid black; 
+	position:relative; 
+	top:0; 
+	right:0; 
+	float:right; 
+	margin-right:0px; 
+	z-index:6; 
+	background-color:#fff; 
+	display:block;
+	font-size:12px;
+	font-family:Arial;
+	display:none;
+	text-align:left;
+}
+
+div#logged-in-popup ul {
+	padding-left:5px;
+}
+
+div#logged-in-popup ul li {
+	margin-left:0px;
+	display:block;
+	margin-top:15px;
+}
+
+
+/*Logged in end */
+
+/* Login */
 
 div#login-popup {
 	width:250px; 
@@ -615,13 +649,14 @@ div#login-popup {
 	top:0; 
 	right:0; 
 	float:right; 
-	margin-right:30px; 
+	margin-right:0px; 
 	z-index:6; 
 	background-color:#fff; 
 	display:block;
 	font-size:12px;
 	font-family:Arial;
 	display:none;
+	text-align:left;
 }
 
 div#login-popup p:first-child {
@@ -638,10 +673,6 @@ div#login-popup p {
 div#login-popup a {
 	margin-left:15px;
 	margin-top:10px;
-}
-
-div#login-popup span {
-
 }
 
 div#login-popup input[type="text"] {
@@ -666,7 +697,7 @@ div#login-popup input[type="checkbox"] {
 }
 
 
-div#login-popup button {
+div#login-popup input[type="submit"]{
 	font-family:Arial;
 	font-size:14px;
 	margin-left:15px;
@@ -684,6 +715,8 @@ div#login-popup a.float-right {
 div#login-popup a.fit-to-login-div {
 	margin-right:25px;
 }
+
+/* Login end */
 
 div#library-search-container {
 	position: relative;
@@ -1453,7 +1486,7 @@ div.module-content {
 }
 
 .control-group input[type="text"], .control-group textarea {
-	width:440px;
+	width:460px;
 }
 
 .control-group input {
@@ -1469,7 +1502,7 @@ div.module-content {
 }
 
 .controls {
-	margin-right:20px;
+	/*margin-right:20px;*/
 }
 
 .align-left {
@@ -1521,6 +1554,149 @@ input#field-extras-0-key, input#field-extras-0-value {
 	margin-top:35px;
 }
 
+.select2-results {
+	margin: 4px 4px 4px 0;
+	padding: 0 0 0 4px;
+	position: relative;
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 200px;
+}
+
+.select2-results .select2-highlighted {
+	background: #3875d7;
+	color: #fff;
+}
+
+.select2-results li {
+	list-style: none;
+	display: list-item;
+}
+
+.select2-drop {
+	background: #fff;
+	color: #000;
+	border: 1px solid #aaa;
+	border-top: 0;
+	position: absolute;
+	top: 100%;
+	-webkit-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+	-moz-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+	-o-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+	box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+	z-index: 9999;
+	width: 100%;
+	margin-top: -1px;
+	-webkit-border-radius: 0 0 4px 4px;
+	-moz-border-radius: 0 0 4px 4px;
+	border-radius: 0 0 4px 4px;
+}
+
+.slug-preview { 
+	margin-top:30px;
+	text-align:left;
+}
+
+.slug-preview strong {
+	font-weight:normal;
+	width: 514px;
+	text-align: left;
+	margin-top: 28px;
+	margin-left: 58px;
+}
+
+.slug-preview-prefix {
+	margin-left:100px;
+}
+
+.select2-choices {
+
+}
+
+.select2-choices li {
+	list-style: none;
+}
+
+.select2-container {
+	display:inline;
+	width:100px;
+}
+
+li.select2-search-field input{
+	width:400px;
+}
+
+.input[type="file"] {
+	width: auto;
+	padding: initial;
+	line-height: initial;
+	background-color: #ffffff;
+	background-color: initial;
+	border: initial;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	height: 28px;
+	line-height: 28px;
+}
+
+.resource-upload-field input {
+	opacity: 0;
+	filter: alpha(opacity=0);
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 1;
+	margin: 0;
+	border: solid transparent;
+	border-width: 100px 0 0 200px;
+	cursor: pointer;
+	direction: ltr;
+	-moz-transform: translate(-300px, 0) scale(4);
+}
+
+.resource-upload-field {
+	position: relative;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+
+/* CKAN styles that need to be overriden for the autocomplete to look nice */
+
+.select2-drop {
+	
+}
+
+
+
+/* END CKAN STYLES THAT NEED TO BE OVERRIDEN*/ 
+
+
+.ui-menu-item a {
+	font-size:14px;
+}
+
+/*
+	Extras styles
+*/
+
+div.controls select {
+	width:464px;
+}
+
+div.controls select[id="field-extras-0-value"] {
+	margin-left:0px;
+}
+
+.control-group {
+	margin-left:0px;
+}
+/*
+	End extras styles
+*/
+
 /* User Management */
 
 div#manage-users table{
@@ -1550,4 +1726,16 @@ div#manage-users td,div#manage-users th{
 	padding-top: 10px;
 	padding-left: 5px;
 	padding-bottom: 10px;
+}
+
+.ngds-button {
+  display: block;
+  width: 115px;
+  height: 25px;
+  background: #4E9CAF;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
 }

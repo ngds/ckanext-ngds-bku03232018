@@ -30,11 +30,19 @@ We need some additional information:
 
 from ckan import model
 
+
 from ckan.model import meta
+
+from sqlalchemy import types, Column, Table, ForeignKey
+from sqlalchemy.orm import relationship, validates
+from sqlalchemy.sql.expression import or_ 
 
 from sqlalchemy import types, Column, Table
 from sqlalchemy.orm import validates
 
+from pylons import config
+
+import csv
 import logging
 log = logging.getLogger(__name__)
 
@@ -57,6 +65,70 @@ class ResponsibleParty(NgdsDataObject):
         self.zip = kwargs.get('zip', None)
         self.country = kwargs.get('country', None)
         
+    @classmethod
+    def search(cls, querystr, sqlalchemy_query=None):
+        '''Search name, fullname, email and openid. '''
+        if sqlalchemy_query is None:
+            query = meta.Session.query(cls)
+        else:
+            query = sqlalchemy_query
+        
+        qstr = '%' + querystr + '%'
+        query = query.filter(or_(
+            cls.name.ilike(qstr),
+            cls.email.ilike(qstr)
+            ))
+        print query
+        return query
+    # Vivek - Put this in here temporarily to explore if this works.
+
+    @classmethod
+    def get(cls, reference):
+        '''Returns a group object referenced by its id or name.'''
+        query = meta.Session.query(cls).filter(cls.id == reference)
+        member = query.first()
+        if member is None:
+            member = cls.by_name(reference)
+        return member
+
+class Language(NgdsDataObject):
+    """
+    A ResponsibleParty represents an individual or organization responsible
+    for authorship, maintenance, or distribution of a resource
+    """
+    
+    def __init__(self, **kwargs):
+        self.name = kwargs.get('name', None)
+        self.code = kwargs.get('code', None)
+        self.standard = kwargs.get('standard', None)
+        
+    @classmethod
+    def search(cls, querystr, sqlalchemy_query=None):
+        '''Search name, fullname, email and openid. '''
+        if sqlalchemy_query is None:
+            query = meta.Session.query(cls)
+        else:
+            query = sqlalchemy_query
+        
+        qstr = '%' + querystr + '%'
+        query = query.filter(or_(
+            cls.name.ilike(qstr),
+            cls.code.ilike(qstr)
+            ))
+        print query
+        return query
+    # Vivek - Put this in here temporarily to explore if this works.
+
+    @classmethod
+    def get(cls, reference):
+        '''Returns a group object referenced by its id or name.'''
+        query = meta.Session.query(cls).filter(cls.id == reference)
+        member = query.first()
+        if member is None:
+            member = cls.by_name(reference)
+        return member
+
+
 def define_tables():
     """Create the in-memory represenatation of tables, and map those tables to classes defined above"""
     
@@ -76,19 +148,31 @@ def define_tables():
         Column("country", types.UnicodeText)
     )
     
+    languages = Table(
+        "languages",
+        meta.metadata,
+        Column("id", types.Integer, primary_key=True),
+        Column("name", types.UnicodeText),
+        Column("code", types.UnicodeText),
+        Column("standard", types.UnicodeText)
+    )
+
     # Map those tables to classes, define the additional properties for related people
     meta.mapper(ResponsibleParty, party)
+    meta.mapper(Language, languages)
     
     # Stick these classes into the CKAN.model, for ease of access later
     model.ResponsibleParty = ResponsibleParty
+    model.Language = Language
     
-    return party
+    return party, languages
 
 def db_setup():
     """Create tables in the database"""
     # These tables will already be defined in memory if the metadata plugin is enabled.
     #  IConfigurer will make a call to define_tables()
     party = meta.metadata.tables.get("responsible_party", None)
+    languages = meta.metadata.tables.get("languages", None)
     
     if party == None:
         # The tables have not been defined. Its likely that the plugin is not enabled in the CKAN .ini file
@@ -98,4 +182,32 @@ def db_setup():
         
         # Alright. Create the tables.
         from ckanext.ngds.base.commands.ngds_tables import create_tables
-        create_tables([party], log)
+        create_tables([party, languages], log)
+        populate_languages()
+
+def populate_languages():
+    resources_dir = config.get('ngds.resources_dir')
+    if resources_dir:
+       
+       if(resources_dir[-1]=='/'):
+            resources_dir = resources_dir[0:len(resources_dir)-1]
+       
+       lang_csv_file = open(resources_dir+'/db/iso6392_languages.csv')
+       reader = csv.reader(lang_csv_file,delimiter=",")
+       languages_list = []
+       session = meta.Session
+
+       for row in reader:
+            name = row[0]
+            code = row[1]
+            standard = row[2]
+            lang_dict = { "name":name, "code":code,"standard":standard }
+            language = model.Language(**lang_dict)
+            languages_list.append(language)
+
+       session.add_all(languages_list)
+       session.commit()
+
+
+    else:
+        log.debug("You need to specify the absolute path to ckanext-ngds/ckanext/ngds/base/resources for db init")
