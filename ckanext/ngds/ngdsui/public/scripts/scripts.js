@@ -3,6 +3,30 @@ var ngds = ngds || { };
 
 	$(document).ready(function() { 
 
+
+		/* This is for user management - Role changes (manage_users.html) - Start*/
+		var prev_val;
+
+		$('.dropdown').focus(function() {
+		    prev_val = $(this).val();
+		}).change(function() {
+		     $(this).blur() // Firefox fix as suggested by AgDude
+		    var success = confirm('Are you sure you want to change the role?');
+		    if(success)
+		    {		        
+		        var formid = "#"+$(this)[0].id.substr(5);
+		        $(formid).submit();
+		        // Other changed code would be here...
+		    }  
+		    else
+		    {
+		        $(this).val(prev_val);
+		        //alert('unchanged');
+		        return false; 
+		    }
+		});
+		/* This is for user management - Role changes (manage_users.html) - End*/
+
 		$('#read-only-form :input').attr('readonly','readonly');
 		$('#read-only-form :checkbox').attr('disabled', 'disabled');
 
