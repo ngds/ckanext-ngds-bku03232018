@@ -1,6 +1,8 @@
 from ckan.plugins import implements, SingletonPlugin
 from ckan.plugins import IConfigurer, IActions, IRoutes
 from ckanext.ngds.metadata.controllers.additional_metadata import dispatch
+from ckan import model
+
 
 class MetadataPlugin(SingletonPlugin):
     """The purpose of this plugin is to adjust the metadata content to conform to our standards"""
@@ -11,13 +13,14 @@ class MetadataPlugin(SingletonPlugin):
     def update_config(self, config):
         """IConfigurable function. config is a dictionary of configuration parameters"""
         # Provides a point to do mappings from classes to database tables whenever CKAN is run
-        from ckanext.ngds.metadata.model.additional_metadata import define_tables
-        define_tables()
+
+        if not hasattr(model, "ResponsibleParty"):
+            from ckanext.ngds.metadata.model.additional_metadata import define_tables
+            define_tables()
         
-        # Put IsoPackage into ckan.model for ease of access later
-        from ckan import model
-        from ckanext.ngds.metadata.model.iso_package import IsoPackage
-        model.IsoPackage = IsoPackage
+            # Put IsoPackage into ckan.model for ease of access later
+            from ckanext.ngds.metadata.model.iso_package import IsoPackage
+            model.IsoPackage = IsoPackage
         
         '''
         # First find the full path to my template directory
