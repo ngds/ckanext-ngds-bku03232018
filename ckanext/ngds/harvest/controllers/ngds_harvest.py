@@ -41,3 +41,19 @@ class HarvestedRecordController(NgdsCrudController):
         """Find the right model for this class"""
         self.model = context['model'].HarvestedRecord
         
+def do_harvest(context, data_dict):
+    """
+    Perform a harvest
+    
+    POST body should identify the ID of a HarvestNode
+    { "id": "harvest-node-id" }
+    
+    """
+    the_id = data_dict.get("id", None)
+    if the_id == None:
+        raise toolkit.ValidationError({}, "Please supply the ID of a HarvestNode that you want to harvest")
+    else:
+        node = context['model'].HarvestNode.by_id(the_id)
+        node.do_harvest()
+    
+        

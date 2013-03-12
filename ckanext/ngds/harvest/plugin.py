@@ -1,8 +1,9 @@
 from ckan.plugins import implements, SingletonPlugin
 from ckan.plugins import IConfigurer, IActions
 from ckanext.ngds.harvest.model.harvest_node import define_tables
-from ckanext.ngds.harvest.controllers.ngds_harvest import dispatch
+
 from ckan import model
+from ckanext.ngds.harvest.controllers.ngds_harvest import dispatch, do_harvest
 
 
 class NgdsHarvestPlugin(SingletonPlugin):
@@ -21,5 +22,6 @@ class NgdsHarvestPlugin(SingletonPlugin):
     def get_actions(self):
         """IActions function. Should return a dict keys = function name and URL, value is the function to execute"""
         return {
-            "ngds_harvest": dispatch
+            "ngds_harvest": dispatch,
+            "do_harvest": do_harvest
         }
