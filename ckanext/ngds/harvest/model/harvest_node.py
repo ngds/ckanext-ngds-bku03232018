@@ -24,6 +24,8 @@ import json
 
 class HarvestNode(NgdsDataObject):
     """Stores information about harvest endpoints"""
+    csw = None
+    
     def __init__(self, url, **kwargs):
         # A URL must be given
         p = urlparse(url)
@@ -31,10 +33,15 @@ class HarvestNode(NgdsDataObject):
         self.frequency = kwargs.get('frequency', 'manual') # frequency should be one of manual|daily|weekly|monthly
         self.title = kwargs.get('title', 'No Title Was Given') # A title for bookkeeping
         self.node_admin_id = kwargs.get('node_admin_id', None) # Foreign Key to a responsible_party who maintains the remote node
-        self.csw = CatalogueServiceWeb(self.url) # owslib CSW class provides mechanisms for making CSW requests
+        #self.csw = CatalogueServiceWeb(self.url) # owslib CSW class provides mechanisms for making CSW requests
+    
+    def setup_csw(self):
+        self.csw = CatalogueServiceWeb(self.url)
         
     def do_harvest(self):
-        """Perform a harvest from another CSW server"""                        
+        """Perform a harvest from another CSW server"""
+        if self.csw == None:
+            self.setup_csw()                      
         self.get_records() # Do the first GetRecords request
         ids = self.csw.records.keys() # Start an array to house all of the ids
         print "next: %s, total: %s" % (self.csw.results["nextrecord"], self.csw.results["matches"])
@@ -119,7 +126,7 @@ class HarvestedRecord(NgdsDataObject):
                 { "key": "dataset_category", "value": md.hierarchy },
                 { "key": "pans", "value": md.identification.date[0].date }, # this is a string in owslib, should find the obj in the date array where type="publication"
                 { "key": "creators", "value": [] }, # complex procedure involves adding ResponsibleParties  
-                { "key": "quality", "value": md.dataquality },
+                { "key": "quality", "value": ""}, # md.dataquality }, # md.dataquality is DQ_DataQuality is retarded.
                 { "key": "status", "value": md.identification.status },
                 { "key": "dataset_lang", "value": next((val for idx, val in enumerate(md.identification.resourcelanguage)), "") }, # this is an array in owslib. Tricky logic to essentially return either the first entry in the array or an empty string
                 { "key": "spatial_word", "value": "" }, # tough logic to find any location keywords
@@ -131,7 +138,7 @@ class HarvestedRecord(NgdsDataObject):
         package_parameters = { # These are the fields required by CKAN
             "maintainer": "",
             "title": "",
-            "name": md.identifier,
+            "name": md.identifier, # this is the package's URL
             "author_email": "",
             "notes": "",
             "author": "",
@@ -143,16 +150,7 @@ class HarvestedRecord(NgdsDataObject):
         
         from ckan.logic import get_action
         pkg = get_action('package_create')(None, package_parameters)
-        print "Made a pacakge?"
-        
-        '''The rest here is conceptual, and does not work at all
-        pkg = create_package(**package_parameters) # Find out how to do this in CKAN
-        pkg.save() # Save a CKAN package
-        iso = ckanext.ngds.metadata.model.IsoPackage(pkg) # Create the ckan to ISO wrapper object
-        cswRecord = ckanext.ngds.csw.model.CswRecord(iso) # Create the pycsw record for this guy
-        cswRecord.save() # Save the pycsw record
-        return cls(pkg.id, harvest_node.id, etree.tostring(md)) # Return the HarvestRecord object that binds package to harvest node with the trailing xml 
-        '''
+        print "Made a package?"        
         
 '''
 This stuff is started, but not sure if I actually want to do it this way
