@@ -50,16 +50,21 @@ CREATE TABLE responsible_party
 
 CREATE TABLE package_additional_metadata
 (
-  package_id text NOT NULL,
+  id serial NOT NULL,
+  package_id text,
   author_id integer,
   maintainer_id integer,
   pub_date date,
-  CONSTRAINT package_additional_metadata_pkey PRIMARY KEY (package_id),
+  resource_type text,
+  CONSTRAINT package_additional_metadata_pkey PRIMARY KEY (id),
   CONSTRAINT package_additional_metadata_author_id_fkey FOREIGN KEY (author_id)
       REFERENCES responsible_party (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT package_additional_metadata_maintainer_id_fkey FOREIGN KEY (maintainer_id)
       REFERENCES responsible_party (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT package_additional_metadata_package_id_fkey FOREIGN KEY (package_id)
+      REFERENCES "package" (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
@@ -67,12 +72,27 @@ CREATE TABLE package_additional_metadata
 
 CREATE TABLE resource_additional_metadata
 (
-  resource_id text NOT NULL,
+  id serial NOT NULL,
+  resource_id text,
   distributor_id integer,
-  CONSTRAINT resource_additional_metadata_pkey PRIMARY KEY (resource_id),
+  CONSTRAINT resource_additional_metadata_pkey PRIMARY KEY (id),
   CONSTRAINT resource_additional_metadata_distributor_id_fkey FOREIGN KEY (distributor_id)
       REFERENCES responsible_party (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT resource_additional_metadata_resource_id_fkey FOREIGN KEY (resource_id)
+      REFERENCES resource (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+-- Table: languages --
+
+CREATE TABLE languages
+(
+  id serial NOT NULL,
+  name text,
+  code text,
+  standard text,
+  CONSTRAINT languages_pkey PRIMARY KEY (id)
 );
 
 -- Table: harvest_node --
@@ -82,7 +102,12 @@ CREATE TABLE harvest_node
   id serial NOT NULL,
   url text,
   frequency text,
-  CONSTRAINT harvest_node_pkey PRIMARY KEY (id)
+  title text,
+  node_admin_id integer,
+  CONSTRAINT harvest_node_pkey PRIMARY KEY (id),
+  CONSTRAINT harvest_node_node_admin_id_fkey FOREIGN KEY (node_admin_id)
+      REFERENCES responsible_party (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
 -- Table: harvested_record --
@@ -100,4 +125,4 @@ CREATE TABLE harvested_record
   CONSTRAINT harvested_record_package_id_fkey FOREIGN KEY (package_id)
       REFERENCES "package" (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
-)
+);

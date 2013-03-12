@@ -16,19 +16,29 @@ class TestNgdsHarvest(MetadataTestBase):
     def create_hn_record(self):
         import random
         hn_id = random.randint(1, 10000)
-        hn_script = "(" + str(hn_id) + ", 'http://azgs.az.gov', '2')"
+        hn_script = "(" + str(hn_id) + ", 'http://azgs.az.gov', '2', 'test')"
         self._create_record('harvest_node', hn_script)
         return hn_id
-            
+    
+    def create_rp_record(self):
+        import random
+        rp_id = random.randint(1, 10000)
+        rp_script = "(" + str(rp_id) + ", 'Genhan Chen', 'genhan.chen@azgs.az.gov', 'Arizona Geological Survey', '520-209-4136', '416 W. Congress St. Ste. 100', 'AZ', 'Tucson', '85701')"
+        self._create_record('responsible_party', rp_script)
+        return rp_id
+           
     def test_dispatch(self):
                     
-        """ Test if dispatch function works for harvest_node table """     
+        """ Test if dispatch function works for harvest_node table """
+        rp_id = self.create_rp_record()     
         post_data_hn = {
                     "model": "HarvestNode", 
                     "process": "create",
                     "data": {
                              "url": "http://azgs.az.gov",
-                             "frequency": "2"
+                             "frequency": "2",
+                             "title": "test",
+                             "node_admin_id": rp_id
                         }            
             }
         

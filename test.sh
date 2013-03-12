@@ -2,7 +2,7 @@
 # test.sh
 
 dbuser="ckanuser"
-db="testdb" 
+db="ngdstest" 
 
 #Create a test database
 sudo su postgres -c "psql -c 'CREATE DATABASE $db OWNER $dbuser'" 

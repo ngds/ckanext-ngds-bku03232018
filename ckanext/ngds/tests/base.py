@@ -60,7 +60,7 @@ class MetadataTestBase(object):
         
     @classmethod
     def teardown_class(cls):
-        script = "DROP TABLE IF EXISTS package_additional_metadata, resource_additional_metadata, responsible_party, harvested_record, harvest_node, spatial_ref_sys, geometry_columns"
+        script = "DROP TABLE IF EXISTS package_additional_metadata, resource_additional_metadata, responsible_party, languages, harvested_record, harvest_node, spatial_ref_sys, geometry_columns"
         cls._execute_sql(script)
 
     @classmethod

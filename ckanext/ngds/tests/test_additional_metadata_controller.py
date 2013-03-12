@@ -55,7 +55,8 @@ class TestAdditionalMetadata(MetadataTestBase):
                              "package_id": model.Package.get("test-ngds").id,
                              "author_id": rp_id,
                              "maintainer_id": rp_id,
-                             "pub_date": "2013-03-04"
+                             "pub_date": "2013-03-04",
+                             "resource_type": "Dataset"
                         }
             }
         
