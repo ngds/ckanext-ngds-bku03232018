@@ -4,6 +4,12 @@
 {% set errors = errors or {} %}
 {% set action = form_action or h.url_for(controller='package', action='new_resource', id=pkg_name) %}
 
+{% macro is_selected(key,value) %}
+    {% if key==value %}
+        selected
+    {% endif %}
+{% endmacro %}
+
 <form class="dataset-form dataset-resource-form form-horizontal" method="post" action="{{ action }}" data-module="basic-form resource-form">
   {% block stages %}
     {# An empty stages variable will not show the stages #}
@@ -40,7 +46,9 @@
 
     {{ form.markdown('description', id='field-description', label=_('Description : '), placeholder=_('Some useful notes about the data'), value=data.description, error=errors.description) }}
 
-    {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
+     
+     {# set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/resource/format_autocomplete?incomplete=?'} #}
+      {% set format_attrs = {} %} <!-- This is to prevent the autocomplete feature from meddling with the page. -->
     {% call form.input('format', id='field-format', label=_('Format : '), placeholder=_('eg. CSV, XML or JSON'), value=data.format, error=errors.format, classes=['control-medium'], attrs=format_attrs) %}
     
     {% endcall %}
@@ -60,6 +68,63 @@
       {{ form.input('mimetype_inner', id='field-mimetype-inner', label=_('MIME Type'), placeholder=_('eg. application/json'), value=data.mimetype_inner, error=errors.mimetype_inner, classes=[]) }}
     {% endif %}
   {% endblock %}
+
+
+ <div class="control-group control-full">
+    <label class="control-label" for="_format">Category : </label>
+    <div class="controls ">
+      <select id="_format" name="_format" placeholder="" value="{{ data._format }}">
+          <option{{ is_selected("Hand Sample",data._format) }}>Dataset</option>
+          <option{{ is_selected("Core",data._format) }}>Core</option>
+          <option{{ is_selected("Drilling Cuttings",data._format) }}>Drilling Cuttings</option>
+          <option{{ is_selected("Fluid Sample",data._format) }}>Fluid Sample</option>
+          <option{{ is_selected("Page-Size Document",data._format) }}>Page-Size Document</option>
+          <option{{ is_selected("CDROM, DVD or Disk",data._format) }}>CDROM, DVD or Disk</option>
+          <option{{ is_selected("Magnetic Tape",data._format) }}>Magnetic tape</option>
+          <option{{ is_selected("Photographic Film",data._format) }}>Photographic Film</option>
+          <option{{ is_selected("Oversize Sheet",data._format) }}>Oversize Sheet</option>
+      </select>
+    </div>
+  </div>
+
+   <div class="control-group control-full">
+    <label class="control-label" for="distributor">Distributor : </label>
+    <div class="controls ">
+     <input id="distributor" name="distributor" value="{{ data.distributor }}" type="hidden">
+    <input id="distributor-fake" value="{{ h.get_responsible_party_name(data.distributor) }}" type="text">
+      
+    </div>
+  </div>
+
+   <div class="control-group control-full">
+    <label class="control-label" for="protocol">Protocol : </label>
+    <div class="controls ">
+      
+    <input id="protocol" name="protocol" value="{{ data.protocol }}" type="text">
+      
+    </div>
+  </div>
+
+   <div class="control-group control-full">
+    <label class="control-label" for="layer">Layer : </label>
+    <div class="controls ">
+      
+    <input id="layer" name="layer" value="{{ data.layer }}" type="text">
+      
+    </div>
+  </div>
+  <input type="hidden" id="extras" name="extras">
+
+   <div class="control-group control-full">
+    <label class="control-label" for="ordering">Ordering : </label>
+    <div class="controls ">
+      
+    <input id="ordering" name="ordering" value="{{ data.ordering }}" type="text">
+      
+    </div>
+  </div>
+
+  
 
   <div class="form-actions">
     {% block delete_button %}
@@ -81,5 +146,13 @@
     {% else %}
       <button class="btn btn-primary" name="save" value="go-dataset-complete" type="submit">{{ _('Add') }}</button>
     {% endif %}
+
   </div>
 </form>
+
+<script>
+  $(document).ready(function() {
+    var dataset = ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
+    dataset.proxy("#distributor","id");
+  });
+</script>

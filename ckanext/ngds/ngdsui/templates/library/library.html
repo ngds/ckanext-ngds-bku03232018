@@ -1,5 +1,6 @@
 {% extends "page_ngds.html" %}
 {% set active_page = "library" %}
+{% set default_group = h.get_default_group() %}
 {% block content %}
 
 	<div id="library-search-container">
@@ -13,7 +14,7 @@
 
 		<div class="library-search-bar">
 			<p>Search</p>
-			<form action="{% url_for controller='package', action='search' %}" method="get">
+			<form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
 				<fieldset>
 					<input type="text" name="q"/>
 					<input type="submit" value="Go"/>

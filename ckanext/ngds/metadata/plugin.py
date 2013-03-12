@@ -1,5 +1,5 @@
 from ckan.plugins import implements, SingletonPlugin
-from ckan.plugins import IDatasetForm, IConfigurer, IActions
+from ckan.plugins import IDatasetForm, IConfigurer, IActions, IRoutes
 from ckanext.ngds.metadata.controllers.additional_metadata import dispatch
 from ckanext.ngds.metadata.model.additional_metadata import define_tables
 import os
@@ -8,7 +8,8 @@ class MetadataPlugin(SingletonPlugin):
     """The purpose of this plugin is to adjust the metadata content to conform to our standards"""
     
     implements(IConfigurer) # Allows access to configurations (like template locations)
-    
+    implements(IRoutes,inherit=True) 
+
     def update_config(self, config):
         """IConfigurable function. config is a dictionary of configuration parameters"""
         # Provides a point to do mappings from classes to database tables whenever CKAN is run
@@ -22,7 +23,12 @@ class MetadataPlugin(SingletonPlugin):
         # Now add that directory to the extra_template_paths, without removing the existing ones
         config['extra_template_paths'] = ','.join([template_dir, config.get('extra_template_paths', '')])   
         '''
-        
+
+    def before_map(self,map):
+        map.connect("responsible_parties","/responsible_parties",controller="ckanext.ngds.metadata.controllers.additional_metadata:Responsible_Parties_UI",action="get_responsible_parties",conditions={"method":["GET"]})   
+        map.connect("languages","/languages",controller="ckanext.ngds.metadata.controllers.additional_metadata:Languages_UI",action="get_languages",conditions={"method":["GET"]})   
+        return map
+    
     implements(IActions) # Allows us to build a URL and associated binding to a python function
     
     def get_actions(self):
