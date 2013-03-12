@@ -64,9 +64,9 @@ class IsoPackage(object):
             return None
 
     def get_dataset_creators(self):
-        creators = self.ckan_package.extras.get("creators", [])
+        creators = self.ckan_package.extras.get("creators", "") # should later support multiplicity
         #creators = json.loads(creators)
-        return [ self.build_contact(ResponsibleParty.by_id(creator["id"]), creator["role"]) for creator in creators ]
+        return [ self.build_contact(ResponsibleParty.by_id(creator), "author") for creator in creators ] # should that hard-wire to author?
     
     def build_contact(self, responsible_party, role):
         return {
