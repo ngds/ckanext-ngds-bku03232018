@@ -1,0 +1,10 @@
+{% extends "page_ngds.html" %}
+
+{% block subtitle %}{{ _('Logged Out') }}{% endblock %}
+
+{% block content %}
+    <div id="module-content" style="border:2px solid #a8a8a8;margin-top:20px;padding-top:10px;min-height:250px;">
+      <h1 style="">{{ _('Logged Out') }}</h1>
+      <p style="text-align:center;">{% trans %}You are now logged out.{% endtrans %}<span class="right">Click <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">HOME</a> to go to homepage.</span></p>
+    </div>
+{% endblock %}

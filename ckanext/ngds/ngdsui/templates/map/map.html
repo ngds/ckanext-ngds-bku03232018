@@ -1,7 +1,11 @@
 {% extends "page_ngds.html" %}
 {% set active_page = "map" %}
+{% block styles %}
+	 {{ super() }}
+	 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+{% endblock %}
 {%- block content %}
-<div class="map-search">
+<div class="map-search" style="float:left;">
 	<span class="main-menu-item left">Search</span>
 	<p class="map-search-desc">Known geothermal resource area, latitude/longitude, geothermal area</p>
 	<form action="#">
@@ -11,4 +15,16 @@
 		</fieldset>
 	</form>
 </div>
+
+<div id="map-container" style="width:695px; height:600px; float:right; position:relative;"></div>
+
 {% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript" src="http://leafletjs.com/dist/leaflet.js">></script>
+	<script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+	<script type="text/javascript" src="/scripts/map/CKANDataset.js"></script>
+	<script type="text/javascript" src="/scripts/map.js"></script>
+
+{% endblock %}    

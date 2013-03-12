@@ -1,0 +1,43 @@
+{% extends "page_ngds.html" %}
+{% import 'macros/form.html' as form %}
+{%- block content %}
+
+	<div id="contribute-central" class="contribute-central">
+
+			<h1>User Management</h1>
+
+<hr><br>
+				<div id="manage-users">
+					<table id="manage-users-table">
+						<thead>
+							<tr class="heading"><th>Name</th><th>Username</th><th>Email</th><th>Role</th></tr>
+						</thead>
+						<tbody>
+					    {% for user_id,user_name,email, role in c.members %}
+					    	
+					    	<tr>
+					    		<form id="{{ user_id }}" method='post' action='member_new'>
+					    		<input  type="text" name="username" value="{{ user_name }}" style="display:none;"/>
+					    		<input  type="text" name="user_id" value="{{ user_id }}" style="display:none;"/>
+					    		<td class="media">{{ h.linked_user(user_id, maxlength=20) }}</td>
+								<td> {{ user_name }}</td>
+								<td>{{ email }}</td>
+					    		<td> 
+					    			    <select id="role_{{ user_id }}" name="role" class="dropdown">
+										      {% for option in c.roles %}
+										        <option value="{{ option.value }}" {% if  option.value == role  %} selected  {% endif %}>{{  option.text }}</option>
+										      {% endfor %}
+										</select> 
+					    		</td>
+
+								</form>
+					    	</tr>
+					    	
+					    {% endfor %}
+					    </tbody>
+					</table>
+				</div>
+			
+	</div>
+{% endblock %}
+

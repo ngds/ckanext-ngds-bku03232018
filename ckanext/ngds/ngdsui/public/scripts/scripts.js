@@ -1,8 +1,42 @@
 var ngds = ngds || { };
 
 (function() {
-
 	$(document).ready(function() { 
+
+
+		/* This is for user management - Role changes (manage_users.html) - Start*/
+		var prev_val;
+
+		$('.dropdown').focus(function() {
+		    prev_val = $(this).val();
+		}).change(function() {
+		     $(this).blur() // Firefox fix as suggested by AgDude
+		    var success = confirm('Are you sure you want to change the role?');
+		    if(success)
+		    {		        
+		        var formid = "#"+$(this)[0].id.substr(5);
+		        $(formid).submit();
+		        // Other changed code would be here...
+		    }  
+		    else
+		    {
+		        $(this).val(prev_val);
+		        //alert('unchanged');
+		        return false; 
+		    }
+		});
+		/* This is for user management - Role changes (manage_users.html) - End*/
+
+		$('#read-only-form :input').attr('readonly','readonly');
+		$('#read-only-form :checkbox').attr('disabled', 'disabled');
+
+		var $unique = $('input.unique');
+		$unique.click(function() {
+		    $unique.filter(':checked').not(this).removeAttr('checked');
+		});
+
+
+		$("#manage-nodes-table tr:odd").css("background-color", "#fff6f6");
 
 		$(".not-implemented").click(function(event) { // Handle portions of the UI that haven't been implemented yet, display a div that says 'Not implemented Yet'.
 				ngds.not_implemented_popup_active = true;
@@ -18,7 +52,7 @@ var ngds = ngds || { };
 				}
 
 				if(isLoginPopupVisible()) { // If the login popup is active, hide it.
-					$("#login-popup").hide();
+					$(".login-popup").hide();
 				}				
 			});
 
@@ -30,26 +64,26 @@ var ngds = ngds || { };
 
 		(function(){ // Handle login popup events.
 
-			$("#login").click(function(){ // When clicked, toggle between visible and hidden.
+			$(".login").click(function(){ // When clicked, toggle between visible and hidden.
 				if(isLoginPopupVisible()) {
-					$("#login-popup").hide();
+					$(".login-popup").hide();
 				}
 				else {
-					$("#login-popup").show();
+					$(".login-popup").show();
 				}
 				return false;
 			});
 
 			$(document).keyup(function(e){ // On ESC toggle between visible and hidden.
 				if(e.keyCode===27 && isLoginPopupVisible()) {
-					$("#login-popup").hide();
+					$(".login-popup").hide();
 				}
 			});
 
-			$("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
-													// when a click occurs inside the div.
-				return false;
-			})
+			// $("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
+			// 										// when a click occurs inside the div.
+			// 	return false;
+			// });
 
 		})();
 
@@ -102,10 +136,9 @@ var ngds = ngds || { };
 			});
 
 		function isLoginPopupVisible(){
-				return ($("#login-popup").css('display')!=='none');
+				return ($(".login-popup").css('display')!=='none');
 			}
 
 	});
-
 
 })();

@@ -34,9 +34,13 @@ from ckan.model import meta, Package, Resource
 
 from sqlalchemy import types, Column, Table, ForeignKey
 from sqlalchemy.orm import relationship, validates
+from sqlalchemy.sql.expression import or_ 
 
 from datetime import datetime
 
+from pylons import config
+
+import csv
 import logging
 log = logging.getLogger(__name__)
 
@@ -49,11 +53,12 @@ class AdditionalPackageMetadata(NgdsDataObject):
         self.author_id = kwargs.get('author_id', None) # author should be a ResponsibleParty
         self.maintainer_id = kwargs.get('maintainer_id', None) # maintainer should be a ResponsibleParty
         self.pub_date = kwargs.get('pub_date', None)
+        self.resource_type = kwargs.get('resource_type', "Dataset") # Resource Type from USGIN picklist
 
     @classmethod
     def by_package(cls, package_id):
         """Look up the AdditionalPackageMetadata for a particular package by its ID"""
-        return cls.Session.query(cls).filter(cls.package_id==package_id)
+        return cls.Session.query(cls).filter(cls.package_id==package_id).first()        
     
     @validates('pub_date')
     def validate_pub_date(self, key, pub_date):
@@ -75,6 +80,35 @@ class AdditionalPackageMetadata(NgdsDataObject):
         else:
             assert False
             
+    @validates('resource_type')
+    def validate_resource_type(self, key, resource_type):
+        """
+        Resource Type must be from the USGIN picklist adjusted from here: 
+        Column1, Table 1, page 14, http://lab.usgin.org/sites/default/files/profile/file/u4/USGIN_ISO_Metadata_1.1.4.pdf
+        """
+        valid_types = [
+            "Dataset", 
+            "Physical Collection",
+            "Catalog",
+            "Moving Image",
+            "Human-generated Image",
+            "Photograph",
+            "Remotely-sensed Image",
+            "Map",
+            "Text Document",
+            "Project",
+            "Extent",
+            "Physical Artifact",
+            "Service",
+            "Stand-alone Application",
+            "Interactive Resource"
+        ]
+        
+        if resource_type not in valid_types:
+            assert False
+        else:
+            return resource_type
+            
 class AdditionalResourceMetadata(NgdsDataObject):
     """Adjustments to Resource Metadata"""
     def __init__(self, resource_id=None, **kwargs):
@@ -84,7 +118,7 @@ class AdditionalResourceMetadata(NgdsDataObject):
     @classmethod
     def by_resource(cls, resource_id):
         """Look up the AdditionalResourceMetadata for a particular resource by its ID"""
-        return cls.Session.query(cls).filter(cls.resource_id==resource_id)
+        return cls.Session.query(cls).filter(cls.resource_id==resource_id).first()
     
     @validates('resource_id')
     def validate_resource_id(self, key, resource_id):
@@ -112,6 +146,70 @@ class ResponsibleParty(NgdsDataObject):
         self.city = kwargs.get('city', None)
         self.zip = kwargs.get('zip', None)
         
+    @classmethod
+    def search(cls, querystr, sqlalchemy_query=None):
+        '''Search name, fullname, email and openid. '''
+        if sqlalchemy_query is None:
+            query = meta.Session.query(cls)
+        else:
+            query = sqlalchemy_query
+        
+        qstr = '%' + querystr + '%'
+        query = query.filter(or_(
+            cls.name.ilike(qstr),
+            cls.email.ilike(qstr)
+            ))
+        print query
+        return query
+    # Vivek - Put this in here temporarily to explore if this works.
+
+    @classmethod
+    def get(cls, reference):
+        '''Returns a group object referenced by its id or name.'''
+        query = meta.Session.query(cls).filter(cls.id == reference)
+        member = query.first()
+        if member is None:
+            member = cls.by_name(reference)
+        return member
+
+class Language(NgdsDataObject):
+    """
+    A ResponsibleParty represents an individual or organization responsible
+    for authorship, maintenance, or distribution of a resource
+    """
+    
+    def __init__(self, **kwargs):
+        self.name = kwargs.get('name', None)
+        self.code = kwargs.get('code', None)
+        self.standard = kwargs.get('standard', None)
+        
+    @classmethod
+    def search(cls, querystr, sqlalchemy_query=None):
+        '''Search name, fullname, email and openid. '''
+        if sqlalchemy_query is None:
+            query = meta.Session.query(cls)
+        else:
+            query = sqlalchemy_query
+        
+        qstr = '%' + querystr + '%'
+        query = query.filter(or_(
+            cls.name.ilike(qstr),
+            cls.code.ilike(qstr)
+            ))
+        print query
+        return query
+    # Vivek - Put this in here temporarily to explore if this works.
+
+    @classmethod
+    def get(cls, reference):
+        '''Returns a group object referenced by its id or name.'''
+        query = meta.Session.query(cls).filter(cls.id == reference)
+        member = query.first()
+        if member is None:
+            member = cls.by_name(reference)
+        return member
+
+
 def define_tables():
     """Create the in-memory represenatation of tables, and map those tables to classes defined above"""
     
@@ -133,26 +231,40 @@ def define_tables():
     resource_meta = Table(
         "resource_additional_metadata", # table name
         meta.metadata, # sqlalchemy.MetaData()
-        Column("resource_id", types.UnicodeText, primary_key=True), # Implicit Foreign Key to the resource
+        Column("id", types.Integer, primary_key=True),
+        Column("resource_id", types.UnicodeText, ForeignKey("resource.id")), # Implicit Foreign Key to the resource
         Column("distributor_id", types.Integer, ForeignKey("responsible_party.id")) # Foreign Key to a ResponsibleParty                                          
     )
     
     package_meta = Table(
         'package_additional_metadata', # table name
         meta.metadata, # Apparently just a call to sqlalchemy.MetaData(), whatever that is
-        Column('package_id', types.UnicodeText, primary_key=True), # Implicit Foreign Key to the package
+        Column('id', types.Integer, primary_key=True),
+        Column('package_id', types.UnicodeText, ForeignKey("package.id")), # Implicit Foreign Key to the package
         Column('author_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
         Column('maintainer_id', types.Integer, ForeignKey("responsible_party.id")), # Foreign Key to a ResponsibleParty
-        Column('pub_date', types.Date) # Publication Date
+        Column('pub_date', types.Date), # Publication Date
+        Column('resource_type', types.UnicodeText) # Resource Type
     )
     
+    languages = Table(
+        "languages",
+        meta.metadata,
+        Column("id", types.Integer, primary_key=True),
+        Column("name", types.UnicodeText),
+        Column("code", types.UnicodeText),
+        Column("standard", types.UnicodeText)
+    )
+
     # Map those tables to classes, define the additional properties for related people
     meta.mapper(ResponsibleParty, party)
+    meta.mapper(Language, languages)
     
     meta.mapper(
         AdditionalPackageMetadata, 
         package_meta,
         properties={
+            "package": relationship(Package),
             "author": relationship(ResponsibleParty, primaryjoin=package_meta.columns.get("author_id")==party.columns.get("id")),#"package_additional_metadata.author_id==responsible_party.id"),
             "maintainer": relationship(ResponsibleParty, primaryjoin=package_meta.columns.get("maintainer_id")==party.columns.get("id"))#"package_additional_metadata.maintainer_id==responsible_party.id")
         }
@@ -162,16 +274,20 @@ def define_tables():
         AdditionalResourceMetadata, 
         resource_meta,
         properties={
+            "resource": relationship(Resource),
             "distributor": relationship(ResponsibleParty)            
         }
     )
+
+
     
     # Stick these classes into the CKAN.model, for ease of access later
     model.AdditionalPackageMetadata = AdditionalPackageMetadata
     model.AdditionalResourceMetadata = AdditionalResourceMetadata
     model.ResponsibleParty = ResponsibleParty
+    model.Language = Language
     
-    return party, resource_meta, package_meta
+    return party, resource_meta, package_meta, languages
 
 def db_setup():
     """Create tables in the database"""
@@ -182,6 +298,7 @@ def db_setup():
     party = meta.metadata.tables.get("responsible_party", None)
     package_meta = meta.metadata.tables.get("package_additional_metadata", None)
     resource_meta = meta.metadata.tables.get("resource_additional_metadata", None)
+    languages = meta.metadata.tables.get("languages", None)
     
     if party == None or package_meta == None or resource_meta == None:
         # The tables have not been defined. Its likely that the plugin is not enabled in the CKAN .ini file
@@ -191,4 +308,32 @@ def db_setup():
         
         # Alright. Create the tables.
         from ckanext.ngds.base.commands.ngds_tables import create_tables
-        create_tables([party, package_meta, resource_meta], log)
+        create_tables([party, package_meta, resource_meta, languages], log)
+        populate_languages()
+
+def populate_languages():
+    resources_dir = config.get('ngds.resources_dir')
+    if resources_dir:
+       
+       if(resources_dir[-1]=='/'):
+            resources_dir = resources_dir[0:len(resources_dir)-1]
+       
+       lang_csv_file = open(resources_dir+'/db/iso6392_languages.csv')
+       reader = csv.reader(lang_csv_file,delimiter=",")
+       languages_list = []
+       session = meta.Session
+
+       for row in reader:
+            name = row[0]
+            code = row[1]
+            standard = row[2]
+            lang_dict = { "name":name, "code":code,"standard":standard }
+            language = model.Language(**lang_dict)
+            languages_list.append(language)
+
+       session.add_all(languages_list)
+       session.commit()
+
+
+    else:
+        log.debug("You need to specify the absolute path to ckanext-ngds/ckanext/ngds/base/resources for db init")
