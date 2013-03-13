@@ -281,7 +281,7 @@ class IsoPackage(object):
                 "codeList": "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ProgressCode",        
                 "codeListValue": self.dataset_info["status"]
             }
-            etree.SubElement(status, qualifiedName("gmd", "ProgressCode"), **attr).text = self.dataset_info["status"]
+            etree.SubElement(status, qualifiedName("gmd", "MD_ProgressCode"), **attr).text = self.dataset_info["status"]
             return status
         
         def themeKeywords():
@@ -327,16 +327,16 @@ class IsoPackage(object):
             
             bbox = etree.Element(qualifiedName("gmd", "EX_GeographicBoundingBox"))
             
-            west = etree.SubElement(bbox, qualifiedName("gmd", "westBoundingLongitude"))
+            west = etree.SubElement(bbox, qualifiedName("gmd", "westBoundLongitude"))
             etree.SubElement(west, qualifiedName("gco", "Decimal")).text = str(geo.envelope.bounds[0])
             
-            east = etree.SubElement(bbox, qualifiedName("gmd", "eastBoundingLongitude"))
+            east = etree.SubElement(bbox, qualifiedName("gmd", "eastBoundLongitude"))
             etree.SubElement(east, qualifiedName("gco", "Decimal")).text = str(geo.envelope.bounds[2])
             
-            south = etree.SubElement(bbox, qualifiedName("gmd", "southBoundingLatitude"))
+            south = etree.SubElement(bbox, qualifiedName("gmd", "southBoundLatitude"))
             etree.SubElement(south, qualifiedName("gco", "Decimal")).text = str(geo.envelope.bounds[1])
             
-            north = etree.SubElement(bbox, qualifiedName("gmd", "northBoundingLatitude"))
+            north = etree.SubElement(bbox, qualifiedName("gmd", "northBoundLatitude"))
             etree.SubElement(north, qualifiedName("gco", "Decimal")).text = str(geo.envelope.bounds[3])
             
             return bbox
@@ -434,7 +434,7 @@ class IsoPackage(object):
         citation.append(title())
         citation.append(publicationDate())
         citedResponsibleParties(citation)
-        citation.append(status())
+        idInfo.append(status())
         
         idInfo.append(abstract())        
         idInfo.append(themeKeywords())
