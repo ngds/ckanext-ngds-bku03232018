@@ -434,13 +434,14 @@ class IsoPackage(object):
         citation.append(title())
         citation.append(publicationDate())
         citedResponsibleParties(citation)
-        citation.append(abstract())
         citation.append(status())
-        citation.append(themeKeywords())
-        if self.dataset_info["extent_keyword"]: citation.append(extentKeyword())
-        citation.append(datasetLanguage())
-        citation.append(topicCategory())
-        citation.append(extent())
+        
+        idInfo.append(abstract())        
+        idInfo.append(themeKeywords())
+        if self.dataset_info["extent_keyword"]: idInfo.append(extentKeyword())
+        idInfo.append(datasetLanguage())
+        idInfo.append(topicCategory())
+        idInfo.append(extent())
         
         # Create the distributionInfo section
         distInfo_attr = etree.SubElement(record, qualifiedName("gmd", "distributionInfo"))
