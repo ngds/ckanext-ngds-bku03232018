@@ -390,7 +390,7 @@ class IsoPackage(object):
         def transferOption(resource):
             option = etree.Element(qualifiedName("gmd", "transferOptions"))
             if resource["url"] is not None:
-                attr = { "id": "#%s" % distributionIdFor(resource) }
+                attr = { "id": "%s" % distributionIdFor(resource) }
                 digital = etree.SubElement(option, qualifiedName("gmd", "MD_DigitalTransferOptions"), **attr)
                 online = etree.SubElement(digital, qualifiedName("gmd", "onLine"))
                 online.append(onlineResource(resource))
