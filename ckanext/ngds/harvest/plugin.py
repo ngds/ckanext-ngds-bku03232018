@@ -1,7 +1,10 @@
 from ckan.plugins import implements, SingletonPlugin
 from ckan.plugins import IConfigurer, IActions
 from ckanext.ngds.harvest.model.harvest_node import define_tables
+
+from ckan import model
 from ckanext.ngds.harvest.controllers.ngds_harvest import dispatch, do_harvest
+
 
 class NgdsHarvestPlugin(SingletonPlugin):
     """Control harvesting operations"""
@@ -11,7 +14,8 @@ class NgdsHarvestPlugin(SingletonPlugin):
     def update_config(self, config):
         """IConfigurable function. config is a dictionary of configuration parameters"""
         # Provides a point to do mappings from classes to database tables whenever CKAN is run
-        define_tables()
+        if not hasattr(model, "HarvestNode"):
+            define_tables()
         
     implements(IActions) # Allows us to build a URL and associated binding to a python function
     

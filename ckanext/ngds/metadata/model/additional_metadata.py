@@ -171,6 +171,8 @@ def db_setup():
     """Create tables in the database"""
     # These tables will already be defined in memory if the metadata plugin is enabled.
     #  IConfigurer will make a call to define_tables()
+    
+    
     party = meta.metadata.tables.get("responsible_party", None)
     languages = meta.metadata.tables.get("languages", None)
     

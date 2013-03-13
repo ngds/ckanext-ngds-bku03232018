@@ -130,5 +130,4 @@ Harvest tables are adjusted at the URL: `/api/action/ngds_harvest`
             "email": "ryan.clark.j@gmail.com"
         }
     }
-
-
+ 

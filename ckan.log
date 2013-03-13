@@ -75,3 +75,4 @@
 2013-03-11 15:12:19,414 DEBUG [ckanext.ngds.harvest.model.harvest_node] harvest_node table already exists
 2013-03-11 15:12:19,415 DEBUG [ckanext.ngds.harvest.model.harvest_node] harvested_record table already exists
 2013-03-11 15:12:19,415 DEBUG [ckanext.ngds.csw.model.csw_records] Could not create CSW tables. Please make sure that you've added the csw plugin to your CKAN config .ini file.
+
