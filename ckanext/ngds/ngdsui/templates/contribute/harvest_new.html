@@ -71,7 +71,8 @@
 		<input id="state" type="text" name="state" {% if isEdit %} value="{{ node_admin.state }}"{% endif %}><br>		
 		<label for="zip" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Zipcode:</label>
 		<input id="zip" type="text" name="zip" {% if isEdit %} value="{{ node_admin.zip }}"{% endif %}><br>	<br>
-		
+		<label for="country" style="width: 120px;font-size: 14px;text-align: right;font-weight: bold;">Country:</label>
+		<input id="country" type="text" name="country" {% if isEdit %} value="{{ node_admin.country }}"{% endif %}><br>	<br>		
 		<button type="submit" name="save">Save</button>
 		</div>
 

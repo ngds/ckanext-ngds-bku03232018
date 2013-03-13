@@ -4,11 +4,8 @@ from ckan.lib.base import (request,
                            render,
                            model,
                            abort, h, g, c)
-from ckan.logic import get_action
-from ckan.logic import (tuplize_dict,
-                        clean_dict,
-                        parse_params,
-                        flatten_to_string_key)
+from ckan.logic import (tuplize_dict,clean_dict,
+                        parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
 from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 
@@ -47,7 +44,7 @@ class ContributeController(NGDSBaseController):
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
 		try:
-			check_access('manage_nodes',context,data_dict)
+			check_access('manage_nodes',context,None)
 		except NotAuthorized, error:
 			abort(401,error.__str__())
 
@@ -64,7 +61,7 @@ class ContributeController(NGDSBaseController):
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
 		try:
-			check_access('manage_nodes',context,data_dict)
+			check_access('manage_nodes',context,None)
 		except NotAuthorized, error:
 			abort(401,error.__str__())
 
@@ -106,37 +103,34 @@ class ContributeController(NGDSBaseController):
 		Create new Harvest node.
 		"""
 
-		harvestNode = model.HarvestNode(data)
+		#harvestNode = model.HarvestNode
 
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))							
 
+		data_dict = self.create_responsible_party(data)
+		data['node_admin_id'] = data_dict['id']
+
+		"""	
 		harvestNode.url = data['url']
 		harvestNode.frequency = data['frequency']
 		harvestNode.title = data['title']
-		
-		data_dict = self.create_responsible_party(data)
-
-		harvestNode.node_admin_id = data_dict['id']
+		harvestNode.node_admin_id = data['node_admin_id']
 			
 		print "Harvest the data: ",harvestNode
 
 		harvestNode.save()
-
-		
 		"""
-		data['node_admin_id'] = data_dict['id']
 		data_dict = {'model':'HarvestNode'}
 		data_dict['data']=data
 		data_dict['process']='create'
-		
 
 		print "Data dict: ",data_dict
 
 		context = {'model': model}
 
 		get_action('ngds_harvest')(context, data_dict)		
-		"""
+
 
 		#return self.index()
 		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
@@ -228,4 +222,20 @@ class ContributeController(NGDSBaseController):
 		data_dict = get_action('additional_metadata')(context, data_dict)
 
 		#responsible.save()
-		return  data_dict		
+		return  data_dict
+
+	def do_harvest(self,data=None):
+		
+		print "Entering Harvest Node"
+		data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+			
+		data_dict = {"id" : data['id']}
+		context = {'model': model}
+		try:
+			get_action('do_harvest')(context, data_dict)
+		except:
+			h.flash_error("Error while harvesting", allow_html=True)
+
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
+		redirect(url)		

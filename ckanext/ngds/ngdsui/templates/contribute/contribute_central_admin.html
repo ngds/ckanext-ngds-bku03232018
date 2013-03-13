@@ -1,5 +1,12 @@
 <div id="contribute-central" class="contribute-central">
-
+            {% set flash_messages = h.flash.pop_messages() | list %}
+            <div class="flash-messages">
+              {% for message in flash_messages %}
+                <div class="alert fade in {{ message.category }}" style="font-size:12px;text-align:left;font-family:Arial;font-weight:normal;color:red;">
+                  {{ h.literal(message) }}
+                </div>
+              {% endfor %}
+            </div>
 	<div class="existing-nodes-admin">
 		<h1>Manage Node</h1>
 			<div id="manage-nodes">
@@ -9,19 +16,22 @@
 					</thead>
 					<tbody>
 				    {% for node in c.harvested_nodes %}
+					<form method="post" action="do_harvest">
 				    	<tr>
 				    		<td>
+								<input type="hidden" name="id" value="{{ node.id }}" />
 				    			<img src="/images/node_edit.png" alt="Edit" title="Edit" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node.id) }}', 'edit')" style="cursor: pointer;cursor: hand;"/>
 				    			<img src="/images/node_view.png" alt="View" title="View" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='read', id=node.id) }}', 'read')" style="cursor: pointer;cursor: hand;"/>
 				    			<img src="/images/node_delete.png" alt="Delete" title="Delete" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='delete', id=node.id) }}', 'delete')" style="cursor: pointer;cursor: hand;"/>
 				    			<img src="/images/node_schedule.png" alt="Schedule" title="Schedule" class="not-implemented" style="cursor: pointer;cursor: hand;"/>
-				    			<img src="/images/node_refresh.png" alt="Refresh" title="Refresh" class="not-implemented" style="cursor: pointer;cursor: hand;"/>
+				    			<input type="image" src="/images/node_refresh.png" alt="Harvest" title="Harvest" style="cursor: pointer;cursor: hand;"/>
 				    		</td>
 				    		<td>{{ node.title }}</td>
 				    		<td>{{ node.node_admin.name }}</td>
 				    		<td>Synchronized</td>
 				    		<td>2012-06-06</td>
 				    	</tr>
+					</form>
 				    {% endfor %}
 				    </tbody>
 				</table>
