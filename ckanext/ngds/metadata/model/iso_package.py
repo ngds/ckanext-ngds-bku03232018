@@ -426,7 +426,7 @@ class IsoPackage(object):
         
         # Create the identificationInfo section
         idInfo_attr = etree.SubElement(record, qualifiedName("gmd", "identificationInfo"))
-        idInfo = etree.SubElement(idInfo_attr, qualifiedName("gmd", "MD_DatasetIdentification"))
+        idInfo = etree.SubElement(idInfo_attr, qualifiedName("gmd", "MD_DataIdentification"))
         
         cit_attr = etree.SubElement(idInfo, qualifiedName("gmd", "citation"))
         citation = etree.SubElement(cit_attr, qualifiedName("gmd", "CI_Citation"))
