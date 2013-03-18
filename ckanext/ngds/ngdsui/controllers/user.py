@@ -56,6 +56,13 @@ class UserController(NGDSBaseController):
 		return render('user/manage_users.html')
 
 
+	def logged_out_page(self):
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index')
+		h.flash_notice(_('You are now Logged out'), allow_html=True)
+		redirect(url)
+        #return render('user/logout.html')
+
+
 	def member_new(self,data_dict=None):
 		print "Entered update member"		
 		context = {'model': model, 'session': model.Session,'user': c.user}

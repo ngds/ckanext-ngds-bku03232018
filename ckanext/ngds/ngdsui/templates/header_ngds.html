@@ -11,14 +11,14 @@
 				</div>
 				<div id="top-nav">
 					<ul>
-						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">HOME</a></li>
-						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">ABOUT</a></li>
+						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{ _('HOME') }}</a></li>
+						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">{{ _('ABOUT') }}</a></li>
 						
 						{% if c.user %}
 							<li><a href="#" id="login" class="login">{{ c.user|capitalize }}</a></li>
 						{% else %}	
-							<li><a href="#" class="not-implemented">SIGN UP</a></li>
-							<li><a href="#" id="login" class="login">LOGIN</a></li> 
+							<li><a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('SIGN UP') }}</a></li>
+							<li><a href="#" id="login" class="login">{{ _('LOGIN') }}</a></li> 
 						{% endif %}
 
 						
@@ -28,11 +28,11 @@
 					{% if c.user %}
 					<div class="login-popup" id="logged-in-popup">
 						<ul>
-							<li><a href="#" class="float-left fit-to-login-div">Edit Profile</a></li>
+							<li><a href="{{ h.url_for(controller='user', action='read', id=c.userobj.name) }}" class="float-left fit-to-login-div">{{ _('Profile') }}</a></li>
 							{% if h.check_access('manage_users') %}
-							   <li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.user:UserController', action='manage_users' %}" class="float-left fit-to-login-div">User Management</a></li>
+							   <li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.user:UserController', action='manage_users' %}" class="float-left fit-to-login-div">{{ _('User Management') }}</a></li>
 							{% endif %}							
-							<li><a href="{% url_for controller='user', action='logout' %}" class="float-left fit-to-login-div">Logout</a></li>
+							<li><a href="{% url_for controller='user', action='logout' %}" class="float-left fit-to-login-div">{{ _('Logout') }}</a></li>
 						</ul>
 					</div>
 					{% else %}
