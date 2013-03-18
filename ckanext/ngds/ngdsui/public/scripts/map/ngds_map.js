@@ -135,6 +135,67 @@ ngds.Map = {
 					});
 			});
 		},
+		/*
+		*	Manages a feature or layer to hide or show based on zoom and bounds.
+		*/
+		manage_bounds_on_zoom:function(feature_or_layer,type){
+			
+			// Validate inputs.
+			(function() {
+				if(!(type==='layer' || type==='feature')) {
+					throw "Expected type to be 'layer' or 'feature'";
+				}
+
+				if(typeof feature_or_layer!=='object') {
+					throw "Expected feature_or_layer to be an object";
+				}
+			})();
+
+			var managed_layer = this.ManagedLayer(feature_or_layer,type);
+			this.managed_features_or_layers.manage(managed_layer);
+		},
+		managed_features_or_layers:{
+			_features_or_layers:[],
+			is_managed:function(ml) {
+				for(fl in _features_or_layers) {
+					if(fl === ml) {
+						return _features_or_layers.indexOf(fl);
+					}
+				}
+				return -1;
+			},
+			manage:function(ml){
+				if (this.is_managed(ml)===-1) {
+					ml._hidden = false;
+					ngds.Map.map.on('zoomend',function(ev){
+						var map_bounds = ngds.Map.map.getBounds();
+						if(map_bounds.contains(bbox_bounds)) {
+							if(!ml._hidden) {
+								ngds.Map.drawnItems.addLayer(e.rect);
+								ml._hidden=true;
+							}
+						}
+						else {
+							if(ml._hidden) {
+								ngds.Map.drawnItems.removeLayer(e.rect);
+								ml._hidden=false;
+							}
+							
+						}
+					});
+				}
+			},
+			remove_from_managed_list:function(ml) {
+				var check = this.is_managed(ml);
+				if(check!==-1) {
+					_features_or_layers.splice(check,1);
+				}
+			}
+		},
+		ManagedLayer:function(layer,type) {
+			this.layer = layer;
+			this.type = type;
+		},
 		// Exposes a set of utility functions to work with the map.
 		utils:{
 			/*

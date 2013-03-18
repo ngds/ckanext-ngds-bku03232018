@@ -8,11 +8,15 @@ ngds.ckanlib = {
 	*	Perform a POST to get the list of packages that are contained in a bounding rectangle.
 	*	Inputs : minx, miny, maxx, maxy and a callback function.
 	*/
-	dataset_geo:function(minx,miny,maxx,maxy,callback) {
+	dataset_geo:function(bbox,callback) {
 		var url_pre = '/api/2/search/dataset/geo?bbox=';
 		
 		// Validate inputs.
-		$.each([minx,miny,maxx,maxy],function(index,v) {
+		if(!typeof bbox === 'object') {
+			throw "Parameter bbox : Expected a BoundingBox Object.";
+		}
+
+		$.each(bbox.get_bbox_array(),function(index,v) {
 			(function(v){ // Throw an error if we didn't receive all the required parameters.
 				if(v === null || typeof v === 'undefined') {
 					throw "Missing parameter : Expected minx,miny,maxx,maxy.";
@@ -27,7 +31,7 @@ ngds.ckanlib = {
 		})();
 
 		// Construct the url for the GET call.
-		var url = url_pre+[minx,miny,maxx,maxy].join(',');
+		var url = url_pre+bbox.get_bbox_array().join(',');
 
 		// Make the GET call and perform the callback.
 		$.ajax({
