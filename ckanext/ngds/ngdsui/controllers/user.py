@@ -29,7 +29,7 @@ class UserController(NGDSBaseController):
 			#abort(401, _('Not authorized to see this page'))
 			abort(401,error.__str__())
  
- 		group_name = g.default_group
+ 		group_name = h.get_default_group()
 		group_members = self.member_list(group_name)
 
 		q = model.Session.query(model.User).\
@@ -74,9 +74,9 @@ class UserController(NGDSBaseController):
 			#abort(401, _('Not authorized to see this page'))
 			abort(401,error.__str__())
 
-		print "g.default_group: ",g.default_group	
+		print "default_group: ",h.get_default_group()	
 
-		group = model.Group.get(g.default_group)
+		group = model.Group.get(h.get_default_group())
 
 		data_dict['id'] = group.id
 		print "data_dict: ",data_dict
