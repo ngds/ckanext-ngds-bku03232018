@@ -1,0 +1,21 @@
+{% extends "page_ngds.html" %}
+
+{% set user = c.userobj %}
+
+{% block content %}
+<div id="login-page">
+<div class="secondary-content">
+{% block secondary_content %} {% endblock %}
+</div>
+
+<div class="primary-content">
+
+    <div class="module-content">
+      {% block primary_content_inner %}{% endblock %}
+    </div>
+
+</div>
+
+
+</div>
+{% endblock %}
