@@ -88,6 +88,7 @@ class NgdsuiPlugin(SingletonPlugin):
 
 		map.connect("manage_users","/ngds/users",controller=user_controller,action="manage_users")
 		map.connect("member_new","/ngds/member_new",controller=user_controller,action="member_new")
+		map.connect("poly","/poly",controller=home_controller,action="test")
 
 		return map
 

@@ -4,6 +4,10 @@
 */
 
 ngds.ckanlib = {
+	/*
+	*	Perform a POST to get the list of packages that are contained in a bounding rectangle.
+	*	Inputs : minx, miny, maxx, maxy and a callback function.
+	*/
 	dataset_geo:function(minx,miny,maxx,maxy,callback) {
 		var url_pre = '/api/2/search/dataset/geo?bbox=';
 		
@@ -36,6 +40,45 @@ ngds.ckanlib = {
 		});
 
 	},
+	/*
+	*	Perform a call to get the list of packages that are within a polygonal region.
+	*	Inputs : An array of coordinate pairs that correspond to the polygonal region and a callback function.
+	*/
+	dataset_poly_geo:function(poly_params,callback) {
+		
+		(function() {
+			if(poly_params===null || typeof poly_params === 'undefined') {
+				throw "Missing parameter : Expected an array of coordinates representing a polygon.";
+			}
+			if(typeof callback !== 'function') {
+				throw "Missing parameter : Expected callback function.";
+			}
+		})();
+
+		if(poly_params.length===0) {
+			return;
+		}
+
+		var url = '/poly';
+		var data = {
+			'data':JSON.stringify({
+				'poly':poly_params
+			})
+		};
+		var type = 'POST';
+
+		$.ajax({
+			url:url,
+			data:data,
+			success:function(response){
+				return callback(response);
+			}
+		});
+	},
+	/*
+	*	Query a package by its id.
+	*	Input : A package id and a callback.
+	*/
 	package_show:function(package_id,callback) {
 		
 		// Validate input.
