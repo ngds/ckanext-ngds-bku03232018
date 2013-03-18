@@ -10,6 +10,7 @@ $(document).ready(function() {
 		ngds.Map.drawnItems.clearLayers();
 		// Add this layer to the map.
 		ngds.Map.drawnItems.addLayer(e.poly);
+		x = e.poly;
 		// Clear the geojson layer to get rid of previous results.
 		ngds.Map.geoJSONLayer.clearLayers();
 
@@ -41,6 +42,28 @@ $(document).ready(function() {
 		// TODO - Limit this to 8 resuls.
 		ngds.ckanlib.dataset_geo(minx,miny,maxx,maxy,function(response){
 			ngds.Map.add_packages_to_geojson_layer(response.results);
+
 		});
+		var south_west = new L.LatLng(miny,minx);
+		var north_east = new L.LatLng(maxy,maxx);
+		var bbox_bounds = new L.LatLngBounds(south_west,north_east);
+		var _hidden = false;
+		ngds.Map.map.on('zoomend',function(ev){
+			var map_bounds = ngds.Map.map.getBounds();
+			if(map_bounds.contains(bbox_bounds)) {
+				if(!_hidden) {
+					ngds.Map.drawnItems.addLayer(e.rect);
+					_hidden=true;
+				}
+			}
+			else {
+				if(_hidden) {
+					ngds.Map.drawnItems.removeLayer(e.rect);
+					_hidden=false;
+				}
+				
+			}
+		});
+
 	});
 });
