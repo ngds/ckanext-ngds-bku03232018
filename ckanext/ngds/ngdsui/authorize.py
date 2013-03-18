@@ -2,7 +2,8 @@ from pylons.i18n import _
 
 import ckan.logic as logic
 import ckan.new_authz as new_authz
-from ckan.lib.base import (g,h)
+from ckan.lib.base import (g)
+from ckanext.ngds.ngdsui.misc import helpers
 
 
 def manage_users(context, data_dict):
@@ -23,7 +24,7 @@ def publish_dataset(context, data_dict):
 	user = context.get('user','')
 	print "User Logged: ",user
 	#Change the group to be coming from global setting...
-	check1 = new_authz.has_user_permission_for_group_or_org(h.get_default_group(), user, 'publish_dataset')
+	check1 = new_authz.has_user_permission_for_group_or_org(helpers.get_default_group(), user, 'publish_dataset')
 	if not check1:
 		return {'success': False, 'msg': _('User %s not authorized to publish dataset') % (str(user))}
 	return {'success': True}
