@@ -12,6 +12,7 @@ from ckan.logic import (tuplize_dict,
 from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 from ckan.logic import NotFound, NotAuthorized, ValidationError
+from ckanext.ngds.ngdsui.misc import helpers
 
 class UserController(NGDSBaseController):
 
@@ -29,7 +30,7 @@ class UserController(NGDSBaseController):
 			#abort(401, _('Not authorized to see this page'))
 			abort(401,error.__str__())
  
- 		group_name = g.default_group
+ 		group_name = helpers.get_default_group()
 		group_members = self.member_list(group_name)
 
 		q = model.Session.query(model.User).\
@@ -56,6 +57,13 @@ class UserController(NGDSBaseController):
 		return render('user/manage_users.html')
 
 
+	def logged_out_page(self):
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index')
+		h.flash_notice(_('You are now Logged out'), allow_html=True)
+		redirect(url)
+        #return render('user/logout.html')
+
+
 	def member_new(self,data_dict=None):
 		print "Entered update member"		
 		context = {'model': model, 'session': model.Session,'user': c.user}
@@ -67,9 +75,7 @@ class UserController(NGDSBaseController):
 			#abort(401, _('Not authorized to see this page'))
 			abort(401,error.__str__())
 
-		print "g.default_group: ",g.default_group	
-
-		group = model.Group.get(g.default_group)
+		group = model.Group.get(helpers.get_default_group())
 
 		data_dict['id'] = group.id
 		print "data_dict: ",data_dict

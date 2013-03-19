@@ -36,15 +36,28 @@
 
   {# The content block allows you to replace the content of the page if needed #}
   <div id="body-container">
+
+          {% block flash %}
+            {% set flash_messages = h.flash.pop_messages() | list %}
+            <div class="flash-messages">
+              {% for message in flash_messages %}
+                <div class="alert fade in {{ message.category }}">
+                  {{ h.literal(message) }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endblock %}
+
+
   {% if active_page=="library" %}
     <div id="content-container" style="min-height:600px;">
       {% elif active_page=="home"%}
     <div id="content-container" style="padding-bottom:130px;">
       {% else %}
-    <div id="content-container">
+    <div id="content-container" class="wrapper">
       {% endif %}
   {%- block content %}
- 
+
      
   {% endblock -%}
     </div>

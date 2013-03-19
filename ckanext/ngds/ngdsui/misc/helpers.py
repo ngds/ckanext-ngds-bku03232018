@@ -1,7 +1,7 @@
 from ckan.lib.base import model,h,g,c,request
 import ckan.lib.navl.dictization_functions as dictization_functions
 DataError = dictization_functions.DataError
-# from pylons import c,request,h
+from pylons import config
 
 
 def get_responsible_party_name(id):
@@ -33,6 +33,12 @@ def _get_repoze_handler(handler_name):
     return getattr(request.environ['repoze.who.plugins']['friendlyform'],handler_name)
 
 def get_default_group():
+
+	try:
+		print g.default_group
+	except AttributeError:
+		g.default_group = config.get('ngds.default_group_name', 'public')
+
 	return g.default_group
 
 def get_language(id):
