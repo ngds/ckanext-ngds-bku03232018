@@ -1764,13 +1764,18 @@ div#login-page .primary-content {
 div#login-page .secondary-content {
   width: 220px;
   display:table-cell;
-
+  position:relative;
 /*  float: left; */ 	
+}
+
+.align-top {
+	position:absolute;
 }
 
 div#login-page section {
 	padding-left: 3px;
 	padding-bottom: 10px;
+	position:relative;
 }
 
 .control-medium input,

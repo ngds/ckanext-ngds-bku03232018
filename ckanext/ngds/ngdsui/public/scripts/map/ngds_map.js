@@ -11,8 +11,9 @@ ngds.Map = {
 		initialize:function() {
 			
 			var base = new L.TileLayer('http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8');
-			var map = this.map = new L.Map('map-container', {layers:[base], center: new L.LatLng(34.1618, -111.53332), zoom: 3});
 			
+			var map = this.map = new L.Map('map-container', {layers:[base], center: new L.LatLng(34.1618, -111.53332), zoom: 3});
+
 			var _drawControl = new L.Control.Draw({
 				position: 'topright',
 				polyline: false,
@@ -30,6 +31,18 @@ ngds.Map = {
 				'drawnItems': _drawnItems
 			};
 			this.initialize_controls();
+
+			var baseMaps = {
+				"Terrain":base
+			};
+
+			var overlayMaps = {
+				"Geo JSON":_geoJSONLayer,
+				// "Transmission Grid":transmissionLayer
+			};
+
+			var layer_control = new L.control.layers(baseMaps, overlayMaps);
+			layer_control.addTo(map);
 		},
 		/*	Initialize our NGDS specific custom controls. 
 		*	Inputs : None.
