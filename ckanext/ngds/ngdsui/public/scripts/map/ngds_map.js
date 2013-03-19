@@ -193,6 +193,26 @@ ngds.Map = {
 						});
 						return func.apply(this,operands);
 					}
+		},
+		register_map_query_provider:function(id_provider) {
+			// Validate inputs.
+			(function(){
+				if(id_provider===null || typeof id_provider === 'undefined') {
+					throw "Expected a string for id_provider.";
+				}
+			})();
+			
+			this.query_provider = "#"+id_provider;
+		},
+		set_search_mode:function(mode) {
+
+			(function() {
+				if(mode === null || typeof mode === 'undefined') {
+					throw "Allowed modes are 'search' and 'filter'";
+				}
+			})();
+
+			this.mode = mode;
 		}
 
 

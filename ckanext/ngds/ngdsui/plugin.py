@@ -63,6 +63,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		For the moment, set up routes under the sub-root /ngds to render the UI.
 		"""
 		home_controller = "ckanext.ngds.ngdsui.controllers.home:HomeController"
+		map_controller = "ckanext.ngds.ngdsui.controllers.map:MapController"
 		map.connect("home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
 		map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 
@@ -90,7 +91,7 @@ class NgdsuiPlugin(SingletonPlugin):
 
 		map.connect("manage_users","/ngds/users",controller=user_controller,action="manage_users")
 		map.connect("member_new","/ngds/member_new",controller=user_controller,action="member_new")
-		map.connect("poly","/poly",controller=home_controller,action="test")
+		map.connect("poly","/poly",controller=map_controller,action="test")
 		map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
 		return map
 

@@ -59,4 +59,7 @@ $(document).ready(function() {
 		ngds.Map.manage_zoom(bounding_box,e.rect);
 
 	});
+
+	
+	
 });
