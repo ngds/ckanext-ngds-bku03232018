@@ -201,7 +201,12 @@
         if (this._image) {
             c=this._map.getPanes().overlayPane;
             if(this._map.getPanes().overlayPane.hasChildNodes()) {
-            	this._map.getPanes().overlayPane.removeChild(this._image);
+            	try {
+                    this._map.getPanes().overlayPane.removeChild(this._image);
+                }
+                catch(exception) { // Catching a DOM Exception that's generated here. 
+                    // Do nothing for now.
+                }
         	}
         }
         this._initImage();
