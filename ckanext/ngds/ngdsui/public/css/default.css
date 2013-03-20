@@ -1811,7 +1811,7 @@ div#login-page section {
 }
 
 .form-horizontal input {
-
+margin-left: 40px;
 	  display: inline-block;
   *display: inline;
   /* IE7 inline-block hack */
