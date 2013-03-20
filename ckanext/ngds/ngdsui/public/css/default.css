@@ -1768,11 +1768,12 @@ div#login-page .secondary-content {
   width: 220px;
   display:table-cell;
   position:relative;
+  vertical-align:top;
 /*  float: left; */ 	
 }
 
 .align-top {
-	position:absolute;
+	/*position:absolute;*/
 }
 
 div#login-page section {
