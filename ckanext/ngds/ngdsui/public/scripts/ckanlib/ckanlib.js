@@ -111,5 +111,46 @@ ngds.ckanlib = {
 				return callback(response);
 			}
 		});
+	},
+	/*
+	*	Do a package search query. 
+	*	Input : A query string and a Parameter object with keys that make sense. Currently the only one that makes sense is 'extras'
+	*/
+	package_search:function(query,parameter_obj,callback) {
+		// Validate inputs.
+		(function() {
+			if(parameter_obj!==null && typeof parameter_obj!=='undefined') {
+				// The parameter object is optional, but if supplied, must be an object.
+				if(typeof parameter_obj==='undefined') { 
+					throw "Expected an object as the second parameter.";
+				}
+			}
+
+			if(callback===null || typeof callback !== 'function') {
+				throw "Expected a callback function.";
+			}
+		})();
+
+		var url = '/api/action/package_search';
+		var type = 'POST';
+	
+		var data = { };
+		
+		for(key in parameter_obj) {
+			if(parameter_obj[key]!==null && typeof parameter_obj[key]!== 'undefined') {
+				data[key] = parameter_obj[key];
+			}
+		}
+
+		$.ajax({
+			url:url,
+			type:type,
+			dataType:'JSOn',
+			data:JSON.stringify(data),
+			success:function(response) {
+				return callback(response);
+			}
+		});
+
 	}
 }

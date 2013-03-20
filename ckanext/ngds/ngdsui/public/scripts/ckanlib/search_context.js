@@ -1,0 +1,3 @@
+ngds.SearchContext = function() {
+
+};
