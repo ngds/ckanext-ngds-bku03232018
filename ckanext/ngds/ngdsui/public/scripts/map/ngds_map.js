@@ -29,7 +29,8 @@ ngds.Map = {
 			map.addControl(_drawControl);
 			var _drawnItems = ngds.Map.drawnItems = new L.LayerGroup();
 			map.addLayer(_drawnItems);
-			var _geoJSONLayer = this.geoJSONLayer = L.geoJson().addTo(map); // Geo JSON Layer where we'll display all our features.
+			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
+
 
 			this.layers = {
 				'geojson':_geoJSONLayer,
@@ -38,12 +39,12 @@ ngds.Map = {
 			this.initialize_controls();
 
 			var baseMaps = {
-				"Terrain":base
+				"Terrain":base,
 			};
 
-			var overlayMaps = {
-				"Geo JSON":_geoJSONLayer,
-				"Power Grid":powergrid
+			var overlayMaps = {				
+				"Power Grid":powergrid,
+				"Geo JSON":_geoJSONLayer
 			};
 
 			var layer_control = new L.control.layers(baseMaps, overlayMaps);
