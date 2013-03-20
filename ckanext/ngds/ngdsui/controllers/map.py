@@ -1,11 +1,19 @@
+from ckan.lib.base import *
+from ckan.lib.base import (request,
+                           render,
+                           BaseController,
+                           model,
+                           abort, h, g, c)
 from ckanext.spatial.model import PackageExtent
 from shapely.geometry import asShape
+from ckan.model import Session, Package
 import json
 from pylons.decorators import jsonify
+from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 
 from geoalchemy import WKTSpatialElement
 
-class MapController(HomeController):
+class MapController(NGDSBaseController):
 	@jsonify
 	def test(self):
 		temp_par = []
