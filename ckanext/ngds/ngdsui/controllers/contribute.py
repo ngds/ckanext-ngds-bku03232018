@@ -51,7 +51,7 @@ class ContributeController(NGDSBaseController):
 		c.isEdit = True
 		c.action = 'edit_save'
 		c.node = self._read_node(id)
-		return render('contribute/harvest_new.html')	
+		return render('contribute/harvest_edit.html')	
 
 	def edit_save(self,id=None):
 		"""
@@ -95,7 +95,7 @@ class ContributeController(NGDSBaseController):
 
 		print " Node ID: ", node_id
 
-		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='read', id=node_id)
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node_id)
 		redirect(url)
 
 	def save(self,data=None):
@@ -222,6 +222,7 @@ class ContributeController(NGDSBaseController):
 		data_dict = get_action('additional_metadata')(context, data_dict)
 
 		#responsible.save()
+
 		return  data_dict
 
 	def do_harvest(self,data=None):
@@ -238,4 +239,4 @@ class ContributeController(NGDSBaseController):
 			h.flash_error("Error while harvesting", allow_html=True)
 
 		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
-		redirect(url)		
+		redirect(url)
