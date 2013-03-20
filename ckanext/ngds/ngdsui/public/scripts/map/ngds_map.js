@@ -13,11 +13,11 @@ ngds.Map = {
 			var base = new L.TileLayer('http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8');
 
 
-			var transmissionLayer = new L.AgsDynamicLayer();
-			transmissionLayer.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',
+			var powergrid = new L.AgsDynamicLayer();
+			powergrid.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',
 				{ 'layers':'show:21,22,26'});
 			
-			var map = this.map = new L.Map('map-container', {layers:[base], center: new L.LatLng(34.1618, -111.53332), zoom: 3});
+			var map = this.map = new L.Map('map-container', {layers:[base], center: new L.LatLng(34.1618, -111.53332), zoom: 4});
 
 			var _drawControl = new L.Control.Draw({
 				position: 'topright',
@@ -43,7 +43,7 @@ ngds.Map = {
 
 			var overlayMaps = {
 				"Geo JSON":_geoJSONLayer,
-				"Transmission Grid":transmissionLayer
+				"Power Grid":powergrid
 			};
 
 			var layer_control = new L.control.layers(baseMaps, overlayMaps);
