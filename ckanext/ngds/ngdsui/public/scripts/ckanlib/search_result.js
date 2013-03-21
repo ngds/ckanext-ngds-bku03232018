@@ -35,9 +35,21 @@ ngds.SearchResult = function(raw_result) {
 	}
 
 	return {
-		get:function(key,params) {
-			if(params === null) {
-				return func_map[key]
+		get:function() {
+			var params_set = false;
+			var params = { }, key;
+			for(argument in arguments) {
+				if(typeof arguments[argument]==="object") {
+					params_set = true;
+					params = arguments[argument];
+				}
+				else {
+					key = arguments[argument];
+				}
+			}
+			if(params_set === false) {
+				console.info("search_result > get : ","Got : ",key);
+				return func_map[key];
 			}
 			return func_map[key](params)
 		}

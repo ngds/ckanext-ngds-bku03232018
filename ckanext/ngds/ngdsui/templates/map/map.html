@@ -8,15 +8,19 @@
 <div class="map-search" style="float:left;">
 	<span class="main-menu-item left">Search</span>
 	<p class="map-search-desc">Known geothermal resource area, latitude/longitude, geothermal area</p>
-	<form action="#">
+	<form action="javascript:ngds.Map.map_search()">
 		<fieldset>
 			<input id="map-query" type="text"/>
 			<input id="map-search" type="submit" value="Go"/>
 		</fieldset>
 	</form>
+
 </div>
 
 <div id="map-container" style="width:695px; height:600px; float:right; position:relative;"></div>
+<div class="map-search-results" style="float:left;">
+
+ </div>
 
 {% endblock %}
 
@@ -34,5 +38,6 @@
 	<script type="text/javascript" src="/scripts/map/map.js"></script>
 	<script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
+	<script type="text/javascript" src="/scripts/ckanlib/search_context.js"></script>
 
 {% endblock %}    

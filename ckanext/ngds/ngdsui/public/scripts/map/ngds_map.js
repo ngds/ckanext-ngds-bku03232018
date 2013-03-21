@@ -16,8 +16,8 @@ ngds.Map = {
 			var powergrid = new L.AgsDynamicLayer();
 			powergrid.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',
 				{ 'layers':'show:21,22,26'});
-			
-			var map = this.map = new L.Map('map-container', {layers:[base], center: new L.LatLng(34.1618, -111.53332), zoom: 4});
+			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
+			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -111.53332), zoom: 4});
 
 			var _drawControl = new L.Control.Draw({
 				position: 'topright',
@@ -29,7 +29,7 @@ ngds.Map = {
 			map.addControl(_drawControl);
 			var _drawnItems = ngds.Map.drawnItems = new L.LayerGroup();
 			map.addLayer(_drawnItems);
-			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
+			
 
 
 			this.layers = {
@@ -50,20 +50,7 @@ ngds.Map = {
 			var layer_control = new L.control.layers(baseMaps, overlayMaps);
 			layer_control.addTo(map);
 
-			$("#map-search").click(function(){
-				var query = $("#map-query").val();
-				search_result=null;
-				ngds.ckanlib.package_search({ "q":query },function(response) {
-				 search_result = response; 
-				 exam = ngds.SearchResult(search_result.result);
-				 for(index in response.result.results) {
-				 	// console.log(response.result.results[dataset]);
-				 	ngds.Map.add_raw_result_to_geojson_layer(response.result.results[0]);
-
-				 }
-				});
-			});
-
+			// this.initialize_map_search();
 		},
 		/*	Initialize our NGDS specific custom controls. 
 		*	Inputs : None.
@@ -129,7 +116,29 @@ ngds.Map = {
 							}
 							return false;
 						});
-			},
+		},
+		map_search:function() {
+			var me = this;
+			this.clear_layer('geojson');
+			var query = ngds.Map.SearchContext.query = $("#map-query").val();
+			geoj = me.get_layer('drawnItems');
+			
+			ngds.ckanlib.package_search({ "q":query },function(response) {
+				console.info(response.result);
+				var search_result = x = ngds.SearchResult(response.result);
+				ngds.Map.SearchContext.set_preamble_count(search_result.get('count'));
+				ngds.Map.SearchContext.set_results(response.results);
+				for(index in response.result.results) {
+				 	ngds.Map.add_raw_result_to_geojson_layer(response.result.results[index]);
+				 }
+			});
+		},
+		get_layer:function(key) {
+			if(key in this.layers) {
+				return this.layers[key];
+			}
+			throw "No layer exists with the key : "+key;
+		},
 		/*	Add a list of features to a particular layer on the map.
 		*	Inputs : A list of features and a key that identifies the layer.
 		*/
@@ -153,20 +162,19 @@ ngds.Map = {
 		add_packages_to_geojson_layer:function(package_ids) {
 			var me = this;
 			$.each(package_ids,function(index,package_id){
-				var geojson = ngds.ckanlib.package_show(package_id,function(response){
-						this.add_raw_result_to_geojson_layer(response);
-					});
+				ngds.ckanlib.package_show(package_id,function(response){
+						me.add_raw_result_to_geojson_layer(response.result);
+				});
 			});
 		},
-		add_raw_result_to_geojson_layer:function(result) {
+		add_raw_result_to_geojson_layer:function(result) { // Expects response.result, not response.
 			try {
 				var dataset = ngds.ckandataset(result);	
 				var feature = dataset.getGeoJSON();
-				console.log(feature);
 				var popup = dataset.map.getPopupHTML();
 			}
 			catch(e) {
-				console.log(e);
+				console.error("Adding to geojson layer : ",e);
 				return;
 			}																
 			var geoJSONRepresentation = L.geoJson(feature);								
