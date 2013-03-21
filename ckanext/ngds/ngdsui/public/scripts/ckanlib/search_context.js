@@ -19,5 +19,31 @@ ngds.Map.SearchContext = {
 	},
 	set_results:function(results){
 		this['results'] = results;
+		this.initialize_pager();
+	},
+	initialize_pager:function() {
+		this.begin = 0;
+		this.end = this['results'].length;
+		this.bunch = 5;
+	},
+	next:function() {
+		this.clear_or_init_results_div();
+		
+	},
+	prev:function() {
+
+	},
+	num_pages:function() {
+		return this['results'].length;
+	},
+	clear_or_init_results_div:function() {
+		if(!is_defined('results')) {
+			this.create_results_div();
+		}
+		this['results'].text("");
+	},
+	create_results_div:function() {
+		var results = this['results'] = $("<div/>",{class:"results"});
+		$(".map-search-results").append(results);
 	}
 };
