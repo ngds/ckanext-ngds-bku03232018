@@ -114,9 +114,9 @@ ngds.ckanlib = {
 	},
 	/*
 	*	Do a package search query. 
-	*	Input : A query string and a Parameter object with keys that make sense. Currently the only one that makes sense is 'extras'
+	*	Input : Parameter object with keys that make sense. Currently the only one that makes sense is 'extras'. And a callback.
 	*/
-	package_search:function(query,parameter_obj,callback) {
+	package_search:function(parameter_obj,callback) {
 		// Validate inputs.
 		(function() {
 			if(parameter_obj!==null && typeof parameter_obj!=='undefined') {
@@ -126,7 +126,7 @@ ngds.ckanlib = {
 				}
 			}
 
-			if(callback===null || typeof callback !== 'function') {
+			if(typeof callback !== 'function') {
 				throw "Expected a callback function.";
 			}
 		})();
@@ -145,12 +145,40 @@ ngds.ckanlib = {
 		$.ajax({
 			url:url,
 			type:type,
-			dataType:'JSOn',
+			dataType:'JSON',
 			data:JSON.stringify(data),
 			success:function(response) {
 				return callback(response);
 			}
 		});
 
+	},
+	get_responsible_party:function(id,callback) {
+		(function() {
+			if(id===null || typeof id==='undefined') {
+				throw "Expected valid id";
+			}
+			if(typeof callback!=='function') {
+				throw "Expected callback function";
+			}
+		})();
+
+		var url = '/api/action/additional_metadata';
+		var model = "ResponsibleParty";
+		var process = "read";
+		var data = {
+			"model":model,
+			"process":process,
+			"data":{
+				"id":id
+			}
+		};
+		$.ajax({
+			url:url,
+			data:data,
+			success:function(response) {
+				return callback(response);
+			}
+		});
 	}
 }

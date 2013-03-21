@@ -49,6 +49,21 @@ ngds.Map = {
 
 			var layer_control = new L.control.layers(baseMaps, overlayMaps);
 			layer_control.addTo(map);
+
+			$("#map-search").click(function(){
+				var query = $("#map-query").val();
+				search_result=null;
+				ngds.ckanlib.package_search({ "q":query },function(response) {
+				 search_result = response; 
+				 exam = ngds.SearchResult(search_result.result);
+				 for(index in response.result.results) {
+				 	// console.log(response.result.results[dataset]);
+				 	ngds.Map.add_raw_result_to_geojson_layer(response.result.results[0]);
+
+				 }
+				});
+			});
+
 		},
 		/*	Initialize our NGDS specific custom controls. 
 		*	Inputs : None.
@@ -139,20 +154,24 @@ ngds.Map = {
 			var me = this;
 			$.each(package_ids,function(index,package_id){
 				var geojson = ngds.ckanlib.package_show(package_id,function(response){
-						try {
-							var dataset = ngds.ckandataset(response.result);	
-							var feature = dataset.getGeoJSON();
-							var popup = dataset.map.getPopupHTML();
-							}
-							catch(e) {
-								console.log(e);
-								return;
-							}																
-							var geoJSONRepresentation = L.geoJson(feature);								
-							geoJSONRepresentation.bindPopup(popup);
-							me.add_to_layer([geoJSONRepresentation],'geojson');
+						this.add_raw_result_to_geojson_layer(response);
 					});
 			});
+		},
+		add_raw_result_to_geojson_layer:function(result) {
+			try {
+				var dataset = ngds.ckandataset(result);	
+				var feature = dataset.getGeoJSON();
+				console.log(feature);
+				var popup = dataset.map.getPopupHTML();
+			}
+			catch(e) {
+				console.log(e);
+				return;
+			}																
+			var geoJSONRepresentation = L.geoJson(feature);								
+			geoJSONRepresentation.bindPopup(popup);
+			this.add_to_layer([geoJSONRepresentation],'geojson');
 		},
 		manage_zoom:function(bounding_box,layer) {
 			var bbox_bounds = bounding_box.get_leaflet_bbox();
