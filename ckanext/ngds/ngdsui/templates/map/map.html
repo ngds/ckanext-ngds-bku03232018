@@ -19,7 +19,11 @@
 
 <div id="map-container" style="width:695px; height:600px; float:right; position:relative;"></div>
 <div class="map-search-results" style="float:left;">
-
+	<div class="preamble-container">
+		<div class="preamble"></div>
+	</div>
+	<div class="results"></div>
+	<div class="pager"></div>
  </div>
 
 {% endblock %}
@@ -30,7 +34,6 @@
 	<link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
 	<script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
 	<script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
-	<script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
 	<script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
@@ -38,6 +41,6 @@
 	<script type="text/javascript" src="/scripts/map/map.js"></script>
 	<script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
-	<script type="text/javascript" src="/scripts/ckanlib/search_context.js"></script>
+	<script type="text/javascript" src="/scripts/map/pager.js"></script>
 
 {% endblock %}    

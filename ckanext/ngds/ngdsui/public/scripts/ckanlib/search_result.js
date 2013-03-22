@@ -52,6 +52,9 @@ ngds.SearchResult = function(raw_result) {
 				return func_map[key];
 			}
 			return func_map[key](params)
+		},
+		raw:function() {
+			return raw_result;
 		}
 	};
 };

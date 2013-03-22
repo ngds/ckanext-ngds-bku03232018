@@ -16,8 +16,9 @@ ngds.Map = {
 			var powergrid = new L.AgsDynamicLayer();
 			powergrid.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',
 				{ 'layers':'show:21,22,26'});
+
 			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
-			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -111.53332), zoom: 4});
+			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -100.53332), zoom: 3});
 
 			var _drawControl = new L.Control.Draw({
 				position: 'topright',
@@ -29,12 +30,11 @@ ngds.Map = {
 			map.addControl(_drawControl);
 			var _drawnItems = ngds.Map.drawnItems = new L.LayerGroup();
 			map.addLayer(_drawnItems);
-			
-
-
+		
 			this.layers = {
 				'geojson':_geoJSONLayer,
-				'drawnItems': _drawnItems
+				'drawnItems': _drawnItems,
+				'powergrid':powergrid
 			};
 			this.initialize_controls();
 
@@ -119,19 +119,34 @@ ngds.Map = {
 		},
 		map_search:function() {
 			var me = this;
-			this.clear_layer('geojson');
-			var query = ngds.Map.SearchContext.query = $("#map-query").val();
-			geoj = me.get_layer('drawnItems');
 			
-			ngds.ckanlib.package_search({ "q":query },function(response) {
-				console.info(response.result);
-				var search_result = x = ngds.SearchResult(response.result);
-				ngds.Map.SearchContext.set_preamble_count(search_result.get('count'));
-				ngds.Map.SearchContext.set_results(response.results);
-				for(index in response.result.results) {
-				 	ngds.Map.add_raw_result_to_geojson_layer(response.result.results[index]);
+			// this.clear_layer('geojson');
+			geoj = me.get_layer('drawnItems');
+
+			var query = $("#map-query").val();
+			var pager = ngds.Pager(5);
+
+			pager.set_action(ngds.ckanlib.package_search,{ 'q':query });
+
+			pager.next(function(search_result) {
+				var count = search_result.get('count');				
+				var raw_result = search_result.raw();
+				me.clear_layer('geojson');
+				console.log(raw_result);
+				pager.set_state(count,query);
+
+				for(index in raw_result.results) {
+				 	ngds.Map.add_raw_result_to_geojson_layer(raw_result.results[index]);
 				 }
+
 			});
+			
+			// ngds.ckanlib.package_search({ "q":query },function(response) {
+			// 	console.info(response.result);
+			// 	var search_result = x = ngds.SearchResult(response.result);
+			// 	ngds.Map.SearchContext.set_preamble_count(search_result.get('count'));
+			// 	ngds.Map.SearchContext.set_results(response.result.results);
+			// });
 		},
 		get_layer:function(key) {
 			if(key in this.layers) {

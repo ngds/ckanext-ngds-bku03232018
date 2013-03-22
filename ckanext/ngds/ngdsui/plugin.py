@@ -1,4 +1,4 @@
-from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers
+from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers, IPackageController
 from ckanext.ngds.ngdsui import authorize
 from ckan.lib.base import (model,abort, h, g, c)
 from ckan.logic import get_action,check_access
@@ -122,4 +122,14 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_default_group':helpers.get_default_group,
 			'get_login_url':helpers.get_login_url,
 			'get_language':helpers.get_language
-		}	
+		}
+
+	implements(IPackageController,inherit=True)
+	def before_search(self,search_params):
+		search_params['q'] = search_params['q']+' groups:"public"'
+		if 'fq' not in search_params:
+			search_params['fq'] = ''
+
+		search_params['fq'] = search_params['fq']+' capacity:"public"'
+
+		return search_params
