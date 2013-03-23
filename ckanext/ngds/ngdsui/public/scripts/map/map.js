@@ -48,15 +48,15 @@ $(document).ready(function() {
 		ngds.Map.clear_layer('drawnItems');
 		// Add this layer to the map.
 		ngds.Map.add_to_layer([e.rect],'drawnItems');
-		bounding_box = new ngds.Map.BoundingBox();
-		bounding_box.construct_from_leaflet_shape(e.rect);
+		ngds.Map.bounding_box = new ngds.Map.BoundingBox();
+		ngds.Map.bounding_box.construct_from_leaflet_shape(e.rect);
 		// Find the packages that are within this rectangle and display them on the map.
 		// TODO - Limit this to 8 resuls.
-		ngds.ckanlib.dataset_geo(bounding_box,function(response){
-			ngds.Map.add_packages_to_geojson_layer(response.results);
+		// ngds.ckanlib.dataset_geo(bounding_box,function(response){
+		// 	ngds.Map.add_packages_to_geojson_layer(response.results);
 
-		});
-		ngds.Map.manage_zoom(bounding_box,e.rect);
+		// });
+		ngds.Map.manage_zoom(ngds.Map.bounding_box,e.rect);
 
 	});
 
