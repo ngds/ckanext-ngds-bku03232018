@@ -2,9 +2,10 @@ ngds.Pager = function(rows) {
 	var start = 0;
 	var rows = rows;
 	var num_pages = 0;
-	var pager_div = $(".pager");
+	var pager_div = $(".search-results-page-nums");
 	var me = this;
 	var handler = null;
+	var cur_page = 0;
 
 	var preamble = $(".preamble");
 	this.set_state = function(count,query) {
@@ -36,7 +37,7 @@ ngds.Pager = function(rows) {
 		}
 		$(".page-num").click(function(ev){
 			var page_number = ev.target.firstChild.data;
-			me.next(handler);
+			me.move(page_number,handler);
 		});
 	};
 
@@ -44,12 +45,11 @@ ngds.Pager = function(rows) {
 		$(".results").empty();
 	};
 
-	this.next = function(fn) {
+	this.move = function(page_number,fn) {
 		handler = fn;
-		console.log(fn);
+		start = (page_number - 1) * rows;
 
 		if(start>(num_pages*rows+1)) {
-			console.log("returning");
 			return;
 		}
 
@@ -68,7 +68,21 @@ ngds.Pager = function(rows) {
 
 			for(var i=0;i<results.length;i++){
 				var each_result = $("<div/>",{class:"result"});
-				each_result.text(results[i]['title']);
+				var title = $('<p/>',{class:'description'});
+				var notes = $('<p/>',{class:'notes'});
+				var type = $('<p/>',{class:'type'});
+				var published = $('<p/>',{class:'published'});
+				published.attr('id','ngds'+i);
+				
+				notes.text(results[i]['notes']);
+				title.text(results[i]['title']);
+				type.text(results[i]['type']);
+				published.text(new Date(results[i]['metadata_created']).toLocaleDateString());
+				
+				each_result.append(title);
+				each_result.append(notes);
+				each_result.append(type);
+				each_result.append(published);
 				results_div.append(each_result);
 			}
 
@@ -85,7 +99,7 @@ ngds.Pager = function(rows) {
 	return {
 		'set_state':this.set_state,
 		'set_action':this.set_action,
-		'next':this.next,
+		'move':this.move,
 		'is_defined':this.is_defined
 	};
 };

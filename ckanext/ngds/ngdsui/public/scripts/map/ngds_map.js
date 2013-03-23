@@ -128,11 +128,10 @@ ngds.Map = {
 
 			pager.set_action(ngds.ckanlib.package_search,{ 'q':query });
 
-			pager.next(function(search_result) {
+			pager.move(1,function(search_result) {
 				var count = search_result.get('count');				
 				var raw_result = search_result.raw();
 				me.clear_layer('geojson');
-				console.log(raw_result);
 				pager.set_state(count,query);
 
 				for(index in raw_result.results) {
@@ -189,12 +188,12 @@ ngds.Map = {
 				var popup = dataset.map.getPopupHTML();
 			}
 			catch(e) {
-				console.error("Adding to geojson layer : ",e);
 				return;
 			}																
-			var geoJSONRepresentation = L.geoJson(feature);								
+			var geoJSONRepresentation = L.geoJson(feature);		
 			geoJSONRepresentation.bindPopup(popup);
-			this.add_to_layer([geoJSONRepresentation],'geojson');
+			x = geoJSONRepresentation;
+			y=this.add_to_layer([geoJSONRepresentation],'geojson');
 		},
 		manage_zoom:function(bounding_box,layer) {
 			var bbox_bounds = bounding_box.get_leaflet_bbox();
@@ -265,8 +264,4 @@ ngds.Map = {
 		get_search_mode:function() {
 			return this.mode;
 		},
-
-
-
-
 	};

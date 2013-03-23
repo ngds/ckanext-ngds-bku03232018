@@ -48,7 +48,6 @@ ngds.SearchResult = function(raw_result) {
 				}
 			}
 			if(params_set === false) {
-				console.info("search_result > get : ","Got : ",key);
 				return func_map[key];
 			}
 			return func_map[key](params)
