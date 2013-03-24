@@ -1,8 +1,15 @@
+/**
+*	@author - Vivek
+*	Pager to page search results for the map.
+*/
 ngds.Pager = function(rows) {
+	// Must keep in mind to clear the dom each time.
+
 	var start = 0;
 	var rows = rows;
 	var num_pages = 0;
 	var pager_div = $(".search-results-page-nums");
+	pager_div.empty();
 	var me = this;
 	var handler = null;
 	var cur_page = 0;
@@ -62,6 +69,9 @@ ngds.Pager = function(rows) {
 		
 		me._action(params,function(response){
 			var result = ngds.SearchResult(response.result);
+			if(response.result.results.length<rows) {
+				rows = response.result.results.length;	
+			}
 			num_pages = Math.ceil(result.get('count')/rows);
 			
 			clear_results_div();

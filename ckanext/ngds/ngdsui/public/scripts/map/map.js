@@ -50,6 +50,7 @@ $(document).ready(function() {
 		ngds.Map.add_to_layer([e.rect],'drawnItems');
 		ngds.Map.bounding_box = new ngds.Map.BoundingBox();
 		ngds.Map.bounding_box.construct_from_leaflet_shape(e.rect);
+		ngds.Map.map_search();
 		// Find the packages that are within this rectangle and display them on the map.
 		// TODO - Limit this to 8 resuls.
 		// ngds.ckanlib.dataset_geo(bounding_box,function(response){
