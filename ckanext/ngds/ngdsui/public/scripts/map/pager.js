@@ -75,10 +75,14 @@ ngds.Pager = function(rows) {
 		
 		me._action(params,function(response){
 			var result = ngds.SearchResult(response.result);
+			var rows_to_req = 0;
 			if(response.result.results.length<rows) {
-				rows = response.result.results.length;	
+				rows_to_req = response.result.results.length;	
 			}
-			num_pages = Math.ceil(result.get('count')/rows);
+			else {
+				rows_to_req = rows;
+			}
+			num_pages = Math.ceil(result.get('count')/rows_to_req);
 			
 			clear_results_div();
 			var results_div = $(".results");
