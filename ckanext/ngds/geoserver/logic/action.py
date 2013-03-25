@@ -109,8 +109,8 @@ def datastore_spatialize(context, data_dict):
     print spatialize_sql        
     print data_dict['resource_id']               
     
-    results = db._get_engine(None, data_dict).execute(spatialize_sql)
-#    results = db._get_engine(None, data_dict).execute(spatialize_sql,
+    result = db._get_engine(None, data_dict).execute(spatialize_sql)
+#    result = db._get_engine(None, data_dict).execute(spatialize_sql,
 #                                                      t=data_dict['resource_id'],
 #                                                      geo=data_dict['col_geography'],
 #                                                      long=data_dict['col_longitude'],
@@ -118,6 +118,6 @@ def datastore_spatialize(context, data_dict):
 
     print ">>>>>>>>>>>>>>>>>>>>>>> check >>>>>>>>>>>>>>>>>>>>>>>>>>"
     
-    result.pop('id', None)
-    result.pop('connection_url')
+    #result.pop('id', None)
+    #result.pop('connection_url')
     return result
