@@ -4,14 +4,13 @@ import ckan.logic as logic
 import ckan.plugins as p
 import ckanext.datastore.db as db
 # //Q: Import the newly created function to get all fields of a table
-from ckanext.datastore.db import get_fields
+#from ckanext.datastore.db import get_fields
 import sqlalchemy
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
 
-# //Q: This function is introduced to spatialize the database
 def datastore_spatialize(context, data_dict):
     '''Spatializes a table in the datastore
 
@@ -75,26 +74,44 @@ def datastore_spatialize(context, data_dict):
 
     print ">>>>>>>>>>>>>>>>>>>>>>>> after check_access >>>>>>>>>>>>>>>>>>>>>>>"
 
-    # We add a new dictionary entry to prepare for the db.create function
-    data_dict['fields']= [{'type': u'text', 'id': u'LABEL'}, 
-                          {'type': u'numeric', 'id': u'LATITUDE'}, 
-                          {'type': u'numeric', 'id': u'LONGITUDE'}, 
-                          {'type': u'text', 'id': u'SRS'}, 
-                          {'type': u'text', 'id': u'BHT'}, 
-                          {'type': u'numeric', 'id': u'DEPTH'}, 
-                          {'type': u'text', 'id': u'COUNTY'}, 
-                          {'type': u'text', 'id': u'STATE'}, 
-                          {'type': u'numeric', 'id': u'ELEVATION'}, 
-                          {'type': u'text', 'id': u'COMPANY'}, 
-                          {'type': u'numeric', 'id': u'DRILL DEPTH'}, 
-                          {'type': u'timestamp', 'id': u'LOG DATE'},
-                          {'type': u'numeric', 'id': data_dict['col_geography']}]
+    #geography_col = data_dict['col_geography']
+    #latitude_col = data_dict['col_latitude']
+    #longitude_col = data_dict['col_longitude']
 
-    # We are done just copy the results to the dictionary.
-    print ">>>>>>>>>>>>>>>>>>>>>>>> before db.create >>>>>>>>>>>>>>>>>>>>>>>"
-    fields= get_fields(context, data_dict)
+    print ">>>>>>>>>>>>>>>>>> calling get_fields >>>>>>>>>>>>>>>>>>>>>>>>>"
+    # We have to include a 'connection' attribute in the context
+    engine = db._get_engine(None, data_dict)
+    context['connection'] = engine.connect()
+    fields = db._get_fields(context, data_dict)
     
-    result = db.create(context, data_dict)
+    print ">>>>>>>>>>>>>>>>>> fields begin >>>>>>>>>>>>>>>>>>>>>>>>>"
+    already_has_geography = False
+    for field in fields:
+        print field['id']
+        if field['id'] == data_dict['col_geography']:
+            already_has_geography = True
+    print ">>>>>>>>>>>>>>>>>> fields end >>>>>>>>>>>>>>>>>>>>>>>>>"
+
+    if not already_has_geography:
+        print ">>>>>>>>>>>>>>>>>> adding geography field >>>>>>>>>>>>>>>>>>>>>>>>>" 
+        #fields.append({'id': data_dict['col_geography'],'type': u'numeric' })
+        fields.append({'id': data_dict['col_geography'],'type': u'point' })
+        data_dict['fields'] = fields
+        result = db.create(context, data_dict)
+    else:
+        print ">>>>>>>>>>>>>>>>>> skip adding geography field >>>>>>>>>>>>>>>>>>>>>>>>>"
+        
+    
+    print ">>>>>>>>>>>>>>>>>>>>>>>> convert long/lat into point >>>>>>>>>>>>>>>>>>>>>>>"      
+    spatialize_sql = sqlalchemy.text("UPDATE \":t\" SET :geo = ST_GeogFromText('POINT(' || :long || ' ' || :lat || ')')")
+    print spatialize_sql                             
+    
+    results = db._get_engine(None, data_dict).execute(spatialize_sql,
+                                                      t=data_dict['resource_id'],
+                                                      geo=data_dict['col_geography'],
+                                                      long=data_dict['col_longitude'],
+                                                      lat=data_dict['col_latitude'])
+    
     result.pop('id', None)
     result.pop('connection_url')
     return result

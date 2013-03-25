@@ -3,7 +3,7 @@ import pylons
 from sqlalchemy.exc import ProgrammingError
 
 import ckan.plugins as p
-import ckanext.geoserver.logic.action as action
+import ckanext.ngds.geoserver.logic.action as action
 import ckanext.datastore.logic.auth as auth
 import ckanext.datastore.db as db
 from ckanext.datastore.plugin import DatastoreException
