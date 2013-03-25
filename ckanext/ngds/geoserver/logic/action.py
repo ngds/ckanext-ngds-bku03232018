@@ -95,22 +95,28 @@ def datastore_spatialize(context, data_dict):
     if not already_has_geography:
         print ">>>>>>>>>>>>>>>>>> adding geography field >>>>>>>>>>>>>>>>>>>>>>>>>" 
         #fields.append({'id': data_dict['col_geography'],'type': u'numeric' })
-        fields.append({'id': data_dict['col_geography'],'type': u'point' })
+        fields.append({'id': data_dict['col_geography'],'type': u'GEOGRAPHY(Point)' })
         data_dict['fields'] = fields
         result = db.create(context, data_dict)
     else:
         print ">>>>>>>>>>>>>>>>>> skip adding geography field >>>>>>>>>>>>>>>>>>>>>>>>>"
         
     
-    print ">>>>>>>>>>>>>>>>>>>>>>>> convert long/lat into point >>>>>>>>>>>>>>>>>>>>>>>"      
-    spatialize_sql = sqlalchemy.text("UPDATE \":t\" SET :geo = ST_GeogFromText('POINT(' || :long || ' ' || :lat || ')')")
-    print spatialize_sql                             
+    print ">>>>>>>>>>>>>>>>>>>>>>>> convert long/lat into point >>>>>>>>>>>>>>>>>>>>>>>"
+    # spatialize_sql = sqlalchemy.text("UPDATE \":t\" SET :geo = ST_GeogFromText('POINT(' || :long || ' ' || :lat || ')')")       
+    # spatialize_sql = sqlalchemy.text("UPDATE :t SET :geo = ST_GeogFromText('SRID=4326;POINT(' || :long || ' ' || :lat || ')')")
+    spatialize_sql = sqlalchemy.text("UPDATE \"" + data_dict['resource_id'] + "\" SET \"" + data_dict['col_geography'] + "\" = ST_GeogFromText('SRID=4326;POINT(' || \"" + data_dict['col_longitude'] + "\" || ' ' || \"" + data_dict['col_latitude'] + "\" || ')')")
+    print spatialize_sql        
+    print data_dict['resource_id']               
     
-    results = db._get_engine(None, data_dict).execute(spatialize_sql,
-                                                      t=data_dict['resource_id'],
-                                                      geo=data_dict['col_geography'],
-                                                      long=data_dict['col_longitude'],
-                                                      lat=data_dict['col_latitude'])
+    results = db._get_engine(None, data_dict).execute(spatialize_sql)
+#    results = db._get_engine(None, data_dict).execute(spatialize_sql,
+#                                                      t=data_dict['resource_id'],
+#                                                      geo=data_dict['col_geography'],
+#                                                      long=data_dict['col_longitude'],
+#                                                      lat=data_dict['col_latitude'])
+
+    print ">>>>>>>>>>>>>>>>>>>>>>> check >>>>>>>>>>>>>>>>>>>>>>>>>>"
     
     result.pop('id', None)
     result.pop('connection_url')
