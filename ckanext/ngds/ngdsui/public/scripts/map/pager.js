@@ -63,8 +63,14 @@ ngds.Pager = function(rows) {
 		var params = me._params;
 		params['rows'] = rows;
 		params['start'] = start;
-		if(ngds.Map.bounding_box!==null && typeof ngds.Map.bounding_box !=='undefined') {
-			params['extras'] = { "ext_bbox":ngds.Map.bounding_box.get_bbox_array().join(',')};	
+		if(ngds.Map.shape!==null && typeof ngds.Map.shape !== 'undefined') {
+			if(ngds.Map.shape==='rect') {
+				params['extras'] = { "ext_bbox":ngds.Map.bounding_box.get_bbox_array().join(',')};		
+			}
+			else {
+				params['extras'] = { 'poly':ngds.Map.params }
+			}
+			
 		}
 		
 		me._action(params,function(response){

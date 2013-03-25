@@ -3,6 +3,7 @@ from ckanext.ngds.ngdsui import authorize
 from ckan.lib.base import (model,abort, h, g, c)
 from ckan.logic import get_action,check_access
 from ckanext.ngds.ngdsui.misc import helpers
+from ckanext.ngds.ngdsui.lib.poly import get_package_ids_in_poly
 import sys
 
 try:
@@ -127,9 +128,25 @@ class NgdsuiPlugin(SingletonPlugin):
 	implements(IPackageController,inherit=True)
 	def before_search(self,search_params):
 		search_params['q'] = search_params['q']+' groups:"public"'
+		
 		if 'fq' not in search_params:
 			search_params['fq'] = ''
 
 		search_params['fq'] = search_params['fq']+' capacity:"public"'
+		print "close to in"
+		if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:
+			# do some validation
+	        # We'll perform the existing search but also filtering by the ids
+            # of datasets within the bbox
+			x =  { 'poly':search_params['extras']['poly'] }
+			print "in"
+			bbox_query_ids = get_package_ids_in_poly(x,'4326')
+			q = search_params.get('q','')
+			new_q = '%s AND ' % q if q else ''
+			new_q += '(%s)' % ' OR '.join(['id:%s' % id for id in bbox_query_ids])
+			print new_q
+			search_params['q'] = new_q
+		else:
+			print "Definitely not in"
 
 		return search_params
