@@ -91,7 +91,8 @@ ngds.Pager = function(rows) {
 
 			for(var i=0;i<results.length;i++){
 				var each_result = $("<div/>",{class:"result"});
-				var title = $('<p/>',{class:'description'});
+				var title = $('<a/>',{class:'description',href:['dataset',results[i].name].join('/'),target:"_blank"});
+
 				var notes = $('<p/>',{class:'notes'});
 				var type = $('<p/>',{class:'type'});
 				var published = $('<p/>',{class:'published'});
