@@ -8,7 +8,7 @@ $(document).ready(function() {
 	ngds.Map.shape = null
 	ngds.Map.map.on('draw:poly-created',function(e){
 		// Clear the drawn items layers to get rid of rectangles drawn previously.
-		ngds.Map.shape = 'poly'
+		ngds.Map.shape = 'poly';
 		if(ngds.Map.map.lock===true) {
 			ngds.Map.removeZoomEventListener();
 		}
@@ -46,7 +46,7 @@ $(document).ready(function() {
 		// Add this layer to the map.
 		ngds.Map.add_to_layer([e.rect],'drawnItems');
 		ngds.Map.bounding_box = new ngds.Map.BoundingBox();
-		ngds.Map.shape = 'rect'
+		ngds.Map.shape = 'rect';
 		ngds.Map.bounding_box.construct_from_leaflet_shape(e.rect);
 		// ngds.Map.map_search();
 		ngds.Map.manage_zoom(ngds.Map.bounding_box,e.rect);

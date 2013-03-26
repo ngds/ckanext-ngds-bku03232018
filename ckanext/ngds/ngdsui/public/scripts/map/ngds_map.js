@@ -193,32 +193,48 @@ ngds.Map = {
 		add_raw_result_to_geojson_layer:function(result) { // Expects response.result, not response.
 			try {
 				var dataset = ngds.ckandataset(result);	
-				var feature = dataset.getGeoJSON();
+				var feature = dataset.getGeoJSON();				
 				var popup = dataset.map.getPopupHTML();
 			}
 			catch(e) {
 				return;
-			}																
+			}															
 			var geoJSONRepresentation = L.geoJson(feature);		
+			if(feature.type==='Polygon') {
+				var bbox = new ngds.Map.BoundingBox();
+				bbox.store_raw(geoJSONRepresentation.getBounds());
+				this.manage_zoom(bbox,geoJSONRepresentation);
+						
+			}
 			geoJSONRepresentation.bindPopup(popup);
-			x = geoJSONRepresentation;
 			y=this.add_to_layer([geoJSONRepresentation],'geojson');
 		},
 		manage_zoom:function(bounding_box,layer) {
 			var bbox_bounds = bounding_box.get_leaflet_bbox();
-			var _hidden = false;
-			var _ev = function(ev) {
+			var _shown = false;
+			var _ev = function(ev) {				
 				var map_bounds = ngds.Map.map.getBounds();
-				if(map_bounds.contains(bbox_bounds)) {
-					if(!_hidden) {
-						ngds.Map.drawnItems.addLayer(layer);
-						_hidden=true;
+				
+				var map_sw_lat = map_bounds._southWest.lat;
+				var map_sw_lng = map_bounds._southWest.lng;
+				var map_ne_lat = map_bounds._northEast.lat;
+				var map_ne_lng = map_bounds._northEast.lng;
+
+				var bbox_sw_lat = bbox_bounds._southWest.lat;
+				var bbox_sw_lng = bbox_bounds._southWest.lng;
+				var bbox_ne_lat = bbox_bounds._northEast.lat;
+				var bbox_ne_lng = bbox_bounds._northEast.lng;
+
+				if((map_sw_lat>bbox_sw_lat) && (map_sw_lng>bbox_sw_lng) && (map_ne_lat<bbox_ne_lat) && (map_ne_lng<bbox_ne_lng)) {
+					if(_shown) {
+						ngds.Map.drawnItems.removeLayer(layer);
+						_shown=false;
 					}
 				}
 				else {
-					if(_hidden) {
-						ngds.Map.drawnItems.removeLayer(layer);
-						_hidden=false;
+					if(!_shown) {
+						ngds.Map.drawnItems.addLayer(layer);
+						_shown=true;
 					}
 				}
 			};
