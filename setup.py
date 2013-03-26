@@ -51,6 +51,9 @@ setup(
 	# NGDS UI plugin.
 	ngdsui=ckanext.ngds.ngdsui.plugin:NgdsuiPlugin
 
+	# Geoserver Plugin.
+	geoserver=ckanext.ngds.geoserver.plugin:GeoserverPlugin
+
     [babel.extractors]
 	    ckan = ckan.lib.extract:extract_ckan	
 	""",
