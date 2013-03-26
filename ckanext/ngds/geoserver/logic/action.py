@@ -84,9 +84,6 @@ def datastore_spatialize(context, data_dict):
     context['connection'] = engine.connect()
     fields = db._get_fields(context, data_dict)
     try:
-        print ">>>>>>>>>>>>>>>>>> begin transaction >>>>>>>>>>>>>>>>>>>>"
-        trans = context['connection'].begin()
-        
         print ">>>>>>>>>>>>>>>>>> fields begin >>>>>>>>>>>>>>>>>>>>>>>>>"
         already_has_geography = False
         for field in fields:
@@ -101,19 +98,22 @@ def datastore_spatialize(context, data_dict):
             fields.append({'id': data_dict['col_geography'],'type': u'geometry' })
             data_dict['fields'] = fields
             #result = db.create(context, data_dict)
-            '''
-            new_colum_res = context['connection'].execute(
-                        "ALTER TABLE  \""+
-                        data_dict['resource_id']+
-                        "\" ADD COLUMN \""+
-                        data_dict['col_geography']+
-                        "\" geometry") 
-            '''
-           
+            
+            #new_colum_res = context['connection'].execute(
+            #            "ALTER TABLE  \""+
+            #            data_dict['resource_id']+
+            #            "\" ADD COLUMN \""+
+            #            data_dict['col_geography']+
+            #            "\" geometry") 
+             
+            print ">>>>>>>>>>>>>>>>>> begin transaction >>>>>>>>>>>>>>>>>>>>"
+            trans = context['connection'].begin()
             new_column_res = context['connection'].execute(
                         "SELECT AddGeometryColumn('public', '"+data_dict['resource_id']+
                         "', '"+ data_dict['col_geography']+"', 4326, 'GEOMETRY', 2)")
-            
+            print ">>>>>>>>>>>>>>>>>>>>>>>> end transaction >>>>>>>>>>>>>>>>>>>>>>>"
+            trans.commit()
+
             
         else:
             print ">>>>>>>>>>>>>>>>>> skip adding geography field >>>>>>>>>>>>>>>>>>>>>>>>>"
@@ -134,7 +134,8 @@ def datastore_spatialize(context, data_dict):
                                          + data_dict['col_latitude'] + "\" || ')')")
         '''
         
-        
+        print ">>>>>>>>>>>>>>>>>> begin transaction >>>>>>>>>>>>>>>>>>>>"
+        trans = context['connection'].begin()
         spatialize_sql = sqlalchemy.text("UPDATE \"" 
                                          + data_dict['resource_id'] 
                                          + "\" SET \"" 
@@ -151,10 +152,14 @@ def datastore_spatialize(context, data_dict):
         # col = row[0] or by row['row_name']
         # optionally one can call the command fetchall() with returns a list of rows
         spatialize_results = db._get_engine(None, data_dict).execute(spatialize_sql) 
-        
+        print ">>>>>>>>>>>>>>>>>>>>>>>> end transaction >>>>>>>>>>>>>>>>>>>>>>>"
+        trans.commit()
+
         print ">>>>>>>>>>>>>>>>>>>>>>> check >>>>>>>>>>>>>>>>>>>>>>>>>>"
         print "number of rows returned =", spatialize_results.rowcount
-    
+
+        print ">>>>>>>>>>>>>>>>>> begin transaction >>>>>>>>>>>>>>>>>>>>"
+        trans = context['connection'].begin()    
         newtable = context['connection'].execute(
                    u'SELECT * FROM pg_tables WHERE tablename = %s',data_dict['resource_id'])
         
