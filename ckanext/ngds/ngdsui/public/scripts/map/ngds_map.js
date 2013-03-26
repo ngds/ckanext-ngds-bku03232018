@@ -47,8 +47,17 @@ ngds.Map = {
 				"Geo JSON":_geoJSONLayer
 			};
 
-			var layer_control = new L.control.layers(baseMaps, overlayMaps);
+			var layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
 			layer_control.addTo(map);
+
+			map.on('layeradd',function(lev) { // Every time a layer is added or removed, make sure our geojson layer is the top-most one.
+				try {
+					_geoJSONLayer.bringToFront();
+				}
+				catch(e){
+					// Do nothing because we know that there will be an error when this layer is hidden on the map.
+				}
+			});
 
 			// this.initialize_map_search();
 		},

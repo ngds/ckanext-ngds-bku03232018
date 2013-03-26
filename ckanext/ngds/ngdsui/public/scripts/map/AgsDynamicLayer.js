@@ -165,6 +165,7 @@
             L.DomUtil.setPosition(this._image, topLeft);
             this._image.style.width = size.x + 'px';
             this._image.style.height = size.y + 'px';
+            this._image.style.zIndex = -1; // This needs to be the lowest layer so the other ones can be clickable etc. - Vivek
         }
     },
 
