@@ -132,7 +132,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		if 'fq' not in search_params:
 			search_params['fq'] = ''
 
-		search_params['fq'] = search_params['fq']+' capacity:"public"'
+		# search_params['fq'] = search_params['fq']+' capacity:"public"'
 		if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:
 			# do some validation
 	        # We'll perform the existing search but also filtering by the ids
