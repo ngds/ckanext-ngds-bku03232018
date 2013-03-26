@@ -86,7 +86,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-extras-9-key" name="extras__9__key" placeholder="" style="display:none;">    
-      <label for="field-extras-9-value" class="control-label">Spatial Location</label>  
+      <label for="field-extras-9-value" class="control-label">Spatial Location : </label>  
       <input id="field-extras-9-value" type="text" name="extras__9__value" placeholder value="{{ get_value("spatial_word",extras) }}" >
       <script>
         
@@ -108,7 +108,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-author" name="author" placeholder="" style="display:none;" value="{{ data.author }}">
-      <label for="field-author-fake" class="control-label">Author</label>
+      <label for="field-author-fake" class="control-label">Author : </label>
       
       <input id="field-author-fake" type="text" name="field-author-fake" placeholder value="{{ h.get_responsible_party_name(data.author) }}">
       
@@ -133,7 +133,7 @@ Example:
       <input id="field-extras-1-key" name="extras__1__key" value="metadata_contact" placeholder="" style="display:none;">
       <input id="field-extras-1-value" type="text" name="extras__1__value" placeholder value="{{ data.maintainer }}" style="display:none;">
 
-      <label for="field-maintainer-fake" class="control-label">Maintainer</label>
+      <label for="field-maintainer-fake" class="control-label">Maintainer : </label>
       
       <input id="field-maintainer-fake" type="text" name="field-maintainer-fake" placeholder value="{{ h.get_responsible_party_name(data.maintainer) }}">
       
@@ -155,7 +155,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-extras-2-key" name="extras__2__key" value="dataset_category" placeholder="" style="display:none;">
-      <label for="field-extras-2-value" class="control-label">Category</label>
+      <label for="field-extras-2-value" class="control-label">Category : </label>
       
       <select id="field-extras-1-value" name="extras__2__value" placeholder="">
           <option{{ is_selected("Dataset","dataset_category",extras) }}>Dataset</option>
@@ -190,7 +190,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-extras-3-key" name="extras__3__key" value="dataset_uri" placeholder="" style="display:none;">
-      <label for="field-extras-3-value" class="control-label">URI</label>
+      <label for="field-extras-3-value" class="control-label">URI : </label>
       
       <input id="field-extras-3-value" type="text" name="extras__3__value" placeholder value="{{ get_value("dataset_uri",extras) }}">
       
@@ -212,7 +212,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-extras-4-key" name="extras__4__key" value="date_publication" placeholder="" style="display:none;">
-      <label for="field-extras-4-value" class="control-label">Publication Date</label>
+      <label for="field-extras-4-value" class="control-label">Publication Date : </label>
       
       <input id="field-extras-4-value" type="text" name="extras__4__value" value="{{ get_value("date_publication",extras) }}" placeholder="">
       <script>
@@ -238,7 +238,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-extras-5-key" name="extras__5__key" value="quality" placeholder="" style="display:none;">
-      <label for="field-extras-5-value" class="control-label">Quality</label>
+      <label for="field-extras-5-value" class="control-label">Quality : </label>
       
       <input id="field-extras-5-value" type="text" name="extras__5__value" placeholder value="{{ get_value("quality",extras) }}">
       
@@ -260,7 +260,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-extras-6-key" name="extras__6__key" value="lineage" placeholder="" style="display:none;">
-      <label for="field-extras-6-value" class="control-label">Lineage</label>
+      <label for="field-extras-6-value" class="control-label">Lineage : </label>
       
       <input id="field-extras-6-value" type="text" name="extras__6__value" placeholder value="{{ get_value("lineage",extras) }}">
       
@@ -283,7 +283,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-extras-7-key" name="extras__7__key" value="status" placeholder="" style="display:none;">
-      <label for="field-extras-7-value" class="control-label">Status</label>
+      <label for="field-extras-7-value" class="control-label">Status : </label>
       
       <select id="field-extras-7-value" name="extras__7__value" placeholder="">
           <option{{ is_selected("Completed","status",extras) }}>Completed</option>
@@ -308,7 +308,7 @@ Example:
       
     <div class="input-prepend">
       <input id="field-extras-8-key" name="extras__8__key" value="dataset_lang" placeholder="" style="display:none;">
-      <label for="field-extras-8-value" class="control-label">Language</label>
+      <label for="field-extras-8-value" class="control-label">Language : </label>
       
       <input id="field-extras-8-value" type="text" name="extras__8__value" placeholder value="{{ get_value("dataset_lang",extras) }}" style="display:none;">
       <input id="field-language-fake" type="text" name="field-language-fake" placeholder value="{{ h.get_language(get_value("dataset_lang",extras)) }}">

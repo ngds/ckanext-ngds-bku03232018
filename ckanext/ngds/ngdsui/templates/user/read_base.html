@@ -10,19 +10,20 @@
 {% endblock %}
 
 {% block content%}
-<div id="login-page">
+
 
 {% block actions_content %}
 {% if h.check_access('user_update', user) %}
-  <li>{% link_for _('Edit'), controller='user', action='edit', id=user.name, class_='btn btn-primary', icon='wrench' %}</li>
+  {% link_for _('Edit'), controller='user', action='edit', id=user.name, class_='btn btn-primary', icon='wrench' %}
 {% endif %}
 {% if c.is_myself == false %}
   <li>{{ h.follow_button('user', user.id) }}</li>
 {% endif %}
 {% endblock %}
-
+<div id="login-page">
 
 <div class="secondary-content module context-info">
+  <div class="align-top">
   <section class="module-content">
     {% block secondary_content_inner %}
       <div class="image">{{ h.linked_gravatar(user.email_hash, 190) }}</div>
@@ -82,7 +83,7 @@
     {% endblock %}
   </section>
 </div>
-
+</div>
 
 <div class="primary-content">
   <article class="module profile">
@@ -92,8 +93,11 @@
           h.build_nav_icon('user_activity_stream', _('Activity Stream'), id=user.name),
         ] %}
     {% endblock %}
-    <section class="module-content">
+
+    <section class="module-content search-results">
+      <div class="search-results-container">
       {% block primary_content_inner %}{% endblock %}
+    </div>
     </section>
   </article>
 </div>

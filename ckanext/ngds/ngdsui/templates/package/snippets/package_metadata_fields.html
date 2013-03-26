@@ -35,8 +35,8 @@
  <label for="field-private" class="control-label">{{ _('Visibility') }}</label>
     <div class="controls">
       <select id="field-private" name="private" data-module="autocomplete">
-        <option value="true" {% if "true" == data.private%}selected{% endif %}>Private</option>
-        <option value="false" {% if "false" == data.private%}selected{% endif %}>Public</option>
+        <option value="True" {% if data.private==True%}selected{% endif %}>Private</option>
+        <option value="False" {% if data.private==False%}selected{% endif %}>Public</option>
       </select>
     </div>
   </div>

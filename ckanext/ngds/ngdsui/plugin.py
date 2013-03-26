@@ -1,8 +1,9 @@
-from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers
+from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers, IPackageController
 from ckanext.ngds.ngdsui import authorize
 from ckan.lib.base import (model,abort, h, g, c)
 from ckan.logic import get_action,check_access
 from ckanext.ngds.ngdsui.misc import helpers
+from ckanext.ngds.ngdsui.lib.poly import get_package_ids_in_poly
 import sys
 
 try:
@@ -63,6 +64,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		For the moment, set up routes under the sub-root /ngds to render the UI.
 		"""
 		home_controller = "ckanext.ngds.ngdsui.controllers.home:HomeController"
+		map_controller = "ckanext.ngds.ngdsui.controllers.map:MapController"
 		map.connect("home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
 		map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 
@@ -90,8 +92,8 @@ class NgdsuiPlugin(SingletonPlugin):
 
 		map.connect("manage_users","/ngds/users",controller=user_controller,action="manage_users")
 		map.connect("member_new","/ngds/member_new",controller=user_controller,action="member_new")
+		map.connect("poly","/poly",controller=map_controller,action="test")
 		map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
-
 		return map
 
 	def update_config(self,config):
@@ -121,4 +123,27 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_default_group':helpers.get_default_group,
 			'get_login_url':helpers.get_login_url,
 			'get_language':helpers.get_language
-		}	
+		}
+
+	implements(IPackageController,inherit=True)
+	def before_search(self,search_params):
+		search_params['q'] = search_params['q']+' groups:"public"'
+		
+		if 'fq' not in search_params:
+			search_params['fq'] = ''
+
+		# search_params['fq'] = search_params['fq']+' capacity:"public"'
+		if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:
+			# do some validation
+	        # We'll perform the existing search but also filtering by the ids
+            # of datasets within the bbox
+			x =  { 'poly':search_params['extras']['poly'] }
+			bbox_query_ids = get_package_ids_in_poly(x,'4326')
+			q = search_params.get('q','')
+			new_q = '%s AND ' % q if q else ''
+			new_q += '(%s)' % ' OR '.join(['id:%s' % id for id in bbox_query_ids])
+			search_params['q'] = new_q
+		else:
+			print "Definitely not in"
+
+		return search_params

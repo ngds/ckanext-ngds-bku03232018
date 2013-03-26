@@ -7,6 +7,10 @@ from ckan.lib.base import (request,
 
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 
+from ckan.model import Session, Package
+from ckan.lib.base import config
+
+
 class HomeController(NGDSBaseController):
 
 	def render_index(self):
@@ -46,5 +50,5 @@ class HomeController(NGDSBaseController):
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		return render('resources/resources.html')			 				 				 		
+		return render('resources/resources.html')
 		

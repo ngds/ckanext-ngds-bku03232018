@@ -47,9 +47,11 @@
 	<div class="cell">
 		<h2><img src="/images/create_node.png" alt="">Contribute</h2>
 		<div class="bordered-container">
+			{% if h.check_access('package_create') %}
 			<p>
 				Want to help? <a href="/ngds/contribute/dataset/new">Share data</a> with us.
 			</p>
+			{% endif %}
 		</div>
 
 	</div>
