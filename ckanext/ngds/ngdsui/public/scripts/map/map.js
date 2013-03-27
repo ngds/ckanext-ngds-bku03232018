@@ -10,7 +10,7 @@ $(document).ready(function() {
 		// Clear the drawn items layers to get rid of rectangles drawn previously.
 		ngds.Map.shape = 'poly';
 		if(ngds.Map.map.lock===true) {
-			ngds.Map.removeZoomEventListener();
+			ngds.Map.removeZoomEventListeners();
 		}
 		else {
 			ngds.Map.map.lock=true;
@@ -30,14 +30,14 @@ $(document).ready(function() {
 		// ngds.Map.map_search();
 		bounding_box = new ngds.Map.BoundingBox();
 		bounding_box.construct_from_leaflet_shape(e.poly);
-		ngds.Map.manage_zoom(bounding_box,e.poly);
+		ngds.Map.manage_zoom(bounding_box,e.poly,ngds.Map.get_layer('drawnItems'));
 
 	});
 
 	ngds.Map.map.on('draw:rectangle-created',function(e) {
 		// Clear the drawn items layers to get rid of rectangles drawn previously.
 		if(ngds.Map.lock===true) {
-			ngds.Map.removeZoomEventListener();
+			ngds.Map.removeZoomEventListeners();
 		}
 		else {
 			ngds.Map.map.lock=true;
@@ -49,7 +49,7 @@ $(document).ready(function() {
 		ngds.Map.shape = 'rect';
 		ngds.Map.bounding_box.construct_from_leaflet_shape(e.rect);
 		// ngds.Map.map_search();
-		ngds.Map.manage_zoom(ngds.Map.bounding_box,e.rect);
+		ngds.Map.manage_zoom(ngds.Map.bounding_box,e.rect,ngds.Map.get_layer('drawnItems'));
 
 	});
 

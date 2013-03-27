@@ -55,7 +55,7 @@ ngds.Pager = function(rows) {
 	this.move = function(page_number,fn) {
 		handler = fn;
 		start = (page_number - 1) * rows;
-
+		ngds.Map.removeZoomEventListeners();
 		if(start>(num_pages*rows+1)) {
 			return;
 		}

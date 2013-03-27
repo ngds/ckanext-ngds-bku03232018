@@ -61,6 +61,9 @@ ngds.Map = {
 
 			// this.initialize_map_search();
 		},
+		zoom_listeners:[
+
+		],
 		/*	Initialize our NGDS specific custom controls. 
 		*	Inputs : None.
 		*/
@@ -128,7 +131,7 @@ ngds.Map = {
 		},
 		map_search:function() {
 			var me = this;
-			this.removeZoomEventListener();
+			this.removeZoomEventListeners();
 			// this.clear_layer('geojson');
 			geoj = me.get_layer('drawnItems');
 
@@ -203,13 +206,13 @@ ngds.Map = {
 			if(feature.type==='Polygon') {
 				var bbox = new ngds.Map.BoundingBox();
 				bbox.store_raw(geoJSONRepresentation.getBounds());
-				this.manage_zoom(bbox,geoJSONRepresentation);
+				this.manage_zoom(bbox,geoJSONRepresentation,ngds.Map.get_layer('geojson'));
 						
 			}
 			geoJSONRepresentation.bindPopup(popup);
 			y=this.add_to_layer([geoJSONRepresentation],'geojson');
 		},
-		manage_zoom:function(bounding_box,layer) {
+		manage_zoom:function(bounding_box,layer,parent) {
 			var bbox_bounds = bounding_box.get_leaflet_bbox();
 			var _shown = false;
 			var _ev = function(ev) {				
@@ -227,22 +230,27 @@ ngds.Map = {
 
 				if((map_sw_lat>bbox_sw_lat) && (map_sw_lng>bbox_sw_lng) && (map_ne_lat<bbox_ne_lat) && (map_ne_lng<bbox_ne_lng)) {
 					if(_shown) {
-						ngds.Map.drawnItems.removeLayer(layer);
+						parent.removeLayer(layer);
+						p = parent;
 						_shown=false;
 					}
 				}
 				else {
 					if(!_shown) {
-						ngds.Map.drawnItems.addLayer(layer);
+						parent.addLayer(layer);
 						_shown=true;
 					}
 				}
 			};
-			ngds.Map.zoom_listener = _ev;
+			ngds.Map.zoom_listeners.push(_ev);
 			ngds.Map.map.on('zoomend',_ev);
 		},
-		removeZoomEventListener:function() {
-			ngds.Map.map.removeEventListener('zoomend',ngds.Map.zoom_listener);
+		removeZoomEventListeners:function() {
+			$.each(ngds.Map.zoom_listeners,function(index,item){
+				ngds.Map.map.removeEventListener('zoomend',item);
+			});
+			ngds.Map.zoom_listeners=  [];
+			
 		},
 		// Exposes a set of utility functions to work with the map.
 		utils:{
