@@ -128,7 +128,7 @@ ngds.Map = {
 		},
 		map_search:function() {
 			var me = this;
-			
+			this.removeZoomEventListener();
 			// this.clear_layer('geojson');
 			geoj = me.get_layer('drawnItems');
 
