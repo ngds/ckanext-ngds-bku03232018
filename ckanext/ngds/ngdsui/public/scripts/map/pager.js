@@ -55,7 +55,7 @@ ngds.Pager = function(rows) {
 	this.move = function(page_number,fn) {
 		handler = fn;
 		start = (page_number - 1) * rows;
-		ngds.Map.removeZoomEventListeners();
+		// ngds.Map.removeZoomEventListeners();
 		if(start>(num_pages*rows+1)) {
 			return;
 		}
@@ -63,8 +63,8 @@ ngds.Pager = function(rows) {
 		var params = me._params;
 		params['rows'] = rows;
 		params['start'] = start;
-		if(ngds.Map.shape!==null && typeof ngds.Map.shape !== 'undefined') {
-			if(ngds.Map.shape==='rect') {
+		if(ngds.Map.shape.str!==null && typeof ngds.Map.shape.str !== 'undefined') {
+			if(ngds.Map.shape.str==='rect') {
 				params['extras'] = { "ext_bbox":ngds.Map.bounding_box.get_bbox_array().join(',')};		
 			}
 			else {
