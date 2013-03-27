@@ -41,100 +41,55 @@ def datastore_spatialize(context, data_dict):
     :returns: The modified data objects.
     :rtype: dictionary
 
-    This is what this function does:
-    1. Check if the resource exists and if we have access rights (copy from other actions)
-    2. call db.py:create to add the additional column to the table
-    3. call db.py:??? to update the newly created column
-
+    
     '''
     if 'id' in data_dict:
         data_dict['resource_id'] = data_dict['id']
     res_id = _get_or_bust(data_dict, 'resource_id')
-    
-    print ">>>>>>>>>>>>>>>>>>>>>>>> spatialize >>>>>>>>>>>>>>>>>>>>>>>"
-    
+       
     data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
 
+    # verifies if the provided resource_id exists in teh database
     resources_sql = sqlalchemy.text(u'''SELECT 1 FROM "_table_metadata"
                                         WHERE name = :id AND alias_of IS NULL''')
     results = db._get_engine(None, data_dict).execute(resources_sql, id=res_id)
     res_exists = results.rowcount > 0
 
-    print ">>>>>>>>>>>>>>>>>>>>>>>> before object not found >>>>>>>>>>>>>>>>>>>>>>>"
-    
     if not res_exists:
         raise p.toolkit.ObjectNotFound(p.toolkit._(
             'Resource "{0}" was not found.'.format(res_id)
         ))
 
-    print ">>>>>>>>>>>>>>>>>>>>>>>> before check access >>>>>>>>>>>>>>>>>>>>>>>"
-    
-    # one needs the same authorization as for the create method
+    # verifies if the user calling the method has permission to execute it
     p.toolkit.check_access('datastore_spatialize', context, data_dict)
 
-    print ">>>>>>>>>>>>>>>>>>>>>>>> after check_access >>>>>>>>>>>>>>>>>>>>>>>"
-
-    #geography_col = data_dict['col_geography']
-    #latitude_col = data_dict['col_latitude']
-    #longitude_col = data_dict['col_longitude']
-
-    print ">>>>>>>>>>>>>>>>>> calling get_fields >>>>>>>>>>>>>>>>>>>>>>>>>"
-    # We have to include a 'connection' attribute in the context
+    # We now verify if the resource has the geography column.
+    # if it does not have it, we create taht column.
     engine = db._get_engine(None, data_dict)
     context['connection'] = engine.connect()
     fields = db._get_fields(context, data_dict)
     try:
-        print ">>>>>>>>>>>>>>>>>> fields begin >>>>>>>>>>>>>>>>>>>>>>>>>"
         already_has_geography = False
         for field in fields:
-            print field['id']
+            #print field['id']
             if field['id'] == data_dict['col_geography']:
                 already_has_geography = True
-        print ">>>>>>>>>>>>>>>>>> fields end >>>>>>>>>>>>>>>>>>>>>>>>>"
     
         if not already_has_geography:
-            print ">>>>>>>>>>>>>>>>>> adding geography field >>>>>>>>>>>>>>>>>>>>>>>>>" 
-            #fields.append({'id': data_dict['col_geography'],'type': u'numeric' })
+            # add geography colum to the list of fields
+            # the list of fields is part of the returned result
             fields.append({'id': data_dict['col_geography'],'type': u'geometry' })
             data_dict['fields'] = fields
-            #result = db.create(context, data_dict)
             
-            #new_colum_res = context['connection'].execute(
-            #            "ALTER TABLE  \""+
-            #            data_dict['resource_id']+
-            #            "\" ADD COLUMN \""+
-            #            data_dict['col_geography']+
-            #            "\" geometry") 
-             
-            print ">>>>>>>>>>>>>>>>>> begin transaction >>>>>>>>>>>>>>>>>>>>"
+            # create the geography colum in the table
             trans = context['connection'].begin()
             new_column_res = context['connection'].execute(
                         "SELECT AddGeometryColumn('public', '"+data_dict['resource_id']+
                         "', '"+ data_dict['col_geography']+"', 4326, 'GEOMETRY', 2)")
-            print ">>>>>>>>>>>>>>>>>>>>>>>> end transaction >>>>>>>>>>>>>>>>>>>>>>>"
             trans.commit()
 
-            
-        else:
-            print ">>>>>>>>>>>>>>>>>> skip adding geography field >>>>>>>>>>>>>>>>>>>>>>>>>"
-            
-        
-        print ">>>>>>>>>>>>>>>>>>>>>>>> convert long/lat into point >>>>>>>>>>>>>>>>>>>>>>>"
-        # spatialize_sql = sqlalchemy.text("UPDATE \":t\" SET :geo = ST_GeogFromText('POINT(' || :long || ' ' || :lat || ')')")       
-        # spatialize_sql = sqlalchemy.text("UPDATE :t SET :geo = ST_GeogFromText('SRID=4326;POINT(' || :long || ' ' || :lat || ')')")
-        
-        '''
-        spatialize_sql = sqlalchemy.text("UPDATE \"" 
-                                         + data_dict['resource_id'] 
-                                         + "\" SET \"" 
-                                         + data_dict['col_geography'] 
-                                         + "\" = ST_GeogFromText('SRID=4326;POINT(' || \"" 
-                                         + data_dict['col_longitude'] 
-                                         + "\" || ' ' || \"" 
-                                         + data_dict['col_latitude'] + "\" || ')')")
-        '''
-        
-        print ">>>>>>>>>>>>>>>>>> begin transaction >>>>>>>>>>>>>>>>>>>>"
+        # call a stored procedure from postgis to convert the longitude and latitude
+        # columns into a geography shape
         trans = context['connection'].begin()
         spatialize_sql = sqlalchemy.text("UPDATE \"" 
                                          + data_dict['resource_id'] 
@@ -144,29 +99,21 @@ def datastore_spatialize(context, data_dict):
                                          + data_dict['col_longitude'] 
                                          + "\" || ' ' || \"" 
                                          + data_dict['col_latitude'] + "\" || ')', 4326)")
-        print spatialize_sql        
-        print "resource id ="+data_dict['resource_id']               
         
         # this return is of type engine.ResultProxy
         # rows are accessed by calling row = proxy.fetchone()
         # col = row[0] or by row['row_name']
         # optionally one can call the command fetchall() with returns a list of rows
         spatialize_results = db._get_engine(None, data_dict).execute(spatialize_sql) 
-        print ">>>>>>>>>>>>>>>>>>>>>>>> end transaction >>>>>>>>>>>>>>>>>>>>>>>"
         trans.commit()
 
-        print ">>>>>>>>>>>>>>>>>>>>>>> check >>>>>>>>>>>>>>>>>>>>>>>>>>"
-        print "number of rows returned =", spatialize_results.rowcount
-
-        print ">>>>>>>>>>>>>>>>>> begin transaction >>>>>>>>>>>>>>>>>>>>"
         trans = context['connection'].begin()    
         newtable = context['connection'].execute(
                    u'SELECT * FROM pg_tables WHERE tablename = %s',data_dict['resource_id'])
         
+        # add the content of the modified table to the data dictionary, and return it.
+        # utilize the standard json format
         formatted_results = db.format_results(context, newtable, data_dict)
-        print "formatted results = ",formatted_results
-    
-        print ">>>>>>>>>>>>>>>>>>>>>>>> end transaction >>>>>>>>>>>>>>>>>>>>>>>"
         trans.commit()
     
         formatted_results.pop('id', None)
@@ -184,15 +131,3 @@ def datastore_spatialize(context, data_dict):
     finally:
         context['connection'].close()
     
-#    result = db._get_engine(None, data_dict).execute(spatialize_sql,
-#                                                      t=data_dict['resource_id'],
-#                                                      geo=data_dict['col_geography'],
-#                                                      long=data_dict['col_longitude'],
-#                                                      lat=data_dict['col_latitude'])
-
-    
-    
-    
-    #data_dict.pop('resource_id', None)
-    #data_dict.pop('connection_url')
-    #return data_dict
