@@ -136,7 +136,7 @@ def datastore_spatialize(context, data_dict):
 
     
 def geoserver_create_workspace(context, data_dict):
-    '''Create a workspace in the datastore
+    '''Create a workspace on the geoserver
 
     The geoserver_create_workspace API action allows a user to create a new workspace
     on a geoserver instance. 
@@ -168,7 +168,7 @@ def geoserver_create_workspace(context, data_dict):
     cat.create_workspace(workspace_name, workspace_uri)
 
 def geoserver_delete_workspace(context, data_dict):
-    '''Delete a workspace in the datastore
+    '''Delete a workspace on a geoserver
 
     The geoserver_delete_workspace API action allows a user to delete a workspace
     on a geoserver instance. 
@@ -201,7 +201,7 @@ def geoserver_delete_workspace(context, data_dict):
 
 
 def geoserver_create_store(context, data_dict):
-    '''Create a workspace in the datastore
+    '''Create a workspace on a geoserver
 
     The geoserver_create_store API action allows a user to create a new store
     on a geoserver instance. 
@@ -220,6 +220,20 @@ def geoserver_create_store(context, data_dict):
     :type workspace_uri: string
     :param store_name: the name of the store that shall be created
     :type store_name: string
+    :param pg_host: the hostname of the postgres database; e.g. "localhost"
+    :type pg_host: string
+    :param pg_port: the hostname of the postgres database; e.g. 5432
+    :type pg_port: integer
+    :param pg_db: the name of the database; e.g. "datastore"
+    :type pg_db: string
+    :param pg_user: the user name to be used to access the database; e.g. "ckanuser"
+    :type pg_user: string
+    :param pg_password: the password to be used to access the database; e.g. "pass"
+    :type pg_password: string
+    :param db_type: the database type; e.g. "postgis"
+    :type db_type: string
+    
+     
     
     **Results:**
 
@@ -255,22 +269,25 @@ def geoserver_create_store(context, data_dict):
 
 
 def geoserver_delete_store(context, data_dict):
-    '''Delete a workspace in the datastore
+    '''Delete a store on a geoserver
 
-    The geoserver_delete_workspace API action allows a user to delete a workspace
+    The geoserver_delete_store API action allows a user to delete a store
     on a geoserver instance. 
     
     The available methods are:
 
     *delete*
-        It first checks if the workspace exists. If it does it gets deleted.
+        It first checks if the store exists. If it does it gets deleted.
         
     :param geoserver: url of the geoserver
     :type geoserver_url: string
-    :param workspace_name: the name of the workspace that shall be deleted
+    :param workspace_name: the name of the workspace containing the store that shall be deleted
     :type workspace_name: string
     :param workspace_uri: the URI of the workspace
     :type workspace_uri: string
+    :param store_name: the name of the store that shall be deleted
+    :type store_name: string
+    
     
     **Results:**
 
@@ -281,6 +298,80 @@ def geoserver_delete_store(context, data_dict):
     geoserver = _get_or_bust(data_dict, 'geoserver')
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
     workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
+    store_name = _get_or_bust(data_dict, 'workspace_uri')
+
 
     cat = Catalog(geoserver)
-    # to be continued
+    store= cat.get_store(store_name, workspace_name)
+    cat.delete(store)
+    
+def geoserver_create_layer(context, data_dict):
+    '''Create a layer on a geoserver
+
+    The geoserver_create_layer API action allows a user to create a new layer
+    on a geoserver instance. 
+    
+    The available methods are:
+
+    *create*
+        It first checks if the layer already exists. If it does not yet exist it
+        is created.
+        
+    :param geoserver: url of the geoserver
+    :type geoserver_url: string
+    :param workspace_name: the name of the workspace that shall hold the store
+    :type workspace_name: string
+    :param workspace_uri: the URI of the workspace
+    :type workspace_uri: string
+    :param store_name: the name of the store that shall be created
+    :type store_name: string
+    :param pg_host: the hostname of the postgres database; e.g. "localhost"
+    :type pg_host: string
+    :param pg_port: the hostname of the postgres database; e.g. 5432
+    :type pg_port: integer
+    :param pg_db: the name of the database; e.g. "datastore"
+    :type pg_db: string
+    :param pg_user: the user name to be used to access the database; e.g. "ckanuser"
+    :type pg_user: string
+    :param pg_password: the password to be used to access the database; e.g. "pass"
+    :type pg_password: string
+    :param db_type: the database type; e.g. "postgis"
+    :type db_type: string
+    
+    :param layer_name: the name of the layer that shall be created
+     
+    
+    **Results:**
+
+    :returns: The name of the store.
+    :rtype: dictionary
+    '''
+    
+    geoserver = _get_or_bust(data_dict, 'geoserver')
+    workspace_name = _get_or_bust(data_dict, 'workspace_name')
+    #workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
+    store_name =_get_or_bust(data_dict, 'store_name')
+    pg_host= _get_or_bust(data_dict, 'pg_host')
+    pg_port= _get_or_bust(data_dict, 'pg_port')
+    pg_db= _get_or_bust(data_dict, 'pg_db')
+    pg_user= _get_or_bust(data_dict, 'pg_user')
+    pg_password= _get_or_bust(data_dict, 'pg_password')
+    db_type= _get_or_bust(data_dict, 'db_type')
+
+    layer_name= _get_or_bust(data_dict, 'layer_name')
+
+    cat = Catalog(geoserver)
+    workspace= cat.get_workspace(workspace_name)
+    ds= cat.create_datastore(store_name, workspace)
+    
+    ds.connection_parameters.update(
+                                    host= pg_host,
+                                    port= pg_port,
+                                    database= pg_db,
+                                    user= pg_user,
+                                    password= pg_password,
+                                    dbtype= db_type)
+
+    cat.save(ds)
+    ds = cat.get_store(store_name)
+
