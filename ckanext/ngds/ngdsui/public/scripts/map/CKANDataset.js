@@ -12,8 +12,10 @@ ngds.CKANDataset = function(raw) { // Exposes a set of functions and objects to 
 	_ckan_dataset = {
 		construct:function() {
 			var spatial_extra;
+			console.log(raw.extras);
 			$.each(raw.extras,function(index,val) {
 				if(val.key==='spatial')	{
+					console.log(val);
 					spatial_extra = val.value;
 				}
 			});

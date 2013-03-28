@@ -5,6 +5,7 @@
 
 $(document).ready(function() {
 	ngds.Map.initialize();
+	
 	ngds.Map.shape = { };
 	ngds.Map.map.on('draw:poly-created',function(e){
 		// Clear the drawn items layers to get rid of rectangles drawn previously.

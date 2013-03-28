@@ -24,6 +24,12 @@ ngds.Map = {
 			    attribution: "SMU Well Data"
 			});
 
+			var ngds_layer = L.tileLayer.wms("http://localhost:8080/geoserver/NGDS/wms",{
+				layers:"NGDS:45276b7a-4335-4548-aa92-e82ffbbde56f",
+				format: 'image/png',
+			    transparent: true,
+			    attribution: "NGDS"
+			});
 			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
 			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -100.53332), zoom: 3});
 
@@ -52,7 +58,8 @@ ngds.Map = {
 			var overlayMaps = {				
 				"Power Grid":powergrid,
 				"Geo JSON":_geoJSONLayer,
-				"Wells":wells
+				"Wells":wells,
+				"ngds":ngds_layer
 			};
 
 			var layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
@@ -214,8 +221,9 @@ ngds.Map = {
 			});
 		},
 		add_raw_result_to_geojson_layer:function(result) { // Expects response.result, not response.
-			try {
+			try {				
 				var dataset = ngds.ckandataset(result);	
+				x=dataset;
 				var feature = dataset.getGeoJSON();				
 				var popup = dataset.map.getPopupHTML();
 			}
@@ -223,6 +231,7 @@ ngds.Map = {
 				return;
 			}															
 			var geoJSONRepresentation = L.geoJson(feature);		
+			console.log(feature);
 			if(feature.type==='Polygon') {
 				var bbox = new ngds.Map.BoundingBox();
 				bbox.store_raw(geoJSONRepresentation.getBounds());

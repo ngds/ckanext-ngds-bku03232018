@@ -35,12 +35,16 @@
 			dataset_to_spatialize = window.prompt("Enter dataset id : ");
 			if(dataset_to_spatialize!==null && typeof dataset_to_spatialize !=='undefined') {
 				$.ajax({
-					url:'/spatialize',
-					data:{
-
-					},
+					url:'/api/action/datastore_spatialize',
+					type:'POST',
+					data:JSON.stringify({
+						id:"45276b7a-4335-4548-aa92-e82ffbbde56f",
+						col_geography:"geometry",
+						col_latitude:"LATITUDE",
+						col_longitude:"LONGITUDE"
+					}),
 					success:function(response){
-
+						console.log(response);
 					}
 				});
 			}
