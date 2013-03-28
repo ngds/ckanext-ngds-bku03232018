@@ -7,6 +7,8 @@ import ckan.model as model
 from ckanext.importlib.importer import *
 import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
+import ckanext.ngds.lib.importer.helper as import_helper
+
 #Need to decide our own Read only keys
 readonly_keys = ('id', 'revision_id',
                  'relationships',
@@ -17,6 +19,29 @@ readonly_keys = ('id', 'revision_id',
                  'metadata_created',
                  'notes_rendered')
 
+
+def importrecordclient(self,file_path="/home/ngds/work/GITHUB/ckanext-importlib/ckanext/importlib/tests/samples/test_importer_full.xls"):
+    #print "Entered Import Record Client:",file_path
+    from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
+    from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
+
+    from ckanclient import CkanClient
+    from ckanext.ngds.lib.importer.loader import ResourceLoader
+
+    testclient = CkanClient(base_location='http://localhost:5000/api', api_key="3b81cfec-b3b8-471d-ac50-e722d26c3893")
+    loader = ResourceLoader(testclient,field_keys_to_find_pkg_by=['name'])
+      
+    package_import = NGDSPackageImporter(filepath=file_path)
+
+    pkg_dicts = [pkg_dict for pkg_dict in package_import.pkg_dict()]
+
+    for pkg_dict in pkg_dicts:
+        print "Processing Package: ",pkg_dict['title']
+        try:
+            loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
+        except Exception , e:
+            print "Skipping this record and proceeding with next one....",e 
+
 class SpreadsheetDataRecords(DataRecords):
     '''Takes SpreadsheetData and converts it its titles and
     data records. Handles title rows and filters out rows of rubbish.
@@ -26,18 +51,18 @@ class SpreadsheetDataRecords(DataRecords):
         self._data = spreadsheet_data
         # find titles row
         self.titles, last_titles_row_index = self.find_titles(essential_title)
-        print "Titles: ",self.titles
+        #print "Titles: ",self.titles
         self._first_record_row = self.find_first_record_row(last_titles_row_index + 1)     
 
     def find_titles(self, essential_title):
-        print "Here essential_title: ",essential_title
+        #print "Here essential_title: ",essential_title
         row_index = 0
         titles = []
         essential_title_lower = essential_title.lower()
         #print "Number of rows:",self._data.get_num_rows()
         #print "essential_title:",essential_title
         while True:
-            print "row_index:",row_index
+            #print "row_index:",row_index
             if row_index >= self._data.get_num_rows():
                 raise ImportException('Could not find title row')
             row = self._data.get_row(row_index)
@@ -63,7 +88,7 @@ class SpreadsheetDataRecords(DataRecords):
     @property
     def records(self):
         '''Returns each record as a dict.'''
-        print "Returning from NGDS records...."
+        #print "Returning from NGDS records...."
         for row_index in range(self._first_record_row, self._data.get_num_rows()):
             row = self._data.get_row(row_index)
             row_has_content = False
@@ -109,17 +134,19 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         # import is here, as it creates a dependency on ckan, which
         # many importers won't want
         from ckan.model.license import LicenseRegister
-        print "license_title: ",license_title
+        #print "license_title: ",license_title
         licenses = LicenseRegister()
-        print "licenses: ",licenses
+        #print "licenses: ",licenses
         license_obj = licenses.get(license_title)
-        print "license_obj: ",license_obj
+        #print "license_obj: ",license_obj
         if license_obj:
             return u'%s' % license_obj.id
         else:
             print "license_title: ",license_title
             #logger('Warning: No license name matches \'%s\'. Ignoring license.' % license_title)
             return u''    
+
+
         
     @classmethod
     def pkg_xl_dict_to_fs_dict(cls, pkg_xl_dict, logger=None):
@@ -135,7 +162,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         #import ckan.forms
         standard_fields = model.Package.get_fields()
 
-        print "Standar Fields: ", standard_fields
+        #print "Standar Fields: ", standard_fields
 
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
@@ -145,7 +172,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                 elif title == 'license':
                     #print "license: ", cell
                     license_id = cls.license_2_license_id(cell)
-                    print "license_id: ",license_id
+                    #print "license_id: ",license_id
                     if license_id:
                         pkg_fs_dict['license_id'] = license_id
                     else:
@@ -156,6 +183,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                         res_index, field = match.groups()
                         res_index = int(res_index)
                         field = str(field)
+                        print "field: ",field
                         if not pkg_fs_dict.has_key('resources'):
                             pkg_fs_dict['resources'] = []
                         resources = pkg_fs_dict['resources']
@@ -165,6 +193,12 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                             for blank_field in model.Resource.get_columns():
                                 blank_dict[blank_field] = u''
                             pkg_fs_dict['resources'].append(blank_dict)
+
+                        if field =='upload_file':
+                            #Upload the file and get the URL of it.
+                            upload_url=import_helper.upload_file_return_path(file_name=cell,file_path="/home/ngds/work/")
+                            pkg_fs_dict['resources'][res_index]['url'] = upload_url
+                            
 
                         pkg_fs_dict['resources'][res_index][field] = cell
                     else:
@@ -200,5 +234,3 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 #         for spreadsheet_records in self.records_list:
 #             for spreadsheet_record in spreadsheet_records.records:
 #                 yield spreadsheet_record
-
-        
