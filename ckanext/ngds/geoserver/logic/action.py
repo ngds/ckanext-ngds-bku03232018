@@ -3,9 +3,8 @@ import pylons
 import ckan.logic as logic
 import ckan.plugins as p
 import ckanext.datastore.db as db
-# //Q: Import the newly created function to get all fields of a table
-#from ckanext.datastore.db import get_fields
 import sqlalchemy
+from geoserver.catalog import Catalog
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -130,4 +129,53 @@ def datastore_spatialize(context, data_dict):
         raise
     finally:
         context['connection'].close()
+        
+    return
     
+
+def datastore_expose_as_layer(context, data_dict):
+    '''Publishes an existing 'spatialized' database as a layer in geoserver
+
+    The datastore_expose_as_layer API action allows a user to publish a table as a layer in geoserver.
+    It assumes the database table is already 'spacialized', i.e. has latitude and longitude columns 
+    converted into a geographic shape.
+    
+    In order for the *expose* method to work, a unique key has to be defined via
+    the datastore_create action. The available methods are:
+
+    :param resource_id: resource id that the data is going to be stored under.
+    :type resource_id: string
+    
+    **Results:**
+
+    :returns: URI of the published layer.
+    :rtype: string
+    
+    '''
+    if 'id' in data_dict:
+        data_dict['resource_id'] = data_dict['id']
+    res_id = _get_or_bust(data_dict, 'resource_id')
+    print res_id
+    
+    cat = Catalog("http://localhost:8080/geoserver/rest")
+    
+    # get existing or create new workspace
+    ngds_workspace = cat.get_workspace("NGDS")
+    if ngds_workspace is None:    
+        ngds_workspace = cat.create_workspace("NGDS", "http://localhost:5000/ngds")
+    
+    #get existing or create new datastore
+    store = cat.get_store("ngds", ngds_workspace)
+    if store is None:
+        store = cat.create_datastore("ngds", ngds_workspace)
+        store.
+    
+    
+    return
+
+def datastore_remove_exposed_layer(context, data_dict):
+    return
+
+
+def datastore_list_exposed_layers(contect, data_dict):
+    return
