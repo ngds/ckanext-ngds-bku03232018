@@ -7,6 +7,9 @@ import ckanext.datastore.db as db
 #from ckanext.datastore.db import get_fields
 import sqlalchemy
 
+from geoserver.catalog import Catalog
+
+
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
@@ -130,4 +133,39 @@ def datastore_spatialize(context, data_dict):
         raise
     finally:
         context['connection'].close()
+
+    
+def geoserver_create_workspace
+(context, data_dict):
+    '''Create a workspace in the datastore
+
+    The geoserver_create_workspace API action allows a user to create a new workspace
+    on a geoserver instance. 
+    
+    The available methods are:
+
+    *create*
+        It first checks if the workspace already exists. If it does not yet exist it
+        is created.
+        
+    :param geoserver: url of the geoserver
+    :type geoserver_url: string
+    :param workspace_name: the name of the workspace that shall be created
+    :type workspace_name: string
+    :param workspace_uri: the URI of the workspace
+    :type workspace_uri: string
+    
+    **Results:**
+
+    :returns: The name of the workspace.
+    :rtype: dictionary
+    '''
+    
+    geoserver = _get_or_bust(data_dict, 'geoserver')
+    workspace_name = _get_or_bust(data_dict, 'workspace_name')
+    workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
+
+    cat = Catalog(geoserver)
+    cat.create_workspace(workspace_name, workspace_uri)
+
     
