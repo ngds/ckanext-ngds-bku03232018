@@ -38,9 +38,9 @@ class GeoserverPlugin(p.SingletonPlugin):
     p.implements(p.IAuthFunctions)
 
     def get_actions(self):
-        actions = {'datastore_spatialize' : action.datastore_spatialize}
+        actions = {'datastore_spatialize' : action.datastore_spatialize, 'datastore_expose_as_layer': action.datastore_expose_as_layer}
         return actions
 
     def get_auth_functions(self):
-        return {'datastore_spatialize' : auth.datastore_create}
+        return {'datastore_spatialize' : auth.datastore_create, 'datastore_expose_as_layer' : auth.datastore_create}
 
