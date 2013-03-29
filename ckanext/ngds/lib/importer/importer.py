@@ -20,7 +20,7 @@ readonly_keys = ('id', 'revision_id',
                  'notes_rendered')
 
 
-def importrecordclient(self,file_path="/home/ngds/work/GITHUB/ckanext-importlib/ckanext/importlib/tests/samples/test_importer_full.xls"):
+def importrecordclient(file_path=None,resource_dir=None):
     #print "Entered Import Record Client:",file_path
     from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
     from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
@@ -28,15 +28,15 @@ def importrecordclient(self,file_path="/home/ngds/work/GITHUB/ckanext-importlib/
     from ckanclient import CkanClient
     from ckanext.ngds.lib.importer.loader import ResourceLoader
 
-    testclient = CkanClient(base_location='http://localhost:5000/api', api_key="3b81cfec-b3b8-471d-ac50-e722d26c3893")
-    loader = ResourceLoader(testclient,field_keys_to_find_pkg_by=['name'])
+    testclient = CkanClient(base_location='http://localhost:5000/api', api_key="5364e36d-0bd0-43af-be38-452149466950")
+    loader = ResourceLoader(testclient,field_keys_to_find_pkg_by=['name'],resource_dir=resource_dir)
       
     package_import = NGDSPackageImporter(filepath=file_path)
 
     pkg_dicts = [pkg_dict for pkg_dict in package_import.pkg_dict()]
 
     for pkg_dict in pkg_dicts:
-        print "Processing Package: ",pkg_dict['title']
+        #print "Processing Package: ",pkg_dict
         try:
             loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
         except Exception , e:
@@ -142,7 +142,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         if license_obj:
             return u'%s' % license_obj.id
         else:
-            print "license_title: ",license_title
+            #print "license_title: ",license_title
             #logger('Warning: No license name matches \'%s\'. Ignoring license.' % license_title)
             return u''    
 
@@ -167,6 +167,8 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
             if cell:
+                if title == 'private':
+                  print "Private value....",cell
                 if title in standard_fields:
                     pkg_fs_dict[title] = cell
                 elif title == 'license':
@@ -183,7 +185,6 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                         res_index, field = match.groups()
                         res_index = int(res_index)
                         field = str(field)
-                        print "field: ",field
                         if not pkg_fs_dict.has_key('resources'):
                             pkg_fs_dict['resources'] = []
                         resources = pkg_fs_dict['resources']
@@ -194,10 +195,10 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                                 blank_dict[blank_field] = u''
                             pkg_fs_dict['resources'].append(blank_dict)
 
-                        if field =='upload_file':
-                            #Upload the file and get the URL of it.
-                            upload_url=import_helper.upload_file_return_path(file_name=cell,file_path="/home/ngds/work/")
-                            pkg_fs_dict['resources'][res_index]['url'] = upload_url
+                        # if field =='upload_file':
+                        #     #Upload the file and get the URL of it.
+                        #     upload_url=import_helper.upload_file_return_path(file_name=cell,file_path="/home/ngds/work/")
+                        #     pkg_fs_dict['resources'][res_index]['url'] = upload_url
                             
 
                         pkg_fs_dict['resources'][res_index][field] = cell
@@ -215,6 +216,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                     if not pkg_fs_dict.has_key('extras'):
                         pkg_fs_dict['extras'] = {}
                     pkg_fs_dict['extras'][title] = cell
+        pkg_fs_dict['owner_org']='public'            
         return pkg_fs_dict
 
                 

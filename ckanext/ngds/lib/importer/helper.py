@@ -27,12 +27,16 @@ def upload_file_return_path(file_name=None,file_path=None):
     f = open(file_path+file_name, "rb") # notice the b for binary mode
     data = f.read()
     #storage.get_ofs().put_stream(bucket_id, label, stream.file, params)
-    storage.get_ofs().put_stream(bucket_id, label, data, params)
+    ofs = storage.get_ofs()
+    ofs.put_stream(bucket_id, label, data, params)
     f.close()
 
     log.debug("%s File Uploaded successfully." % file_name)
 
-    uploaded_file_url = h.url_for('storage_file',label=label,qualified=True)
+    #uploaded_file_url = h.url_for('storage_file',label=label,qualified=True)
+    uploaded_file_url = ofs.get_url(bucket_id,label)
+
+    print "uploaded_file_url: ",uploaded_file_url
 
     log.info("uploaded_file_url: %s" % uploaded_file_url)
 
