@@ -231,13 +231,6 @@ ngds.Map = {
 				return;
 			}															
 			var geoJSONRepresentation = L.geoJson(feature);		
-			console.log(feature);
-			if(feature.type==='Polygon') {
-				var bbox = new ngds.Map.BoundingBox();
-				bbox.store_raw(geoJSONRepresentation.getBounds());
-				// this.manage_zoom(bbox,geoJSONRepresentation,ngds.Map.get_layer('geojson'));
-						
-			}
 			geoJSONRepresentation.bindPopup(popup);
 			this.add_to_layer([geoJSONRepresentation],'geojson');
 		},

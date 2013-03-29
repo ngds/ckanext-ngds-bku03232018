@@ -9,7 +9,7 @@ $(document).ready(function() {
 	ngds.Map.shape = { };
 	ngds.Map.map.on('draw:poly-created',function(e){
 		// Clear the drawn items layers to get rid of rectangles drawn previously.
-		ngds.Map.shape = 'poly';
+		
 		if(ngds.Map.map.lock===true) {
 			ngds.Map.removeZoomEventListeners();
 		}
@@ -29,9 +29,10 @@ $(document).ready(function() {
 		// TODO - Limit this to '8' results.
 		ngds.Map.params = param_arr;
 		// ngds.Map.map_search();
-		bounding_box = new ngds.Map.BoundingBox();
-		bounding_box.construct_from_leaflet_shape(e.poly);
+		ngds.Map.bounding_box = new ngds.Map.BoundingBox();
+		ngds.Map.bounding_box.construct_from_leaflet_shape(e.poly);
 		ngds.Map.shape.e = e;
+		ngds.Map.shape.str='poly';
 	});
 
 	ngds.Map.map.on('draw:rectangle-created',function(e) {
