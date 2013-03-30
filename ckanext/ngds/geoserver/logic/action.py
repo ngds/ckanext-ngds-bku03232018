@@ -5,6 +5,7 @@ import ckan.plugins as p
 import ckanext.datastore.db as db
 import sqlalchemy
 from geoserver.catalog import Catalog
+from featuretype import SqlFeatureTypeDef
 
 
 log = logging.getLogger(__name__)
@@ -169,39 +170,38 @@ def datastore_expose_as_layer(context, data_dict):
     
     print ">>>>>>>>>>>>>>>>>>>>>>  create store >>>>>>>>>>>>>>>>>>>>>>>>"
     #get existing or create new datastore
+ 
+    if not 'geoserver' in data_dict:
+        data_dict['geoserver'] = 'http://localhost:8080/geoserver/rest'
+    if not  'workspace_name' in data_dict: 
+        data_dict['workspace_name'] = 'NGDS'
+    if not 'store_name' in data_dict:
+        data_dict['store_name'] = 'datastore'
+    if not 'pg_host' in data_dict:
+        data_dict['pg_host'] = 'localhost'
+    if not 'pg_port' in data_dict:
+        data_dict['pg_port'] = '5432'
+    if not 'pg_db' in data_dict:
+        data_dict['pg_db'] = 'datastore'
+    if not 'pg_user' in data_dict:
+        data_dict['pg_user'] = 'ckanuser'
+    if not 'pg_password' in data_dict:
+        data_dict['pg_password'] = 'pass'
+    if not 'db_type' in data_dict:
+        data_dict['db_type'] = 'postgis'
+    
     try:
         store = cat.get_store('datastore', ngds_workspace)
+        print ">>>>>>>>>>>>>>>>>>>> datastrore exists >>>>>>>>>>>>>>>>"
     except Exception, ex:
-        print ">>>>>>>>>>>>>>>>>>>> creating datastrore info >>>>>>>>>>>>>>>>"
-        if not 'geoserver' in data_dict:
-            data_dict['geoserver'] = 'http://localhost:8080/geoserver/rest'
-        if not  'workspace_name' in data_dict: 
-            data_dict['workspace_name'] = 'NGDS'
-        if not 'store_name' in data_dict:
-            data_dict['store_name'] = 'datastore'
-        if not 'pg_host' in data_dict:
-            data_dict['pg_host'] = 'localhost'
-        if not 'pg_port' in data_dict:
-            data_dict['pg_port'] = '5432'
-        if not 'pg_db' in data_dict:
-            data_dict['pg_db'] = 'datastore'
-        if not 'pg_user' in data_dict:
-            data_dict['pg_user'] = 'ckanuser'
-        if not 'pg_password' in data_dict:
-            data_dict['pg_password'] = 'pass'
-        if not 'db_type' in data_dict:
-            data_dict['db_type'] = 'postgis'
-        
-        print ">>>>>>>>>>>>>>>>>>>> creating datastrore info >>>>>>>>>>>>>>>>"
+        print ">>>>>>>>>>>>>>>>>>>> creating new datastrore info >>>>>>>>>>>>>>>>"
         geoserver_create_store(context, data_dict)
-    
-    print ">>>>>>>>>>>>>>>>>>>> datastrore exists >>>>>>>>>>>>>>>>"
-    
-    print ">>>>>>>>>>>>>>>>>>>>>> end create store >>>>>>>>>>>>>>>>>>>>>>>>"
     
     print ">>>>>>>>>>>>>>>>>>>>>> start create layer >>>>>>>>>>>>>>>>>>>>>>>>"
     
     data_dict['layer_name'] = 'my_new_layer'
+    #data_dict['geoserver'] = 'http://localhost:8080/geoserver/rest'
+    
     geoserver_create_layer(context, data_dict)
     
     return
@@ -351,6 +351,8 @@ def geoserver_create_store(context, data_dict):
 
     cat.save(ds)
     ds = cat.get_store(store_name)
+    
+    return store_name
 
 
 def geoserver_delete_store(context, data_dict):
@@ -389,6 +391,71 @@ def geoserver_delete_store(context, data_dict):
     cat = Catalog(geoserver)
     store= cat.get_store(store_name, workspace_name)
     cat.delete(store)
+
+def create_postgis_sql_layer(context, data_dict):
+    '''Create a layer on geoserver through its restful API
+
+    The create_postgis_sql_layer API action allows a user to create a layer in
+    geoserver.
+    
+    The available methods are:
+
+    *POST*
+        It first creates then configures the layer.
+        
+    :param geoserver: url of the geoserver
+    :type geoserver: string
+    :param workspace_name: the name of the workspace containing the store that shall be deleted
+    :type workspace_name: string
+    :param layer_name: the name of the layer to be created
+    :type layer_name: string
+    :param resource_id: the name of the table to be published as a layer
+    :type resource_id: string
+    :param connection: a live database connectinon to the database containing the resouce_id table
+    :type connection: database connection
+    
+    **Results:**
+
+    :returns: The name of the layer.
+    :rtype: dictionary
+    '''
+   
+    workspace_name = _get_or_bust(data_dict, 'workspace_name')
+    baseServerUrl = _get_or_bust(data_dict, 'geoserver')
+    store_name =_get_or_bust(data_dict, 'store_name')
+    
+    print ">>>>>>>>>>> connecting to database >>>>>>>>>>>>>"
+    data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+    engine = db._get_engine(None, data_dict)
+    context['connection'] = engine.connect()
+    
+    # 'layer_name', 'connection' and 'resource_id'
+    # will be read by the SqlFeatureTypeDef
+    
+    if baseServerUrl is None:
+        baseServerUrl="http://localhost:8080/geoserver/rest/"
+    
+    cat = Catalog(baseServerUrl)
+    
+    # builds the meta-data object used for the createion of the layer
+    print ">>>>>>>>>>>>>>>>> building definition >>>>>>>>>>>>>>>>"
+    definition = SqlFeatureTypeDef(context, data_dict)
+    
+    print ">>>>>>>>>>>>>>>>> serializing definition >>>>>>>>>>>>>>>>"
+    print definition.serialize()
+    
+    
+    featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"
+    headers = { "Content-Type": "application/json" }
+    
+    print ">>>>>>>>>>>>>>>>> sending create layer POST >>>>>>>>>>>>>>>>"
+    
+    headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
+    assert 200 <= headers.status < 300, "Tried to create Geoserver layer but encountered a " + str(headers.status) + " error: " + response
+    cat._cache.clear()
+
+    return cat.get_layer(definition.name)
+
     
 def geoserver_create_layer(context, data_dict):
     '''Create a layer on a geoserver
@@ -431,6 +498,7 @@ def geoserver_create_layer(context, data_dict):
     :returns: The name of the store.
     :rtype: dictionary
     '''
+    print ">>>>>>>>>>>>>>>>>>>>>> start create layer >>>>>>>>>>>>>>>>>>>>>>>>"
     
     geoserver = _get_or_bust(data_dict, 'geoserver')
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
@@ -452,12 +520,10 @@ def geoserver_create_layer(context, data_dict):
     ds = cat.get_store(store_name)
     
     print ">>>>>>>>>>>>>>>>>>>> create new layer object >>>>>>>>>>>>>>>>>>>>"
+    if cat.get_layer(layer_name) is None:
+        create_postgis_sql_layer(context, data_dict)
     
-    new_layer = Layer(cat, layer_name)
-    new_layer.save_method="POST"
+    return
     
-    print ">>>>>>>>>>>>>>>>>>>> save new layer object >>>>>>>>>>>>>>>>>>>>"
-    cat.save(new_layer)
     
-
 
