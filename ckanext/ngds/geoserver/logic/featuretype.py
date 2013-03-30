@@ -53,19 +53,19 @@ class SqlFeatureTypeDef:
         '''
         
         self.nativeBoundingBox = {
-            "minx": '',
-            "maxx": '',
-            "miny": '',
-            "maxy": '',
-            "crs": ''                          
+            "minx": '0',
+            "maxx": '0',
+            "miny": '0',
+            "maxy": '0',
+            "crs": 'EPSG:4326'                          
         }
         
         
         print ">>>>>>>>>>>>> building geometry >>>>>>>>>>>>>>>>>"
         self.geometry = OrderedDict()
         self.geometry["name"] = "shape"
-        self.geometry["type"] = ''
-        self.geometry["srid"] = ''
+        self.geometry["type"] = 'shape'
+        self.geometry["srid"] = 'EPSG:4326'
         
         print ">>>>>>>>>>>>> building virtual table >>>>>>>>>>>>>>>>>"
         self.virtualTable = OrderedDict()
