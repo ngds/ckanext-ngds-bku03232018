@@ -1,5 +1,5 @@
 from ckan.lib.cli import CkanCommand
-import ckanext.ngds.lib.importer.importer as spreadsheet_importer
+from ckanext.ngds.lib.importer.importer import BulkUploader
 
 class APICommand(CkanCommand):
     """
@@ -13,9 +13,10 @@ class APICommand(CkanCommand):
     def command(self):
         self._load_config()
         cmd = self.args[0]
-        print "Arguments: ",self.args
+        #print "Arguments: ",self.args
         if cmd == "import":
             #print "File Path: ",self.args[1]
-            spreadsheet_importer.importrecordclient(file_path=self.args[1],resource_dir=self.args[2])
+            bulkLoader = BulkUploader()
+            bulkLoader.importpackagedata(file_path=self.args[1],resource_dir=self.args[2])
         else:
             print "Command %s not recognized" % cmd

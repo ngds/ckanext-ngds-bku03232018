@@ -20,27 +20,50 @@ readonly_keys = ('id', 'revision_id',
                  'notes_rendered')
 
 
-def importrecordclient(file_path=None,resource_dir=None):
-    #print "Entered Import Record Client:",file_path
-    from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
-    from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
+class BulkUploader(object):
 
-    from ckanclient import CkanClient
-    from ckanext.ngds.lib.importer.loader import ResourceLoader
+    def __init__(self):
+        import urlparse
+        self.url = 'http://localhost:5000/api'
+        self.parsed = urlparse.urlparse(self.url)
+        newparsed = list(self.parsed)
+        self.netloc = self.parsed.netloc
 
-    testclient = CkanClient(base_location='http://localhost:5000/api', api_key="5364e36d-0bd0-43af-be38-452149466950")
-    loader = ResourceLoader(testclient,field_keys_to_find_pkg_by=['name'],resource_dir=resource_dir)
-      
-    package_import = NGDSPackageImporter(filepath=file_path)
 
-    pkg_dicts = [pkg_dict for pkg_dict in package_import.pkg_dict()]
+    def importpackagedata(self,file_path=None,resource_dir=None):
+        #print "Entered Import Record Client:",file_path
+        from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
+        from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
 
-    for pkg_dict in pkg_dicts:
-        #print "Processing Package: ",pkg_dict
-        try:
-            loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
-        except Exception , e:
-            print "Skipping this record and proceeding with next one....",e 
+        from ckanclient import CkanClient
+        from ckanext.ngds.lib.importer.loader import ResourceLoader
+
+        apikey = self._get_api_key_from_config()
+
+        testclient = CkanClient(base_location=self.url, api_key=apikey)
+        loader = ResourceLoader(testclient,field_keys_to_find_pkg_by=['name'],resource_dir=resource_dir)
+          
+        package_import = NGDSPackageImporter(filepath=file_path)
+
+        pkg_dicts = [pkg_dict for pkg_dict in package_import.pkg_dict()]
+
+        for pkg_dict in pkg_dicts:
+            try:
+                loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
+            except Exception , e:
+                print "Skipping this record and proceeding with next one....",e 
+
+    def _get_api_key_from_config(self):
+        import ConfigParser
+        import os
+        config_path = os.path.join(os.path.expanduser('~'), '.ckanclientrc')
+        if os.path.exists(config_path):
+            cfgparser = ConfigParser.SafeConfigParser()
+            cfgparser.readfp(open(config_path))
+            section = 'index:%s' % self.netloc
+            if cfgparser.has_section(section):
+                api_key = cfgparser.get(section, 'api_key', '')
+                return api_key            
 
 class SpreadsheetDataRecords(DataRecords):
     '''Takes SpreadsheetData and converts it its titles and
