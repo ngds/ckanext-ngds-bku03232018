@@ -389,7 +389,7 @@ def geoserver_delete_store(context, data_dict):
 
 
     cat = Catalog(geoserver)
-    store= cat.get_store(store_name, workspace_name)
+    store = cat.get_store(store_name, workspace_name)
     cat.delete(store)
 
 def create_postgis_sql_layer(context, data_dict):
@@ -423,6 +423,7 @@ def create_postgis_sql_layer(context, data_dict):
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
     baseServerUrl = _get_or_bust(data_dict, 'geoserver')
     store_name =_get_or_bust(data_dict, 'store_name')
+    resorce_id = _get_or_bust(data_dict, 'resource_id')
     
     print ">>>>>>>>>>> connecting to database >>>>>>>>>>>>>"
     data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
@@ -445,7 +446,7 @@ def create_postgis_sql_layer(context, data_dict):
     print definition.serialize()
     
     
-    featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"
+    featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"+resorce_id
     headers = { "Content-Type": "application/json" }
     
     print ">>>>>>>>>>>>>>>>> sending create layer POST >>>>>>>>>>>>>>>>"

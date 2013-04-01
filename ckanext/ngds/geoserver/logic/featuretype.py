@@ -2,6 +2,8 @@ from collections import OrderedDict
 import json
 import ckanext.datastore.db as db
 from geoserver.catalog import Layer
+import ckanext.datastore.db as db
+import sqlalchemy
 
 class SqlFeatureTypeDef:
 
@@ -41,44 +43,57 @@ class SqlFeatureTypeDef:
         self.nativeCRS = 'EPSG:4326'
         
         print ">>>>>>>>>>>>> setting bounding box >>>>>>>>>>>>>>>>>"
+     
+        self.nativeBoundingBox = self.calcualte_bounding_box(context, data_dict)
+        self.latLonBoundingBox = self.nativeBoundingBox
+        print ">>>>>>>>>>>>>>>>> bounding box >>>>>>>>>>>>>>>>>>"
+        print self.nativeBoundingBox
         
-        ''' 
-        self.nativeBoundingBox = {
-            "minx": layer.extent.min_x,
-            "maxx": layer.extent.max_x,
-            "miny": layer.extent.min_y,
-            "maxy": layer.extent.max_y,
-            "crs": "EPSG:" + str(layer.srs.srid)                          
-        }
-        '''
-        
-        self.nativeBoundingBox = {
-            "minx": '0',
-            "maxx": '0',
-            "miny": '0',
-            "maxy": '0',
-            "crs": 'EPSG:4326'                          
-        }
         
         
         print ">>>>>>>>>>>>> building geometry >>>>>>>>>>>>>>>>>"
         self.geometry = OrderedDict()
-        self.geometry["name"] = "shape"
+        self.geometry["name"] = data_dict['col_geography']
         self.geometry["type"] = 'shape'
         self.geometry["srid"] = 'EPSG:4326'
         
         print ">>>>>>>>>>>>> building virtual table >>>>>>>>>>>>>>>>>"
         self.virtualTable = OrderedDict()
         self.virtualTable["name"] = self.name
-        self.virtualTable["sql"] = "select " + ", ".join(self.fieldNames) + " from " + resource_id 
+        self.virtualTable["sql"] = "select " + ", ".join(self.fieldNames) + " from \"" + resource_id+"\"" 
         self.virtualTable["geometry"] = self.geometry
         
         print ">>>>>>>>>>>>> building store >>>>>>>>>>>>>>>>>"
         self.store = {
             "@class": "dataStore",
             "name": "datastore",
-            "href": baseGeoserverUrl + "/workspaces/" + workspace_name + "/datastores/postgis.json"              
+            "href": baseGeoserverUrl + "/workspaces/" + workspace_name + "/datastores/datastore.json"              
         }
+    
+    def calcualte_bounding_box(self, context, data_dict):
+        resource_id = data_dict['resource_id']
+        col_latitude =  data_dict['col_longitude']
+        col_longitude =  data_dict['col_latitude']
+       
+        query = sqlalchemy.text("SELECT MIN(\"" +col_latitude+"\"), MAX(\""+col_latitude+"\")"+
+                ", MIN(\""+col_longitude+"\"), MAX(\""+col_longitude+"\")"+
+                "FROM \""+resource_id+"\"")
+        
+        connection = context['connection']
+        queryresult = connection.execute(query).fetchall()
+        #queryresult = db._get_engine(None, data_dict).execute(query)
+                
+        result = {
+            "minx": str(queryresult[0][0]),
+            "maxx": str(queryresult[0][1]),
+            "miny": str(queryresult[0][2]),
+            "maxy": str(queryresult[0][3]),
+            "crs": 'EPSG:4326'                          
+        }
+        
+        
+        return result
+        
         
     def serialize(self):
         return json.dumps({
@@ -88,6 +103,7 @@ class SqlFeatureTypeDef:
                 "namespace": self.namespace,
                 "nativeCRS": self.nativeCRS,
                 "nativeBoundingBox": self.nativeBoundingBox,
+                "latLonBoundingBox": self.latLonBoundingBox,
                 "metadata": {
                     "entry": {
                         "@key": "JDBC_VIRTUAL_TABLE",
