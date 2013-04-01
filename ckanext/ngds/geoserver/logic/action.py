@@ -423,7 +423,7 @@ def create_postgis_sql_layer(context, data_dict):
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
     baseServerUrl = _get_or_bust(data_dict, 'geoserver')
     store_name =_get_or_bust(data_dict, 'store_name')
-    resorce_id = _get_or_bust(data_dict, 'resource_id')
+    resource_id = _get_or_bust(data_dict, 'resource_id')
     
     print ">>>>>>>>>>> connecting to database >>>>>>>>>>>>>"
     data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
@@ -442,16 +442,27 @@ def create_postgis_sql_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>> building definition >>>>>>>>>>>>>>>>"
     definition = SqlFeatureTypeDef(context, data_dict)
     
-    print ">>>>>>>>>>>>>>>>> serializing definition >>>>>>>>>>>>>>>>"
-    print definition.serialize()
+    #print ">>>>>>>>>>>>>>>>> serializing definition >>>>>>>>>>>>>>>>"
+    #print definition.serialize()
     
     
-    featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"+resorce_id
-    headers = { "Content-Type": "application/json" }
+    featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"
+    #headers = { "Content-Type": "application/json" }
     
     print ">>>>>>>>>>>>>>>>> sending create layer POST >>>>>>>>>>>>>>>>"
     
-    headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
+    #headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
+    name= resource_id
+    xml=  ("featureType>"
+       "<name>{name}</name>"
+       "</featureType>").format(name=name)
+
+    headers= {"Content-type": "text/xml"}
+
+    headers, response = cat.http.request(featureType_url, "POST", xml, headers)
+
+    
+    print ">>>>>>>>>>>>>>>>> sent POST >>>>>>>>>>>>>>>>"
     assert 200 <= headers.status < 300, "Tried to create Geoserver layer but encountered a " + str(headers.status) + " error: " + response
     cat._cache.clear()
 
