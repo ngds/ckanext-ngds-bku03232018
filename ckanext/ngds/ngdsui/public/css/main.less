@@ -76,7 +76,8 @@ header {
 
 				span {
 						.normal-font;
-						font-family:"Arial Narrow";
+						font-size:11px;
+						font-family:"Arial Narrow", "Helvetica Condensed", sans-serif;
 						font-weight:bold;
 						margin-top:0px;
 				}
@@ -222,7 +223,7 @@ header {
 		font-size:13px; 
 		font-family:Arial; 
 		line-height:16px;
-		margin-top:10px;
+		margin-top:0px;
 		text-align:left;
 		color:#515151;
 	}
@@ -234,24 +235,41 @@ header {
 		margin-bottom:5px;
 		text-align:left;
 	}
+
+	@input-elem-margin-top:12px;
+	@input-elem-height:25px;
+
+	#search-container {
+		.search-bar {
+			width:150px;
+			margin-left:20px;
+			margin-top:@input-elem-margin-top;
+			height:@input-elem-height;
+		}
+
+		input[type="submit"] {
+			margin-top:@input-elem-margin-top;
+			height:@input-elem-height;
+		}
+	}
 }
 
 .left-container-common {
-	width:290px;
+	width:295px;
 	border-top:4px solid #236393;
 	margin-left:20px;
 	padding-top:10px;
 }
 
 .left-container-item-common {
-	margin-left:20px;
+	margin-left:14px;
 	margin-right:20px;
 }
 
 #search-container {
-	height:130px;
+	height:140px;
 	.left-container-common;
-	//background-color:#dadada;
+	background-color:#dadada;
     background:url('/assets/border_box_1.png') repeat-y;
     // There's suppposed to be a background image here.
 }
