@@ -240,6 +240,9 @@ header {
 	@input-elem-height:25px;
 
 	#search-container {
+		height:140px;
+		.left-container-common('/assets/border_box_1.png');
+
 		.search-bar {
 			width:150px;
 			margin-left:20px;
@@ -254,11 +257,12 @@ header {
 	}
 }
 
-.left-container-common {
+.left-container-common(@image-url) {
 	width:295px;
 	border-top:4px solid #236393;
 	margin-left:20px;
 	padding-top:10px;
+    background:url(@image-url) no-repeat;
 }
 
 .left-container-item-common {
@@ -266,34 +270,33 @@ header {
 	margin-right:20px;
 }
 
-#search-container {
-	height:140px;
-	.left-container-common;
-	background-color:#dadada;
-    background:url('/assets/border_box_1.png') repeat-y;
-    // There's suppposed to be a background image here.
-}
-
 
 
 
 #data-watch-container {
+	.left-container-common('/assets/border_box_2.png');
 	margin-top:20px;
-	margin-bottom:20px;
-	margin-left:10px;
-	padding-top:10px;
-	padding-bottom:20px;	
-	text-align:left;
-	width:290px;
-	border:1px solid #a8a8a8;
-    padding-right:15px;
-    padding-left:15px;
-    -webkit-border-radius:5px;
-    border-radius:5px;
-    top:140px;
+	div {
+		margin-top:30px;
+		margin-left:20px;
+		a {
+			font-size:13px;
+			font-family:"Arial";
+			font-weight:bold;
+			color:#212121;
+			text-decoration:none;
+		}
+
+		p {
+			font-family:"Arial";
+			font-size:11px;
+			font-style:italic;
+			text-align:right;
+		}
+	}
 }
 
-#data-watch-container div {
+/*#data-watch-container div {
 	margin-top:10px;
 	margin-bottom:5px;
 	padding-bottom:0px;
@@ -322,4 +325,4 @@ header {
 	width:290px;
 	margin-top:5px;
 	line-height:18px;
-}
+}*/
