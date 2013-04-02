@@ -28,29 +28,7 @@
 		<div class="search-results-page-nums"></div>
 	</div>
  </div>	
-<button id="spatialize" style="position:absolute; bottom:0%; left:0%;">Spatialize</button>
-<script>
-	$(document).ready(function() {
-		$("#spatialize").click(function() {
-			dataset_to_spatialize = window.prompt("Enter dataset id : ");
-			if(dataset_to_spatialize!==null && typeof dataset_to_spatialize !=='undefined') {
-				$.ajax({
-					url:'/api/action/datastore_spatialize',
-					type:'POST',
-					data:JSON.stringify({
-						id:"45276b7a-4335-4548-aa92-e82ffbbde56f",
-						col_geography:"geometry",
-						col_latitude:"LATITUDE",
-						col_longitude:"LONGITUDE"
-					}),
-					success:function(response){
-						console.log(response);
-					}
-				});
-			}
-		});
-	});
-</script>
+
 {% endblock %}
 
 {% block scripts %}
