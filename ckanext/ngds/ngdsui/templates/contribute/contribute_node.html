@@ -51,6 +51,9 @@
 			<p>
 				Want to help? <a href="/ngds/contribute/dataset/new">Share data</a> with us.
 			</p>
+			<p>
+				Want to upload your data in bulk? <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload') }}">Bulk Upload data</a>.
+			</p>			
 			{% endif %}
 		</div>
 

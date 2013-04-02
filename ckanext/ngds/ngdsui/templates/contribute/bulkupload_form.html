@@ -1,0 +1,25 @@
+{% extends "page_ngds.html" %}
+{%- block content %}
+<h1>Bulk Upload Dataset</h1>
+
+<form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload_handle') }}" enctype="multipart/form-data"  >
+
+	<div style="align:center;padding-top:20px;padding-left:20px;font-size: 12px; font-family: Arial;">
+		<table style="border: 1px solid black;">
+			<tr>
+				<td align="right">Upload Resources file(zip):</td><td>{{h.file('myzipfile')}}</td>
+			</tr>
+			<tr>
+				<td align="right">Upload Dataset file(csv or xls):</td><td>{{h.file('mycsvfile')}}</td>
+			</tr>
+			<tr>
+				<td></td><td>{{h.submit('submit', 'Submit')}}</td>
+			</tr>
+
+		</table>
+	</div>
+         
+	
+
+	</form> 
+{% endblock %}

@@ -9,6 +9,12 @@ from ckan.logic import (tuplize_dict,clean_dict,
 from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 
+import os
+from pylons import config
+import shutil
+import zipfile
+import os.path
+
 class ContributeController(NGDSBaseController):
 
  	def index(self):
@@ -36,6 +42,54 @@ class ContributeController(NGDSBaseController):
 		"""
 
 		return render('contribute/upload.html')
+
+	def bulk_upload(self):
+		return render('contribute/bulkupload_form.html')
+
+	def bulk_upload_handle(self):
+		"""	
+		Render the about page
+		"""
+		from datetime import datetime
+		myzipfile = request.POST['myzipfile']
+		mycsvfile = request.POST['mycsvfile']
+		print myzipfile
+		print os.path.dirname(os.path.abspath(__file__))
+		print os.getcwd()
+
+		bulk_dir = config.get('ngds.bulk_upload_dir')
+
+		ts = datetime.isoformat(datetime.now()).replace(':','').split('.')[0]
+
+		upload_dir = os.path.join(bulk_dir, ts)
+
+		if not os.path.exists(upload_dir):
+			os.makedirs(upload_dir)
+
+		csvfilepath =os.path.join(upload_dir,mycsvfile.filename.replace(os.sep, '_'))
+		zipfilepath =os.path.join(upload_dir,myzipfile.filename.replace(os.sep, '_'))
+
+		permanent_zip_file = open(zipfilepath,'wb')
+		permanent_csv_file = open(csvfilepath,'wb')
+
+		shutil.copyfileobj(myzipfile.file, permanent_zip_file )
+		shutil.copyfileobj(mycsvfile.file, permanent_csv_file )
+		myzipfile.file.close()
+		mycsvfile.file.close()
+		permanent_zip_file.close()
+		permanent_csv_file.close()
+
+
+		zfile = zipfile.ZipFile(zipfilepath)
+		
+
+		zfile.extractall(path=upload_dir)
+
+		h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
+
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload')
+		redirect(url)		
+		#return 'Successfully uploaded: %s' % (myzipfile.filename)			
 
 	def edit(self,id):
 		"""
