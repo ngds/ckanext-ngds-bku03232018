@@ -6,7 +6,7 @@ import ckanext.datastore.db as db
 import sqlalchemy
 from geoserver.catalog import Catalog
 from featuretype import SqlFeatureTypeDef
-
+from pylons import config
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -197,23 +197,38 @@ def datastore_expose_as_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>>>>  create store >>>>>>>>>>>>>>>>>>>>>>>>"
     #get existing or create new datastore
  
+    config_login = 'ckanuser'
+    config_passwd = 'pass'
+    config_datastore = 'datastore'
+    datastore_url = config.get('ckan.datastore.write_url','postgresql://ckanuser:pass@localhost/datastore')
+    login_pass = datastore_url.split('://')[1].split('@')[0]
+    #print "login_pass = ",login_pass
+    if login_pass is not None and login_pass is not "":
+        login = login_pass.split(':')[0]
+        passwd = login_pass.split(':')[1]
+        
+    parsed_datastore = datastore_url.split('://')[1].split('/')[-1] # last element
+    if parsed_datastore is not None and parsed_datastore is not "":
+        config_datastore = parsed_datastore
+        print config_datastore    
+ 
     # we utilize default values, instead of failing, if those parameters are not provided 
     if not 'geoserver' in data_dict:
         data_dict['geoserver'] = 'http://localhost:8080/geoserver/rest'
     if not  'workspace_name' in data_dict: 
         data_dict['workspace_name'] = 'NGDS'
     if not 'store_name' in data_dict:
-        data_dict['store_name'] = 'datastore'
+        data_dict['store_name'] = config_datastore
     if not 'pg_host' in data_dict:
         data_dict['pg_host'] = 'localhost'
     if not 'pg_port' in data_dict:
         data_dict['pg_port'] = '5432'
     if not 'pg_db' in data_dict:
-        data_dict['pg_db'] = 'datastore'
+        data_dict['pg_db'] = config_datastore
     if not 'pg_user' in data_dict:
-        data_dict['pg_user'] = 'ckanuser'
+        data_dict['pg_user'] = config_login
     if not 'pg_password' in data_dict:
-        data_dict['pg_password'] = 'pass'
+        data_dict['pg_password'] = config_passwd
     if not 'db_type' in data_dict:
         data_dict['db_type'] = 'postgis'
     
@@ -232,7 +247,7 @@ def datastore_expose_as_layer(context, data_dict):
     data_dict['layer_name'] = res_id
     geoserver_create_layer(context, data_dict)
     
-    web_geoserver = data_dict['geoserver'].replace("rest", "web")
+    web_geoserver = data_dict['geoserver'].replace("/rest", "/web")
     web_url = web_geoserver+"?wicket:bookmarkablePage=:org.geoserver.web.data.resource.ResourceConfigurationPage&name="+res_id+"&wsName="+data_dict['workspace_name']
     
     
@@ -391,6 +406,8 @@ def geoserver_create_store(context, data_dict):
     
     # check if the store was created successfully
     ds = cat.get_store(store_name)
+    
+    #TODO: it is not setting the password correctly, which is causing a 500 error
     ds.connection_parameters.update( user = pg_user, password = pg_password)
     
     return store_name
@@ -495,8 +512,8 @@ def create_postgis_sql_layer(context, data_dict):
     featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"
     name= resource_id
     xml=  ("<featureType>"
-       "<name>{name}</name>"
-       "</featureType>").format(name=name)
+             "<name>{name}</name>"
+           "</featureType>").format(name=name)
 
     headers= {"Content-type": "text/xml"}
 
