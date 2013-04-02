@@ -117,10 +117,27 @@ def datastore_spatialize(context, data_dict):
         formatted_results = db.format_results(context, newtable, data_dict)
         trans.commit()
     
+        print ">>>>>>>>>>>>>>>>>>>> list exposed layers >>>>>>>>>>>>>>>>>>>>>"    
+        # verify if the layer exists in geoserver, if not, create it.
+
+
+        cat = Catalog('http://localhost:8080/geoserver/rest')
+        headers= {"Content-type": "text/xml"}
+        headers, response = cat.http.request("http://localhost:8080/geoserver/rest/layers", "GET", "", headers)
+        if not res_id in response:
+            print ">>>>>>>>>> Layer does not exists >>>>>>>>>>>"
+            datastore_expose_as_layer(context, data_dict)
+        else:
+            print ">>>>>>>>>> Layer exists no need to expose it again >>>>>>>>>>>"
+    
+    
+    
+    
+    
+    
         formatted_results.pop('id', None)
         formatted_results.pop('connection_url')
         return formatted_results
-        
         
     except Exception, e:
         trans.rollback()
@@ -131,12 +148,11 @@ def datastore_spatialize(context, data_dict):
         raise
     finally:
         context['connection'].close()
-        
-    return
+    
     
 
 def datastore_expose_as_layer(context, data_dict):
-    '''Publishes an existing 'spatialized' database as a layer in geoserver
+    '''Publishes an already 'spatialized' database in postgress as a layer in geoserver
 
     The datastore_expose_as_layer API action allows a user to publish a table as a layer in geoserver.
     It assumes the database table is already 'spacialized', i.e. has latitude and longitude columns 
@@ -157,12 +173,12 @@ def datastore_expose_as_layer(context, data_dict):
     if 'id' in data_dict:
         data_dict['resource_id'] = data_dict['id']
     res_id = _get_or_bust(data_dict, 'resource_id')
-    print res_id
+    print ">>>>>>>>>>>>>>>>> working with: ",res_id
     
     cat = Catalog('http://localhost:8080/geoserver/rest')
     
-    print ">>>>>>>>>>>>>>>>>>>>>> begin create workspace >>>>>>>>>>>>>>>>>>>>>>>>"
-    # get existing or create new workspace
+    print ">>>>>>>>>>>>>>>>>>>>>> begin create workspace >>>>>>>>>>>>>>>>>>>>>>>>" 
+    # reusing the existing one or create new workspace
     ngds_workspace = cat.get_workspace('NGDS')
     if ngds_workspace is None:    
         ngds_workspace = cat.create_workspace('NGDS', 'http://localhost:5000/ngds')
@@ -171,6 +187,7 @@ def datastore_expose_as_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>>>>  create store >>>>>>>>>>>>>>>>>>>>>>>>"
     #get existing or create new datastore
  
+    # we utilize default values, instead of failing, if those parameters are not provided 
     if not 'geoserver' in data_dict:
         data_dict['geoserver'] = 'http://localhost:8080/geoserver/rest'
     if not  'workspace_name' in data_dict: 
@@ -190,18 +207,19 @@ def datastore_expose_as_layer(context, data_dict):
     if not 'db_type' in data_dict:
         data_dict['db_type'] = 'postgis'
     
+    # tries to read existing datastore for the workspace, if the read is not
+    # successful, crate the datastrore.
     try:
         store = cat.get_store('datastore', ngds_workspace)
-        print ">>>>>>>>>>>>>>>>>>>> datastrore exists >>>>>>>>>>>>>>>>"
+        print ">>>>>>>>>>>>>>>>>>>> datastrore already exists >>>>>>>>>>>>>>>>"
     except Exception, ex:
         print ">>>>>>>>>>>>>>>>>>>> creating new datastrore info >>>>>>>>>>>>>>>>"
         geoserver_create_store(context, data_dict)
     
     print ">>>>>>>>>>>>>>>>>>>>>> start create layer >>>>>>>>>>>>>>>>>>>>>>>>"
     
-    data_dict['layer_name'] = 'my_new_layer'
-    #data_dict['geoserver'] = 'http://localhost:8080/geoserver/rest'
-    
+    # we utilize the resource id as the layer name
+    data_dict['layer_name'] = res_id
     geoserver_create_layer(context, data_dict)
     
     return
@@ -211,7 +229,12 @@ def datastore_remove_exposed_layer(context, data_dict):
 
 
 def datastore_list_exposed_layers(contect, data_dict):
-    return
+    
+    geoserver = _get_or_bust(data_dict, 'geoserver')
+    cat = Catalog(geoserver)
+    list_of_layers = cat.get_layers()
+    
+    return list_of_layers
 
     
 def geoserver_create_workspace(context, data_dict):
@@ -439,19 +462,19 @@ def create_postgis_sql_layer(context, data_dict):
     cat = Catalog(baseServerUrl)
     
     # builds the meta-data object used for the createion of the layer
-    print ">>>>>>>>>>>>>>>>> building definition >>>>>>>>>>>>>>>>"
-    definition = SqlFeatureTypeDef(context, data_dict)
+    #print ">>>>>>>>>>>>>>>>> building definition >>>>>>>>>>>>>>>>"
+    #definition = SqlFeatureTypeDef(context, data_dict)
     
     #print ">>>>>>>>>>>>>>>>> serializing definition >>>>>>>>>>>>>>>>"
     #print definition.serialize()
     
     
-    featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"
     #headers = { "Content-Type": "application/json" }
     
     print ">>>>>>>>>>>>>>>>> sending create layer POST >>>>>>>>>>>>>>>>"
     
     #headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
+    featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"
     name= resource_id
     xml=  ("<featureType>"
        "<name>{name}</name>"
