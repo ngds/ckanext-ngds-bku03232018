@@ -1,1 +1,2 @@
 pycsw
+gsconfig
