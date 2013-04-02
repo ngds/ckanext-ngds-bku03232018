@@ -453,14 +453,13 @@ def create_postgis_sql_layer(context, data_dict):
     
     #headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
     name= resource_id
-    xml=  ("featureType>"
+    xml=  ("<featureType>"
        "<name>{name}</name>"
        "</featureType>").format(name=name)
 
     headers= {"Content-type": "text/xml"}
 
     headers, response = cat.http.request(featureType_url, "POST", xml, headers)
-
     
     print ">>>>>>>>>>>>>>>>> sent POST >>>>>>>>>>>>>>>>"
     assert 200 <= headers.status < 300, "Tried to create Geoserver layer but encountered a " + str(headers.status) + " error: " + response
