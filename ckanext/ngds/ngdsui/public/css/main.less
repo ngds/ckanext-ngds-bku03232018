@@ -49,6 +49,14 @@ body {
 	color:#626262;
 }
 
+.ngds-button(@width,@height) {
+	background:url('/assets/go_button_middle_slice.png') repeat-x;
+	color:#fff;
+	border-radius:5px;
+	width:@width;
+	height:@height;
+}
+
 header {
 	text-align:right;
 	display:block;
@@ -210,7 +218,7 @@ header {
 	width:1024px;
 	display:table;
 	text-align:left;
-	padding-bottom:10px;
+	padding-bottom:30px;
 }
 
 #search-datawatch-container {
@@ -244,7 +252,7 @@ header {
 		.left-container-common('/assets/border_box_1.png');
 
 		.search-bar {
-			width:150px;
+			width:210px;
 			margin-left:20px;
 			margin-top:@input-elem-margin-top;
 			height:@input-elem-height;
@@ -252,7 +260,7 @@ header {
 
 		input[type="submit"] {
 			margin-top:@input-elem-margin-top;
-			height:@input-elem-height;
+			.ngds-button(40px,35px);			
 		}
 	}
 }
@@ -392,8 +400,7 @@ div#footer-links-section {
 	height:110px;
 	margin-top:5px;
 	display:table;
-	padding-left:10px;
-	margin-left:40px;
+	margin-left:30px;
 }
 
 .footer-link {
@@ -405,7 +412,6 @@ div#footer-links-section div {
 	position:relative;
 	width:160px;
 	float:left;
-	margin-top:15px;
 }
 
 .footer-links-feedback-caption-container {
@@ -437,14 +443,19 @@ div#feedback-section {
 	width: 660px;
 	
 	text-align:left;
-	padding-left:5px;
-	padding-right:5px;
+	margin-left:25px;
 	
 	-webkit-border-bottom-right-radius:6px;
 	border-bottom-right-radius:6px;
 	-webkit-border-bottom-left-radius:6px;
 	border-bottom-left-radius:6px;
 	display:inline;
+}
+
+div#feedback-section button {
+	.ngds-button(100px,20px);
+	font-family:arial;
+	font-size:10px;
 }
 
 div#feedback-section p {
@@ -462,7 +473,7 @@ div#data-contributors-container {
 	width: 320px;
 	float: right;
 	position: absolute;
-	top: 30px;
+	top: 15px;
 	right: 0;
 	text-align: left;
 }
@@ -507,8 +518,8 @@ div.postface {
 	position:relative;
 	float:left;
 	width:1024px;
-	padding-top:20px;
-	height:50px;
+	padding-top:15px;
+	height:30px;
 	background-color:#cbcbcb;
 }
 
