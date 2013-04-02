@@ -5,8 +5,14 @@
 
 $(document).ready(function() {
 	ngds.Map.initialize();
+	var southWest = new L.LatLng(-90, -180),
+    northEast = new L.LatLng(90, 180),
+    bounds = new L.LatLngBounds(southWest, northEast);
+	ngds.Map.bounding_box = new ngds.Map.BoundingBox();
+	ngds.Map.bounding_box.store_raw(bounds);
+	ngds.Map.shape= {};
+	ngds.Map.shape.str = 'rect';
 	
-	ngds.Map.shape = { };
 	ngds.Map.map.on('draw:poly-created',function(e){
 		// Clear the drawn items layers to get rid of rectangles drawn previously.
 		

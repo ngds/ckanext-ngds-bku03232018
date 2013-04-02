@@ -8,6 +8,10 @@ ngds.Map.BoundingBox = function() {
 	};
 
 	this.store_raw=function(raw_bbox) {
+		this.minx = raw_bbox._southWest.lng;
+		this.miny = raw_bbox._southWest.lat;
+		this.maxx = raw_bbox._northEast.lng;
+		this.maxy = raw_bbox._northEast.lat;
 		this.raw = raw_bbox;
 	};
 

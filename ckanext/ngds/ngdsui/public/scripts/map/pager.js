@@ -95,20 +95,37 @@ ngds.Pager = function(rows) {
 
 				var notes = $('<p/>',{class:'notes'});
 				var type = $('<p/>',{class:'type'});
+				var wms = $('<button/>',{class:'wms',id:results[i]['resources'][0].id});
 				var published = $('<p/>',{class:'published'});
 				published.attr('id','ngds'+i);
 
 				notes.text(results[i]['notes']);
 				title.text(results[i]['title']);
 				type.text(results[i]['type']);
+				wms.text("WMS");
 				published.text(new Date(results[i]['metadata_created']).toLocaleDateString());
 				
 				each_result.append(title);
 				each_result.append(notes);
 				each_result.append(type);
+				each_result.append(wms);
 				each_result.append(published);
 				results_div.append(each_result);
 			}
+			inc = 1;
+			$(".wms").click(function(ev){
+				var id=ev.currentTarget.id;
+						var ngds_layer = L.tileLayer.wms("http://localhost:8080/geoserver/NGDS/wms",{
+						layers:"NGDS:"+id,
+						format: 'image/png',
+					    transparent: true,
+					    attribution: "NGDS",
+					    opacity:'0.9999'
+					});
+
+				layer_control.addOverlay(ngds_layer,"WMS"+inc);
+				inc++;
+			});
 
 			if($('.page-num').length==0) {
 				initialize_pages_ui(num_pages);

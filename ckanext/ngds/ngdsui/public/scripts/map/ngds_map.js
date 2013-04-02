@@ -24,12 +24,13 @@ ngds.Map = {
 			    attribution: "SMU Well Data"
 			});
 
-			var ngds_layer = L.tileLayer.wms("http://localhost:8080/geoserver/NGDS/wms",{
-				layers:"NGDS:45276b7a-4335-4548-aa92-e82ffbbde56f",
-				format: 'image/png',
-			    transparent: true,
-			    attribution: "NGDS"
-			});
+			// ngds_layer = L.tileLayer.wms("http://localhost:8080/geoserver/NGDS/wms",{
+			// 	layers:"NGDS:45276b7a-4335-4548-aa92-e82ffbbde56f",
+			// 	format: 'image/png',
+			//     transparent: true,
+			//     attribution: "NGDS",
+			//     opacity:'0.9999'
+			// });
 			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
 			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -100.53332), zoom: 3});
 
@@ -55,14 +56,14 @@ ngds.Map = {
 				"Terrain":base,
 			};
 
-			var overlayMaps = {				
+			overlayMaps = {				
 				"Power Grid":powergrid,
 				"Geo JSON":_geoJSONLayer,
 				"Wells":wells,
-				"ngds":ngds_layer
+				// "ngds":ngds_layer
 			};
 
-			var layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
+			layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
 			layer_control.addTo(map);
 
 			map.on('layeradd',function(lev) { // Every time a layer is added or removed, make sure our geojson layer is the top-most one.
