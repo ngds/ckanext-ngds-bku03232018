@@ -2093,9 +2093,13 @@ margin-left: 40px;
 }
 
 .published {
-	margin-left:130px;
+	margin-left:70px;
 }
 
 .map-search-results {
 	width:320px;
+}
+
+.wms {
+	display:inline;
 }

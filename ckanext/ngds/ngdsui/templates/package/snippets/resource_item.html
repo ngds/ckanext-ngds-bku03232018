@@ -1,0 +1,67 @@
+{% set url = h.url_for(controller='package', action='resource_read', id=pkg.name, resource_id=res.id) %}
+<li class="resource-item">
+  {% block resource_item_title %}
+  <a class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
+    {{ h.resource_display_name(res) | truncate(50) }}<span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>
+    {{ h.popular('views', res.tracking_summary.total, min=10) }}
+  </a>
+  {% endblock %}
+  <p class="description">
+    {% if res.description %}
+      {{ h.markdown_extract(res.description, extract_length=80) }}
+    {% else %}
+      <span class="empty">{{ _('No description for this resource') }}</span>
+    {% endif %}
+  </p>
+  {% block resource_item_explore %}
+  <div class="dropdown btn-group">
+    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+      <i class="icon-share-alt"></i>
+      {{ _('Explore') }}
+      <span class="caret"></span>
+    </a>
+    <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Spatialize</button>
+    <ul class="dropdown-menu">
+      {% block resource_item_explore_links %}
+      <li>
+        <a href="{{ url }}">
+          <i class="icon-bar-chart"></i>
+          {{ _('Preview') }}
+        </a>
+      </li>
+      <li>
+        <a href="{{ res.url }}" class="resource-url-analytics" target="_blank">
+          <i class="icon-download"></i>
+          {{ _('Download') }}
+        </a>
+      </li>
+      {% endblock %}
+    </ul>
+  </div>
+  {% endblock %}
+
+</li>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  if(window.spatialize_handler===null || typeof window.spatialize_handler==='undefined') {
+        window.spatialize_handler = 'defined';
+        $(".spatialize").click(function(ev){
+        var id = ev.currentTarget.value;
+        $.ajax({
+          url:'/api/action/datastore_spatialize',
+          type:'POST',
+          data:JSON.stringify({
+            id:id,
+            col_geography:"geometry",
+            col_latitude:"LATITUDE",
+            col_longitude:"LONGITUDE"
+          }),
+          success:function(response){
+            console.log(response);
+          }
+        });
+      });
+  }
+});
+</script>

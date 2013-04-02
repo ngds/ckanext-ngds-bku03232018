@@ -34,7 +34,8 @@ setup(
 	[paste.paster_command]
     # Install NGDS additional tables
 	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
-    
+	ngdsapi=ckanext.ngds.lib.command:APICommand
+
 	[nose.plugins]
     pylons = pylons.test:PylonsPlugin
 

@@ -138,7 +138,6 @@ var ngds = ngds || { };
 		function isLoginPopupVisible(){
 				return ($(".login-popup").css('display')!=='none');
 			}
-
 	});
 
 })();

@@ -17,6 +17,20 @@ ngds.Map = {
 			powergrid.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',
 				{ 'layers':'show:21,22,26'});
 
+			var wells = L.tileLayer.wms("http://geothermal.smu.edu/geoserver/wms", {
+			    layers: 'wells',
+			    format: 'image/png',
+			    transparent: true,
+			    attribution: "SMU Well Data"
+			});
+
+			// ngds_layer = L.tileLayer.wms("http://localhost:8080/geoserver/NGDS/wms",{
+			// 	layers:"NGDS:45276b7a-4335-4548-aa92-e82ffbbde56f",
+			// 	format: 'image/png',
+			//     transparent: true,
+			//     attribution: "NGDS",
+			//     opacity:'0.9999'
+			// });
 			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
 			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -100.53332), zoom: 3});
 
@@ -42,12 +56,14 @@ ngds.Map = {
 				"Terrain":base,
 			};
 
-			var overlayMaps = {				
+			overlayMaps = {				
 				"Power Grid":powergrid,
-				"Geo JSON":_geoJSONLayer
+				"Geo JSON":_geoJSONLayer,
+				"Wells":wells,
+				// "ngds":ngds_layer
 			};
 
-			var layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
+			layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
 			layer_control.addTo(map);
 
 			map.on('layeradd',function(lev) { // Every time a layer is added or removed, make sure our geojson layer is the top-most one.
@@ -58,9 +74,17 @@ ngds.Map = {
 					// Do nothing because we know that there will be an error when this layer is hidden on the map.
 				}
 			});
+			copy = [];
+
 
 			// this.initialize_map_search();
 		},
+		zoom_managed_list:{
+		
+		},
+		zoom_listeners:[
+
+		],
 		/*	Initialize our NGDS specific custom controls. 
 		*	Inputs : None.
 		*/
@@ -128,7 +152,9 @@ ngds.Map = {
 		},
 		map_search:function() {
 			var me = this;
-			
+			// this.removeZoomEventListeners();0
+			// this.bind_zoom_listeners();
+
 			// this.clear_layer('geojson');
 			geoj = me.get_layer('drawnItems');
 
@@ -136,7 +162,12 @@ ngds.Map = {
 			var pager = ngds.Pager(5);
 
 			pager.set_action(ngds.ckanlib.package_search,{ 'q':query });
-
+			if(ngds.Map.shape.str=='rect') {
+				// ngds.Map.manage_zoom(ngds.Map.bounding_box,ngds.Map.shape.e.rect,ngds.Map.get_layer('drawnItems'));
+			}
+			else {
+				// ngds.Map.manage_zoom(bounding_box,ngds.Map.shape.e.poly,ngds.Map.get_layer('drawnItems'));
+			}
 			pager.move(1,function(search_result) {
 				var count = search_result.get('count');				
 				var raw_result = search_result.raw();
@@ -191,8 +222,9 @@ ngds.Map = {
 			});
 		},
 		add_raw_result_to_geojson_layer:function(result) { // Expects response.result, not response.
-			try {
+			try {				
 				var dataset = ngds.ckandataset(result);	
+				x=dataset;
 				var feature = dataset.getGeoJSON();				
 				var popup = dataset.map.getPopupHTML();
 			}
@@ -200,49 +232,56 @@ ngds.Map = {
 				return;
 			}															
 			var geoJSONRepresentation = L.geoJson(feature);		
-			if(feature.type==='Polygon') {
-				var bbox = new ngds.Map.BoundingBox();
-				bbox.store_raw(geoJSONRepresentation.getBounds());
-				this.manage_zoom(bbox,geoJSONRepresentation);
-						
-			}
 			geoJSONRepresentation.bindPopup(popup);
-			y=this.add_to_layer([geoJSONRepresentation],'geojson');
+			this.add_to_layer([geoJSONRepresentation],'geojson');
 		},
-		manage_zoom:function(bounding_box,layer) {
-			var bbox_bounds = bounding_box.get_leaflet_bbox();
-			var _shown = false;
-			var _ev = function(ev) {				
-				var map_bounds = ngds.Map.map.getBounds();
-				
+		bind_zoom_listeners:function() {
+			var _ev = function(ev) {	
+				var map_bounds = ngds.Map.map.getBounds();				
 				var map_sw_lat = map_bounds._southWest.lat;
 				var map_sw_lng = map_bounds._southWest.lng;
 				var map_ne_lat = map_bounds._northEast.lat;
 				var map_ne_lng = map_bounds._northEast.lng;
+				var layers = ngds.Map.zoom_managed_list;
+				console.log(layers);
+				for(var i in ngds.Map.zoom_managed_list) {
+					var lid=layers[i]._leaflet_id;
+						var bbox_sw_lat = layers[i].bbox_bounds._southWest.lat;
+						var bbox_sw_lng = layers[i].bbox_bounds._southWest.lng;
+						var bbox_ne_lat = layers[i].bbox_bounds._northEast.lat;
+						var bbox_ne_lng = layers[i].bbox_bounds._northEast.lng;
+						console.log(layers[i]);
 
-				var bbox_sw_lat = bbox_bounds._southWest.lat;
-				var bbox_sw_lng = bbox_bounds._southWest.lng;
-				var bbox_ne_lat = bbox_bounds._northEast.lat;
-				var bbox_ne_lng = bbox_bounds._northEast.lng;
-
-				if((map_sw_lat>bbox_sw_lat) && (map_sw_lng>bbox_sw_lng) && (map_ne_lat<bbox_ne_lat) && (map_ne_lng<bbox_ne_lng)) {
-					if(_shown) {
-						ngds.Map.drawnItems.removeLayer(layer);
-						_shown=false;
+						if((map_sw_lat>bbox_sw_lat) && (map_sw_lng>bbox_sw_lng) && (map_ne_lat<bbox_ne_lat) && (map_ne_lng<bbox_ne_lng)) {
+							if(layers[i]._shown) {
+								layers[i].parent.removeLayer(layers[i].layer);
+								layers[i]._shown=false;
+							}
+						}
+						else {
+							if(!layers[i]._shown) {
+								layers[i].parent.addLayer(layers[i].layer);
+								layers[i]._shown=true;
+							}
+						}
 					}
-				}
-				else {
-					if(!_shown) {
-						ngds.Map.drawnItems.addLayer(layer);
-						_shown=true;
-					}
-				}
 			};
-			ngds.Map.zoom_listener = _ev;
 			ngds.Map.map.on('zoomend',_ev);
+			ngds.Map.zoom_listeners.push(_ev);
 		},
-		removeZoomEventListener:function() {
-			ngds.Map.map.removeEventListener('zoomend',ngds.Map.zoom_listener);
+		manage_zoom:function(bounding_box,layer,parent) {
+			var bbox_bounds = bounding_box.get_leaflet_bbox();
+			ngds.Map.zoom_managed_list[layer._leaflet_id] = { };
+			ngds.Map.zoom_managed_list[layer._leaflet_id].bbox_bounds = bbox_bounds;
+			ngds.Map.zoom_managed_list[layer._leaflet_id].parent = parent;
+			ngds.Map.zoom_managed_list[layer._leaflet_id]._shown = false;
+			ngds.Map.zoom_managed_list[layer._leaflet_id].layer = layer;
+		},
+		removeZoomEventListeners:function() {
+			$.each(ngds.Map.zoom_listeners,function(index,item) {
+				ngds.Map.map.removeEventListener('zoomend',item);				
+			});
+			ngds.Map.zoom_listeners = [];
 		},
 		// Exposes a set of utility functions to work with the map.
 		utils:{
