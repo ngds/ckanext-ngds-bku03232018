@@ -197,15 +197,20 @@ def datastore_expose_as_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>>>>  create store >>>>>>>>>>>>>>>>>>>>>>>>"
     #get existing or create new datastore
  
-    login = 'ckanuser'
-    passwd = 'pass'
+    config_login = 'ckanuser'
+    config_passwd = 'pass'
+    config_datastore = 'datastore'
     datastore_url = config.get('ckan.datastore.write_url','postgresql://ckanuser:pass@localhost/datastore')
     login_pass = datastore_url.split('://')[1].split('@')[0]
     #print "login_pass = ",login_pass
     if login_pass is not None and login_pass is not "":
         login = login_pass.split(':')[0]
         passwd = login_pass.split(':')[1]
- 
+        
+    parsed_datastore = datastore_url.split('://')[1].split('/')[-1] # last element
+    if parsed_datastore is not None and parsed_datastore is not "":
+        config_datastore = parsed_datastore
+        print config_datastore    
  
     # we utilize default values, instead of failing, if those parameters are not provided 
     if not 'geoserver' in data_dict:
@@ -213,17 +218,17 @@ def datastore_expose_as_layer(context, data_dict):
     if not  'workspace_name' in data_dict: 
         data_dict['workspace_name'] = 'NGDS'
     if not 'store_name' in data_dict:
-        data_dict['store_name'] = 'datastore'
+        data_dict['store_name'] = config_datastore
     if not 'pg_host' in data_dict:
         data_dict['pg_host'] = 'localhost'
     if not 'pg_port' in data_dict:
         data_dict['pg_port'] = '5432'
     if not 'pg_db' in data_dict:
-        data_dict['pg_db'] = 'datastore'
+        data_dict['pg_db'] = config_datastore
     if not 'pg_user' in data_dict:
-        data_dict['pg_user'] = login
+        data_dict['pg_user'] = config_login
     if not 'pg_password' in data_dict:
-        data_dict['pg_password'] = passwd
+        data_dict['pg_password'] = config_passwd
     if not 'db_type' in data_dict:
         data_dict['db_type'] = 'postgis'
     
