@@ -122,6 +122,14 @@ def datastore_spatialize(context, data_dict):
 
 
         cat = Catalog('http://localhost:8080/geoserver/rest')
+        if cat.get_layer(res_id) is None:
+            print ">>>>>>>>>>>>>>>>>>>> create new layer object >>>>>>>>>>>>>>>>>>>>"
+            web_url = datastore_expose_as_layer(context, data_dict)
+            formatted_results['layer'] = web_url
+        else:
+            print ">>>>>>>>>>>>>>>>>>>> layer already exists >>>>>>>>>>>>>>>>>>>>"    
+        
+        '''
         headers= {"Content-type": "text/xml"}
         headers, response = cat.http.request("http://localhost:8080/geoserver/rest/layers", "GET", "", headers)
         if not res_id in response:
@@ -129,7 +137,7 @@ def datastore_spatialize(context, data_dict):
             datastore_expose_as_layer(context, data_dict)
         else:
             print ">>>>>>>>>> Layer exists no need to expose it again >>>>>>>>>>>"
-    
+        '''
     
     
     
@@ -137,6 +145,8 @@ def datastore_spatialize(context, data_dict):
     
         formatted_results.pop('id', None)
         formatted_results.pop('connection_url')
+        
+        
         return formatted_results
         
     except Exception, e:
@@ -222,7 +232,11 @@ def datastore_expose_as_layer(context, data_dict):
     data_dict['layer_name'] = res_id
     geoserver_create_layer(context, data_dict)
     
-    return
+    web_geoserver = data_dict['geoserver'].replace("rest", "web")
+    web_url = web_geoserver+"?wicket:bookmarkablePage=:org.geoserver.web.data.resource.ResourceConfigurationPage&name="+res_id+"&wsName="+data_dict['workspace_name']
+    
+    
+    return web_url
 
 def datastore_remove_exposed_layer(context, data_dict):
     return
@@ -365,6 +379,7 @@ def geoserver_create_store(context, data_dict):
     ds= cat.create_datastore(store_name, workspace)
     
     print ">>>>>>>>>>>>>>>>>>>>>> updating connection parameters >>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    print "password = ",pg_password
     ds.connection_parameters.update(host = pg_host,
                                     port = pg_port,
                                     database = pg_db,
@@ -373,7 +388,10 @@ def geoserver_create_store(context, data_dict):
                                     dbtype = db_type)
 
     cat.save(ds)
+    
+    # check if the store was created successfully
     ds = cat.get_store(store_name)
+    ds.connection_parameters.update( user = pg_user, password = pg_password)
     
     return store_name
 
@@ -488,7 +506,7 @@ def create_postgis_sql_layer(context, data_dict):
     assert 200 <= headers.status < 300, "Tried to create Geoserver layer but encountered a " + str(headers.status) + " error: " + response
     cat._cache.clear()
 
-    return cat.get_layer(definition.name)
+    return cat.get_layer(name)
 
     
 def geoserver_create_layer(context, data_dict):
@@ -549,13 +567,16 @@ def geoserver_create_layer(context, data_dict):
 
     print ">>>>>>>>>>>>>>>>>>>> connecting to catalog: "+geoserver
     cat = Catalog(geoserver)
-    print ">>>>>>>>>>>>>>>>>>>> connecting to workspace: "+workspace_name
-    workspace= cat.get_workspace(workspace_name)
-    ds = cat.get_store(store_name)
+    #print ">>>>>>>>>>>>>>>>>>>> connecting to workspace: "+workspace_name
+    #workspace= cat.get_workspace(workspace_name)
+    #ds = cat.get_store(store_name)
     
-    print ">>>>>>>>>>>>>>>>>>>> create new layer object >>>>>>>>>>>>>>>>>>>>"
+    print ">>>>>>>>>>>>>>>>>>>> check if layer exists >>>>>>>>>>>>>>>>>>>>"
     if cat.get_layer(layer_name) is None:
+        print ">>>>>>>>>>>>>>>>>>>> create new layer object >>>>>>>>>>>>>>>>>>>>"
         create_postgis_sql_layer(context, data_dict)
+    else:
+        print ">>>>>>>>>>>>>>>>>>>> layer already exists >>>>>>>>>>>>>>>>>>>>"
     
     return
     
