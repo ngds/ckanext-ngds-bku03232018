@@ -115,7 +115,7 @@ ngds.Pager = function(rows) {
 			inc = 1;
 			$(".wms").click(function(ev){
 				var id=ev.currentTarget.id;
-						var ngds_layer = L.tileLayer.wms("/geoserver/NGDS/wms",{
+						var ngds_layer = L.tileLayer.wms("http://ec2-184-72-146-8.compute-1.amazonaws.com:8080/geoserver/NGDS/wms",{
 						layers:"NGDS:"+id,
 						format: 'image/png',
 					    transparent: true,
