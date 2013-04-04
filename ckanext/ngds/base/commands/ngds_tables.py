@@ -33,6 +33,11 @@ class NgdsTables(CkanCommand):
         # Setup CSW table
         from ckanext.ngds.csw.model.csw_records import db_setup as setup_csw_tables
         setup_csw_tables()
+
+        # Setup transaction tables
+        from ckanext.ngds.metadata.model.transaction_tables import db_setup as setup_trans_tables
+        setup_trans_tables()
+
         
 def create_tables(tables, log):
     """Given a list of table definition objects, create those tables in the database"""

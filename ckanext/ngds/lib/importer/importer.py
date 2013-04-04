@@ -29,19 +29,58 @@ class BulkUploader(object):
         newparsed = list(self.parsed)
         self.netloc = self.parsed.netloc
 
+    def _get_ckanclient(self):
+        from ckanclient import CkanClient
+        apikey = self._get_api_key_from_config()
 
-    def importpackagedata(self,file_path=None,resource_dir=None):
+        testclient = CkanClient(base_location=self.url, api_key=apikey)
+
+        return testclient
+
+    def execute_bulk_upload(self):
+        """
+        This method will get all the bulk uploaded records with the status of "VALID" and process them. 
+        If it can process the records successfully then updates the status as "Completed" otherwise as "Failure" and corresponding comments.
+        """        
+        import os
+        print "entering execute_bulk_upload"
+        query = model.BulkUpload.search("VALID")
+
+        print "Returned Query:",query
+        
+
+        for bulk_upload_record in query.all():
+
+            print "Processing the file: ",bulk_upload_record.data_file
+
+            try:
+                data_file_path = os.path.join(bulk_upload_record.path,bulk_upload_record.data_file)
+                self.importpackagedata(file_path=data_file_path,resource_dir=bulk_upload_record.path)
+                bulk_upload_record.status = "COMPLETED"
+            except Exception , e:
+                print "Exception while processing bulk upload for the file :" ,bulk_upload_record.data_file
+                bulk_upload_record.status = "FAILURE"
+                bulk_upload_record.comments = e.message
+            finally:
+                bulk_upload_record.last_updated = None
+                bulk_upload_record.save()
+
+
+
+
+
+    def importpackagedata(self,file_path=None,resource_dir=None,ckanclient=None):
         #print "Entered Import Record Client:",file_path
         from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
         from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
 
-        from ckanclient import CkanClient
+        
         from ckanext.ngds.lib.importer.loader import ResourceLoader
 
-        apikey = self._get_api_key_from_config()
+        if ckanclient is None:
+            ckanclient = self._get_ckanclient()
 
-        testclient = CkanClient(base_location=self.url, api_key=apikey)
-        loader = ResourceLoader(testclient,field_keys_to_find_pkg_by=['name'],resource_dir=resource_dir)
+        loader = ResourceLoader(ckanclient,field_keys_to_find_pkg_by=['name'],resource_dir=resource_dir)
           
         package_import = NGDSPackageImporter(filepath=file_path)
 
@@ -52,6 +91,7 @@ class BulkUploader(object):
                 loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
             except Exception , e:
                 print "Skipping this record and proceeding with next one....",e 
+                raise
 
     def _get_api_key_from_config(self):
         import ConfigParser

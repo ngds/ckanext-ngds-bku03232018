@@ -17,6 +17,7 @@ class APICommand(CkanCommand):
         if cmd == "import":
             #print "File Path: ",self.args[1]
             bulkLoader = BulkUploader()
-            bulkLoader.importpackagedata(file_path=self.args[1],resource_dir=self.args[2])
+            #bulkLoader.importpackagedata(file_path=self.args[1],resource_dir=self.args[2])
+            bulkLoader.execute_bulk_upload()
         else:
             print "Command %s not recognized" % cmd
