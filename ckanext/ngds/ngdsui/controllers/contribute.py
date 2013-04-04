@@ -53,9 +53,12 @@ class ContributeController(NGDSBaseController):
 		from datetime import datetime
 		myzipfile = request.POST['myzipfile']
 		mycsvfile = request.POST['mycsvfile']
-		print myzipfile
-		print os.path.dirname(os.path.abspath(__file__))
-		print os.getcwd()
+		#print myzipfile
+		#print os.path.dirname(os.path.abspath(__file__))
+		#print os.getcwd()
+
+		datafilename = mycsvfile.filename
+		resourcesfilename = myzipfile.filename
 
 		bulk_dir = config.get('ngds.bulk_upload_dir')
 
@@ -65,6 +68,8 @@ class ContributeController(NGDSBaseController):
 
 		if not os.path.exists(upload_dir):
 			os.makedirs(upload_dir)
+
+
 
 		csvfilepath =os.path.join(upload_dir,mycsvfile.filename.replace(os.sep, '_'))
 		zipfilepath =os.path.join(upload_dir,myzipfile.filename.replace(os.sep, '_'))
@@ -85,11 +90,34 @@ class ContributeController(NGDSBaseController):
 
 		zfile.extractall(path=upload_dir)
 
+		#For now pass the status as "VALID" this has to change based on the validation.
+		status = "VALID"
+
+		self._create_bulk_upload_record(c.user or c.author,datafilename,resourcesfilename,upload_dir,status)
+
 		h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
 
 		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload')
 		redirect(url)		
-		#return 'Successfully uploaded: %s' % (myzipfile.filename)			
+		#return 'Successfully uploaded: %s' % (myzipfile.filename)	
+
+	def _create_bulk_upload_record(self,user,data_file,resources,path,status):
+		#print "inside _create_bulk_upload_record:",c.user
+
+		userObj = model.User.by_name(c.user.decode('utf8'))
+
+		data = {'data_file':data_file,'resources':resources,'path':path,'status':status,'uploaded_by':userObj.id}
+		data_dict = {'model':'BulkUpload'}
+		data_dict['data']=data
+		data_dict['process']='create'
+
+		print "Data dict: ",data_dict
+
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+
+		transaction_return = get_action('transaction_data')(context, data_dict)					
+
+		print "transaction_return:",transaction_return
 
 	def edit(self,id):
 		"""

@@ -4,6 +4,7 @@ import ckanext.importlib.loader as loader
 from ckanext.importlib.loader import LoaderError
 from pprint import pformat
 from ckanclient import CkanApiError, CkanApiNotAuthorizedError
+import os
 
 log = __import__("logging").getLogger(__name__)
 
@@ -41,7 +42,8 @@ class ResourceLoader(loader.ResourceSeriesLoader):
             if resource.get('upload_file') is None:
                 continue
             try:
-                file_path =self.resource_dir+resource['upload_file']
+                #file_path = self.resource_dir+resource['upload_file']
+                file_path = os.path.join(self.resource_dir,resource['upload_file'])
                 #print "File to be uploaded: ",file_path
                 #print "self.ckanclient.api_key: ",self.ckanclient.api_key
                 uploaded_file_url,dummy = self.ckanclient.upload_file(file_path)

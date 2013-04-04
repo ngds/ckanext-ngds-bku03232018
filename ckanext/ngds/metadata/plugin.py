@@ -1,6 +1,8 @@
 from ckan.plugins import implements, SingletonPlugin
 from ckan.plugins import IConfigurer, IActions, IRoutes
 from ckanext.ngds.metadata.controllers.additional_metadata import dispatch
+from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
+
 from ckan import model
 
 
@@ -17,6 +19,9 @@ class MetadataPlugin(SingletonPlugin):
         if not hasattr(model, "ResponsibleParty"):
             from ckanext.ngds.metadata.model.additional_metadata import define_tables
             define_tables()
+
+            from ckanext.ngds.metadata.model.transaction_tables import define_tables as trans_define_tables
+            trans_define_tables()            
         
             # Put IsoPackage into ckan.model for ease of access later
             from ckanext.ngds.metadata.model.iso_package import IsoPackage
@@ -41,7 +46,8 @@ class MetadataPlugin(SingletonPlugin):
     def get_actions(self):
         """IActions function. Should return a dict keys = function name and URL, value is the function to execute"""
         return {
-            "additional_metadata": dispatch
+            "additional_metadata": dispatch,
+            "transaction_data": trans_dispatch
         }
         
     
