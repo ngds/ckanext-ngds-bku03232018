@@ -27,6 +27,7 @@ class BulkUploader(object):
         client_config_file = config.get('ngds.client_config_file')
         #print "client_config_file: ",client_config_file
         self._loadclientconfig(client_config_file)
+        self.ckanclient = self._get_ckanclient()
 
 
     def _loadclientconfig(self,config_path):
@@ -85,7 +86,7 @@ class BulkUploader(object):
 
             try:
                 data_file_path = os.path.join(bulk_upload_record.path,bulk_upload_record.data_file)
-                self.importpackagedata(file_path=data_file_path,resource_dir=bulk_upload_record.path)
+                self.importpackagedata(file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
                 bulk_upload_record.status = "COMPLETED"
             except Exception , e:
                 print "Exception while processing bulk upload for the file :" ,bulk_upload_record.data_file
@@ -93,10 +94,7 @@ class BulkUploader(object):
                 bulk_upload_record.comments = e.message
             finally:
                 bulk_upload_record.last_updated = None
-                #bulk_upload_record.save()
-
-
-
+                bulk_upload_record.save()
 
 
     def importpackagedata(self,file_path=None,resource_dir=None,ckanclient=None):
@@ -122,18 +120,7 @@ class BulkUploader(object):
             except Exception , e:
                 print "Skipping this record and proceeding with next one....",e 
                 raise
-
-    def _get_api_key_from_config(self):
-        import ConfigParser
-        import os
-        config_path = os.path.join(os.path.expanduser('~'), '.ckanclientrc')
-        if os.path.exists(config_path):
-            cfgparser = ConfigParser.SafeConfigParser()
-            cfgparser.readfp(open(config_path))
-            section = 'index:%s' % self.netloc
-            if cfgparser.has_section(section):
-                api_key = cfgparser.get(section, 'api_key', '')
-                return api_key            
+       
 
 class SpreadsheetDataRecords(DataRecords):
     '''Takes SpreadsheetData and converts it its titles and
