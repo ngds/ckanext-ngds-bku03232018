@@ -8,6 +8,7 @@ from ckanext.importlib.importer import *
 import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
 import ckanext.ngds.lib.importer.helper as import_helper
+from pylons import config
 
 #Need to decide our own Read only keys
 readonly_keys = ('id', 'revision_id',
@@ -23,17 +24,46 @@ readonly_keys = ('id', 'revision_id',
 class BulkUploader(object):
 
     def __init__(self):
-        import urlparse
-        self.url = 'http://localhost:5000/api'
-        self.parsed = urlparse.urlparse(self.url)
-        newparsed = list(self.parsed)
-        self.netloc = self.parsed.netloc
+        client_config_file = config.get('ngds.client_config_file')
+        #print "client_config_file: ",client_config_file
+        self._loadclientconfig(client_config_file)
 
+
+    def _loadclientconfig(self,config_path):
+        import ConfigParser
+        import os
+        import urlparse
+        if os.path.exists(config_path):
+            cfgparser = ConfigParser.SafeConfigParser()
+            cfgparser.readfp(open(config_path))
+            section = 'app:client'
+            if cfgparser.has_section(section):
+                self.url = cfgparser.get(section, 'api_url', '')
+                #print "self.url: ",self.url
+                if self.url =='':
+                        #print "API URL is None so can't proceed further"
+                        raise Exception ("Unable to find API URL or URL is empty")
+                self.parsed = urlparse.urlparse(self.url)
+                newparsed = list(self.parsed)
+                self.netloc = self.parsed.netloc            
+                section = 'index:%s' % self.netloc
+                if cfgparser.has_section(section):
+                    self.api_key = cfgparser.get(section, 'api_key', '')                
+                    if self.api_key =='':
+                        #print "API URL is None so can't proceed further"
+                        raise Exception ("Unable to find API key or API key is empty.")                        
+            else:                        
+                raise Exception ("Unable to find API URL or URL is empty")
+
+        else:
+            #print "Unable to find the client configuration file."
+            raise Exception ("Unable to find the client config file.")
+
+    
     def _get_ckanclient(self):
         from ckanclient import CkanClient
-        apikey = self._get_api_key_from_config()
 
-        testclient = CkanClient(base_location=self.url, api_key=apikey)
+        testclient = CkanClient(base_location=self.url, api_key=self.api_key)
 
         return testclient
 
@@ -63,7 +93,7 @@ class BulkUploader(object):
                 bulk_upload_record.comments = e.message
             finally:
                 bulk_upload_record.last_updated = None
-                bulk_upload_record.save()
+                #bulk_upload_record.save()
 
 
 
