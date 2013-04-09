@@ -91,6 +91,19 @@ class ResponsibleParty(NgdsDataObject):
             member = cls.by_name(reference)
         return member
 
+    def find(cls,email):
+        '''Returns responsible party details with matching name and/ email. If the email is None then get the detail matching only name '''
+        
+        if email is None:
+            raise Exception("Email can't be empty for finding the responsible party")
+
+        query = meta.Session.query(cls)
+        
+        query = query.filter(cls.email.lower() == email.lower())
+
+        return query
+
+
 class Language(NgdsDataObject):
     """
     A ResponsibleParty represents an individual or organization responsible

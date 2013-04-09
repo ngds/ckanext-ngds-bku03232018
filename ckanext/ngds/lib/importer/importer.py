@@ -226,6 +226,24 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
             #logger('Warning: No license name matches \'%s\'. Ignoring license.' % license_title)
             return u''    
 
+    @classmethod
+    def responsible_party_2_id(self,name,email):
+        from ckan.model import ResponsibleParty 
+
+        resparty = ResponsibleParty()
+
+        foundparties = (resparty.find(email)).all()
+
+        numberofResParties = len(foundparties)
+
+        if numberofResParties == 0:
+            raise Exception("Data Error: No responsible party is found with the given name %s and email %s " % (name,email))
+            #Need to add this person into Responsible Party details.
+        elif numberofResParties > 1:
+            raise Exception("Data Error: More than one responsible party is found with the given name %s and email %s " % (name,email))
+        else:
+            print "Found Party ID: ",numberofResParties[0].id
+            return numberofResParties[0].id
 
         
     @classmethod
