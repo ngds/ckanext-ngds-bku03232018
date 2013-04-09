@@ -76,6 +76,40 @@ ngds.Map = {
 			});
 			copy = [];
 
+			var placeMarker_single = L.Icon.Label.extend({
+					options: {
+						iconUrl: '',
+						shadowUrl: null,
+						iconSize: new L.Point(36, 36),
+						iconAnchor: new L.Point(0, 1),
+						labelAnchor: new L.Point(8, 5),
+						wrapperAnchor: new L.Point(12, 13),
+						labelClassName: 'placeMarks-label'
+					}
+				});
+			var placeMarker_double = L.Icon.Label.extend({
+					options: {
+						iconUrl: '',
+						shadowUrl: null,
+						iconSize: new L.Point(36, 36),
+						iconAnchor: new L.Point(0, 1),
+						labelAnchor: new L.Point(5, 5),
+						wrapperAnchor: new L.Point(12, 13),
+						labelClassName: 'placeMarks-label'
+					}
+				});
+			placeMarker_triple = L.Icon.Label.extend({
+					options: {
+						iconUrl: '',
+						shadowUrl: null,
+						iconSize: new L.Point(25, 41),
+						iconAnchor: new L.Point(0, 0),
+						labelAnchor: new L.Point(0, 0),
+						wrapperAnchor: new L.Point(0, 40),
+						labelClassName: 'placeMarks-label'
+					}
+				});
+
 
 			// this.initialize_map_search();
 		},
@@ -230,8 +264,21 @@ ngds.Map = {
 			}
 			catch(e) {
 				return;
-			}															
-			var geoJSONRepresentation = L.geoJson(feature);		
+			}
+			// var geoJSONRepresentation = L.geoJson(feature);															
+			var geoJSONRepresentation = L.geoJson(feature,{
+				pointToLayer:function(feature,latlng) {
+					if(feature.type === "Point"){
+						// 	return L.marker(latlng, {icon: new placeMarker_single({ labelText:feature.properties.id, iconUrl:'mine.png'})});
+						// } else if(feature.properties.id > 9 && feature.properties.id < 100){
+						// 	return L.marker(latlng, {icon: new placeMarker_double({ labelText:feature.properties.id, iconUrl:'mine.png'})});
+						// } else {
+							return L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:"1"})});
+						}
+				}
+			});	
+			console.log(geoJSONRepresentation);
+
 			geoJSONRepresentation.bindPopup(popup);
 			this.add_to_layer([geoJSONRepresentation],'geojson');
 		},

@@ -2103,3 +2103,16 @@ margin-left: 40px;
 .wms {
 	display:inline;
 }
+
+.placeMarks-label {
+   -moz-box-shadow: none;
+   -webkit-box-shadow: none;
+   box-shadow: none;
+   color: #fff;
+   position:relative;
+}
+
+.leaflet-marker-iconlabel {
+	background:transparent;
+	border-radius:0px;
+}
