@@ -82,8 +82,8 @@ ngds.Map = {
 						shadowUrl: null,
 						iconSize: new L.Point(36, 36),
 						iconAnchor: new L.Point(0, 1),
-						labelAnchor: new L.Point(8, 5),
-						wrapperAnchor: new L.Point(12, 13),
+						labelAnchor: new L.Point(0, 0),
+						wrapperAnchor: new L.Point(0, 13),
 						labelClassName: 'placeMarks-label'
 					}
 				});
@@ -105,8 +105,9 @@ ngds.Map = {
 						iconSize: new L.Point(25, 41),
 						iconAnchor: new L.Point(0, 0),
 						labelAnchor: new L.Point(0, 0),
-						wrapperAnchor: new L.Point(0, 40),
-						labelClassName: 'placeMarks-label'
+						wrapperAnchor: new L.Point(13, 41),
+						labelClassName: 'placeMarks-label',
+						popupAnchor:new L.Point(0,-33)
 					}
 				});
 
@@ -273,7 +274,7 @@ ngds.Map = {
 						// } else if(feature.properties.id > 9 && feature.properties.id < 100){
 						// 	return L.marker(latlng, {icon: new placeMarker_double({ labelText:feature.properties.id, iconUrl:'mine.png'})});
 						// } else {
-							return L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:"1"})});
+							return L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_label()})});
 						}
 				}
 			});	
@@ -375,4 +376,13 @@ ngds.Map = {
 		get_search_mode:function() {
 			return this.mode;
 		},
+		labeller:{
+			get_label:function() {
+				this._count = (this._count || (this._count=0))+1;
+				return this._count;
+			},
+			reset:function() {
+				this._count=0;
+			}
+		}
 	};
