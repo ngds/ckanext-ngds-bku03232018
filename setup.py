@@ -54,6 +54,7 @@ setup(
 
 	# Geoserver Plugin.
 	geoserver=ckanext.ngds.geoserver.plugin:GeoserverPlugin
+	
 	# Content Model Management Plugin.
 	contentmodel=ckanext.ngds.contentmodel.plugin:ContentModelPlugin
 	
