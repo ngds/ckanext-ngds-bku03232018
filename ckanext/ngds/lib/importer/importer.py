@@ -19,6 +19,7 @@ readonly_keys = ('id', 'revision_id',
                  'metadata_modified',
                  'metadata_created',
                  'notes_rendered')
+referenced_keys = ('category','status','topic','protocol')
 
 
 class BulkUploader(object):
@@ -77,7 +78,7 @@ class BulkUploader(object):
         print "entering execute_bulk_upload"
         query = model.BulkUpload.search("VALID")
 
-        print "Returned Query:",query
+        #print "Returned Query:",query
         
 
         for bulk_upload_record in query.all():
@@ -89,12 +90,13 @@ class BulkUploader(object):
                 self.importpackagedata(file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
                 bulk_upload_record.status = "COMPLETED"
             except Exception , e:
+                print e
                 print "Exception while processing bulk upload for the file :" ,bulk_upload_record.data_file
                 bulk_upload_record.status = "FAILURE"
                 bulk_upload_record.comments = e.message
             finally:
                 bulk_upload_record.last_updated = None
-                bulk_upload_record.save()
+                #bulk_upload_record.save()
 
 
     def importpackagedata(self,file_path=None,resource_dir=None,ckanclient=None):
@@ -245,6 +247,19 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
             print "Found Party ID: ",numberofResParties[0].id
             return numberofResParties[0].id
 
+    @classmethod
+    def validate_SD(self,model_type,sdValue):
+        #Call Model's validate method which will compare the sd value against the Standing data table.
+        from ckan.model import StandingData
+
+        sdObject = StandingData()
+
+        validated_value = sdObject.validate(model_type,sdValue)
+
+        if validated_value is None:
+            raise Exception("Data Error: No Standing data matching the input - %s for the type - %s" % (sdValue,model_type)) 
+        else:
+            return validated_value    
         
     @classmethod
     def pkg_xl_dict_to_fs_dict(cls, pkg_xl_dict, logger=None):
@@ -265,10 +280,10 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
             if cell:
-                if title == 'private':
-                  print "Private value....",cell
                 if title in standard_fields:
                     pkg_fs_dict[title] = cell
+                elif title in referenced_keys:
+                    pkg_fs_dict[title] = cls.validate_SD(title,cell)
                 elif title == 'license':
                     #print "license: ", cell
                     license_id = cls.license_2_license_id(cell)
