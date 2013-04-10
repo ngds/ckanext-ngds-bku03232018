@@ -2116,3 +2116,22 @@ margin-left: 40px;
 	background:transparent;
 	border-radius:0px;
 }
+
+.result-marker-label {
+	position: absolute;
+	margin-top: 8px;
+	left: 8px;
+	color: #fff;
+	font-size: 12.5pt;
+	font-weight: bold;
+}
+
+.result-marker { 
+	width:25px;
+	height:41px;
+}
+
+.result-marker-container {
+	position:relative;
+	display:inline-block;
+}

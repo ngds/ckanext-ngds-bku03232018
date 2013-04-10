@@ -52,7 +52,7 @@ ngds.Pager = function(rows) {
 		$(".results").empty();
 	};
 
-	this.move = function(page_number,fn) {
+	this.move = function(page_number,fn,finish_fn) {
 		handler = fn;
 		ngds.Map.labeller.reset();
 		start = (page_number - 1) * rows;
@@ -93,25 +93,35 @@ ngds.Pager = function(rows) {
 			for(var i=0;i<results.length;i++){
 				var each_result = $("<div/>",{class:"result"});
 				var title = $('<a/>',{class:'description',href:['/dataset',results[i].name].join('/'),target:"_blank"});
-
+				
 				var notes = $('<p/>',{class:'notes'});
 				var type = $('<p/>',{class:'type'});
 				var wms = $('<button/>',{class:'wms',id:results[i]['resources'][0].id});
 				var published = $('<p/>',{class:'published'});
+				if(ngds.ckandataset(results[i]).get_feature_type().type==='Point'){
+					var label = ngds.Map.labeller.get_label();
+					var marker_container = $("<div/>",{class:'result-marker-container marker-'+label});
+					var marker_image = $("<img/>",{src:"/images/marker.png",class:'result-marker'});
+					var marker_label = $("<span/>",{class:'result-marker-label marker-label-'+label});
+					marker_label.text(label);
+					marker_container.append(marker_image);
+					marker_container.append(marker_label);
+					each_result.append(marker_container);
+				}
 				published.attr('id','ngds'+i);
-
 				notes.text(results[i]['notes']);
 				title.text(results[i]['title']);
 				type.text(results[i]['type']);
 				wms.text("WMS");
 				published.text(new Date(results[i]['metadata_created']).toLocaleDateString());
-				
+			
 				each_result.append(title);
 				each_result.append(notes);
 				each_result.append(type);
 				each_result.append(wms);
 				each_result.append(published);
 				results_div.append(each_result);
+				fn(results[i]);
 			}
 			inc = 1;
 			$(".wms").click(function(ev){
@@ -131,7 +141,7 @@ ngds.Pager = function(rows) {
 			if($('.page-num').length==0) {
 				initialize_pages_ui(num_pages);
 			}
-			return fn(result);
+			return finish_fn(response.result.count);
 		});
 
 		start = start + rows;

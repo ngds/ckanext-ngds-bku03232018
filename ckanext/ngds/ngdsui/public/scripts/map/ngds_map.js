@@ -203,20 +203,30 @@ ngds.Map = {
 			else {
 				// ngds.Map.manage_zoom(bounding_box,ngds.Map.shape.e.poly,ngds.Map.get_layer('drawnItems'));
 			}
-			pager.move(1,function(search_result) {
-				var count = search_result.get('count');				
-				var raw_result = search_result.raw();
-				me.clear_layer('geojson');
+			me.clear_layer('geojson');
+			pager.move(1,function(each_result) {
+				 	var label = ngds.Map.labeller.get_cur_label();
+				 	ngds.Map.add_raw_result_to_geojson_layer(each_result,{iconimg_id:'lmarker-'+label});
+				 	var span_margin = "0px";
+				 	$('.marker-'+label).hover(function() {
+				 		$('.lmarker-'+label).css("width","30px");
+				 		$('.lmarker-'+label).css("height","45px");
+				 		var span_elem = $('.lmarker-'+label).next();
+				 		span_elem.css("font-size","14pt");
+				 		span_margin=span_elem.css("margin-left");
+				 		span_elem.css("margin-left","2px");
+				 	},function(){
+				 		$('.lmarker-'+label).css("width","25px");
+				 		$('.lmarker-'+label).css("height","41px");
+				 		var span_elem = $('.lmarker-'+label).next();
+				 		span_elem.css("font-size","12.5pt");
+				 		span_elem.css("margin-left",span_margin);
+				 	});
+			},function(count){
 				pager.set_state(count,query);
-
-				for(index in raw_result.results) {
-				 	ngds.Map.add_raw_result_to_geojson_layer(raw_result.results[index]);
-				 }
-
 			});
 			
 			// ngds.ckanlib.package_search({ "q":query },function(response) {
-			// 	console.info(response.result);
 			// 	var search_result = x = ngds.SearchResult(response.result);
 			// 	ngds.Map.SearchContext.set_preamble_count(search_result.get('count'));
 			// 	ngds.Map.SearchContext.set_results(response.result.results);
@@ -256,7 +266,7 @@ ngds.Map = {
 				});
 			});
 		},
-		add_raw_result_to_geojson_layer:function(result) { // Expects response.result, not response.
+		add_raw_result_to_geojson_layer:function(result,options) { // Expects response.result, not response.
 			try {				
 				var dataset = ngds.ckandataset(result);	
 				x=dataset;
@@ -274,11 +284,11 @@ ngds.Map = {
 						// } else if(feature.properties.id > 9 && feature.properties.id < 100){
 						// 	return L.marker(latlng, {icon: new placeMarker_double({ labelText:feature.properties.id, iconUrl:'mine.png'})});
 						// } else {
-							return L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_label()})});
+							var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_cur_label(),className:options.iconimg_id})});
+							return marker
 						}
 				}
 			});	
-			console.log(geoJSONRepresentation);
 
 			geoJSONRepresentation.bindPopup(popup);
 			this.add_to_layer([geoJSONRepresentation],'geojson');
@@ -291,14 +301,12 @@ ngds.Map = {
 				var map_ne_lat = map_bounds._northEast.lat;
 				var map_ne_lng = map_bounds._northEast.lng;
 				var layers = ngds.Map.zoom_managed_list;
-				console.log(layers);
 				for(var i in ngds.Map.zoom_managed_list) {
 					var lid=layers[i]._leaflet_id;
 						var bbox_sw_lat = layers[i].bbox_bounds._southWest.lat;
 						var bbox_sw_lng = layers[i].bbox_bounds._southWest.lng;
 						var bbox_ne_lat = layers[i].bbox_bounds._northEast.lat;
 						var bbox_ne_lng = layers[i].bbox_bounds._northEast.lng;
-						console.log(layers[i]);
 
 						if((map_sw_lat>bbox_sw_lat) && (map_sw_lng>bbox_sw_lng) && (map_ne_lat<bbox_ne_lat) && (map_ne_lng<bbox_ne_lng)) {
 							if(layers[i]._shown) {
@@ -383,6 +391,9 @@ ngds.Map = {
 			},
 			reset:function() {
 				this._count=0;
+			},
+			get_cur_label:function() {
+				return this._count;
 			}
 		}
 	};

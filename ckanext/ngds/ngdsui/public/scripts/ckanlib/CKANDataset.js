@@ -39,7 +39,10 @@ ngds.ckandataset = function(raw) {
 							getPopupHTML:function() { // return a html popup of a dataset's metadata that is to be displayed when an icon or feature is clicked.
 								return popupHTML;
 								}
-							}
+						},
+						get_feature_type:function() {
+							return geojson;
+						}
 			}
 		}
 	}
