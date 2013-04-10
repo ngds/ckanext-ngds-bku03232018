@@ -2079,6 +2079,11 @@ margin-left: 40px;
 
 .result {
 	margin-left:30px;
+	margin-top:15px;
+}
+
+div.result:hover {
+	cursor:pointer;
 }
 
 .description {
@@ -2134,4 +2139,8 @@ margin-left: 40px;
 .result-marker-container {
 	position:relative;
 	display:inline-block;
+}
+
+div.result-marker-container:hover{
+	cursor:pointer;
 }

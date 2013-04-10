@@ -89,7 +89,6 @@ ngds.Pager = function(rows) {
 			var results_div = $(".results");
 
 			var results = response.result.results;
-
 			for(var i=0;i<results.length;i++){
 				var each_result = $("<div/>",{class:"result"});
 				var title = $('<a/>',{class:'description',href:['/dataset',results[i].name].join('/'),target:"_blank"});
@@ -98,8 +97,12 @@ ngds.Pager = function(rows) {
 				var type = $('<p/>',{class:'type'});
 				var wms = $('<button/>',{class:'wms',id:results[i]['resources'][0].id});
 				var published = $('<p/>',{class:'published'});
+				
+				var marker_or_shape='';
 				if(ngds.ckandataset(results[i]).get_feature_type().type==='Point'){
 					var label = ngds.Map.labeller.get_label();
+					console.log(label);
+					each_result.addClass('result-'+label);
 					var marker_container = $("<div/>",{class:'result-marker-container marker-'+label});
 					var marker_image = $("<img/>",{src:"/images/marker.png",class:'result-marker'});
 					var marker_label = $("<span/>",{class:'result-marker-label marker-label-'+label});
@@ -107,6 +110,12 @@ ngds.Pager = function(rows) {
 					marker_container.append(marker_image);
 					marker_container.append(marker_label);
 					each_result.append(marker_container);
+					marker_or_shape='marker'
+				}
+				else if (ngds.ckandataset(results[i]).get_feature_type().type==='Polygon'){
+					var label = ngds.Map.labeller.get_label();
+					each_result.addClass('result-'+label);
+					marker_or_shape='shape'
 				}
 				published.attr('id','ngds'+i);
 				notes.text(results[i]['notes']);
@@ -121,7 +130,7 @@ ngds.Pager = function(rows) {
 				each_result.append(wms);
 				each_result.append(published);
 				results_div.append(each_result);
-				fn(results[i]);
+				fn(results[i],marker_or_shape);
 			}
 			inc = 1;
 			$(".wms").click(function(ev){

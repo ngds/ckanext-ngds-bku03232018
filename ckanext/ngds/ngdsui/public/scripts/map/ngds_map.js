@@ -31,7 +31,9 @@ ngds.Map = {
 			//     attribution: "NGDS",
 			//     opacity:'0.9999'
 			// });
-			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
+			var _geoJSONLayer = this.geoJSONLayer = new L.geoJson(null,{onEachFeature:function(a,b){
+				console.log(b);
+			}}); // Geo JSON Layer where we'll display all our features.
 			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -100.53332), zoom: 3});
 
 			var _drawControl = new L.Control.Draw({
@@ -204,24 +206,49 @@ ngds.Map = {
 				// ngds.Map.manage_zoom(bounding_box,ngds.Map.shape.e.poly,ngds.Map.get_layer('drawnItems'));
 			}
 			me.clear_layer('geojson');
-			pager.move(1,function(each_result) {
+
+			pager.move(1,function(each_result,marker_or_shape) {
 				 	var label = ngds.Map.labeller.get_cur_label();
 				 	ngds.Map.add_raw_result_to_geojson_layer(each_result,{iconimg_id:'lmarker-'+label});
 				 	var span_margin = "0px";
-				 	$('.marker-'+label).hover(function() {
-				 		$('.lmarker-'+label).css("width","30px");
-				 		$('.lmarker-'+label).css("height","45px");
-				 		var span_elem = $('.lmarker-'+label).next();
-				 		span_elem.css("font-size","14pt");
-				 		span_margin=span_elem.css("margin-left");
-				 		span_elem.css("margin-left","2px");
-				 	},function(){
-				 		$('.lmarker-'+label).css("width","25px");
-				 		$('.lmarker-'+label).css("height","41px");
-				 		var span_elem = $('.lmarker-'+label).next();
-				 		span_elem.css("font-size","12.5pt");
-				 		span_elem.css("margin-left",span_margin);
-				 	});
+				 	
+				 	if(marker_or_shape==='marker') {
+					 	$('.result-'+label).hover(function() {
+						 		$('.lmarker-'+label).css("width","30px");
+						 		$('.lmarker-'+label).css("height","45px");
+						 		var span_elem = $('.lmarker-'+label).next();
+						 		span_elem.css("font-size","14pt");
+						 		// span_margin=span_elem.css("margin-left");
+						 		span_elem.css("margin-left","2px");
+						 	},function(){
+						 		$('.lmarker-'+label).css("width","25px");
+						 		$('.lmarker-'+label).css("height","41px");
+						 		var span_elem = $('.lmarker-'+label).next();
+						 		span_elem.css("font-size","12.5pt");
+						 		span_elem.css("margin-left",span_margin);
+					 	});
+
+					 	$('.result-'+label).click(function(){
+					 		// Reset steps
+					 		$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
+					 		var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
+					 		for(var i=0;i<labels_colored.length;i++){
+					 			labels_colored[i].attr("src","/images/marker.png");
+					 		}
+							labels_colored = ngds.Map.state.colored_labels = [];
+					 		// End reset steps
+
+					 		// Now do the actual transitions
+					 		$('.result-'+label).css('background-color','#dadada');
+					 		$('.lmarker-'+label).attr("src","/images/marker-green.png");
+					 		labels_colored.push($('.lmarker-'+label));
+					 		// End actual transitions
+					 	});
+					}
+					else {
+						console.log("shape");
+					}
+
 			},function(count){
 				pager.set_state(count,query);
 			});
@@ -269,7 +296,6 @@ ngds.Map = {
 		add_raw_result_to_geojson_layer:function(result,options) { // Expects response.result, not response.
 			try {				
 				var dataset = ngds.ckandataset(result);	
-				x=dataset;
 				var feature = dataset.getGeoJSON();				
 				var popup = dataset.map.getPopupHTML();
 			}
@@ -278,15 +304,16 @@ ngds.Map = {
 			}
 			// var geoJSONRepresentation = L.geoJson(feature);															
 			var geoJSONRepresentation = L.geoJson(feature,{
+				onEachFeature:function(feature_data,layer){
+					if(layer.feature.type==='Polygon'){
+						var label = ngds.Map.labeller.get_label();
+						var shapes_map = ngds.Map.state.shapes_map || (ngds.Map.state.shapes_map={});
+						shapes_map[label]=layer;
+					}
+				},
 				pointToLayer:function(feature,latlng) {
-					if(feature.type === "Point"){
-						// 	return L.marker(latlng, {icon: new placeMarker_single({ labelText:feature.properties.id, iconUrl:'mine.png'})});
-						// } else if(feature.properties.id > 9 && feature.properties.id < 100){
-						// 	return L.marker(latlng, {icon: new placeMarker_double({ labelText:feature.properties.id, iconUrl:'mine.png'})});
-						// } else {
-							var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_cur_label(),className:options.iconimg_id})});
-							return marker
-						}
+					var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_cur_label(),className:options.iconimg_id})});
+					return marker;						
 				}
 			});	
 
@@ -395,5 +422,8 @@ ngds.Map = {
 			get_cur_label:function() {
 				return this._count;
 			}
+		},
+		state:{ // Maintain state of various components in here ... make sure your keys are unique
+
 		}
 	};
