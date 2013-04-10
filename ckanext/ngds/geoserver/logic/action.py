@@ -15,26 +15,26 @@ _get_or_bust = logic.get_or_bust
 def datastore_spatialize(context, data_dict):
     '''Spatializes a table in the datastore
 
-    The datastore_spatialize API action allows a user to add a column of type GeoPoint
+    The datastore_spatialize API action allows a user to add a column of type GEOMETRY
     to an existing datastore resource and fill that column with meaningful values. The 
     values are calculated out of other columns that represent geographic positions as
-    latitude and longitude.
+    LATITUDE and LONGITUDE.
     
-    In order for the *spatialize* methods to work, a unique key has to be defined via
+    In order for the *spatialize* methods to work, a unique resource id has to be defined via
     the datastore_create action. The available methods are:
 
     *spatialize*
-        It first checks if the GeoPoint column already exists. If not it creates it.
-        Afterwards it iterates through all rows and updates the value of the GeoPoint 
+        It first checks if the GEOMETRY column already exists. If not, it creates it.
+        Afterwards it iterates through all rows and updates the value of the GEOMETRY 
         column.
 
-    :param resource_id: resource id that the data is going to be stored under.
+    :param resource_id: resource id that the data is going to be spatialized.
     :type resource_id: string
-    :param col_latitude: the column containing the latitude values.
+    :param col_latitude: the name of the column containing the latitude values.
     :type column_id: string
-    :param col_longitude: the column containing the longitude values.
+    :param col_longitude: the name of the column containing the longitude values.
     :type column_id: string
-    :param col_geography: the column that shall be filled with the GeoPoint values.
+    :param col_geography: the name of the column that shall be filled with the GEOMETRY values.
     :type column_id: string
     
     **Results:**
@@ -46,71 +46,88 @@ def datastore_spatialize(context, data_dict):
     '''
     if 'id' in data_dict:
         data_dict['resource_id'] = data_dict['id']
-    res_id = _get_or_bust(data_dict, 'resource_id')
-       
+        
+    res_id        = _get_or_bust(data_dict, 'resource_id')
+    col_longitude = _get_or_bust(data_dict, 'col_longitude')
+    col_latitude  = _get_or_bust(data_dict, 'col_latitude')
+    col_geography = _get_or_bust(data_dict, 'col_geography') 
+    
+    # read geoserver information from development.ini
+    geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
+    
+    # reads the database connection URI from the development.ini file   
     data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+      
+    print ">>>>>>>>>>>>>>>>>>>> Connect to database >>>>>>>>>>>>>>>>"  
+    engine = db._get_engine(None, data_dict)
+    context['connection'] = engine.connect()
 
-    # verifies if the provided resource_id exists in teh database
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('datastore_spatialize', context, data_dict)
+
+    print ">>>>>>>>>>>>>>>>>>>> Verify if the provided resource exists >>>>>>>>>>>>>>>>"
+
+    # verifies if the provided resource_id exists in the database
     resources_sql = sqlalchemy.text(u'''SELECT 1 FROM "_table_metadata"
                                         WHERE name = :id AND alias_of IS NULL''')
-    results = db._get_engine(None, data_dict).execute(resources_sql, id=res_id)
+    results = context['connection'].execute(resources_sql, id=res_id)
     res_exists = results.rowcount > 0
-
+        
     if not res_exists:
         raise p.toolkit.ObjectNotFound(p.toolkit._(
             'Resource "{0}" was not found.'.format(res_id)
         ))
 
-    # verifies if the user calling the method has permission to execute it
-    p.toolkit.check_access('datastore_spatialize', context, data_dict)
-
     # We now verify if the resource has the geography column.
-    # if it does not have it, we create taht column.
-    engine = db._get_engine(None, data_dict)
-    context['connection'] = engine.connect()
+    # if it does not have it, we create that column.
+
     fields = db._get_fields(context, data_dict)
     try:
-        already_has_geography = False
+        already_has_col_geography = False
         for field in fields:
-            #print field['id']
-            if field['id'] == data_dict['col_geography']:
-                already_has_geography = True
+            #FIXME: We are not comparing the type here
+            if field['id'] == col_geography:
+                already_has_col_geography = True
     
-        if not already_has_geography:
-            # add geography colum to the list of fields
+        if not already_has_col_geography:
+            # add geography column to the list of fields
             # the list of fields is part of the returned result
-            fields.append({'id': data_dict['col_geography'],'type': u'geometry' })
+            fields.append({'id': col_geography, 'type': u'geometry' })
             data_dict['fields'] = fields
             
-            # create the geography colum in the table
+            print ">>>>>>>>>>>>>>>>>>>> Creating:  "+col_geography+" in "+res_id+" database >>>>>>>>>"
+            # create the geography column in the table
             trans = context['connection'].begin()
             new_column_res = context['connection'].execute(
-                        "SELECT AddGeometryColumn('public', '"+data_dict['resource_id']+
-                        "', '"+ data_dict['col_geography']+"', 4326, 'GEOMETRY', 2)")
+                        "SELECT AddGeometryColumn('public', '"+res_id+
+                        "', '"+ col_geography+"', 4326, 'GEOMETRY', 2)")
             trans.commit()
 
+        print ">>>>>>>>>>>>>>>>>>>> Updating column geography >>>>>>>>>>>>>>>>"
         # call a stored procedure from postgis to convert the longitude and latitude
         # columns into a geography shape
         trans = context['connection'].begin()
         spatialize_sql = sqlalchemy.text("UPDATE \"" 
-                                         + data_dict['resource_id'] 
+                                         + res_id 
                                          + "\" SET \"" 
-                                         + data_dict['col_geography'] 
+                                         + col_geography 
                                          + "\" = geometryfromtext('POINT(' || \"" 
-                                         + data_dict['col_longitude'] 
+                                         + col_longitude 
                                          + "\" || ' ' || \"" 
-                                         + data_dict['col_latitude'] + "\" || ')', 4326)")
+                                         + col_latitude + "\" || ')', 4326)")
         
         # this return is of type engine.ResultProxy
         # rows are accessed by calling row = proxy.fetchone()
         # col = row[0] or by row['row_name']
         # optionally one can call the command fetchall() with returns a list of rows
-        spatialize_results = db._get_engine(None, data_dict).execute(spatialize_sql) 
+        spatialize_results = context['connection'].execute(spatialize_sql) 
         trans.commit()
 
+        print ">>>>>>>>>>>>>>>>>>>> Reading contents of new table >>>>>>>>>>>>>>>>"
         trans = context['connection'].begin()    
         newtable = context['connection'].execute(
-                   u'SELECT * FROM pg_tables WHERE tablename = %s',data_dict['resource_id'])
+                   u'SELECT * FROM pg_tables WHERE tablename = %s',res_id)
         
         # add the content of the modified table to the data dictionary, and return it.
         # utilize the standard json format
@@ -121,7 +138,7 @@ def datastore_spatialize(context, data_dict):
         # verify if the layer exists in geoserver, if not, create it.
 
 
-        cat = Catalog('http://localhost:8080/geoserver/rest')
+        cat = Catalog(geoserver_rest_url)
         if cat.get_layer(res_id) is None:
             print ">>>>>>>>>>>>>>>>>>>> create new layer object >>>>>>>>>>>>>>>>>>>>"
             web_url = datastore_expose_as_layer(context, data_dict)
@@ -129,6 +146,7 @@ def datastore_spatialize(context, data_dict):
         else:
             print ">>>>>>>>>>>>>>>>>>>> layer already exists >>>>>>>>>>>>>>>>>>>>"    
         
+        # Another way to do the same thing i.e. verify if the layer exists
         '''
         headers= {"Content-type": "text/xml"}
         headers, response = cat.http.request("http://localhost:8080/geoserver/rest/layers", "GET", "", headers)
@@ -138,9 +156,6 @@ def datastore_spatialize(context, data_dict):
         else:
             print ">>>>>>>>>> Layer exists no need to expose it again >>>>>>>>>>>"
         '''
-    
-    
-    
     
     
         formatted_results.pop('id', None)
@@ -162,13 +177,13 @@ def datastore_spatialize(context, data_dict):
     
 
 def datastore_expose_as_layer(context, data_dict):
-    '''Publishes an already 'spatialized' database in postgress as a layer in geoserver
+    '''Publishes an already 'spatialized' database, in postgress, as a layer in geoserver
 
     The datastore_expose_as_layer API action allows a user to publish a table as a layer in geoserver.
     It assumes the database table is already 'spacialized', i.e. has latitude and longitude columns 
     converted into a geographic shape.
     
-    In order for the *expose* method to work, a unique key has to be defined via
+    In order for the *expose* method to work, a unique resource id has to be defined via
     the datastore_create action. The available methods are:
 
     :param resource_id: resource id that the data is going to be stored under.
@@ -185,13 +200,19 @@ def datastore_expose_as_layer(context, data_dict):
     res_id = _get_or_bust(data_dict, 'resource_id')
     print ">>>>>>>>>>>>>>>>> working with: ",res_id
     
-    cat = Catalog('http://localhost:8080/geoserver/rest')
+    # read geoserver information from development.ini
+    geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
+    workspace_name = pylons.config.get('ckan.geoserver.workspace_name', 'NGDS')
+    workspace_url = pylons.config.get('ckan.geoserver.workspace_URL', 'http://localhost:5000/ngds')
+    
+    
+    cat = Catalog(geoserver_rest_url)
     
     print ">>>>>>>>>>>>>>>>>>>>>> begin create workspace >>>>>>>>>>>>>>>>>>>>>>>>" 
     # reusing the existing one or create new workspace
-    ngds_workspace = cat.get_workspace('NGDS')
+    ngds_workspace = cat.get_workspace(workspace_name)
     if ngds_workspace is None:    
-        ngds_workspace = cat.create_workspace('NGDS', 'http://localhost:5000/ngds')
+        ngds_workspace = cat.create_workspace(workspace_name, workspace_url)
     print ">>>>>>>>>>>>>>>>>>>>>> end create workspace >>>>>>>>>>>>>>>>>>>>>>>>"
     
     print ">>>>>>>>>>>>>>>>>>>>>>  create store >>>>>>>>>>>>>>>>>>>>>>>>"
@@ -201,22 +222,23 @@ def datastore_expose_as_layer(context, data_dict):
     config_passwd = 'pass'
     config_datastore = 'datastore'
     datastore_url = config.get('ckan.datastore.write_url','postgresql://ckanuser:pass@localhost/datastore')
-    login_pass = datastore_url.split('://')[1].split('@')[0]
-    #print "login_pass = ",login_pass
-    if login_pass is not None and login_pass is not "":
-        login = login_pass.split(':')[0]
-        passwd = login_pass.split(':')[1]
+    
+    parsed_login_pass = datastore_url.split('://')[1].split('@')[0]
+    #print "parsed_login_pass = ",parsed_login_pass
+    if parsed_login_pass is not None and parsed_login_pass is not "":
+        config_login = parsed_login_pass.split(':')[0]
+        config_passwd = parsed_login_pass.split(':')[1]
         
     parsed_datastore = datastore_url.split('://')[1].split('/')[-1] # last element
     if parsed_datastore is not None and parsed_datastore is not "":
         config_datastore = parsed_datastore
-        print config_datastore    
+        #print config_datastore    
  
     # we utilize default values, instead of failing, if those parameters are not provided 
     if not 'geoserver' in data_dict:
-        data_dict['geoserver'] = 'http://localhost:8080/geoserver/rest'
+        data_dict['geoserver'] = geoserver_rest_url
     if not  'workspace_name' in data_dict: 
-        data_dict['workspace_name'] = 'NGDS'
+        data_dict['workspace_name'] = workspace_name
     if not 'store_name' in data_dict:
         data_dict['store_name'] = config_datastore
     if not 'pg_host' in data_dict:
@@ -450,10 +472,10 @@ def geoserver_delete_store(context, data_dict):
     store = cat.get_store(store_name, workspace_name)
     cat.delete(store)
 
-def create_postgis_sql_layer(context, data_dict):
+def _create_postgis_sql_layer(context, data_dict):
     '''Create a layer on geoserver through its restful API
 
-    The create_postgis_sql_layer API action allows a user to create a layer in
+    The _create_postgis_sql_layer API action allows a user to create a layer in
     geoserver.
     
     The available methods are:
@@ -479,21 +501,26 @@ def create_postgis_sql_layer(context, data_dict):
     '''
    
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
-    baseServerUrl = _get_or_bust(data_dict, 'geoserver')
     store_name =_get_or_bust(data_dict, 'store_name')
     resource_id = _get_or_bust(data_dict, 'resource_id')
+    # opitonal parameter
+    baseServerUrl = data_dict['geoserver']
+    
+    # There should be a geoserver key in the development.ini file 
+    if baseServerUrl is None:
+        baseServerUrl = config.get('geoserver','http://localhost:8080/geoserver/rest')
+    
     
     print ">>>>>>>>>>> connecting to database >>>>>>>>>>>>>"
     data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+    
     engine = db._get_engine(None, data_dict)
     context['connection'] = engine.connect()
     
     # 'layer_name', 'connection' and 'resource_id'
     # will be read by the SqlFeatureTypeDef
     
-    if baseServerUrl is None:
-        baseServerUrl="http://localhost:8080/geoserver/rest/"
-    
+
     cat = Catalog(baseServerUrl)
     
     # builds the meta-data object used for the createion of the layer
@@ -569,18 +596,18 @@ def geoserver_create_layer(context, data_dict):
     '''
     print ">>>>>>>>>>>>>>>>>>>>>> start create layer >>>>>>>>>>>>>>>>>>>>>>>>"
     
-    geoserver = _get_or_bust(data_dict, 'geoserver')
+    geoserver      = _get_or_bust(data_dict, 'geoserver')
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
     #workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
-    store_name =_get_or_bust(data_dict, 'store_name')
-    pg_host= _get_or_bust(data_dict, 'pg_host')
-    pg_port= _get_or_bust(data_dict, 'pg_port')
-    pg_db= _get_or_bust(data_dict, 'pg_db')
-    pg_user= _get_or_bust(data_dict, 'pg_user')
-    pg_password= _get_or_bust(data_dict, 'pg_password')
-    db_type= _get_or_bust(data_dict, 'db_type')
+    store_name     =_get_or_bust(data_dict, 'store_name')
+    pg_host        = _get_or_bust(data_dict, 'pg_host')
+    pg_port        = _get_or_bust(data_dict, 'pg_port')
+    pg_db          = _get_or_bust(data_dict, 'pg_db')
+    pg_user        = _get_or_bust(data_dict, 'pg_user')
+    pg_password    = _get_or_bust(data_dict, 'pg_password')
+    db_type        = _get_or_bust(data_dict, 'db_type')
 
-    layer_name= _get_or_bust(data_dict, 'layer_name')
+    layer_name     = _get_or_bust(data_dict, 'layer_name')
 
     print ">>>>>>>>>>>>>>>>>>>> connecting to catalog: "+geoserver
     cat = Catalog(geoserver)
@@ -591,7 +618,7 @@ def geoserver_create_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>> check if layer exists >>>>>>>>>>>>>>>>>>>>"
     if cat.get_layer(layer_name) is None:
         print ">>>>>>>>>>>>>>>>>>>> create new layer object >>>>>>>>>>>>>>>>>>>>"
-        create_postgis_sql_layer(context, data_dict)
+        _create_postgis_sql_layer(context, data_dict)
     else:
         print ">>>>>>>>>>>>>>>>>>>> layer already exists >>>>>>>>>>>>>>>>>>>>"
     
