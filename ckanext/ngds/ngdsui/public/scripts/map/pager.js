@@ -44,7 +44,9 @@ ngds.Pager = function(rows) {
 		}
 		$(".page-num").click(function(ev){
 			var page_number = ev.target.firstChild.data;
-			me.move(page_number,handler);
+			me.move(page_number,handler,function(count){
+				// me.set_state(count,query);
+			});
 		});
 	};
 
@@ -53,6 +55,7 @@ ngds.Pager = function(rows) {
 	};
 
 	this.move = function(page_number,fn,finish_fn) {
+		ngds.Map.clear_layer('geojson');
 		handler = fn;
 		ngds.Map.labeller.reset();
 		start = (page_number - 1) * rows;
@@ -149,7 +152,7 @@ ngds.Pager = function(rows) {
 			if($('.page-num').length==0) {
 				initialize_pages_ui(num_pages);
 			}
-			return finish_fn(response.result.count);
+			finish_fn(response.result.count);
 		});
 
 		start = start + rows;

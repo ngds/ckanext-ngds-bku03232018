@@ -206,7 +206,6 @@ ngds.Map = {
 				// ngds.Map.manage_zoom(bounding_box,ngds.Map.shape.e.poly,ngds.Map.get_layer('drawnItems'));
 			}
 			me.clear_layer('geojson');
-
 			pager.move(1,function(each_result,marker_or_shape) {
 				 	var label = ngds.Map.labeller.get_cur_label();
 				 	ngds.Map.add_raw_result_to_geojson_layer(each_result,{iconimg_id:'lmarker-'+label});
@@ -353,11 +352,13 @@ ngds.Map = {
 				},
 				pointToLayer:function(feature,latlng) {
 					var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_cur_label(),className:options.iconimg_id})});
+					console.log("adding");
 					return marker;						
 				}
 			});	
 
 			geoJSONRepresentation.bindPopup(popup);
+
 			this.add_to_layer([geoJSONRepresentation],'geojson');
 		},
 		bind_zoom_listeners:function() {
