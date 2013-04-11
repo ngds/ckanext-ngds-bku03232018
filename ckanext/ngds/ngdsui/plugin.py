@@ -74,16 +74,16 @@ class NgdsuiPlugin(SingletonPlugin):
 		contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
 		map.connect("contribute","/ngds/contribute",controller=contribute_controller,action="index")
 		map.connect("do_harvest","/ngds/do_harvest",controller=contribute_controller,action="do_harvest")
-		map.connect("harvest","/ngds/harvest",controller=contribute_controller,action="harvest")		
+		#map.connect("harvest","/ngds/harvest",controller=contribute_controller,action="harvest")		
 		# map.connect("upload","/ngds/contribute/upload",controller=contribute_controller,action="upload")
 		map.redirect('/ngds/contribute/dataset/{action}', '/dataset/{action}')
 		#map.connect("harvest_new","/ngds/harvest/edit",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="edit")
 		map.connect("bulk_upload","/ngds/bulk_upload",controller=contribute_controller,action="bulk_upload")
 		map.connect("bulk_upload_handle","/ngds/bulk_upload_handle",controller=contribute_controller,action="bulk_upload_handle")
-		map.connect("harvest_new","/ngds/harvest/{action}",controller=contribute_controller)
+		#map.connect("harvest_new","/ngds/harvest/{action}",controller=contribute_controller)
 
 
-		map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
+		#map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
 
 		#Map related paths
 		map.connect("map","/ngds/map",controller=home_controller,action="render_map",conditions={"method":["GET"]})
