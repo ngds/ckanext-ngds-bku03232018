@@ -8,6 +8,9 @@ from ckan.model import meta, Package
 import logging
 log = logging.getLogger(__name__)
 
+contentmodels= []
+
+
 class ContentModelRecord(object):
     """
     Class representing one ContentModel Record to be cached on the local node.

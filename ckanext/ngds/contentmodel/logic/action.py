@@ -1,3 +1,4 @@
+import urllib2, simplejson
 import logging
 import pylons
 import ckan.logic as logic
@@ -5,6 +6,9 @@ import ckan.plugins as p
 import sqlalchemy
 
 from pylons import config
+
+import ckanext.ngds.contentmodel.model.contentmodels
+
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -16,21 +20,17 @@ def contentmodel_refreshCache(context, data_dict):
     (http://schemas.usgin.org/models, http://schemas.usgin.org/contentmodels.json) and
     and downloads all content models from the site. It also refreshes a table that
     contains the status data of all content models.
+
+    **Parameters:**
+    None.
     
     **Results:**
-
     :returns: A status object (either success, or failed).
     :rtype: dictionary
-    '''
-    
-    if 'id' in data_dict:
-        data_dict['resource_id'] = data_dict['id']
-    res_id = _get_or_bust(data_dict, 'resource_id')
-       
-    data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
-
-    
-
+    '''  
+    remotefile = urllib2.urlopen("http://schemas.usgin.org/contentmodels.json")
+    ckanext.ngds.contentmodel.model.contentmodels.contentmodels = simplejson.load(remotefile)
+    # return ckanext.ngds.contentmodel.model.contentmodels.contentmodels
 
 
 def contentmodel_list(context, data_dict):
@@ -42,11 +42,42 @@ def contentmodel_list(context, data_dict):
     :returns: The list of all available content models.
     :rtype: vector
     '''
-    if 'id' in data_dict:
-        data_dict['resource_id'] = data_dict['id']
-    res_id = _get_or_bust(data_dict, 'resource_id')
-       
-    data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+    return ckanext.ngds.contentmodel.model.contentmodels.contentmodels
+
+
+def contentmodel_get(context, data_dict):
+    '''Returns the information about a certain content model.
+    
+    This action returns detailed information about a specific content model.
+    **Parameters:**
+    :param cm_uri: uri of the content model.
+    :type cm_uri: string
+
+    :param cm_version: version of the content model.
+    :type cm_version: string
+    '''
+    cm_uri = _get_or_bust(data_dict, 'cm_uri')
+    cm_version= _get_or_bust(data_dict, 'cm_version')
+    
+    schema= [ rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels
+              if rec['uri'] == cm_uri ]
+    
+    if schema.__len__() != 1:
+        raise p.toolkit.ObjectNotFound(p.toolkit._(
+            'Schema with the URI "{0}" was not found.'.format(cm_uri)
+        ))
+    
+    # schema is a list with a single entry
+    schema_versions= schema[0]['versions']
+    
+    version= [ rec for rec in schema_versions if rec['version'] == cm_version]
+    if version.__len__() != 1:
+        raise p.toolkit.ObjectNotFound(p.toolkit._(
+            'Schema version with the URI "{0}" and version {1} was not found.'.format(cm_uri, cm_version)
+        ))
+        
+    # version is again a list with a single entry
+    return version[0]
 
 
 def contentmodel_checkFile(context, data_dict):
