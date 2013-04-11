@@ -101,7 +101,6 @@ ngds.Pager = function(rows) {
 				var marker_or_shape='';
 				if(ngds.ckandataset(results[i]).get_feature_type().type==='Point'){
 					var label = ngds.Map.labeller.get_label();
-					console.log(label);
 					each_result.addClass('result-'+label);
 					var marker_container = $("<div/>",{class:'result-marker-container marker-'+label});
 					var marker_image = $("<img/>",{src:"/images/marker.png",class:'result-marker'});

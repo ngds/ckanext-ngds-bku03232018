@@ -32,7 +32,7 @@ ngds.Map = {
 			//     opacity:'0.9999'
 			// });
 			var _geoJSONLayer = this.geoJSONLayer = new L.geoJson(null,{onEachFeature:function(a,b){
-				console.log(b);
+
 			}}); // Geo JSON Layer where we'll display all our features.
 			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -100.53332), zoom: 3});
 
@@ -213,14 +213,14 @@ ngds.Map = {
 				 	var span_margin = "0px";
 				 	
 				 	if(marker_or_shape==='marker') {
-					 	$('.result-'+label).hover(function() {
+					 	$('.result-'+label).hover(function() { //fadein
 						 		$('.lmarker-'+label).css("width","30px");
 						 		$('.lmarker-'+label).css("height","45px");
 						 		var span_elem = $('.lmarker-'+label).next();
 						 		span_elem.css("font-size","14pt");
 						 		// span_margin=span_elem.css("margin-left");
 						 		span_elem.css("margin-left","2px");
-						 	},function(){
+						 	},function(){ // fadeout
 						 		$('.lmarker-'+label).css("width","25px");
 						 		$('.lmarker-'+label).css("height","41px");
 						 		var span_elem = $('.lmarker-'+label).next();
@@ -235,18 +235,55 @@ ngds.Map = {
 					 		for(var i=0;i<labels_colored.length;i++){
 					 			labels_colored[i].attr("src","/images/marker.png");
 					 		}
+
+					 		var shapes_colored = ngds.Map.state.colored_shapes || (ngds.Map.state.colored_shapes=[]);
+							for(var i=0;i<shapes_colored.length;i++){
+								shapes_colored[i].setStyle({weight:2,color:"blue"});
+							}
+							ngds.Map.state.colored_shapes=[]
+
 							labels_colored = ngds.Map.state.colored_labels = [];
 					 		// End reset steps
 
 					 		// Now do the actual transitions
 					 		$('.result-'+label).css('background-color','#dadada');
-					 		$('.lmarker-'+label).attr("src","/images/marker-green.png");
+					 		$('.lmarker-'+label).attr("src","/images/marker-red.png");
 					 		labels_colored.push($('.lmarker-'+label));
 					 		// End actual transitions
 					 	});
 					}
 					else {
-						console.log("shape");
+						var weight,color;
+						$('.result-'+label).hover(function(){ //fadein
+								var shape=ngds.Map.state.shapes_map[label];
+								weight=shape.options.weight;
+								color=shape.options.color;
+								// shape.setStyle({weight:3,color:"red"});
+						},function(){ //fadeout
+								var shape=ngds.Map.state.shapes_map[label];
+								// shape.setStyle({weight:weight,color:color});
+						});
+
+						$('.result-'+label).click(function(){
+							// Reset steps
+							$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
+							
+							var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
+					 		for(var i=0;i<labels_colored.length;i++){
+					 			labels_colored[i].attr("src","/images/marker.png");
+					 		}
+
+							var shapes_colored = ngds.Map.state.colored_shapes || (ngds.Map.state.colored_shapes=[]);
+							for(var i=0;i<shapes_colored.length;i++){
+								shapes_colored[i].setStyle({weight:2,color:"blue"});
+							}
+							ngds.Map.state.colored_shapes=[];
+							// End of Reset steps
+							$('.result-'+label).css('background-color','#dadada');
+							var shape=ngds.Map.state.shapes_map[label];
+							shape.setStyle({weight:3,color:"red"});
+							ngds.Map.state.colored_shapes.push(shape);
+						});
 					}
 
 			},function(count){
@@ -304,9 +341,12 @@ ngds.Map = {
 			}
 			// var geoJSONRepresentation = L.geoJson(feature);															
 			var geoJSONRepresentation = L.geoJson(feature,{
+					style:{
+						weight:2
+					},
 				onEachFeature:function(feature_data,layer){
 					if(layer.feature.type==='Polygon'){
-						var label = ngds.Map.labeller.get_label();
+						var label = ngds.Map.labeller.get_cur_label();
 						var shapes_map = ngds.Map.state.shapes_map || (ngds.Map.state.shapes_map={});
 						shapes_map[label]=layer;
 					}

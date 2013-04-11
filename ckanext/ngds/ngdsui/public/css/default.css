@@ -1270,7 +1270,7 @@ Map widget
 }
 
 .leaflet-container .leaflet-control-zoom {
-	margin-top:80px;
+	/*margin-top:80px;*/
 }
 
 .map-widget-menu-item {
