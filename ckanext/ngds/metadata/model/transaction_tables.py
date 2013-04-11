@@ -66,6 +66,20 @@ class BulkUpload(NgdsDataObject):
             member = cls.by_data_file(reference)
         return member
 
+class BulkUpload_Package(NgdsDataObject):
+    
+    def __init__(self, **kwargs):
+        self.bulk_upload_id = kwargs.get('bulk_upload_id', None)
+        self.package_name = kwargs.get('package_name', None)
+        self.package_title = kwargs.get('package_title', None)
+        self.uploaded_date = kwargs.get('uploaded_date',None)
+
+    @classmethod
+    def by_bulk_upload(cls, querystr):
+        query = meta.Session.query(cls).filter(cls.bulk_upload_id == querystr)
+        return query.all()
+
+
 class StandingData(NgdsDataObject):
 
     def __init__(self, **kwargs):
@@ -110,6 +124,16 @@ def define_tables():
         Column('last_updated', types.DateTime, default=datetime.datetime.now),
     )
 
+    bulkupload_package = Table(
+        "bulk_upload_package",
+        meta.metadata,
+        Column("id", types.Integer, primary_key=True),
+        Column("bulk_upload_id", types.Integer,ForeignKey("bulk_upload.id")),
+        Column("package_name", types.UnicodeText),
+        Column("package_title", types.UnicodeText),
+        Column("uploaded_date", types.DateTime, default=datetime.datetime.now),
+    )    
+
     standingdata = Table(
         "standing_data",
         meta.metadata,
@@ -127,12 +151,14 @@ def define_tables():
         }
     )
     meta.mapper(StandingData, standingdata)
+    meta.mapper(BulkUpload_Package,bulkupload_package)
     
     # Stick these classes into the CKAN.model, for ease of access later
     model.BulkUpload = BulkUpload
     model.StandingData = StandingData
+    model.BulkUpload_Package = BulkUpload_Package
     
-    return bulkupload
+    return bulkupload,bulkupload_package,standingdata
 
 def db_setup():
     """Create tables in the database"""
@@ -141,7 +167,9 @@ def db_setup():
     
     
     bulkupload = meta.metadata.tables.get("bulk_upload", None)
+    bulkupload_package = meta.metadata.tables.get("bulk_upload_package", None)
     standingdata = meta.metadata.tables.get("standing_data", None)
+    
     #print "bulkupload: ",bulkupload
     
     if bulkupload == None:
@@ -152,4 +180,4 @@ def db_setup():
         
         # Alright. Create the tables.
         from ckanext.ngds.base.commands.ngds_tables import create_tables
-        create_tables([bulkupload,standingdata], log)
+        create_tables([bulkupload,bulkupload_package,standingdata], log)

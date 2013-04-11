@@ -9,6 +9,8 @@ import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
 import ckanext.ngds.lib.importer.helper as import_helper
 from pylons import config
+#the following needs to be revisted and removed...
+from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
 
 #Need to decide our own Read only keys
 readonly_keys = ('id', 'revision_id',
@@ -89,7 +91,7 @@ class BulkUploader(object):
 
             try:
                 data_file_path = os.path.join(bulk_upload_record.path,bulk_upload_record.data_file)
-                self.importpackagedata(file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
+                self.importpackagedata(bulk_upload_record.id,file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
                 bulk_upload_record.status = "COMPLETED"
             except Exception , e:
                 print e
@@ -101,7 +103,7 @@ class BulkUploader(object):
                 bulk_upload_record.save()
 
 
-    def importpackagedata(self,file_path=None,resource_dir=None,ckanclient=None):
+    def importpackagedata(self,bulk_upload_id,file_path=None,resource_dir=None,ckanclient=None):
         #print "Entered Import Record Client:",file_path
         from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
         from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
@@ -120,10 +122,23 @@ class BulkUploader(object):
 
         for pkg_dict in pkg_dicts:
             try:
-                loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
+                returned_package = loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
+                # Upload bulk upload to package relationship.
+                self._create_bulk_upload_package(bulk_upload_id,returned_package['name'],returned_package['title'])
+
             except Exception , e:
                 print "Skipping this record and proceeding with next one....",e 
                 raise
+    
+    def _create_bulk_upload_package(self,bulk_upload_id,package_name,package_title):
+        print "Create Bulk Upload Package: bid: %s pname: %s  ptitle: %s" % (bulk_upload_id,package_name,package_title)
+        data = {'bulk_upload_id':bulk_upload_id,'package_name':package_name,'package_title':package_title}
+        data_dict = {'model':'BulkUpload_Package'}
+        data_dict['data']=data
+        data_dict['process']='create'
+        context = {'model': model, 'session': model.Session}   
+        trans_dispatch(context,data_dict)     
+
        
 
 class SpreadsheetDataRecords(DataRecords):
