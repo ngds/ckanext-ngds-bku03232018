@@ -227,21 +227,20 @@ ngds.Map = {
 						 		span_elem.css("margin-left",span_margin);
 					 	});
 
-					 	$('.result-'+label).click(function(){
-					 		// Reset steps
+					 	$('.result-'+label).click(function(){					 		// Reset steps
 					 		$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
 					 		var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
 					 		for(var i=0;i<labels_colored.length;i++){
 					 			labels_colored[i].attr("src","/images/marker.png");
 					 		}
 
-					 		var shapes_colored = ngds.Map.state.colored_shapes || (ngds.Map.state.colored_shapes=[]);
-							for(var i=0;i<shapes_colored.length;i++){
-								shapes_colored[i].setStyle({weight:2,color:"blue"});
+							for(var shape_index in ngds.Map.state.shapes_map){
+								if(ngds.Map.state.shapes_map[shape_index]!==null && typeof ngds.Map.state.shapes_map[shape_index]!=='undefined') {
+									ngds.Map.state.shapes_map[shape_index].setStyle({weight:ngds.Map.state.shapes_map[shape_index].orig_weight,color:ngds.Map.state.shapes_map[shape_index].orig_color});
+								}
 							}
-							ngds.Map.state.colored_shapes=[]
 
-							labels_colored = ngds.Map.state.colored_labels = [];
+					 		labels_colored = ngds.Map.state.colored_labels = [];
 					 		// End reset steps
 
 					 		// Now do the actual transitions
@@ -252,48 +251,46 @@ ngds.Map = {
 					 	});
 					}
 					else {
-						var weight,color;
 						$('.result-'+label).hover(function(){ //fadein
 								var shape=ngds.Map.state.shapes_map[label];
-								weight=shape.options.weight;
-								color=shape.options.color;
-								// shape.setStyle({weight:3,color:"red"});
+								
+								ngds.Map.state.shapes_map[label].prev_weight=ngds.Map.state.shapes_map[label].options.weight;
+								ngds.Map.state.shapes_map[label].prev_color=ngds.Map.state.shapes_map[label].options.color;
+								shape.setStyle({weight:2,color:"#d54799"});
 						},function(){ //fadeout
 								var shape=ngds.Map.state.shapes_map[label];
-								// shape.setStyle({weight:weight,color:color});
+								shape.setStyle({weight:ngds.Map.state.shapes_map[label].prev_weight,color:ngds.Map.state.shapes_map[label].prev_color});
 						});
 
 						$('.result-'+label).click(function(){
 							// Reset steps
 							$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
-							
-							var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
+					 		var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
 					 		for(var i=0;i<labels_colored.length;i++){
 					 			labels_colored[i].attr("src","/images/marker.png");
 					 		}
-
-							var shapes_colored = ngds.Map.state.colored_shapes || (ngds.Map.state.colored_shapes=[]);
-							for(var i=0;i<shapes_colored.length;i++){
-								shapes_colored[i].setStyle({weight:2,color:"blue"});
+							// shapes
+					 		
+							for(var i=0;i<ngds.Map.state.shapes_map.length;i++){
+								if(ngds.Map.state.shapes_map[i]!==null && typeof ngds.Map.state.shapes_map[i]!=='undefined')
+								ngds.Map.state.shapes_map[i].setStyle({weight:ngds.Map.state.shapes_map[label].orig_weight,color:ngds.Map.state.shapes_map[label].orig_color});
 							}
-							ngds.Map.state.colored_shapes=[];
+							// ngds.Map.state.sha=[];
 							// End of Reset steps
 							$('.result-'+label).css('background-color','#dadada');
 							var shape=ngds.Map.state.shapes_map[label];
-							shape.setStyle({weight:3,color:"red"});
-							ngds.Map.state.colored_shapes.push(shape);
+							if(shape!==null && typeof shape!=='undefined') {
+								shape.setStyle({weight:3,color:"red"});
+								ngds.Map.state.shapes_map[label].prev_weight=3;
+								ngds.Map.state.shapes_map[label].prev_color="red";
+								
+							}
 						});
 					}
 
 			},function(count){
 				pager.set_state(count,query);
 			});
-			
-			// ngds.ckanlib.package_search({ "q":query },function(response) {
-			// 	var search_result = x = ngds.SearchResult(response.result);
-			// 	ngds.Map.SearchContext.set_preamble_count(search_result.get('count'));
-			// 	ngds.Map.SearchContext.set_results(response.result.results);
-			// });
 		},
 		get_layer:function(key) {
 			if(key in this.layers) {
@@ -348,11 +345,12 @@ ngds.Map = {
 						var label = ngds.Map.labeller.get_cur_label();
 						var shapes_map = ngds.Map.state.shapes_map || (ngds.Map.state.shapes_map={});
 						shapes_map[label]=layer;
+						shapes_map[label].orig_color="blue";
+						shapes_map[label].orig_weight=2;
 					}
 				},
 				pointToLayer:function(feature,latlng) {
 					var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_cur_label(),className:options.iconimg_id})});
-					console.log("adding");
 					return marker;						
 				}
 			});	
