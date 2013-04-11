@@ -271,9 +271,10 @@ ngds.Map = {
 					 		}
 							// shapes
 					 		
-							for(var i=0;i<ngds.Map.state.shapes_map.length;i++){
-								if(ngds.Map.state.shapes_map[i]!==null && typeof ngds.Map.state.shapes_map[i]!=='undefined')
-								ngds.Map.state.shapes_map[i].setStyle({weight:ngds.Map.state.shapes_map[label].orig_weight,color:ngds.Map.state.shapes_map[label].orig_color});
+							for(var shape_index in ngds.Map.state.shapes_map){
+								if(ngds.Map.state.shapes_map[shape_index]!==null && typeof ngds.Map.state.shapes_map[shape_index]!=='undefined' && shape_index!==label) {
+									ngds.Map.state.shapes_map[shape_index].setStyle({weight:ngds.Map.state.shapes_map[shape_index].orig_weight,color:ngds.Map.state.shapes_map[shape_index].orig_color});
+								}
 							}
 							// ngds.Map.state.sha=[];
 							// End of Reset steps
