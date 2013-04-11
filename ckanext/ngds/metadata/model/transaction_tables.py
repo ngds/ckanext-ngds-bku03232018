@@ -11,6 +11,7 @@ from ckan.model import meta
 from sqlalchemy import types, Column, Table, ForeignKey
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.sql.expression import or_ 
+from sqlalchemy.sql import func
 
 from sqlalchemy import types, Column, Table
 from sqlalchemy.orm import validates
@@ -65,6 +66,28 @@ class BulkUpload(NgdsDataObject):
             member = cls.by_data_file(reference)
         return member
 
+class StandingData(NgdsDataObject):
+
+    def __init__(self, **kwargs):
+        self.description = kwargs.get('description', None)
+        self.code = kwargs.get('code', None)
+        self.data_type = kwargs.get('data_type', None)    
+
+    @classmethod
+    def validate(cls,data_type,sdvalue):
+        """ This method validates whether given SD value is present in the model or not. 
+        If exists returns SD description otherwise None """
+
+        print "Data type:%s SD Value: %s" % (data_type,sdvalue)
+
+        query = meta.Session.query(cls).filter(cls.data_type == data_type)
+        query = query.filter(func.lower(cls.description) == sdvalue.lower())
+        member = query.first()        
+        if member is None:
+            return None
+        else:
+            return member.description
+
 
 def define_tables():
     """Create the in-memory represenatation of tables, and map those tables to classes defined above"""
@@ -84,6 +107,15 @@ def define_tables():
         Column('last_updated', types.DateTime, default=datetime.datetime.now),
     )
 
+    standingdata = Table(
+        "standing_data",
+        meta.metadata,
+        Column("id", types.Integer, primary_key=True),
+        Column("code", types.UnicodeText),
+        Column("description", types.UnicodeText),
+        Column("data_type", types.UnicodeText),
+    )    
+
 
     # Map those tables to classes, define the additional properties for related people
     meta.mapper(BulkUpload, bulkupload,
@@ -91,9 +123,11 @@ def define_tables():
             "uploaded_user": relationship(model.User)            
         }
     )
+    meta.mapper(StandingData, standingdata)
     
     # Stick these classes into the CKAN.model, for ease of access later
     model.BulkUpload = BulkUpload
+    model.StandingData = StandingData
     
     return bulkupload
 
@@ -104,7 +138,8 @@ def db_setup():
     
     
     bulkupload = meta.metadata.tables.get("bulk_upload", None)
-    print "bulkupload: ",bulkupload
+    standingdata = meta.metadata.tables.get("standing_data", None)
+    #print "bulkupload: ",bulkupload
     
     if bulkupload == None:
         # The tables have not been defined. Its likely that the plugin is not enabled in the CKAN .ini file
@@ -114,4 +149,4 @@ def db_setup():
         
         # Alright. Create the tables.
         from ckanext.ngds.base.commands.ngds_tables import create_tables
-        create_tables([bulkupload], log)
+        create_tables([bulkupload,standingdata], log)

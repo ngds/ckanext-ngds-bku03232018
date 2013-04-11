@@ -31,7 +31,9 @@ ngds.Map = {
 			//     attribution: "NGDS",
 			//     opacity:'0.9999'
 			// });
-			var _geoJSONLayer = this.geoJSONLayer = L.geoJson(); // Geo JSON Layer where we'll display all our features.
+			var _geoJSONLayer = this.geoJSONLayer = new L.geoJson(null,{onEachFeature:function(a,b){
+
+			}}); // Geo JSON Layer where we'll display all our features.
 			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -100.53332), zoom: 3});
 
 			var _drawControl = new L.Control.Draw({
@@ -75,6 +77,41 @@ ngds.Map = {
 				}
 			});
 			copy = [];
+
+			var placeMarker_single = L.Icon.Label.extend({
+					options: {
+						iconUrl: '',
+						shadowUrl: null,
+						iconSize: new L.Point(36, 36),
+						iconAnchor: new L.Point(0, 1),
+						labelAnchor: new L.Point(0, 0),
+						wrapperAnchor: new L.Point(0, 13),
+						labelClassName: 'placeMarks-label'
+					}
+				});
+			var placeMarker_double = L.Icon.Label.extend({
+					options: {
+						iconUrl: '',
+						shadowUrl: null,
+						iconSize: new L.Point(36, 36),
+						iconAnchor: new L.Point(0, 1),
+						labelAnchor: new L.Point(5, 5),
+						wrapperAnchor: new L.Point(12, 13),
+						labelClassName: 'placeMarks-label'
+					}
+				});
+			placeMarker_triple = L.Icon.Label.extend({
+					options: {
+						iconUrl: '',
+						shadowUrl: null,
+						iconSize: new L.Point(25, 41),
+						iconAnchor: new L.Point(0, 0),
+						labelAnchor: new L.Point(0, 0),
+						wrapperAnchor: new L.Point(13, 41),
+						labelClassName: 'placeMarks-label',
+						popupAnchor:new L.Point(0,-33)
+					}
+				});
 
 
 			// this.initialize_map_search();
@@ -168,24 +205,92 @@ ngds.Map = {
 			else {
 				// ngds.Map.manage_zoom(bounding_box,ngds.Map.shape.e.poly,ngds.Map.get_layer('drawnItems'));
 			}
-			pager.move(1,function(search_result) {
-				var count = search_result.get('count');				
-				var raw_result = search_result.raw();
-				me.clear_layer('geojson');
+			me.clear_layer('geojson');
+			pager.move(1,function(each_result,marker_or_shape) {
+				 	var label = ngds.Map.labeller.get_cur_label();
+				 	ngds.Map.add_raw_result_to_geojson_layer(each_result,{iconimg_id:'lmarker-'+label});
+				 	var span_margin = "0px";
+				 	
+				 	if(marker_or_shape==='marker') {
+					 	$('.result-'+label).hover(function() { //fadein
+						 		$('.lmarker-'+label).css("width","30px");
+						 		$('.lmarker-'+label).css("height","45px");
+						 		var span_elem = $('.lmarker-'+label).next();
+						 		span_elem.css("font-size","14pt");
+						 		// span_margin=span_elem.css("margin-left");
+						 		span_elem.css("margin-left","2px");
+						 	},function(){ // fadeout
+						 		$('.lmarker-'+label).css("width","25px");
+						 		$('.lmarker-'+label).css("height","41px");
+						 		var span_elem = $('.lmarker-'+label).next();
+						 		span_elem.css("font-size","12.5pt");
+						 		span_elem.css("margin-left",span_margin);
+					 	});
+
+					 	$('.result-'+label).click(function(){					 		// Reset steps
+					 		$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
+					 		var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
+					 		for(var i=0;i<labels_colored.length;i++){
+					 			labels_colored[i].attr("src","/images/marker.png");
+					 		}
+
+							for(var shape_index in ngds.Map.state.shapes_map){
+								if(ngds.Map.state.shapes_map[shape_index]!==null && typeof ngds.Map.state.shapes_map[shape_index]!=='undefined') {
+									ngds.Map.state.shapes_map[shape_index].setStyle({weight:ngds.Map.state.shapes_map[shape_index].orig_weight,color:ngds.Map.state.shapes_map[shape_index].orig_color});
+								}
+							}
+
+					 		labels_colored = ngds.Map.state.colored_labels = [];
+					 		// End reset steps
+
+					 		// Now do the actual transitions
+					 		$('.result-'+label).css('background-color','#dadada');
+					 		$('.lmarker-'+label).attr("src","/images/marker-red.png");
+					 		labels_colored.push($('.lmarker-'+label));
+					 		// End actual transitions
+					 	});
+					}
+					else {
+						$('.result-'+label).hover(function(){ //fadein
+								var shape=ngds.Map.state.shapes_map[label];
+								
+								ngds.Map.state.shapes_map[label].prev_weight=ngds.Map.state.shapes_map[label].options.weight;
+								ngds.Map.state.shapes_map[label].prev_color=ngds.Map.state.shapes_map[label].options.color;
+								shape.setStyle({weight:2,color:"#d54799"});
+						},function(){ //fadeout
+								var shape=ngds.Map.state.shapes_map[label];
+								shape.setStyle({weight:ngds.Map.state.shapes_map[label].prev_weight,color:ngds.Map.state.shapes_map[label].prev_color});
+						});
+
+						$('.result-'+label).click(function(){
+							// Reset steps
+							$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
+					 		var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
+					 		for(var i=0;i<labels_colored.length;i++){
+					 			labels_colored[i].attr("src","/images/marker.png");
+					 		}
+							// shapes
+					 		
+							for(var i=0;i<ngds.Map.state.shapes_map.length;i++){
+								if(ngds.Map.state.shapes_map[i]!==null && typeof ngds.Map.state.shapes_map[i]!=='undefined')
+								ngds.Map.state.shapes_map[i].setStyle({weight:ngds.Map.state.shapes_map[label].orig_weight,color:ngds.Map.state.shapes_map[label].orig_color});
+							}
+							// ngds.Map.state.sha=[];
+							// End of Reset steps
+							$('.result-'+label).css('background-color','#dadada');
+							var shape=ngds.Map.state.shapes_map[label];
+							if(shape!==null && typeof shape!=='undefined') {
+								shape.setStyle({weight:3,color:"red"});
+								ngds.Map.state.shapes_map[label].prev_weight=3;
+								ngds.Map.state.shapes_map[label].prev_color="red";
+								
+							}
+						});
+					}
+
+			},function(count){
 				pager.set_state(count,query);
-
-				for(index in raw_result.results) {
-				 	ngds.Map.add_raw_result_to_geojson_layer(raw_result.results[index]);
-				 }
-
 			});
-			
-			// ngds.ckanlib.package_search({ "q":query },function(response) {
-			// 	console.info(response.result);
-			// 	var search_result = x = ngds.SearchResult(response.result);
-			// 	ngds.Map.SearchContext.set_preamble_count(search_result.get('count'));
-			// 	ngds.Map.SearchContext.set_results(response.result.results);
-			// });
 		},
 		get_layer:function(key) {
 			if(key in this.layers) {
@@ -221,18 +326,37 @@ ngds.Map = {
 				});
 			});
 		},
-		add_raw_result_to_geojson_layer:function(result) { // Expects response.result, not response.
+		add_raw_result_to_geojson_layer:function(result,options) { // Expects response.result, not response.
 			try {				
 				var dataset = ngds.ckandataset(result);	
-				x=dataset;
 				var feature = dataset.getGeoJSON();				
 				var popup = dataset.map.getPopupHTML();
 			}
 			catch(e) {
 				return;
-			}															
-			var geoJSONRepresentation = L.geoJson(feature);		
+			}
+			// var geoJSONRepresentation = L.geoJson(feature);															
+			var geoJSONRepresentation = L.geoJson(feature,{
+					style:{
+						weight:2
+					},
+				onEachFeature:function(feature_data,layer){
+					if(layer.feature.type==='Polygon'){
+						var label = ngds.Map.labeller.get_cur_label();
+						var shapes_map = ngds.Map.state.shapes_map || (ngds.Map.state.shapes_map={});
+						shapes_map[label]=layer;
+						shapes_map[label].orig_color="blue";
+						shapes_map[label].orig_weight=2;
+					}
+				},
+				pointToLayer:function(feature,latlng) {
+					var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_cur_label(),className:options.iconimg_id})});
+					return marker;						
+				}
+			});	
+
 			geoJSONRepresentation.bindPopup(popup);
+
 			this.add_to_layer([geoJSONRepresentation],'geojson');
 		},
 		bind_zoom_listeners:function() {
@@ -243,14 +367,12 @@ ngds.Map = {
 				var map_ne_lat = map_bounds._northEast.lat;
 				var map_ne_lng = map_bounds._northEast.lng;
 				var layers = ngds.Map.zoom_managed_list;
-				console.log(layers);
 				for(var i in ngds.Map.zoom_managed_list) {
 					var lid=layers[i]._leaflet_id;
 						var bbox_sw_lat = layers[i].bbox_bounds._southWest.lat;
 						var bbox_sw_lng = layers[i].bbox_bounds._southWest.lng;
 						var bbox_ne_lat = layers[i].bbox_bounds._northEast.lat;
 						var bbox_ne_lng = layers[i].bbox_bounds._northEast.lng;
-						console.log(layers[i]);
 
 						if((map_sw_lat>bbox_sw_lat) && (map_sw_lng>bbox_sw_lng) && (map_ne_lat<bbox_ne_lat) && (map_ne_lng<bbox_ne_lng)) {
 							if(layers[i]._shown) {
@@ -328,4 +450,19 @@ ngds.Map = {
 		get_search_mode:function() {
 			return this.mode;
 		},
+		labeller:{
+			get_label:function() {
+				this._count = (this._count || (this._count=0))+1;
+				return this._count;
+			},
+			reset:function() {
+				this._count=0;
+			},
+			get_cur_label:function() {
+				return this._count;
+			}
+		},
+		state:{ // Maintain state of various components in here ... make sure your keys are unique
+
+		}
 	};

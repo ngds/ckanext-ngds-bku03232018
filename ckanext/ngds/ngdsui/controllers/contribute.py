@@ -10,7 +10,6 @@ from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 
 import os
-from pylons import config
 import shutil
 import zipfile
 import os.path

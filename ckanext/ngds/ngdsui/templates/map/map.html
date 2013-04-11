@@ -1,9 +1,6 @@
 {% extends "page_ngds.html" %}
 {% set active_page = "map" %}
-{% block styles %}
-	 {{ super() }}
-	 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
-{% endblock %}
+
 {%- block content %}
 
 <div class="map-search" style="float:left;">
@@ -33,11 +30,15 @@
 	<input name="wms" type="text" id="wms" style="width:150px;">
 </div> -->
 {% endblock %}
-
-{% block scripts %}
-	{{ super() }}
+{% block styles %}
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 	<link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
 	<link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
+	<link rel="stylesheet" href="/vendor/iconlabel/leaflet.iconlabel.css" />
+	{{ super() }}
+{% endblock %}
+{% block scripts %}
+	{{ super() }}
 	<script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
 	<script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
@@ -48,5 +49,5 @@
 	<script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
 	<script type="text/javascript" src="/scripts/map/pager.js"></script>
-
+	<script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
 {% endblock %}    

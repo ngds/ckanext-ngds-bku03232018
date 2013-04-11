@@ -44,7 +44,9 @@ ngds.Pager = function(rows) {
 		}
 		$(".page-num").click(function(ev){
 			var page_number = ev.target.firstChild.data;
-			me.move(page_number,handler);
+			me.move(page_number,handler,function(count){
+				// me.set_state(count,query);
+			});
 		});
 	};
 
@@ -52,8 +54,10 @@ ngds.Pager = function(rows) {
 		$(".results").empty();
 	};
 
-	this.move = function(page_number,fn) {
+	this.move = function(page_number,fn,finish_fn) {
+		ngds.Map.clear_layer('geojson');
 		handler = fn;
+		ngds.Map.labeller.reset();
 		start = (page_number - 1) * rows;
 		// ngds.Map.removeZoomEventListeners();
 		if(start>(num_pages*rows+1)) {
@@ -88,34 +92,52 @@ ngds.Pager = function(rows) {
 			var results_div = $(".results");
 
 			var results = response.result.results;
-
 			for(var i=0;i<results.length;i++){
 				var each_result = $("<div/>",{class:"result"});
 				var title = $('<a/>',{class:'description',href:['/dataset',results[i].name].join('/'),target:"_blank"});
-
+				
 				var notes = $('<p/>',{class:'notes'});
 				var type = $('<p/>',{class:'type'});
 				var wms = $('<button/>',{class:'wms',id:results[i]['resources'][0].id});
 				var published = $('<p/>',{class:'published'});
+				
+				var marker_or_shape='';
+				if(ngds.ckandataset(results[i]).get_feature_type().type==='Point'){
+					var label = ngds.Map.labeller.get_label();
+					each_result.addClass('result-'+label);
+					var marker_container = $("<div/>",{class:'result-marker-container marker-'+label});
+					var marker_image = $("<img/>",{src:"/images/marker.png",class:'result-marker'});
+					var marker_label = $("<span/>",{class:'result-marker-label marker-label-'+label});
+					marker_label.text(label);
+					marker_container.append(marker_image);
+					marker_container.append(marker_label);
+					each_result.append(marker_container);
+					marker_or_shape='marker'
+				}
+				else if (ngds.ckandataset(results[i]).get_feature_type().type==='Polygon'){
+					var label = ngds.Map.labeller.get_label();
+					each_result.addClass('result-'+label);
+					marker_or_shape='shape'
+				}
 				published.attr('id','ngds'+i);
-
 				notes.text(results[i]['notes']);
 				title.text(results[i]['title']);
 				type.text(results[i]['type']);
 				wms.text("WMS");
 				published.text(new Date(results[i]['metadata_created']).toLocaleDateString());
-				
+			
 				each_result.append(title);
 				each_result.append(notes);
 				each_result.append(type);
 				each_result.append(wms);
 				each_result.append(published);
 				results_div.append(each_result);
+				fn(results[i],marker_or_shape);
 			}
 			inc = 1;
 			$(".wms").click(function(ev){
 				var id=ev.currentTarget.id;
-						var ngds_layer = L.tileLayer.wms("http://localhost:8080/geoserver/NGDS/wms",{
+						var ngds_layer = L.tileLayer.wms("http://ec2-184-72-146-8.compute-1.amazonaws.com:8080/geoserver/NGDS/wms",{
 						layers:"NGDS:"+id,
 						format: 'image/png',
 					    transparent: true,
@@ -130,7 +152,7 @@ ngds.Pager = function(rows) {
 			if($('.page-num').length==0) {
 				initialize_pages_ui(num_pages);
 			}
-			return fn(result);
+			finish_fn(response.result.count);
 		});
 
 		start = start + rows;

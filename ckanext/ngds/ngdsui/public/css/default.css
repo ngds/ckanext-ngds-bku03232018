@@ -1270,7 +1270,7 @@ Map widget
 }
 
 .leaflet-container .leaflet-control-zoom {
-	margin-top:80px;
+	/*margin-top:80px;*/
 }
 
 .map-widget-menu-item {
@@ -2079,6 +2079,11 @@ margin-left: 40px;
 
 .result {
 	margin-left:30px;
+	margin-top:15px;
+}
+
+div.result:hover {
+	cursor:pointer;
 }
 
 .description {
@@ -2102,4 +2107,40 @@ margin-left: 40px;
 
 .wms {
 	display:inline;
+}
+
+.placeMarks-label {
+   -moz-box-shadow: none;
+   -webkit-box-shadow: none;
+   box-shadow: none;
+   color: #fff;
+   position:relative;
+}
+
+.leaflet-marker-iconlabel {
+	background:transparent;
+	border-radius:0px;
+}
+
+.result-marker-label {
+	position: absolute;
+	margin-top: 8px;
+	left: 8px;
+	color: #fff;
+	font-size: 12.5pt;
+	font-weight: bold;
+}
+
+.result-marker { 
+	width:25px;
+	height:41px;
+}
+
+.result-marker-container {
+	position:relative;
+	display:inline-block;
+}
+
+div.result-marker-container:hover{
+	cursor:pointer;
 }

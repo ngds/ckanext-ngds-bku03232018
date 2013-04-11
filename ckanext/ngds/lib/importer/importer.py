@@ -8,6 +8,7 @@ from ckanext.importlib.importer import *
 import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
 import ckanext.ngds.lib.importer.helper as import_helper
+from pylons import config
 
 #Need to decide our own Read only keys
 readonly_keys = ('id', 'revision_id',
@@ -18,22 +19,53 @@ readonly_keys = ('id', 'revision_id',
                  'metadata_modified',
                  'metadata_created',
                  'notes_rendered')
+referenced_keys = ('category','status','topic','protocol')
 
 
 class BulkUploader(object):
 
     def __init__(self):
-        import urlparse
-        self.url = 'http://localhost:5000/api'
-        self.parsed = urlparse.urlparse(self.url)
-        newparsed = list(self.parsed)
-        self.netloc = self.parsed.netloc
+        client_config_file = config.get('ngds.client_config_file')
+        #print "client_config_file: ",client_config_file
+        self._loadclientconfig(client_config_file)
+        self.ckanclient = self._get_ckanclient()
 
+
+    def _loadclientconfig(self,config_path):
+        import ConfigParser
+        import os
+        import urlparse
+        if os.path.exists(config_path):
+            cfgparser = ConfigParser.SafeConfigParser()
+            cfgparser.readfp(open(config_path))
+            section = 'app:client'
+            if cfgparser.has_section(section):
+                self.url = cfgparser.get(section, 'api_url', '')
+                #print "self.url: ",self.url
+                if self.url =='':
+                        #print "API URL is None so can't proceed further"
+                        raise Exception ("Unable to find API URL or URL is empty")
+                self.parsed = urlparse.urlparse(self.url)
+                newparsed = list(self.parsed)
+                self.netloc = self.parsed.netloc            
+                section = 'index:%s' % self.netloc
+                if cfgparser.has_section(section):
+                    self.api_key = cfgparser.get(section, 'api_key', '')                
+                    if self.api_key =='':
+                        #print "API URL is None so can't proceed further"
+                        raise Exception ("Unable to find API key or API key is empty.")                        
+            else:                        
+                raise Exception ("Unable to find API URL or URL is empty")
+
+        else:
+            #print "Unable to find the client configuration file."
+            raise Exception ("Unable to find the client config file.")
+
+    
     def _get_ckanclient(self):
         from ckanclient import CkanClient
-        apikey = self._get_api_key_from_config()
 
-        testclient = CkanClient(base_location=self.url, api_key=apikey)
+        testclient = CkanClient(base_location=self.url, api_key=self.api_key)
 
         return testclient
 
@@ -46,7 +78,7 @@ class BulkUploader(object):
         print "entering execute_bulk_upload"
         query = model.BulkUpload.search("VALID")
 
-        print "Returned Query:",query
+        #print "Returned Query:",query
         
 
         for bulk_upload_record in query.all():
@@ -55,18 +87,16 @@ class BulkUploader(object):
 
             try:
                 data_file_path = os.path.join(bulk_upload_record.path,bulk_upload_record.data_file)
-                self.importpackagedata(file_path=data_file_path,resource_dir=bulk_upload_record.path)
+                self.importpackagedata(file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
                 bulk_upload_record.status = "COMPLETED"
             except Exception , e:
+                print e
                 print "Exception while processing bulk upload for the file :" ,bulk_upload_record.data_file
                 bulk_upload_record.status = "FAILURE"
                 bulk_upload_record.comments = e.message
             finally:
                 bulk_upload_record.last_updated = None
-                bulk_upload_record.save()
-
-
-
+                #bulk_upload_record.save()
 
 
     def importpackagedata(self,file_path=None,resource_dir=None,ckanclient=None):
@@ -92,18 +122,7 @@ class BulkUploader(object):
             except Exception , e:
                 print "Skipping this record and proceeding with next one....",e 
                 raise
-
-    def _get_api_key_from_config(self):
-        import ConfigParser
-        import os
-        config_path = os.path.join(os.path.expanduser('~'), '.ckanclientrc')
-        if os.path.exists(config_path):
-            cfgparser = ConfigParser.SafeConfigParser()
-            cfgparser.readfp(open(config_path))
-            section = 'index:%s' % self.netloc
-            if cfgparser.has_section(section):
-                api_key = cfgparser.get(section, 'api_key', '')
-                return api_key            
+       
 
 class SpreadsheetDataRecords(DataRecords):
     '''Takes SpreadsheetData and converts it its titles and
@@ -209,7 +228,38 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
             #logger('Warning: No license name matches \'%s\'. Ignoring license.' % license_title)
             return u''    
 
+    @classmethod
+    def responsible_party_2_id(self,name,email):
+        from ckan.model import ResponsibleParty 
 
+        resparty = ResponsibleParty()
+
+        foundparties = (resparty.find(email)).all()
+
+        numberofResParties = len(foundparties)
+
+        if numberofResParties == 0:
+            raise Exception("Data Error: No responsible party is found with the given name %s and email %s " % (name,email))
+            #Need to add this person into Responsible Party details.
+        elif numberofResParties > 1:
+            raise Exception("Data Error: More than one responsible party is found with the given name %s and email %s " % (name,email))
+        else:
+            print "Found Party ID: ",numberofResParties[0].id
+            return numberofResParties[0].id
+
+    @classmethod
+    def validate_SD(self,model_type,sdValue):
+        #Call Model's validate method which will compare the sd value against the Standing data table.
+        from ckan.model import StandingData
+
+        sdObject = StandingData()
+
+        validated_value = sdObject.validate(model_type,sdValue)
+
+        if validated_value is None:
+            raise Exception("Data Error: No Standing data matching the input - %s for the type - %s" % (sdValue,model_type)) 
+        else:
+            return validated_value    
         
     @classmethod
     def pkg_xl_dict_to_fs_dict(cls, pkg_xl_dict, logger=None):
@@ -230,10 +280,10 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
             if cell:
-                if title == 'private':
-                  print "Private value....",cell
                 if title in standard_fields:
                     pkg_fs_dict[title] = cell
+                elif title in referenced_keys:
+                    pkg_fs_dict[title] = cls.validate_SD(title,cell)
                 elif title == 'license':
                     #print "license: ", cell
                     license_id = cls.license_2_license_id(cell)
