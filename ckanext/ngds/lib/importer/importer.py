@@ -21,6 +21,8 @@ readonly_keys = ('id', 'revision_id',
                  'notes_rendered')
 referenced_keys = ('category','status','topic','protocol')
 
+#DEFAULT_GROUP = ngds_helper.get_default_group()
+
 
 class BulkUploader(object):
 
@@ -96,7 +98,7 @@ class BulkUploader(object):
                 bulk_upload_record.comments = e.message
             finally:
                 bulk_upload_record.last_updated = None
-                #bulk_upload_record.save()
+                bulk_upload_record.save()
 
 
     def importpackagedata(self,file_path=None,resource_dir=None,ckanclient=None):
@@ -280,10 +282,10 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
             if cell:
+                if title in referenced_keys:
+                    cell = cls.validate_SD(title,cell)
                 if title in standard_fields:
                     pkg_fs_dict[title] = cell
-                elif title in referenced_keys:
-                    pkg_fs_dict[title] = cls.validate_SD(title,cell)
                 elif title == 'license':
                     #print "license: ", cell
                     license_id = cls.license_2_license_id(cell)
@@ -308,12 +310,6 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                                 blank_dict[blank_field] = u''
                             pkg_fs_dict['resources'].append(blank_dict)
 
-                        # if field =='upload_file':
-                        #     #Upload the file and get the URL of it.
-                        #     upload_url=import_helper.upload_file_return_path(file_name=cell,file_path="/home/ngds/work/")
-                        #     pkg_fs_dict['resources'][res_index]['url'] = upload_url
-                            
-
                         pkg_fs_dict['resources'][res_index][field] = cell
                     else:
                         logger('Warning: Could not understand resource title \'%s\'. Ignoring value: %s' % (title, cell))
@@ -329,7 +325,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                     if not pkg_fs_dict.has_key('extras'):
                         pkg_fs_dict['extras'] = {}
                     pkg_fs_dict['extras'][title] = cell
-        pkg_fs_dict['owner_org']='public'            
+        pkg_fs_dict['owner_org']='public'
         return pkg_fs_dict
 
                 

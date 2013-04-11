@@ -86,7 +86,10 @@ class StandingData(NgdsDataObject):
         if member is None:
             return None
         else:
-            return member.description
+            if member.code is not None:
+                return member.code
+            else: 
+                return member.description
 
 
 def define_tables():
