@@ -29,7 +29,7 @@ Example:
   </li>
   <li class="middle {{ s2 }}">
     {% if s2 != 'complete' %}
-      <span class="highlight">2. {{ _('Add data') }}</span>
+      <span class="highlight">2. {{ _('Add Resources') }}</span>
     {% else %}
       {% if s1 == 'active' or s3 == 'active'%}
         {# stage 1 #}
@@ -41,7 +41,7 @@ Example:
   </li>
   <li class="last {{ s3 }}">
     {% if s3 != 'complete' %}
-      <span class="highlight">3. {{ _('Additional data') }}</span>
+      <span class="highlight">3. {{ _('Dataset Metadata') }}</span>
     {% else %}
       {% if s1 == 'active' or s2 == 'active' %}
         {# stage 1 #}

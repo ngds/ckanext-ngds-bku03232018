@@ -12,9 +12,25 @@
 {% endblock -%}
 
 ## Include our css resources in this block
+
+
 {% block styles %}
 <meta name="apple-mobile-web-app-capable" content="yes">
-	<link rel="stylesheet" type="text/css" title="Demo Stylesheet"  href="/css/default.css"/>
+<script type="text/javascript">
+if((navigator.userAgent.match(/iPad/i))) {
+document.write("<link type=\"text\/css\" rel=\"stylesheet\" media=\"all\" href=\"/css/ipad.css\" charset=\"utf-8\" \/>");
+document.write("<meta name=\"viewport\" content=width=1024px, minimum-scale=1.0, maximum-scale=1.0 \/>");
+}
+else if(navigator.userAgent.match(/iPhone/i)) {
+document.write("<link type=\"text\/css\" rel=\"stylesheet\" media=\"all\" href=\"iphone.css\" charset=\"utf-8\" \/>");
+document.write("<meta name=\"viewport\" content=width=768px, minimum-scale=1.0, maximum-scale=1.0 \/>");
+}
+else
+{
+document.write('<link type=\"text/css\" rel=\"stylesheet\" href=\"/css/default.css\"/>');
+}
+</script>
+	<!-- <link rel="stylesheet" type="text/css" title="Demo Stylesheet"  href="/css/default.css"/> -->
   <script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
   <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
   <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
@@ -52,6 +68,10 @@
             <script>
               $(document).ready(function() {
                 $(".flash-msg-close").click(function(ev){
+                  ev.currentTarget.parentElement.remove();
+                });
+             
+              $(".close").live('click',function(ev){ // Late binding...awesome!
                   ev.currentTarget.parentElement.remove();
                 });
               });

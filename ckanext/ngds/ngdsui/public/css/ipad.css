@@ -879,7 +879,7 @@ div.search-browse-inverted-dome { /* Tres cool. */
 } 
 
 div#content-container {
-	min-height:400px;
+	min-height:200px;
 }
 
 div.about-ngds {
@@ -1095,7 +1095,7 @@ div.map-search p.map-search-desc {
 
 div.map-search input[type="text"] {
 	margin-left:15px;
-	width:220px;
+	width:180px;
 	font-family:Arial;
 	font-size:20px;
 }
@@ -1103,7 +1103,7 @@ div.map-search input[type="text"] {
 div.map-search input[type="submit"] {
 	font-family:Arial;
 	font-size:20px;
-	width:50px;
+	width:80px;
 	height:30px;
 	margin-left:10px;
 }
@@ -2078,13 +2078,13 @@ margin-left: 40px;
 }
 
 .results { 
-	margin-top:20px;
+	/*margin-top:20px;*/
 	margin-left:20px;
 }
 
 .result {
 	margin-left:30px;
-	margin-top:15px;
+	margin-top:6px;
 }
 
 div.result:hover {

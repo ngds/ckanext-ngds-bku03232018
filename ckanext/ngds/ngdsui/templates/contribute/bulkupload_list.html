@@ -1,20 +1,67 @@
 {% extends "page_ngds.html" %}
 {%- block content %}
-<h1>Details of Bulk Upload </h1>
 
-	<div style="align:center;padding-top:20px;padding-left:20px;font-size: 12px; font-family: Arial;">
-		<table style="border: 1px solid black;">
+
+	{% if c.bulkuploads %}  
+	<h4>Bulk Uploaded Records</h4>
+	<div style="height:325px; overflow:auto;align:center;padding-left:20px;font-size: 12px; font-family: Arial;">
+		{% if c.userobj.sysadmin %}
+		<form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='execute_bulkupload') }}">
+			<p style="margin-bottom:15px; align:right;">To initiate bulk uploader process manually click here: {{h.submit('submit', 'Execute')}}</p>
+		</form>
+		{% endif %}
+		
+		<table style="width:100%;border: 1px solid black;">
 			<tr>
-				<td>Data File</td><td>Resources File</td><td>Status</td><td>Comments</td><td>Uploaded Date</td>
+				<th>Data File</th><th>Resources File</th><th>Status</th><th>Comments</th><th>Uploaded Date</th><th>Details</th>
 			</tr>
 			{% for bulkupload in c.bulkuploads %}
+			<form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_package_list') }}">
+				<input type="hidden" name="id" value="{{ bulkupload.id }}"/>
 			<tr>
-				<td>{{bulkupload.data_file}}</td><td>{{bulkupload.resources}}</td><td>{{bulkupload.status}}</td><td>{{bulkupload.comments}}</td><td>{{bulkupload.uploaded_date}}</td>
+				<td>{{bulkupload.data_file}}</td><td>{{bulkupload.resources}}</td><td>{{bulkupload.status}}</td><td>{% if bulkupload.comments %} {{bulkupload.comments}} {% else %} {% endif%}</td><td>{{bulkupload.uploaded_date}}</td><td>{{h.submit('submit', 'Details')}}</td>
 			</tr>
+			</form>
 			{% endfor%}
 
 		</table>
-	</div>         
+	</div>
+	{% endif %}
+
+	{% if c.selected_upload %}  
+	<h4>Details of Bulk Uploaded Packages</h4>
+	<table style="margin-left:20px;width:70%;font-size: 12px; font-family: Arial;">
+		<tr>
+			<td><b>Data File:</b> {{c.selected_upload.data_file}}</td><td><b>Resources File:</b> {{c.selected_upload.resources}}</td>
+		</tr>	
+		<tr>
+			<td><b>Status:</b> {{c.selected_upload.status}}</td><td><b>Comments:</b> {{c.selected_upload.comments}}</td>
+		</tr>
+	</table>
+	<br>
+	<div style="height:250px; overflow:auto;align:center;padding-left:20px;font-size: 12px; font-family: Arial;">
+		<table style="width:70%;border: 1px solid black;">
+			{% if c.uploaded_packages %} 
+			{% set i = 0 %}
+				<tr>
+					<th>S. No.</th><th>Package Title</th><th>Uploaded Date</th>
+				</tr>
+				{% for bulkupload_package in c.uploaded_packages %}
+				{% set i = i+1 %}
+				<tr>
+					<td>{{i}}</td><td><a href='/dataset/{{bulkupload_package.package_name}}' target="_blank" style="text-decoration: none;" >{{bulkupload_package.package_title}}</a></td><td>{{bulkupload_package.uploaded_date}}</td>
+				</tr>
+				{% endfor%}
+			{% else %}
+				<tr> <td>None of the Packages created/updated as part of this upload.</td></tr>
+			{% endif %}
+
+
+		</table>
+	<a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}" >Go back</a>
+	</div>		
+
+	{% endif %}
 
 
 {% endblock %}

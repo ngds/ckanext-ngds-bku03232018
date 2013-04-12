@@ -1,25 +1,50 @@
 {% extends "page_ngds.html" %}
 
+{% block styles %}
+  <link rel="stylesheet" type="text/css" title="Demo Stylesheet"  href="/css/default.css"/>
+
+  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
+  <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
+  <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
+     <!-- <link rel="stylesheet" type="text/css"   href="/css/maintest.css"/> -->
+{% endblock %}
+
+
+
+</style>
+
+
 {% set user = c.user_dict %}
-
-{% block subtitle %}{{ user.display_name }}{% endblock %}
-
+ {% block content%}
+ <div class="toolbar">
+<!--{% block subtitle %}{{ user.display_name }}{% endblock %}-->
+<ol class="breadcrumb">
 {% block breadcrumb_content %}
   {{ h.build_nav('user_index', _('Users')) }}
   {{ h.build_nav('user_datasets', user.display_name|truncate(35), id=user.name) }}
 {% endblock %}
+</ol>
 
-{% block content%}
+
+
+
+
 
 
 {% block actions_content %}
+
+<ul class="actions pull-right">
 {% if h.check_access('user_update', user) %}
-  {% link_for _('Edit'), controller='user', action='edit', id=user.name, class_='btn btn-primary', icon='wrench' %}
+  <li>{% link_for _('Edit'), controller='user', action='edit', id=user.name, class_='btn', icon='wrench' %}</li>
 {% endif %}
 {% if c.is_myself == false %}
   <li>{{ h.follow_button('user', user.id) }}</li>
 {% endif %}
+</ul>
 {% endblock %}
+
+ </div>
+
 <div id="login-page">
 
 <div class="secondary-content module context-info">
@@ -88,10 +113,13 @@
 <div class="primary-content">
   <article class="module profile">
     {% block page_header %}
-      {% snippet 'snippets/page_header.html', items=[
-          h.build_nav_icon('user_datasets', _('Datasets'), id=user.name),
-          h.build_nav_icon('user_activity_stream', _('Activity Stream'), id=user.name),
-        ] %}
+      <header class="module-content page-header">
+        <ul class="nav nav-tabs">
+          {% block page_header_tabs %}
+            {{ h.build_nav_icon('user_datasets', _('Datasets'), id=user.name) }}
+          {% endblock %}
+        </ul>
+      </header>
     {% endblock %}
 
     <section class="module-content search-results">
