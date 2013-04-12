@@ -321,3 +321,19 @@ class ContributeController(NGDSBaseController):
 
 		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
 		redirect(url)
+
+	def bulkupload_list(self):
+		uploads = model.BulkUpload.get_all()
+
+		data = {'id':1}
+		data_dict = {'model':'BulkUpload'}
+		data_dict['data']=data
+		data_dict['process']='read'
+		context = {'model': model, 'session': model.Session}   
+		#print get_action('transaction_data')(context,data_dict)
+
+		#print model.BulkUpload.get(1)
+
+		c.bulkuploads = uploads
+
+		return render('contribute/bulkupload_list.html')
