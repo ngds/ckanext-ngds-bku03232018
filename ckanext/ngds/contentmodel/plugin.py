@@ -38,7 +38,7 @@ class ContentModelPlugin(p.SingletonPlugin):
     p.implements(p.IAuthFunctions)
 
     def get_actions(self):
-        actions = {'contentmodel_refreshCache' : action.contentmodel_refreshCache, 'contentmodel_list' : action.contentmodel_list, 'contentmodel_get': action.contentmodel_get, 'contentmodel_checkFile': action.contentmodel_checkFile}
+        actions = {'contentmodel_refreshCache' : action.contentmodel_refreshCache, 'contentmodel_list' : action.contentmodel_list, 'contentmodel_list_short' : action.contentmodel_list_short, 'contentmodel_get': action.contentmodel_get, 'contentmodel_checkFile': action.contentmodel_checkFile}
         return actions
 
     def get_auth_functions(self):

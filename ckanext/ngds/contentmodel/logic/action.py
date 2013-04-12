@@ -34,15 +34,56 @@ def contentmodel_refreshCache(context, data_dict):
 
 
 def contentmodel_list(context, data_dict):
-    '''Refresh the cache of Content Models on the CKAN node.
+    '''List all the cached Content Models on the CKAN node.
     **Parameters:**
     None.
     
     **Results:**
     :returns: The list of all available content models.
-    :rtype: vector
+    :rtype: list
     '''
     return ckanext.ngds.contentmodel.model.contentmodels.contentmodels
+
+def contentmodel_list_short(context, data_dict):
+    '''List all the cached Content Models on the CKAN node but abbreviate the returned result to
+    show only the following dictionary entries per content model:
+    - title
+    - description
+    - versions
+       * uri
+       * version
+ 
+    An example output should look like this:
+       [ { 'title': 'blabla', 'description': 'more bla', 
+        'versions': [ {'uri': 'http://...', 'version': '1.5'}, {...} ], 
+        'uri': 'http://...'},
+      . . .
+    ]  
+
+    
+    **Parameters:**
+    None.
+    
+    **Results:**
+    :returns: The list of all available content models.
+    :rtype: list
+    '''
+    modelsshort= [] 
+    for model in ckanext.ngds.contentmodel.model.contentmodels.contentmodels:
+        m= {}
+        m['title']= model['title']
+        m['description']= model['description']
+        versions= []
+        for version in model['versions']:
+            v= {}
+            v['uri']= version['uri']
+            v['version']= version['version']
+            versions.append(v)
+        m['versions']= versions
+        m['uri']= model['uri']
+        modelsshort.append(m)   
+
+    return modelsshort
 
 
 def contentmodel_get(context, data_dict):
