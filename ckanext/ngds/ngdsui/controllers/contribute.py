@@ -101,28 +101,36 @@ class ContributeController(NGDSBaseController):
 
 		zfile.extractall(path=upload_dir)
 
-		self._validate_uploadfile(csvfilepath,upload_dir)
+		def dir_filter(s):
+			if os.path.isdir(os.path.join(upload_dir,s)):
+				return False
+   			return True
 
-		#For now pass the status as "VALID" this has to change based on the validation.
-		status = "VALID"
+		resource_list = filter(dir_filter,zfile.namelist())
+
+		status = self._validate_uploadfile(csvfilepath,upload_dir,resource_list)
 
 		self._create_bulk_upload_record(c.user or c.author,datafilename,resourcesfilename,upload_dir,status)
 
-		h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
-
 		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload')
 		redirect(url)		
-		#return 'Successfully uploaded: %s' % (myzipfile.filename)	
 
-	def _validate_uploadfile(self,data_file,resource_path):
+
+	def _validate_uploadfile(self,data_file,resource_path,resource_list):
 
 		#import ckanext.ngds.lib.importer.validator.NGDSValidator
-		import ckanext.ngds.lib.importer.importer as ngdsimporter
-		
+		import ckanext.ngds.lib.importer.validator as validator
+            		
+		try:
+			validator = validator.NGDSValidator(filepath=data_file,resource_path=resource_path,resource_list=resource_list)
+			validator.validate()
+			status="VALID"
+			h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
+		except Exception, e:
+			h.flash_error(_('Files Uploaded but it is invalid. Error: "%s" '%e.__str__()), allow_html=True)
+			status ="INVALID"
 
-		validator = ngdsimporter.NGDSPackageImporter(filepath=data_file,resource_path=resource_path)		
-
-
+		return status
 
 	def _create_bulk_upload_record(self,user,data_file,resources,path,status):
 		#print "inside _create_bulk_upload_record:",c.user

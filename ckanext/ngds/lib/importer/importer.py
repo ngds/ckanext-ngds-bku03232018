@@ -149,9 +149,9 @@ class SpreadsheetDataRecords(DataRecords):
         assert isinstance(spreadsheet_data, spreadsheet_importer.SpreadsheetData), spreadsheet_data
         self._data = spreadsheet_data
         # find titles row
-        self.titles, last_titles_row_index = self.find_titles(essential_title)
+        self.titles, self.last_titles_row_index = self.find_titles(essential_title)
         #print "Titles: ",self.titles
-        self._first_record_row = self.find_first_record_row(last_titles_row_index + 1)     
+        self._first_record_row = self.find_first_record_row(self.last_titles_row_index + 1)     
 
     def find_titles(self, essential_title):
         #print "find_titles Here essential_title: ",essential_title
@@ -189,6 +189,7 @@ class SpreadsheetDataRecords(DataRecords):
     def records(self):
         '''Returns each record as a dict.'''
         #print "Returning from NGDS records...."
+        print "enter records property...."
         for row_index in range(self._first_record_row, self._data.get_num_rows()):
             row = self._data.get_row(row_index)
             row_has_content = False
@@ -209,17 +210,6 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         self._record_params = record_params if record_params != None else ['Title']
         self._record_class = record_class
         super(NGDSPackageImporter, self).__init__(record_class=record_class,**kwargs)
-
-    
-    def validate(self):
-        print "Entered loading spread sheet data"
-
-        print "self._package_data_records:",self._package_data_records
-
-        #package_data = spreadsheet_importer.XlData(self.log, filepath=self._filepath,buf=None)
-
-        #self._package_data_records = MultipleSpreadsheetDataRecords(data_list=package_data,record_params=self._record_params,record_class=self._record_class)
-
         
     # def import_into_package_records(self):
     #     try: 
