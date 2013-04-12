@@ -13,6 +13,7 @@ import ckanext.ngds.contentmodel.model.contentmodels
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
+@logic.side_effect_free
 def contentmodel_refreshCache(context, data_dict):
     '''Refreshes the cache containing the NGDS content models from the USGIN Web Site
 
@@ -32,7 +33,7 @@ def contentmodel_refreshCache(context, data_dict):
     ckanext.ngds.contentmodel.model.contentmodels.contentmodels = simplejson.load(remotefile)
     # return ckanext.ngds.contentmodel.model.contentmodels.contentmodels
 
-
+@logic.side_effect_free
 def contentmodel_list(context, data_dict):
     '''List all the cached Content Models on the CKAN node.
     **Parameters:**
@@ -44,6 +45,7 @@ def contentmodel_list(context, data_dict):
     '''
     return ckanext.ngds.contentmodel.model.contentmodels.contentmodels
 
+@logic.side_effect_free
 def contentmodel_list_short(context, data_dict):
     '''List all the cached Content Models on the CKAN node but abbreviate the returned result to
     show only the following dictionary entries per content model:
@@ -85,7 +87,7 @@ def contentmodel_list_short(context, data_dict):
 
     return modelsshort
 
-
+@logic.side_effect_free
 def contentmodel_get(context, data_dict):
     '''Returns the information about a certain content model.
     
@@ -120,7 +122,7 @@ def contentmodel_get(context, data_dict):
     # version is again a list with a single entry
     return version[0]
 
-
+@logic.side_effect_free
 def contentmodel_checkFile(context, data_dict):
     '''Refresh the cache of Content Models on the CKAN node.
     **Parameters:**
