@@ -1,0 +1,20 @@
+{% extends "page_ngds.html" %}
+{%- block content %}
+<h1>Details of Bulk Upload </h1>
+
+	<div style="align:center;padding-top:20px;padding-left:20px;font-size: 12px; font-family: Arial;">
+		<table style="border: 1px solid black;">
+			<tr>
+				<td>Data File</td><td>Resources File</td><td>Status</td><td>Comments</td><td>Uploaded Date</td>
+			</tr>
+			{% for bulkupload in c.bulkuploads %}
+			<tr>
+				<td>{{bulkupload.data_file}}</td><td>{{bulkupload.resources}}</td><td>{{bulkupload.status}}</td><td>{{bulkupload.comments}}</td><td>{{bulkupload.uploaded_date}}</td>
+			</tr>
+			{% endfor%}
+
+		</table>
+	</div>         
+
+
+{% endblock %}
