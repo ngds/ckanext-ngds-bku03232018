@@ -4,14 +4,16 @@
 
         <div id="search-datawatch-container">
           <div id="search-container">
-              <p class="menu-item-large menu-align">Search</p>
-              <p class="menu-caption">Find geothermal data, images, publications &lt; more</p>
-              <select class="search-combo"><option>Map</option><option>Search</option></select>
-              <input type="text" class="search-bar"/>
-              <button class="search-button not-implemented">Go</button>
+              <p class="main-menu-item menu-align">SEARCH</p>
+              <p class="menu-caption">Find geothermal data, images, publications &amp; more</p>
+              <!-- <select class="search-combo"><option>Map</option><option>Search</option></select> -->
+              <form>
+                <input type="text" class="search-bar"/>
+                <input type="submit" class="search-button not-implemented" value="Go">
+              </form>
           </div>
           <div id="data-watch-container">
-              <p class="menu-item-large menu-align">Data Watch</p>
+              <p class="main-menu-item menu-align">DATA WATCH</p>
               <p class="menu-caption">Recently shared with NGDS</p>
               <div>
                 <a href="#" class="not-implemented">Selected Hydrologic Data, San Pitch River Drainage Basin, Utah</a>
@@ -28,31 +30,26 @@
                 <p class="data-watch-feed-caption">By Maryland Dept. of Environment.</p>
                 <p class="data-watch-feed-caption">Posted October 18, 2012</p>
               </div>
-              <button class="not-implemented">Get data updates via email</button>
           </div>
         </div> <!-- End of Search Daawatch Container -->
       
         <div id="showcase-find-map-container">
           <div id="showcase-container">
               <!-- Placeholder for the flashy image showcase widget in the middle of the home page. -->
-              <img src="/images/u4_normal.png" class="showcase-image" alt=""/>
+              <img src="/assets/banner_image.png" class="showcase-image" alt=""/>
           </div>
           <div id="map-it-container">
               <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map' %}">
-                <img src="/images/u64_normal.png" alt=""/>
                   <span class="map-it-content menu-item-large">
-                    Map It
-                    <img src="/images/u78_normal.png" class="star-it-pointer-img" alt="V"/>
+                    <img src="/assets/MapIt.png" class="star-it-pointer-img" alt="V"/>
                   </span>
               </a>
           </div>
        
           <div id="find-in-library-container">
               <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_library' %}">
-                <img src="/images/u64_normal.png" alt="V"/>
                   <span class="find-it-content menu-item-large">
-                    Find in Library
-                    <img src="/images/u78_normal.png" class="star-it-pointer-img" alt="VS"/>
+                    <img src="/assets/FindInLibrary.png" class="star-it-pointer-img" alt="VS"/>
                   </span>
               </a>
           </div>

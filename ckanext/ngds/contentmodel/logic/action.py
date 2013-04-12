@@ -7,7 +7,10 @@ import sqlalchemy
 
 from pylons import config
 
+import csv
 import ckanext.ngds.contentmodel.model.contentmodels
+
+from ContentModel_Utilities   import *
 
 
 log = logging.getLogger(__name__)
@@ -124,18 +127,75 @@ def contentmodel_get(context, data_dict):
 
 @logic.side_effect_free
 def contentmodel_checkFile(context, data_dict):
-    '''Refresh the cache of Content Models on the CKAN node.
+    '''Check whether the given csv file follows the specified content model.
+    
+    This action returns detailed description of inconsistent cells.
     **Parameters:**
-    None.
+    :param cm_uri: uri of the content model.
+    :type cm_uri: string
+
+    :param cm_version: version of the content model.
+    :type cm_version: string
+
+    :param csvfile: full path of a uploaded csv file
+    :type csvfile: string
     
     **Results:**
-    :returns: The list of all available content models.
-    :rtype: vector
+    :returns: A status object (either success, or failed).
+    :rtype: dictionary
     '''
-    if 'id' in data_dict:
-        data_dict['resource_id'] = data_dict['id']
-    res_id = _get_or_bust(data_dict, 'resource_id')
-       
-    data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+    cm_uri     = _get_or_bust(data_dict, 'cm_uri')
+    cm_version = _get_or_bust(data_dict, 'cm_version')
+    csv_filename = _get_or_bust(data_dict, 'csvfile')
+    
+    validation_msg = []
+    
+    print "about to start schema reading"
+    user_schema = contentmodel_get(context, data_dict)
+    # print user_schema
+    fieldModelList = []
+    field_info_list = user_schema['field_info']
+    for field_info in field_info_list:
+        if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
+            print "found a undefined field: " + str(field_info)  
+            continue
+        else: 
+            fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
+    print fieldModelList
+    print "finish schema reading, find " + str(len(fieldModelList)) + " field information"  
+    
+    print "about to start CSV reading"
+    dataHeaderList = []
+    dataListList = []
+    try:
+        csv_reader = csv.reader(open(csv_filename, "rb"))
+        header = csv_reader.next()
+        dataHeaderList = [x.strip() for x in header]
+        
+        for row in csv_reader:
+            new_row = [x.strip() for x in row]
+            dataListList.append(new_row)
+    except csv.Error as e:
+        msg = "csv.Error file %s, line %d: %s" %(csv_filename, csv_reader.line_num, e)
+        validation_msg.append(msg)
+    except IOError as e:
+        msg = "IOError file %s, %s" %(csv_filename, e)
+        validation_msg.append(msg)
+    print "about to finish CSV reading"
 
+    if len(validation_msg) == 0:
+        validation_existence_messages = validate_existence(fieldModelList, dataHeaderList, dataListList)
+        if len(validation_existence_messages) > 0:
+            validation_msg.extend(validation_existence_messages)
+        
+        validation_numericType_messages = validate_numericType(fieldModelList, dataHeaderList, dataListList)
+        if len(validation_numericType_messages) > 0:
+            validation_msg.extend(validation_numericType_messages)
+        
+        print "validation detailed error message"
+        print validation_msg
 
+    if len(validation_msg) == 0:
+        return {"valid": "true", "message": "ok."}
+    else:
+        return {"valid": "false", "message": validation_msg}

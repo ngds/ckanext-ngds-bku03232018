@@ -22,10 +22,9 @@
 					</div>		
 
 				</div>
-				<div id="feedback-section">
-					<img src="/images/u164_normal.png" alt="favorite"/>
-					<p> How do you like our website? Give us feedback.</p>
-				</div>
+				 <div id="feedback-section">
+		          <p> How do you like our website? <button>Give us feedback</button></p>
+		        </div>
 			</div>
 
 			<div id="data-contributors-container">
@@ -41,16 +40,16 @@
 				<p><span>SCR</span></p>
 			</div>
 		</div>
-<div class="postface">
-    <div class="left">
-        <p>US DEPARTMENT OF ENERGY</p>
-    </div>
-    <div class="right">
-        <span class="left"><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">HOME</a></span>
-        <span class="center"><a class="not-implemented">CONTACT</a></span>
-        <span class="right"><a class="not-implemented">TERMS OF USE &amp; PRIVACY</a></span>
-  </div>
-</div>
+	<div class="postface">
+		<div class="left">
+		    <p>&copy; US DEPARTMENT OF ENERGY</p>
+		</div>
+		<div class="right">
+		    <span class="left"><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">HOME</a></span>
+		    <span class="center"><a class="not-implemented">CONTACT</a></span>
+		    <span class="right"><a class="not-implemented">TERMS OF USE &amp; PRIVACY</a></span>
+		</div>
+	</div>		
 
 <div id="not-implemented-popup" style="background-color:#d9d9f3; border:1px dotted black; position:absolute; top:300px; width:400px; height:300px; left:35%; display:none;">
 	<p style="font-family:Arial; font-size:18px; margin-top:125px;">Not implemented yet!<br/><br/> <b>Click anywhere or push ESC to hide me.</b></p>
