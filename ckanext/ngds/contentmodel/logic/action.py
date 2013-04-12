@@ -29,7 +29,7 @@ def contentmodel_refreshCache(context, data_dict):
     :returns: A status object (either success, or failed).
     :rtype: dictionary
     '''  
-    remotefile = urllib2.urlopen("http://schemas.usgin.org/contentmodels.json")
+    remotefile = urllib2.urlopen(ckanext.ngds.contentmodel.model.contentmodels.usgin_url)
     ckanext.ngds.contentmodel.model.contentmodels.contentmodels = simplejson.load(remotefile)
     # return ckanext.ngds.contentmodel.model.contentmodels.contentmodels
 

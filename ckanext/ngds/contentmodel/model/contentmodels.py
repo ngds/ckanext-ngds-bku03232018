@@ -9,7 +9,7 @@ import logging
 log = logging.getLogger(__name__)
 
 contentmodels= []
-
+usgin_url= None
 
 class ContentModelRecord(object):
     """
