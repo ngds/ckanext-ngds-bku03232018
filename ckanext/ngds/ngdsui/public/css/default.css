@@ -2150,6 +2150,9 @@ div.result-marker-container:hover{
 	text-decoration:none;
 }
 
+.close {
+	float:right;
+}
 /*------------------------------------------------------------*/
 /*----------------------Profile page--------------------------*/
 html {

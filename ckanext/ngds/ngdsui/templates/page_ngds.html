@@ -54,6 +54,10 @@
                 $(".flash-msg-close").click(function(ev){
                   ev.currentTarget.parentElement.remove();
                 });
+             
+              $(".close").live('click',function(ev){ // Late binding...awesome!
+                  ev.currentTarget.parentElement.remove();
+                });
               });
             </script>
           {% endblock %}
