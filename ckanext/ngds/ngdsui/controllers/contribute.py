@@ -337,3 +337,20 @@ class ContributeController(NGDSBaseController):
 		c.bulkuploads = uploads
 
 		return render('contribute/bulkupload_list.html')
+
+	def bulkupload_package_list(self):
+		print "Entering Bulk upload package List"
+
+		print "c.bulkuploads:",c.bulkuploads
+
+		data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+
+		uploaded_packages=model.BulkUpload_Package.by_bulk_upload(data['id'])
+
+		print "uploaded_packages: ",uploaded_packages
+
+		c.uploaded_packages = uploaded_packages
+		c.selected_upload = model.BulkUpload.get(data['id'])
+
+		return render('contribute/bulkupload_list.html')

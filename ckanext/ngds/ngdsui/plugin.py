@@ -82,6 +82,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("bulk_upload_handle","/ngds/bulk_upload_handle",controller=contribute_controller,action="bulk_upload_handle")
 		#map.connect("harvest_new","/ngds/harvest/{action}",controller=contribute_controller)
 		map.connect("bulk_upload_list","/ngds/bulkupload_list",controller=contribute_controller,action="bulkupload_list")
+		map.connect("bulk_upload_package","/ngds/bulkupload_package",controller=contribute_controller,action="bulkupload_package_list")
 
 
 		#map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
