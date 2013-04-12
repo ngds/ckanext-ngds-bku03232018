@@ -52,7 +52,7 @@ ngds.Map = {
 				'drawnItems': _drawnItems,
 				'powergrid':powergrid
 			};
-			this.initialize_controls();
+			// this.initialize_controls();
 
 			var baseMaps = {
 				"Terrain":base,
