@@ -1,6 +1,6 @@
 {% extends "page_ngds.html" %}
 {%- block content %}
-<h1>Bulk Upload Dataset</h1>
+<h2>Bulk Upload Dataset</h2>
 
 <form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload_handle') }}" enctype="multipart/form-data"  >
 
@@ -18,8 +18,7 @@
 
 		</table>
 	</div>
-         
-	
-
-	</form> 
+</form> 
+<br><br><br>
+<h4>Want to see the status of already uploaded files? <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}">Click here!</a></h4>
 {% endblock %}

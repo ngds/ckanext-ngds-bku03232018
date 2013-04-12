@@ -1,9 +1,16 @@
 {% extends "page_ngds.html" %}
 {%- block content %}
 
+
 	{% if c.bulkuploads %}  
 	<h4>Bulk Uploaded Records</h4>
 	<div style="height:325px; overflow:auto;align:center;padding-left:20px;font-size: 12px; font-family: Arial;">
+		{% if c.userobj.sysadmin %}
+		<form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='execute_bulkupload') }}">
+			<p style="margin-bottom:15px; align:right;">To initiate bulk uploader process manually click here: {{h.submit('submit', 'Execute')}}</p>
+		</form>
+		{% endif %}
+		
 		<table style="width:100%;border: 1px solid black;">
 			<tr>
 				<th>Data File</th><th>Resources File</th><th>Status</th><th>Comments</th><th>Uploaded Date</th><th>Details</th>
@@ -51,7 +58,7 @@
 
 
 		</table>
-	<A href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}" onClick="history.back();return false;">Go back</A>
+	<a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}" >Go back</a>
 	</div>		
 
 	{% endif %}

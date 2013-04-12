@@ -83,6 +83,8 @@ class NgdsuiPlugin(SingletonPlugin):
 		#map.connect("harvest_new","/ngds/harvest/{action}",controller=contribute_controller)
 		map.connect("bulk_upload_list","/ngds/bulkupload_list",controller=contribute_controller,action="bulkupload_list")
 		map.connect("bulk_upload_package","/ngds/bulkupload_package",controller=contribute_controller,action="bulkupload_package_list")
+		map.connect("execute_bulkupload","/ngds/execute_bulkupload",controller=contribute_controller,action="execute_bulkupload")
+		
 
 
 		#map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
@@ -121,6 +123,7 @@ class NgdsuiPlugin(SingletonPlugin):
 			'manage_users': authorize.manage_users,
 			'publish_dataset': authorize.publish_dataset,
 			'manage_nodes': authorize.manage_nodes,
+			'execute_bulkupload':authorize.execute_bulkupload,
 		}	
 
 	implements(ITemplateHelpers,inherit=True)

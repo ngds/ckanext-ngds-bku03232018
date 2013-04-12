@@ -37,3 +37,12 @@ def manage_nodes(context, data_dict):
     if new_authz.is_sysadmin(user):
         return { 'success': True}
     return { 'success': False,'msg': _('User %s not authorized to manage nodes') % (str(user))}
+
+def execute_bulkupload(context, data_dict):
+
+    model = context['model']
+    user = context.get('user','')
+    print "User Logged: ",user
+    if new_authz.is_sysadmin(user):
+        return { 'success': True}
+    return { 'success': False,'msg': _('User %s not authorized to execute the bulk upload process') % (str(user))}    

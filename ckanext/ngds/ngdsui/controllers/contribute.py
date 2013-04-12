@@ -43,12 +43,27 @@ class ContributeController(NGDSBaseController):
 		return render('contribute/upload.html')
 
 	def bulk_upload(self):
+
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+
+		try:
+			check_access('package_create',context,None)
+		except NotAuthorized, error:
+			abort(401,error.__str__())		
+
 		return render('contribute/bulkupload_form.html')
 
 	def bulk_upload_handle(self):
 		"""	
 		Render the about page
 		"""
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+
+		try:
+			check_access('package_create',context,None)
+		except NotAuthorized, error:
+			abort(401,error.__str__())	
+
 		from datetime import datetime
 		myzipfile = request.POST['myzipfile']
 		mycsvfile = request.POST['mycsvfile']
@@ -323,6 +338,17 @@ class ContributeController(NGDSBaseController):
 		redirect(url)
 
 	def bulkupload_list(self):
+
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+
+		try:
+			check_access('package_create',context,None)
+		except NotAuthorized, error:
+			err_str = _('User %s not authorized to access bulk uploads')% c.user
+			#abort(401,error.__str__())	
+			abort(401,err_str)
+			
+
 		uploads = model.BulkUpload.get_all()
 
 		data = {'id':1}
@@ -341,7 +367,14 @@ class ContributeController(NGDSBaseController):
 	def bulkupload_package_list(self):
 		print "Entering Bulk upload package List"
 
-		print "c.bulkuploads:",c.bulkuploads
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+
+		try:
+			check_access('package_create',context,None)
+		except NotAuthorized, error:
+			err_str = _('User %s not authorized to access bulk uploads')% c.user
+			#abort(401,error.__str__())	
+			abort(401,err_str)	
 
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
@@ -354,3 +387,21 @@ class ContributeController(NGDSBaseController):
 		c.selected_upload = model.BulkUpload.get(data['id'])
 
 		return render('contribute/bulkupload_list.html')
+
+	def execute_bulkupload(self):
+
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+
+		try:
+			check_access('execute_bulkupload',context,None)
+		except NotAuthorized, error:
+			abort(401,error.__str__())	
+
+		from ckanext.ngds.lib.importer.importer import BulkUploader
+
+		bulkLoader = BulkUploader()
+		bulkLoader.execute_bulk_upload()		
+
+		h.flash_notice(_('Initiated Bulk Upload process and it is running in the background.'), allow_html=True)
+		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list')
+		redirect(url)
