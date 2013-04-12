@@ -60,8 +60,8 @@ ngds.Map = {
 
 			overlayMaps = {				
 				"Power Grid":powergrid,
-				"Geo JSON":_geoJSONLayer,
-				"Wells":wells,
+				"Search Results":_geoJSONLayer,
+				"SMU Wells":wells,
 				// "ngds":ngds_layer
 			};
 
