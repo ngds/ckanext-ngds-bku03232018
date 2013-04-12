@@ -23,7 +23,7 @@ ngds.Map = {
 			    transparent: true,
 			    attribution: "SMU Well Data"
 			});
-
+			
 			// ngds_layer = L.tileLayer.wms("http://localhost:8080/geoserver/NGDS/wms",{
 			// 	layers:"NGDS:45276b7a-4335-4548-aa92-e82ffbbde56f",
 			// 	format: 'image/png',
@@ -113,8 +113,40 @@ ngds.Map = {
 					}
 				});
 
-
+			this.initialize_controls();
 			// this.initialize_map_search();
+		},
+		initialize_controls:function() {
+			var html='';
+			html+='<div id="map-expander">';
+				html+='<p>&lt;&lt;</p>';
+				html+='</div>'; // 
+			var expanded_flag = false;
+				var original_map_container_size = $("#map-container").css("width");
+				var expander_handle_unexpanded = '<p>&lt;&lt;</p>';
+				var expander_handle_expanded='<p>&gt;&gt;</p>';
+				$("#map-container").append(html);
+						
+						$("#map-expander").click(function(){
+							
+							if(expanded_flag===false){	// If the resize handle is clicked, expand if not already expanded.
+									expanded_flag=true;
+									$(".map-search").hide();
+									$("#map-container").css("width",1024);
+									$("#map-expander").empty();
+									$("#map-expander").append(expander_handle_expanded);
+									ngds.Map.map.invalidateSize();
+							}
+							else {
+								expanded_flag=false;
+								$("#map-container").css("width",original_map_container_size);
+								ngds.Map.map.invalidateSize();	
+								$(".map-search").show();
+								$("#map-expander").empty();
+								$("#map-expander").append(expander_handle_unexpanded);
+							}
+							return false;
+						});
 		},
 		zoom_managed_list:{
 		
