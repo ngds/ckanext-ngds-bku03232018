@@ -1662,8 +1662,8 @@ li.select2-search-field input{
 .resource-upload-field {
 	position: relative;
 	overflow: hidden;
-	display: inline-block;
 	vertical-align: bottom;
+	margin-left:35px;
 }
 
 
@@ -1743,11 +1743,6 @@ div#manage-users td,div#manage-users th{
   color: white;
   font-weight: bold;
 }
-
-.resource-upload-field {
-	margin-left:10px;
-}
-
 
 
 /* Login Page Styles - Need to be revised and removed*/
