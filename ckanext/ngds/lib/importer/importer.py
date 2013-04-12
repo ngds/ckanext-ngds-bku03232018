@@ -9,6 +9,8 @@ import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
 import ckanext.ngds.lib.importer.helper as import_helper
 from pylons import config
+#the following needs to be revisted and removed...
+from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
 
 #Need to decide our own Read only keys
 readonly_keys = ('id', 'revision_id',
@@ -20,6 +22,8 @@ readonly_keys = ('id', 'revision_id',
                  'metadata_created',
                  'notes_rendered')
 referenced_keys = ('category','status','topic','protocol')
+
+#DEFAULT_GROUP = ngds_helper.get_default_group()
 
 
 class BulkUploader(object):
@@ -87,7 +91,7 @@ class BulkUploader(object):
 
             try:
                 data_file_path = os.path.join(bulk_upload_record.path,bulk_upload_record.data_file)
-                self.importpackagedata(file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
+                self.importpackagedata(bulk_upload_record.id,file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
                 bulk_upload_record.status = "COMPLETED"
             except Exception , e:
                 print e
@@ -96,10 +100,10 @@ class BulkUploader(object):
                 bulk_upload_record.comments = e.message
             finally:
                 bulk_upload_record.last_updated = None
-                #bulk_upload_record.save()
+                bulk_upload_record.save()
 
 
-    def importpackagedata(self,file_path=None,resource_dir=None,ckanclient=None):
+    def importpackagedata(self,bulk_upload_id,file_path=None,resource_dir=None,ckanclient=None):
         #print "Entered Import Record Client:",file_path
         from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
         from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
@@ -118,10 +122,23 @@ class BulkUploader(object):
 
         for pkg_dict in pkg_dicts:
             try:
-                loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
+                returned_package = loader.load_package(clean_dict(unflatten(tuplize_dict(pkg_dict))))
+                # Upload bulk upload to package relationship.
+                self._create_bulk_upload_package(bulk_upload_id,returned_package['name'],returned_package['title'])
+
             except Exception , e:
                 print "Skipping this record and proceeding with next one....",e 
                 raise
+    
+    def _create_bulk_upload_package(self,bulk_upload_id,package_name,package_title):
+        print "Create Bulk Upload Package: bid: %s pname: %s  ptitle: %s" % (bulk_upload_id,package_name,package_title)
+        data = {'bulk_upload_id':bulk_upload_id,'package_name':package_name,'package_title':package_title}
+        data_dict = {'model':'BulkUpload_Package'}
+        data_dict['data']=data
+        data_dict['process']='create'
+        context = {'model': model, 'session': model.Session}   
+        trans_dispatch(context,data_dict)     
+
        
 
 class SpreadsheetDataRecords(DataRecords):
@@ -280,10 +297,10 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
             if cell:
+                if title in referenced_keys:
+                    cell = cls.validate_SD(title,cell)
                 if title in standard_fields:
                     pkg_fs_dict[title] = cell
-                elif title in referenced_keys:
-                    pkg_fs_dict[title] = cls.validate_SD(title,cell)
                 elif title == 'license':
                     #print "license: ", cell
                     license_id = cls.license_2_license_id(cell)
@@ -308,12 +325,6 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                                 blank_dict[blank_field] = u''
                             pkg_fs_dict['resources'].append(blank_dict)
 
-                        # if field =='upload_file':
-                        #     #Upload the file and get the URL of it.
-                        #     upload_url=import_helper.upload_file_return_path(file_name=cell,file_path="/home/ngds/work/")
-                        #     pkg_fs_dict['resources'][res_index]['url'] = upload_url
-                            
-
                         pkg_fs_dict['resources'][res_index][field] = cell
                     else:
                         logger('Warning: Could not understand resource title \'%s\'. Ignoring value: %s' % (title, cell))
@@ -329,7 +340,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                     if not pkg_fs_dict.has_key('extras'):
                         pkg_fs_dict['extras'] = {}
                     pkg_fs_dict['extras'][title] = cell
-        pkg_fs_dict['owner_org']='public'            
+        pkg_fs_dict['owner_org']='public'
         return pkg_fs_dict
 
                 

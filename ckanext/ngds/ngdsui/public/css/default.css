@@ -2144,3 +2144,8 @@ div.result:hover {
 div.result-marker-container:hover{
 	cursor:pointer;
 }
+
+.flash-msg-close {
+	float:right;
+	text-decoration:none;
+}

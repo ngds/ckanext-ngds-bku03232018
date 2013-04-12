@@ -73,7 +73,7 @@ class NgdsuiPlugin(SingletonPlugin):
 
 		contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
 		map.connect("contribute","/ngds/contribute",controller=contribute_controller,action="index")
-		map.connect("do_harvest","/ngds/do_harvest",controller=contribute_controller,action="do_harvest")
+		#map.connect("do_harvest","/ngds/do_harvest",controller=contribute_controller,action="do_harvest")
 		#map.connect("harvest","/ngds/harvest",controller=contribute_controller,action="harvest")		
 		# map.connect("upload","/ngds/contribute/upload",controller=contribute_controller,action="upload")
 		map.redirect('/ngds/contribute/dataset/{action}', '/dataset/{action}')
@@ -81,6 +81,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("bulk_upload","/ngds/bulk_upload",controller=contribute_controller,action="bulk_upload")
 		map.connect("bulk_upload_handle","/ngds/bulk_upload_handle",controller=contribute_controller,action="bulk_upload_handle")
 		#map.connect("harvest_new","/ngds/harvest/{action}",controller=contribute_controller)
+		map.connect("bulk_upload_list","/ngds/bulkupload_list",controller=contribute_controller,action="bulkupload_list")
 
 
 		#map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
@@ -97,6 +98,8 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("member_new","/ngds/member_new",controller=user_controller,action="member_new")
 		map.connect("poly","/poly",controller=map_controller,action="test")
 		map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
+
+
 		return map
 
 	def update_config(self,config):
