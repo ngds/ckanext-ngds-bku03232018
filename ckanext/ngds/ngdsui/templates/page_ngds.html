@@ -42,10 +42,19 @@
             <div class="flash-messages">
               {% for message in flash_messages %}
                 <div class="alert fade in {{ message.category }}">
+                  <a class="flash-msg-close" href="#">x</a>
                   {{ h.literal(message) }}
                 </div>
               {% endfor %}
             </div>
+
+            <script>
+              $(document).ready(function() {
+                $(".flash-msg-close").click(function(ev){
+                  ev.currentTarget.parentElement.remove();
+                });
+              });
+            </script>
           {% endblock %}
 
 
