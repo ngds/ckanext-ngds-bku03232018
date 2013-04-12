@@ -1667,6 +1667,16 @@ li.select2-search-field input{
 }
 
 
+.resource-upload-field input[type="file"] {
+	top:-15px;
+	right:-20px;
+	direction:none;
+	border-width:0 0 0 0;
+	height:34px;
+	width:130px;
+	margin-left:0px;
+}
+
 /* CKAN styles that need to be overriden for the autocomplete to look nice */
 
 .select2-drop {
