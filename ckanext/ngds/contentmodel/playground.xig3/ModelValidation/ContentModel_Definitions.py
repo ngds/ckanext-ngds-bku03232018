@@ -48,7 +48,6 @@ class ContentModel_Playground(object):
         self.fieldModelList = []
         self.dataHeaderList = []
         self.dataListList   = []
-        self.missingFieldList = []
 
     def display(self):
         print "ContentModel_Playground"
@@ -58,7 +57,6 @@ class ContentModel_Playground(object):
             print rowData
             
     def report(self):
-        print "validation status"
-        print self.missingFieldList
+        pass
             
 # class ContentModel_Playground(object)

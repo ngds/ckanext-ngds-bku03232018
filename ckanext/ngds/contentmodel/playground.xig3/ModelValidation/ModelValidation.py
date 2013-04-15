@@ -15,8 +15,8 @@ def load_schema (schema_uri, version_string):
     global playground
     print "about to start schema reading"
     
-    #remotefile = urllib2.urlopen("http://schemas.usgin.org/contentmodels.json")
-    remotefile = urllib2.urlopen("file:///home/xig3/workspace/ModelValidation/samples/contentmodels.json")
+    remotefile = urllib2.urlopen("http://schemas.usgin.org/contentmodels.json")
+    #remotefile = urllib2.urlopen("file:///home/xig3/workspace/ModelValidation/samples/contentmodels.json")
     result = simplejson.load(remotefile)
     schemaList = [ rec for rec in result if rec['uri'] ==  schema_uri]
     # print schemaList
@@ -57,12 +57,25 @@ def validate_existence():
     global playground
     print "about to start field existence checking"
     
-    for field in playground.fieldModelList:
-        if field.optional == 'True':
-            continue
-        if field.name not in playground.dataHeaderList:
-            print "FIELD " + field.name + " (Optional:False) is missing"
-            playground.missingFieldList.append(field.name)
+    # build link between dataHeaderList and fieldInfoList
+    # fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]
+    linkToFieldInfoFromHeader = []
+    for header in playground.dataHeaderList:
+        index = [i for i, field in enumerate(playground.fieldModelList) if field.name == header]
+        linkToFieldInfoFromHeader.append(index[0])
+        
+    OptionalFalseIndex = []
+    for i in xrange(len(playground.dataHeaderList)):
+        if   playground.fieldModelList[linkToFieldInfoFromHeader[i]].optional == False:
+            OptionalFalseIndex.append(i)
+    print "OptionalFalseIndex:"
+    print OptionalFalseIndex
+    
+    for jd in xrange(len(playground.dataListList)):
+        for i in xrange(len(OptionalFalseIndex)):
+            data = playground.dataListList[jd][OptionalFalseIndex[i]]
+            if (len(data)==0) or (data.isspace()):
+                print "cell (%d,%d): %s (field %s) is defined as optional false" %(jd+2, i+1, data, playground.dataHeaderList[OptionalFalseIndex[i]])
 
     print "about to finish field existence checking"
 # def validate_existence()
