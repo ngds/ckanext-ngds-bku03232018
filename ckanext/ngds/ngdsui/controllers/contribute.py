@@ -67,9 +67,6 @@ class ContributeController(NGDSBaseController):
 		from datetime import datetime
 		myzipfile = request.POST['myzipfile']
 		mycsvfile = request.POST['mycsvfile']
-		#print myzipfile
-		#print os.path.dirname(os.path.abspath(__file__))
-		#print os.getcwd()
 
 		datafilename = mycsvfile.filename
 		resourcesfilename = myzipfile.filename
@@ -104,6 +101,8 @@ class ContributeController(NGDSBaseController):
 
 		zfile.extractall(path=upload_dir)
 
+		self._validate_uploadfile(csvfilepath,upload_dir)
+
 		#For now pass the status as "VALID" this has to change based on the validation.
 		status = "VALID"
 
@@ -115,6 +114,16 @@ class ContributeController(NGDSBaseController):
 		redirect(url)		
 		#return 'Successfully uploaded: %s' % (myzipfile.filename)	
 
+	def _validate_uploadfile(self,data_file,resource_path):
+
+		#import ckanext.ngds.lib.importer.validator.NGDSValidator
+		import ckanext.ngds.lib.importer.importer as ngdsimporter
+		
+
+		validator = ngdsimporter.NGDSPackageImporter(filepath=data_file,resource_path=resource_path)		
+
+
+
 	def _create_bulk_upload_record(self,user,data_file,resources,path,status):
 		#print "inside _create_bulk_upload_record:",c.user
 
@@ -125,13 +134,13 @@ class ContributeController(NGDSBaseController):
 		data_dict['data']=data
 		data_dict['process']='create'
 
-		print "Data dict: ",data_dict
+		#print "Data dict: ",data_dict
 
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
 		transaction_return = get_action('transaction_data')(context, data_dict)					
 
-		print "transaction_return:",transaction_return
+		#print "transaction_return:",transaction_return
 
 	def edit(self,id):
 		"""
