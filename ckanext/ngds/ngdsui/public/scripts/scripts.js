@@ -188,15 +188,19 @@ var ngds = ngds || { };
 	    });
 
 	    $(".module-content").on('change','.content-model-div-marker',function() {
+	    	
 	    	if($(".content-model-version-marker")!==null && typeof $(".content-model-version-marker")!=='undefined') {
 	      		$(".content-model-version-marker").remove();
 	      	}
 	    	var content_model_selected = $("select[name='content_model']").val();
+	    	if(ngds.content_models[content_model_selected]===null || typeof ngds.content_models[content_model_selected]==='undefined') {
+	    		return;
+	    	}
 	    	var div = $("<div/>",{class:"control-group control-full content-model-version-marker"});
-	    	var content_model_version = $("<label/>",{for:'content-model_version',text:'Content Model Version: ',class:'control-label'});
-	    	var content_model_version_combo = $("<select/>",{ name:"Version" });
+	    	var content_model_version = $("<label/>",{for:'content-model_version',text:'Version: ',class:'control-label'});
+	    	var content_model_version_combo = $("<select/>",{ name:"content_model_version" });
 	        var controls = $("<div/>",{class:"controls"});
-	        console.log(ngds.content_models[content_model_selected]);
+
 	        for(var i=0;i<ngds.content_models[content_model_selected].versions.length;i++) {
 	        	$('<option/>',{value:ngds.content_models[content_model_selected].versions[i].uri,text:ngds.content_models[content_model_selected].versions[i].version}).appendTo(content_model_version_combo);
 	        }
@@ -205,6 +209,31 @@ var ngds = ngds || { };
 			div.append(controls);
 			$(".content-model-marker+div").after(div);	       
 	    });	
+
+		if($("button[name='mine']").length!==0) {
+			$("button[name='mine']").click(function() {
+				var content_model_selected = $("select[name='content_model']").val();
+				var content_model_version = $("select[name='content_model_version']").val();
+
+				if(content_model_selected!==null && typeof content_model_selected!=='undefined' && content_model_version!==null && typeof content_model_version!=='undefined') {
+					$.ajax({
+						url:'http://localhost:9000/api/action/contentmodel_checkFile',
+						type:'POST',
+						data:JSON.stringify({
+							cm_uri:content_model_selected,
+							cm_version:content_model_version,
+							csvfile:'/hardcoded'
+						}),
+						success:function(response) {
+							console.log(response);
+							$(".dataset-resource-form").submit();
+						}
+					});
+				}
+				
+			});
+		}
+
 	});
 
 })();
