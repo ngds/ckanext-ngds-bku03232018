@@ -138,6 +138,73 @@ var ngds = ngds || { };
 		function isLoginPopupVisible(){
 				return ($(".login-popup").css('display')!=='none');
 			}
+	
+	    var dataset = ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
+	    if(dataset!==null && typeof(dataset)!=='undefined') {
+	    	dataset.proxy("#distributor","id");
+	    }
+	    var content_models = ngds.content_models = {
+	   
+	     };
+
+
+	    $.ajax({
+	      url:'/api/action/contentmodel_list_short',
+	      type:'POST',
+	      data: JSON.stringify({
+	        something:'something' // Ckan needs something in the body or the request is not accepted.
+	      }),
+	      success:function(response) {
+	        for(var i=0;i<response.result.length;i++) {
+	        	content_models[response.result[i].uri]= response.result[i];
+	        }
+	      }
+	    });
+
+	    $("input:radio[name='type-of-data']").change(function(ev){
+	      var structured_or_un = ev.currentTarget.value;
+	      
+	      if(structured_or_un==='structured') {
+	      	var div = $("<div/>",{class:"control-group control-full content-model-div-marker"});
+	        var content_model_label = $("<label/>",{for:'content-model',text:'Content Model : ',class:'control-label'});
+	        var content_model_combo = $("<select/>",{ name:"content_model" });
+	        var controls = $("<div/>",{class:"controls"});
+	         $('<option/>', {value: "", text: "Select a Content Model"}).appendTo(content_model_combo);
+	        for(var val in ngds.content_models) {
+			    $('<option/>', {value: val, text: ngds.content_models[val].title}).appendTo(content_model_combo);
+			}
+			controls.append(content_model_combo);
+			div.append(content_model_label);
+			div.append(controls);
+			$(".content-model-marker").after(div);	        
+	      }
+	      else{
+	      	$(".content-model-div-marker").remove();
+	      	if($(".content-model-version-marker")!==null && typeof $(".content-model-version-marker")!=='undefined') {
+	      		$(".content-model-version-marker").remove();
+	      	}
+	      }
+	      
+	    });
+
+	    $(".module-content").on('change','.content-model-div-marker',function() {
+	    	if($(".content-model-version-marker")!==null && typeof $(".content-model-version-marker")!=='undefined') {
+	      		$(".content-model-version-marker").remove();
+	      	}
+	    	var content_model_selected = $("select[name='content_model']").val();
+	    	var div = $("<div/>",{class:"control-group control-full content-model-version-marker"});
+	    	var content_model_version = $("<label/>",{for:'content-model_version',text:'Content Model Version: ',class:'control-label'});
+	    	var content_model_version_combo = $("<select/>",{ name:"Version" });
+	        var controls = $("<div/>",{class:"controls"});
+	        console.log(ngds.content_models[content_model_selected]);
+	        for(var i=0;i<ngds.content_models[content_model_selected].versions.length;i++) {
+	        	$('<option/>',{value:ngds.content_models[content_model_selected].versions[i].uri,text:ngds.content_models[content_model_selected].versions[i].version}).appendTo(content_model_version_combo);
+	        }
+			controls.append(content_model_version_combo);
+			div.append(content_model_version);
+			div.append(controls);
+			$(".content-model-marker+div").after(div);	       
+	    });	
 	});
 
 })();

@@ -69,6 +69,22 @@
     {% endif %}
   {% endblock %}
 
+<div class="control-group control-full content-model-marker">
+  <label class="control-label" for="type-of-data">Type of Data</label>
+    <div class="controls radio-group">
+      <input type="radio" name="type-of-data" value="structured">Structured</input>
+      <input type="radio" name="type-of-data" value="unstructured" checked>Unstructured</input>
+    </div>
+</div>
+
+<div class="control-group control-full">
+    <label class="control-label" for="distributor">Distributor : </label>
+    <div class="controls ">
+    <input id="distributor" name="distributor" value="{{ data.distributor }}" type="hidden">
+    <input id="distributor-fake" value="{{ h.get_responsible_party_name(data.distributor) }}" type="text">
+      
+    </div>
+  </div>
 
  <div class="control-group control-full">
     <label class="control-label" for="_format">Category : </label>
@@ -137,22 +153,15 @@
     {% endblock %}
     {% if stage %}
     {% block previous_button %}
-      <button class="btn" name="save" value="go-dataset" type="submit">{{ _('Previous') }}</button>
+    <button class="btn" name="save" value="go-dataset" type="submit">{{ _('Previous') }}</button>
     {% endblock %}
     {% block again_button %}
-      <button class="btn" name="save" value="again" type="submit">{{ _('Save & add another') }}</button>
+    <button class="btn" name="save" value="again" type="submit">{{ _('Save & add another') }}</button>
     {% endblock %}
     <button class="btn btn-primary" name="save" value="go-metadata" type="submit">{% block save_button_text %}{{ _('Next: Additional Info') }}{% endblock %}</button>
     {% else %}
-      <button class="btn btn-primary" name="save" value="go-dataset-complete" type="submit">{{ _('Add') }}</button>
+    <button class="btn btn-primary" name="save" value="go-dataset-complete" type="submit">{{ _('Add') }}</button>
     {% endif %}
 
   </div>
 </form>
-
-<script>
-  $(document).ready(function() {
-    var dataset = ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
-    dataset.proxy("#distributor","id");
-  });
-</script>

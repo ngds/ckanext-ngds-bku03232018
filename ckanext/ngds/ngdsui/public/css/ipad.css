@@ -2653,3 +2653,6 @@ font-size: 11px;
 }
 
 /* Profile page end......... */
+#map-container { 
+width:695px; height:400px; float:right; position:relative;
+}

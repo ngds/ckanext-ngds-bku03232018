@@ -1884,6 +1884,16 @@ margin-left: 40px;
 .form-horizontal .control-large .control-label {
   padding-top: 10px;
 }
+
+.control-group div.radio-group {
+	margin-left:170px;
+}
+
+.radio-group {
+	font-size:16px;
+	font-weight:normal;
+}
+
 .form-horizontal .controls {
   margin-left: 130px;
 }
@@ -2653,3 +2663,7 @@ font-size: 11px;
 }
 
 /* Profile page end......... */
+
+#map-container { 
+width:695px; height:600px; float:right; position:relative;
+}
