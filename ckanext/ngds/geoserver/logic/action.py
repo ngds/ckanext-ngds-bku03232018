@@ -55,10 +55,9 @@ def datastore_spatialize(context, data_dict):
     # read geoserver information from development.ini
     geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
     
+    print ">>>>>>>>>>>>>>>>>>>> Connect to database >>>>>>>>>>>>>>>>"
     # reads the database connection URI from the development.ini file   
-    data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
-      
-    print ">>>>>>>>>>>>>>>>>>>> Connect to database >>>>>>>>>>>>>>>>"  
+    data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:pass@localhost/datastore')  
     engine = db._get_engine(None, data_dict)
     context['connection'] = engine.connect()
 
@@ -67,7 +66,6 @@ def datastore_spatialize(context, data_dict):
     p.toolkit.check_access('datastore_spatialize', context, data_dict)
 
     print ">>>>>>>>>>>>>>>>>>>> Verify if the provided resource exists >>>>>>>>>>>>>>>>"
-
     # verifies if the provided resource_id exists in the database
     resources_sql = sqlalchemy.text(u'''SELECT 1 FROM "_table_metadata"
                                         WHERE name = :id AND alias_of IS NULL''')
@@ -81,9 +79,9 @@ def datastore_spatialize(context, data_dict):
 
     # We now verify if the resource has the geography column.
     # if it does not have it, we create that column.
-
-    fields = db._get_fields(context, data_dict)
+    
     try:
+        fields = db._get_fields(context, data_dict)
         already_has_col_geography = False
         for field in fields:
             #FIXME: We are not comparing the type here
@@ -224,11 +222,10 @@ def datastore_is_spatialized(context, data_dict):
     # if it does not have it, we create that column.
 
     print ">>>>>>>>>>>>>>>>>>>> Verify list of fields >>>>>>>>>>>>>>>>"
-    result = []
+
     fields = db._get_fields(context, data_dict)
     result = {'is_spatialized': False}
     for field in fields:
-        #FIXME: We are not comparing the type here
         if field['id'] == col_geography:
             result = {'is_spatialized': True}
     
@@ -256,6 +253,7 @@ def datastore_expose_as_layer(context, data_dict):
     :rtype: string
     
     '''
+    
     if 'id' in data_dict:
         data_dict['resource_id'] = data_dict['id']
     res_id = _get_or_bust(data_dict, 'resource_id')
@@ -263,8 +261,12 @@ def datastore_expose_as_layer(context, data_dict):
     
     # read geoserver information from development.ini
     geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
-    workspace_name = pylons.config.get('ckan.geoserver.workspace_name', 'NGDS')
-    workspace_url = pylons.config.get('ckan.geoserver.workspace_URL', 'http://localhost:5000/ngds')
+    workspace_name     = pylons.config.get('ckan.geoserver.workspace_name', 'NGDS')
+    workspace_url      = pylons.config.get('ckan.geoserver.workspace_URL', 'http://localhost:5000/ngds')
+    
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('datastore_expose_as_layer', context, data_dict)
     
     
     cat = Catalog(geoserver_rest_url)
@@ -279,9 +281,9 @@ def datastore_expose_as_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>>>>  create store >>>>>>>>>>>>>>>>>>>>>>>>"
     #get existing or create new datastore
  
-    config_login = 'ckanuser'
-    config_passwd = 'pass'
-    config_datastore = 'datastore'
+    config_login      = 'ckanuser'
+    config_passwd     = 'pass'
+    config_datastore  = 'datastore'
     datastore_url = config.get('ckan.datastore.write_url','postgresql://ckanuser:pass@localhost/datastore')
     
     parsed_login_pass = datastore_url.split('://')[1].split('@')[0]
@@ -337,13 +339,53 @@ def datastore_expose_as_layer(context, data_dict):
     return web_url
 
 def datastore_remove_exposed_layer(context, data_dict):
-    return
+    '''Remove an exposed layer from geoserver
+
+    The datastore_remove_exposed_layer removes an exposed layer from geoserver.
+            
+    :param layer_name: the name of the layer to be removed from geoserver.
+    :type layer_name: string
+     
+    '''
+     # read geoserver information from development.ini
+    geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
+   
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('datastore_remove_exposed_layer', context, data_dict) 
+   
+    layer_name = _get_or_bust(data_dict, 'layer_name')
+   
+    cat = Catalog(geoserver_rest_url)
+    layer = cat.get_layer(layer_name)
+    cat.delete(layer)
 
 
 def datastore_list_exposed_layers(contect, data_dict):
+    '''List datastore exposed layers in the geoserver
+
+    The datastore_list_exposed_layers API action allows a user to get a list of tables that
+    are exposed as layers in the geoserver. The default ckan.geoserver.rest_url config
+    parameter from the development.ini file is used to loacte the geoserver.
     
-    geoserver = _get_or_bust(data_dict, 'geoserver')
-    cat = Catalog(geoserver)
+    The available methods are:
+
+    *create*
+        It returns a list of exposed layers
+         
+    **Results:**
+
+    :returns: List of exposed layers
+    :rtype: list
+    '''
+    # read geoserver information from development.ini
+    geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
+   
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('datastore_list_exposed_layers', context, data_dict) 
+   
+    cat = Catalog(geoserver_rest_url)
     list_of_layers = cat.get_layers()
     
     return list_of_layers
@@ -361,8 +403,6 @@ def geoserver_create_workspace(context, data_dict):
         It first checks if the workspace already exists. If it does not yet exist it
         is created.
         
-    :param geoserver: url of the geoserver
-    :type geoserver_url: string
     :param workspace_name: the name of the workspace that shall be created
     :type workspace_name: string
     :param workspace_uri: the URI of the workspace
@@ -373,13 +413,26 @@ def geoserver_create_workspace(context, data_dict):
     :returns: The name of the workspace.
     :rtype: dictionary
     '''
-    
-    geoserver = _get_or_bust(data_dict, 'geoserver')
-    workspace_name = _get_or_bust(data_dict, 'workspace_name')
-    workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
+       
+    workspace_name = data_dict['workspace_name']
+    workspace_uri  = data_dict['workspace_uri']
 
-    cat = Catalog(geoserver)
+        
+    # read geoserver information from development.ini
+    geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
+    
+    if workspace_name is None:
+        workspace_name = pylons.config.get('ckan.geoserver.workspace_name', 'NGDS')
+    if workspace_uri is None:
+        workspace_uri = pylons.config.get('ckan.geoserver.workspace_URL', 'http://localhost:5000/ngds')
+ 
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('geoserver_create_workspace', context, data_dict)
+     
+    cat = Catalog(geoserver_rest_url)
     cat.create_workspace(workspace_name, workspace_uri)
+    
 
 def geoserver_delete_workspace(context, data_dict):
     '''Delete a workspace on a geoserver
@@ -392,25 +445,27 @@ def geoserver_delete_workspace(context, data_dict):
     *delete*
         It first checks if the workspace exists. If it does it gets deleted.
         
-    :param geoserver: url of the geoserver
-    :type geoserver_url: string
     :param workspace_name: the name of the workspace that shall be deleted
     :type workspace_name: string
-    :param workspace_uri: the URI of the workspace
-    :type workspace_uri: string
+
     
     **Results:**
 
     :returns: The name of the workspace.
     :rtype: dictionary
     '''
+
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('geoserver_delete_workspace', context, data_dict)
+    
     
     geoserver = _get_or_bust(data_dict, 'geoserver')
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
     # workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
 
     cat = Catalog(geoserver)
-    workspace= cat.get_workspace(workspace_name)
+    workspace = cat.get_workspace(workspace_name)
     cat.delete(workspace)
 
 
@@ -455,26 +510,31 @@ def geoserver_create_store(context, data_dict):
     :rtype: dictionary
     '''
     print ">>>>>>>>>>>>>>>>>>>>>> geoserver_create_store reading parameters >>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    geoserver = _get_or_bust(data_dict, 'geoserver')
+    geoserver      = _get_or_bust(data_dict, 'geoserver')
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
     #workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
-    store_name =_get_or_bust(data_dict, 'store_name')
-    pg_host= _get_or_bust(data_dict, 'pg_host')
-    pg_port= _get_or_bust(data_dict, 'pg_port')
-    pg_db= _get_or_bust(data_dict, 'pg_db')
-    pg_user= _get_or_bust(data_dict, 'pg_user')
-    pg_password= _get_or_bust(data_dict, 'pg_password')
-    db_type= _get_or_bust(data_dict, 'db_type')
+    store_name     = _get_or_bust(data_dict, 'store_name')
+    pg_host        = _get_or_bust(data_dict, 'pg_host')
+    pg_port        = _get_or_bust(data_dict, 'pg_port')
+    pg_db          = _get_or_bust(data_dict, 'pg_db')
+    pg_user        = _get_or_bust(data_dict, 'pg_user')
+    pg_password    = _get_or_bust(data_dict, 'pg_password')
+    db_type        = _get_or_bust(data_dict, 'db_type')
+    
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('geoserver_create_store', context, data_dict)
+    
 
     print ">>>>>>>>>>>>>>>>>>>>>>> connecting to catalog at: "+geoserver
     cat = Catalog(geoserver)
     
     print ">>>>>>>>>>>>>>>>>>>>>> getting workspace >>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     print "workspace_name = ", workspace_name
-    workspace= cat.get_workspace(workspace_name)
+    workspace = cat.get_workspace(workspace_name)
     
     print ">>>>>>>>>>>>>>>>>>>>>> create_datastore >>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    ds= cat.create_datastore(store_name, workspace)
+    ds = cat.create_datastore(store_name, workspace)
     
     print ">>>>>>>>>>>>>>>>>>>>>> updating connection parameters >>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     print "password = ",pg_password
@@ -523,13 +583,18 @@ def geoserver_delete_store(context, data_dict):
     :rtype: dictionary
     '''
     
-    geoserver = _get_or_bust(data_dict, 'geoserver')
-    workspace_name = _get_or_bust(data_dict, 'workspace_name')
-    workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
-    store_name = _get_or_bust(data_dict, 'workspace_uri')
+        # read geoserver information from development.ini
+    geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
+    
+    workspace_name = data_dict['workspace_name']
+    if workspace_name is None:
+        workspace_name = pylons.config.get('ckan.geoserver.workspace_name', 'NGDS') 
+
+    #workspace_uri  = _get_or_bust(data_dict, 'workspace_uri')
+    store_name = _get_or_bust(data_dict, 'store_name')
 
 
-    cat = Catalog(geoserver)
+    cat = Catalog(geoserver_rest_url)
     store = cat.get_store(store_name, workspace_name)
     cat.delete(store)
 
