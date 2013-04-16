@@ -174,7 +174,68 @@ def datastore_spatialize(context, data_dict):
     finally:
         context['connection'].close()
     
+
+def datastore_is_spatialized(context, data_dict):
+    '''Verifies if a table was 'spatialized' or not
+
+    The datastore_is_spatialized API action allows a user to verify if a database was 
+    spatialized or not.
     
+    :param resource_id: resource id that the data is going to be verified.
+    :type resource_id: string
+    
+    **Results:**
+
+    :returns: 'spatialized: True' if the resource is spatialized, or 'spatialized: False' otherwise.
+    :rtype: boolean
+    
+    '''
+    if 'id' in data_dict:
+        data_dict['resource_id'] = data_dict['id']
+        
+    res_id        = _get_or_bust(data_dict, 'resource_id')
+    col_geography = _get_or_bust(data_dict, 'col_geography')
+
+    # reads the database connection URI from the development.ini file   
+    data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+      
+    print ">>>>>>>>>>>>>>>>>>>> Connect to database >>>>>>>>>>>>>>>>"  
+    engine = db._get_engine(None, data_dict)
+    context['connection'] = engine.connect()
+
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('datastore_spatialize', context, data_dict)
+
+    print ">>>>>>>>>>>>>>>>>>>> Verify if the provided resource exists >>>>>>>>>>>>>>>>"
+
+    # verifies if the provided resource_id exists in the database
+    resources_sql = sqlalchemy.text(u'''SELECT 1 FROM "_table_metadata"
+                                        WHERE name = :id AND alias_of IS NULL''')
+    results = context['connection'].execute(resources_sql, id=res_id)
+    res_exists = results.rowcount > 0
+        
+    if not res_exists:
+        raise p.toolkit.ObjectNotFound(p.toolkit._(
+            'Resource "{0}" was not found.'.format(res_id)
+        ))
+
+    # We now verify if the resource has the geography column.
+    # if it does not have it, we create that column.
+
+    print ">>>>>>>>>>>>>>>>>>>> Verify list of fields >>>>>>>>>>>>>>>>"
+    result = []
+    fields = db._get_fields(context, data_dict)
+    result = {'is_spatialized': False}
+    for field in fields:
+        #FIXME: We are not comparing the type here
+        if field['id'] == col_geography:
+            result = {'is_spatialized': True}
+    
+            
+    #formatted_results = db.format_results(context, results, data_dict)
+    return result
+            
 
 def datastore_expose_as_layer(context, data_dict):
     '''Publishes an already 'spatialized' database, in postgress, as a layer in geoserver
@@ -267,7 +328,7 @@ def datastore_expose_as_layer(context, data_dict):
     
     # we utilize the resource id as the layer name
     data_dict['layer_name'] = res_id
-    geoserver_create_layer(context, data_dict)
+    _geoserver_create_layer(context, data_dict)
     
     web_geoserver = data_dict['geoserver'].replace("/rest", "/web")
     web_url = web_geoserver+"?wicket:bookmarkablePage=:org.geoserver.web.data.resource.ResourceConfigurationPage&name="+res_id+"&wsName="+data_dict['workspace_name']
@@ -500,11 +561,11 @@ def _create_postgis_sql_layer(context, data_dict):
     :rtype: dictionary
     '''
    
-    workspace_name = _get_or_bust(data_dict, 'workspace_name')
-    store_name =_get_or_bust(data_dict, 'store_name')
-    resource_id = _get_or_bust(data_dict, 'resource_id')
+    workspace_name  = _get_or_bust(data_dict, 'workspace_name')
+    store_name      = _get_or_bust(data_dict, 'store_name')
+    resource_id     = _get_or_bust(data_dict, 'resource_id')
     # opitonal parameter
-    baseServerUrl = data_dict['geoserver']
+    baseServerUrl   = data_dict['geoserver']
     
     # There should be a geoserver key in the development.ini file 
     if baseServerUrl is None:
@@ -553,10 +614,10 @@ def _create_postgis_sql_layer(context, data_dict):
     return cat.get_layer(name)
 
     
-def geoserver_create_layer(context, data_dict):
+def _geoserver_create_layer(context, data_dict):
     '''Create a layer on a geoserver
 
-    The geoserver_create_layer API action allows a user to create a new layer
+    The _geoserver_create_layer API action allows a user to create a new layer
     on a geoserver instance. 
     
     The available methods are:
@@ -599,7 +660,7 @@ def geoserver_create_layer(context, data_dict):
     geoserver      = _get_or_bust(data_dict, 'geoserver')
     workspace_name = _get_or_bust(data_dict, 'workspace_name')
     #workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
-    store_name     =_get_or_bust(data_dict, 'store_name')
+    store_name     = _get_or_bust(data_dict, 'store_name')
     pg_host        = _get_or_bust(data_dict, 'pg_host')
     pg_port        = _get_or_bust(data_dict, 'pg_port')
     pg_db          = _get_or_bust(data_dict, 'pg_db')

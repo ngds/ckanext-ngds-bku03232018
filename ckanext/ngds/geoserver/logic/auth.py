@@ -25,13 +25,12 @@ def datastore_spatialize(context, data_dict):
     # TODO: only data owner and admin should be able to call this function
     return {'success': True}
 
+
 def datastore_upsert(context, data_dict):
     return _datastore_auth(context, data_dict)
 
-
 def datastore_delete(context, data_dict):
     return _datastore_auth(context, data_dict)
-
 
 def datastore_search(context, data_dict):
     return {'success': True}
