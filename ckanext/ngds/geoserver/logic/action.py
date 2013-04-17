@@ -67,9 +67,8 @@ def datastore_spatialize(context, data_dict):
 
     print ">>>>>>>>>>>>>>>>>>>> Verify if the provided resource exists >>>>>>>>>>>>>>>>"
     # verifies if the provided resource_id exists in the database
-    resources_sql = sqlalchemy.text(u'''SELECT 1 FROM "_table_metadata"
-                                        WHERE name = :id AND alias_of IS NULL''')
-    results = context['connection'].execute(resources_sql, id=res_id)
+    resources_sql = 'SELECT 1 FROM "'+res_id+'"'
+    results = context['connection'].execute(resources_sql)
     res_exists = results.rowcount > 0
         
     if not res_exists:
@@ -278,7 +277,7 @@ def datastore_expose_as_layer(context, data_dict):
         ngds_workspace = cat.create_workspace(workspace_name, workspace_url)
     print ">>>>>>>>>>>>>>>>>>>>>> end create workspace >>>>>>>>>>>>>>>>>>>>>>>>"
     
-    print ">>>>>>>>>>>>>>>>>>>>>>  create store >>>>>>>>>>>>>>>>>>>>>>>>"
+    print ">>>>>>>>>>>>>>>>>>>>>>  begin create store >>>>>>>>>>>>>>>>>>>>>>>>"
     #get existing or create new datastore
  
     config_login      = 'ckanuser'
@@ -320,11 +319,20 @@ def datastore_expose_as_layer(context, data_dict):
     # tries to read existing datastore for the workspace, if the read is not
     # successful, crate the datastrore.
     try:
-        store = cat.get_store('datastore', ngds_workspace)
+        store = cat.get_store(data_dict['store_name'], ngds_workspace)
         print ">>>>>>>>>>>>>>>>>>>> datastrore already exists >>>>>>>>>>>>>>>>"
     except Exception, ex:
         print ">>>>>>>>>>>>>>>>>>>> creating new datastrore info >>>>>>>>>>>>>>>>"
         geoserver_create_store(context, data_dict)
+    
+    print ">>>>>>>>>>>>>>>>>>>>>>  end create store >>>>>>>>>>>>>>>>>>>>>>>>"
+    
+    result_dict = datastore_is_spatialized(context, data_dict)
+    is_spatialized = result_dict['is_spatialized']
+    if not is_spatialized:
+        raise Exception({
+                'table': res_id+" not yet spatialzied"
+            })
     
     print ">>>>>>>>>>>>>>>>>>>>>> start create layer >>>>>>>>>>>>>>>>>>>>>>>>"
     
@@ -646,7 +654,7 @@ def _create_postgis_sql_layer(context, data_dict):
     # 'layer_name', 'connection' and 'resource_id'
     # will be read by the SqlFeatureTypeDef
     
-
+    print ">>>>>>>>>>> connectiong to catalog at: "+baseServerUrl
     cat = Catalog(baseServerUrl)
     
     # builds the meta-data object used for the createion of the layer
@@ -663,16 +671,18 @@ def _create_postgis_sql_layer(context, data_dict):
     
     #headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
     featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"
-    name= resource_id
-    xml=  ("<featureType>"
+    print ">>>>>>>>>>>>>>>>> feature URL: "+featureType_url
+    
+    name = resource_id
+    xml =  ("<featureType>"
              "<name>{name}</name>"
            "</featureType>").format(name=name)
 
-    headers= {"Content-type": "text/xml"}
+    headers = {"Content-type": "text/xml"}
 
     headers, response = cat.http.request(featureType_url, "POST", xml, headers)
     
-    print ">>>>>>>>>>>>>>>>> sent POST >>>>>>>>>>>>>>>>"
+    print ">>>>>>>>>>>>>>>>> sent create layer POST >>>>>>>>>>>>>>>>"
     assert 200 <= headers.status < 300, "Tried to create Geoserver layer but encountered a " + str(headers.status) + " error: " + response
     cat._cache.clear()
 
