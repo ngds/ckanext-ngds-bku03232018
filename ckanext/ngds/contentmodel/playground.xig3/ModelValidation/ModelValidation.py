@@ -29,7 +29,11 @@ def load_schema (schema_uri, version_string):
     print field_info_list
     
     for field_info in field_info_list:
-        playground.fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
+        if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
+            print "found a undefined field: " + str(field_info)  
+            continue
+        else: 
+            playground.fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
 
     print "about to finish schema reading, find " + str(len(playground.fieldModelList)) + " field information"  
 # def load_schema (schema_uri, version_string)
@@ -61,8 +65,11 @@ def validate_existence():
     # fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]
     linkToFieldInfoFromHeader = []
     for header in playground.dataHeaderList:
-        index = [i for i, field in enumerate(playground.fieldModelList) if field.name == header]
-        linkToFieldInfoFromHeader.append(index[0])
+        try:
+            index = [i for i, field in enumerate(playground.fieldModelList) if field.name == header]
+            linkToFieldInfoFromHeader.append(index[0])
+        except:
+            print "header: %s couldn't be found in the field_info" %(header)
         
     OptionalFalseIndex = []
     for i in xrange(len(playground.dataHeaderList)):
@@ -108,13 +115,19 @@ def validate_numericType():
         for i in xrange(len(IntTypeIndex)):
             data = playground.dataListList[jd][IntTypeIndex[i]]
             if isInteger(data) == False:
-                print "cell (%d,%d): %s (field %s) is expected to be an Integer" %(jd+2, i+1, data, playground.dataHeaderList[IntTypeIndex[i]])
+                if len(data) == 0:
+                    print "cell (%d,%d): null (field %s) is expected to be an Integer" %(jd+2, i+1,       playground.dataHeaderList[IntTypeIndex[i]])
+                else:
+                    print "cell (%d,%d): %s (field %s) is expected to be an Integer"   %(jd+2, i+1, data, playground.dataHeaderList[IntTypeIndex[i]])
                    
         # check the double type
         for i in xrange(len(DoubleTypeIndex)):
-                data = playground.dataListList[jd][DoubleTypeIndex[i]]
-                if isNumber(data) == False:
-                    print "cell (%d,%d): %s (field %s) is expected to be a  Numeric" %(jd+2, i+1, data, playground.dataHeaderList[DoubleTypeIndex[i]])
+            data = playground.dataListList[jd][DoubleTypeIndex[i]]
+            if isNumber(data) == False:
+                if len(data) == 0:
+                    print "cell (%d,%d): null (field %s) is expected to be a  Numeric" %(jd+2, i+1,       playground.dataHeaderList[DoubleTypeIndex[i]])
+                else:
+                    print "cell (%d,%d): %s (field %s) is expected to be a  Numeric"   %(jd+2, i+1, data, playground.dataHeaderList[DoubleTypeIndex[i]])
     
 # def validate_numericType()
 
