@@ -63,7 +63,7 @@ input[type="submit"] {
 
 header {
 	text-align:right;
-	display:block;
+	display:inline-block;
 	height:160px;
 
 	.logo-container {
@@ -227,6 +227,7 @@ header {
 
 #search-datawatch-container {
 	position:relative;
+	display:inline-block;
 	top:0px;
 	left:0px;
 
@@ -352,8 +353,8 @@ header {
 }
 
 div#showcase-find-map-container {
-	position:absolute;
-	top:0px;
+	float:right;
+	margin-top:5px;
 	right:0px;
 
 		#showcase-container {
@@ -375,11 +376,12 @@ div#showcase-find-map-container {
 /* Body > Map and find in library */
 
 div#find-in-library-container {
-	top:325px;
+	top:10px;
 	width:320px;
 	height:175px;
-	position:absolute;
-	right:35px;
+	position:relative;
+	right:5px;
+	display:inline-block;
 }
 
 div#find-in-library-container a img {
@@ -387,11 +389,12 @@ div#find-in-library-container a img {
 }
 
 div#map-it-container {
-	top:325px;
-	right:380px;
+	top:10px;
+	right:20px;
 	width:320px;
 	height:175px;
-	position:absolute;
+	position:relative;
+	display:inline-block;
 }
 
 div#map-it-container a img {
