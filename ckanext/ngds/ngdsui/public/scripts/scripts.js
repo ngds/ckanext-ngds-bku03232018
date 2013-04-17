@@ -51,9 +51,9 @@ var ngds = ngds || { };
 					$("#not-implemented-popup").hide();
 				}
 
-				// if(isLoginPopupVisible()) { // If the login popup is active, hide it.
-				// 	$(".login-popup").hide();
-				// }				
+				if(isLoginPopupVisible()) { // If the login popup is active, hide it.
+					$(".login-popup").hide();
+				}				
 			});
 
 		$(document).keyup(function(e){ // On ESC hide the Not Implemented Yet popup, if it's visible.
@@ -62,30 +62,30 @@ var ngds = ngds || { };
 			}
 		});
 
-		// (function(){ // Handle login popup events.
+		(function(){ // Handle login popup events.
 
-		// 	$(".login").click(function(){ // When clicked, toggle between visible and hidden.
-		// 		if(isLoginPopupVisible()) {
-		// 			$(".login-popup").hide();
-		// 		}
-		// 		else {
-		// 			$(".login-popup").show();
-		// 		}
-		// 		return false;
-		// 	});
+			$(".login").click(function(){ // When clicked, toggle between visible and hidden.
+				if(isLoginPopupVisible()) {
+					$(".login-popup").hide();
+				}
+				else {
+					$(".login-popup").show();
+				}
+				return false;
+			});
 
-		// 	$(document).keyup(function(e){ // On ESC toggle between visible and hidden.
-		// 		if(e.keyCode===27 && isLoginPopupVisible()) {
-		// 			$(".login-popup").hide();
-		// 		}
-		// 	});
+			$(document).keyup(function(e){ // On ESC toggle between visible and hidden.
+				if(e.keyCode===27 && isLoginPopupVisible()) {
+					$(".login-popup").hide();
+				}
+			});
 
-		// 	// $("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
-		// 	// 										// when a click occurs inside the div.
-		// 	// 	return false;
-		// 	// });
+			// $("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
+			// 										// when a click occurs inside the div.
+			// 	return false;
+			// });
 
-		// })();
+		})();
 
 
 		// (function(){ // Handle username and password state transitions.
@@ -135,9 +135,9 @@ var ngds = ngds || { };
 		    	collapsible:true
 			});
 
-		// function isLoginPopupVisible(){
-		// 		return ($(".login-popup").css('display')!=='none');
-		// 	}
+		function isLoginPopupVisible(){
+				return ($(".login-popup").css('display')!=='none');
+			}
 	
 	    var dataset = ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
 	    if(dataset!==null && typeof(dataset)!=='undefined') {
@@ -217,7 +217,7 @@ var ngds = ngds || { };
 
 				if(content_model_selected!==null && typeof content_model_selected!=='undefined' && content_model_version!==null && typeof content_model_version!=='undefined') {
 					$.ajax({
-						url:'http://localhost:9000/api/action/contentmodel_checkFile',
+						url:'/api/action/contentmodel_checkFile',
 						type:'POST',
 						data:JSON.stringify({
 							cm_uri:content_model_selected,
@@ -230,6 +230,7 @@ var ngds = ngds || { };
 						}
 					});
 				}
+				$(".dataset-resource-form").submit();
 				
 			});
 		}

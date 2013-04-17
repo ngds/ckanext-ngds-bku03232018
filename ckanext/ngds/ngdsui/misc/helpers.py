@@ -1,7 +1,10 @@
 from ckan.lib.base import model,h,g,c,request
 import ckan.lib.navl.dictization_functions as dictization_functions
 import ckanext.ngds.geoserver.logic.action as geoserver_actions
+import ckan.logic as logic
+import ckan.controllers.storage as storage
 DataError = dictization_functions.DataError
+NotFound = logic.NotFound
 from pylons import config
 
 
@@ -62,6 +65,14 @@ def get_language(id):
 def is_spatialized(res_id,col_geo):
 	context = {'model': model, 'session': model.Session,\
                    'user': c.user or c.author, 'for_view': True}
-
-	is_spatialized = geoserver_actions.datastore_is_spatialized(context,{'id':res_id,'col_geography':col_geo})['is_spatialized']
+	try:
+		is_spatialized = geoserver_actions.datastore_is_spatialized(context,{'id':res_id,'col_geography':col_geo})['is_spatialized']
+	except(NotFound):
+		is_spatialized = False
 	return is_spatialized
+
+def get_url_for_file(label):
+	# storage_controller = StorageController()
+	BUCKET = config.get('ckan.storage.bucket', 'default')
+	ofs = storage.get_ofs()
+	return ofs.get_url(BUCKET,label)
