@@ -1552,17 +1552,6 @@ a:active {
   border-radius: 3px;
 }
 
-p {
-  margin: 0 0 9px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-}
-p small {
-  font-size: 11px;
-  color: #999999;
-}
-
 .lead {
   margin-bottom: 18px;
   font-size: 20px;
