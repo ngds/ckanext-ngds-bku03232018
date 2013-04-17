@@ -132,7 +132,8 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_responsible_party_name':helpers.get_responsible_party_name,
 			'get_default_group':helpers.get_default_group,
 			'get_login_url':helpers.get_login_url,
-			'get_language':helpers.get_language
+			'get_language':helpers.get_language,
+			'is_spatialized':helpers.is_spatialized
 		}
 
 	implements(IPackageController,inherit=True)

@@ -20,6 +20,9 @@
       {{ _('Explore') }}
       <span class="caret"></span>
     </a>
+    {% if h.is_spatialized(res.id,"geometry") %}
+      Spatialized
+    {% endif %}
     <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Spatialize</button>
     <ul class="dropdown-menu">
       {% block resource_item_explore_links %}

@@ -1,38 +1,5 @@
 
 
-/*Logged in */
-
-div#logged-in-popup {
-	width:150px; 
-	height:100px; 
-	border:1px solid black; 
-	position:relative; 
-	top:0; 
-	right:0; 
-	float:right; 
-	margin-right:0px; 
-	z-index:6; 
-	background-color:#fff; 
-	display:block;
-	font-size:12px;
-	font-family:Arial;
-	display:none;
-	text-align:left;
-}
-
-div#logged-in-popup ul {
-	padding-left:5px;
-}
-
-div#logged-in-popup ul li {
-	margin-left:0px;
-	display:block;
-	margin-top:15px;
-}
-
-
-/*Logged in end */
-
 /* Login */
 
 div#login-popup {
@@ -685,7 +652,7 @@ div#basemap-combo {
 .contribute-menu-table .cell {
 	display:table-cell;
 	padding-right:40px;
-	padding-left:0px;
+	padding-left:40px;
 	font-family:Arial;
 	font-size:13px;
 	line-height:1.5em;
@@ -1563,31 +1530,7 @@ a:active {
   line-height: 1;
 }
 
-ul,
-ol {
-  padding: 0;
-  margin: 0 0 9px 25px;
-}
-ul ul,
-ul ol,
-ol ol,
-ol ul {
-  margin-bottom: 0;
-}
-ul {
-  list-style: disc;
-}
-ol {
-  list-style: decimal;
-}
-li {
-  line-height: 18px;
-}
-ul.unstyled,
-ol.unstyled {
-  margin-left: 0;
-  list-style: none;
-}
+
 
 dl {
   margin-bottom: 18px;

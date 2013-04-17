@@ -1,5 +1,6 @@
 from ckan.lib.base import model,h,g,c,request
 import ckan.lib.navl.dictization_functions as dictization_functions
+import ckanext.ngds.geoserver.logic.action as geoserver_actions
 DataError = dictization_functions.DataError
 from pylons import config
 
@@ -58,3 +59,6 @@ def get_language(id):
 	else:
 		return ""
 
+def is_spatialized(res_id,col_geo):
+	context = {'model': model, 'session': model.Session }
+	return geoserver_actions.datastore_is_spatialized(context,{res_id,col_geo})

@@ -24,8 +24,8 @@
 						
 						<!-- <li><a href="#" class="not-implemented">FAVORITES</a></li> -->
 					</ul>
-					
-					{% if c.user %}
+				</nav>
+				{% if c.user %}
 					<div class="login-popup" id="logged-in-popup">
 						<ul>
 							<li><a href="{{ h.url_for(controller='user', action='read', id=c.userobj.name) }}" class="float-left fit-to-login-div">{{ _('Profile') }}</a></li>
@@ -47,9 +47,6 @@
 						</form>
 					</div>					
 					{% endif %}
-
-
-				</nav>
 			</header>
 				<div id="main-nav"> <!-- This is a container div for the second-level menu. -->
 					<nav>

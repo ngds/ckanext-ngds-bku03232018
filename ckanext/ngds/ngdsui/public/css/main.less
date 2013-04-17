@@ -17,6 +17,13 @@ body {
 	font-family:arial;
 }
 
+a {
+	text-decoration:none;
+	&:visited {
+		text-decoration:none;
+	}
+}
+
 #top-level-container {
 	width:1024px;
 	text-align:center;
@@ -161,6 +168,51 @@ header {
 
 
 } // End header
+
+
+#logged-in-popup {
+	width:150px; 
+	border:1px solid black; 
+	position:absolute; 
+	top:30px; 
+	right:0; 
+	float:right; 
+	margin-right:0px; 
+	z-index:6; 
+	background-color:#fff; 
+	display:block;
+	font-size:12px;
+	font-family:Arial;
+	display:none;
+	text-align:left;
+
+	ul {
+		padding:0px;
+		margin:0px;
+
+		li {
+			margin-left:0px;
+			display:block;
+			margin-top:15px;
+			height:30px;
+			margin-top:0px;
+			padding:0px;
+			text-align:center;
+			&:hover {
+				background-color:#d7d7d7;	
+			}
+
+			&:first-child {
+				margin-top:0px;
+			}
+
+			a {
+				font-size:14px;
+				line-height:30px;
+			}
+		}
+	}
+}
 
 
 #main-nav {
