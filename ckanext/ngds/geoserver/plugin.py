@@ -38,9 +38,27 @@ class GeoserverPlugin(p.SingletonPlugin):
     p.implements(p.IAuthFunctions)
 
     def get_actions(self):
-        actions = {'datastore_spatialize' : action.datastore_spatialize, 'datastore_expose_as_layer': action.datastore_expose_as_layer}
+        actions = {'datastore_spatialize' : action.datastore_spatialize,
+                   'datastore_expose_as_layer': action.datastore_expose_as_layer,
+                   'datastore_is_spatialized' : action.datastore_is_spatialized,
+                   'datastore_remove_exposed_layer' : action.datastore_remove_exposed_layer,
+                   'datastore_list_exposed_layers' : action.datastore_list_exposed_layers,
+                   'geoserver_create_workspace' : action.geoserver_create_workspace,
+                   'geoserver_delete_workspace' : action.geoserver_delete_workspace,
+                   'geoserver_create_store' : action.geoserver_create_store,
+                   'geoserver_delete_store' : action.geoserver_delete_store}
+        
         return actions
 
     def get_auth_functions(self):
-        return {'datastore_spatialize' : auth.datastore_create, 'datastore_expose_as_layer' : auth.datastore_create}
-
+        functions =  {'datastore_spatialize' : auth.datastore_create, 
+                'datastore_expose_as_layer' : auth.datastore_create,
+                'datastore_is_spatialized' : auth.datastore_search,
+                'datastore_remove_exposed_layer' : auth.datastore_delete,
+                'datastore_list_exposed_layers' : auth.datastore_search,
+                'geoserver_create_workspace' : auth.datastore_create,
+                'geoserver_delete_workspace' : auth.datastore_delete,
+                'geoserver_create_store' : auth.datastore_create,
+                'geoserver_delete_store' : auth.datastore_delete}
+        
+        return functions

@@ -132,10 +132,12 @@ def contentmodel_checkFile(context, data_dict):
     :returns: The list of all available content models.
     :rtype: vector
     '''
-    if 'id' in data_dict:
-        data_dict['resource_id'] = data_dict['id']
-    res_id = _get_or_bust(data_dict, 'resource_id')
-       
-    data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+    cm_uri = _get_or_bust(data_dict, 'cm_uri')
+    cm_version = _get_or_bust(data_dict, 'cm_version')
+    csv_filename =  _get_or_bust(data_dict, 'csvfile')
+    
+    # return {"valid": "true", "message": "ok."}
+    return {"valid": "false", "message": "Detailed error description"}
+    
 
 
