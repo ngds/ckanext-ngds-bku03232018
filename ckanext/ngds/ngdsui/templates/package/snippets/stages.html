@@ -20,14 +20,14 @@ Example:
 {% if s3 != 'uncomplete' %}{% set class = 'stage-3' %}{% endif %}
 
 <ol class="stages {{ class }}">
-  <li class="first {{ s1 }}">
+  <li class="first-stage {{ s1 }}">
     {% if s1 != 'complete' %}
       <span class="highlight">1. {{ _('Create dataset') }}</span>
     {% else %}
       <button class="highlight" name="save" value="go-dataset" type="submit">{{ _('1. Create dataset') }}</button>
     {% endif %}
   </li>
-  <li class="middle {{ s2 }}">
+  <li class="middle-stage {{ s2 }}">
     {% if s2 != 'complete' %}
       <span class="highlight">2. {{ _('Add Resources') }}</span>
     {% else %}
@@ -39,7 +39,7 @@ Example:
       {% endif %}
     {% endif %}
   </li>
-  <li class="last {{ s3 }}">
+  <li class="last-stage {{ s3 }}">
     {% if s3 != 'complete' %}
       <span class="highlight">3. {{ _('Dataset Metadata') }}</span>
     {% else %}
