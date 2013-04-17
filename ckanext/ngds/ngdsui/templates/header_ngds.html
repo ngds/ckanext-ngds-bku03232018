@@ -15,7 +15,7 @@
 						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">{{ _('About') }}</a></li>
 						
 						{% if c.user %}
-							<li><a href="#" id="login" class="login">{{ c.user|capitalize }}</a></li>
+							<li><a href="#" id="login-in" class="login-in">{{ c.user|capitalize }}</a></li>
 						{% else %}	
 							<li><a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Sign Up') }}</a></li>
 							<li><a href="/user/login" id="login" class="login">{{ _('Login') }}</a></li> 

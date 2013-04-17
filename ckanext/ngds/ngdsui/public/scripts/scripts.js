@@ -64,7 +64,7 @@ var ngds = ngds || { };
 
 		(function(){ // Handle login popup events.
 
-			$(".login").click(function(){ // When clicked, toggle between visible and hidden.
+			$(".login-in").click(function(){ // When clicked, toggle between visible and hidden.
 				if(isLoginPopupVisible()) {
 					$(".login-popup").hide();
 				}
@@ -80,10 +80,10 @@ var ngds = ngds || { };
 				}
 			});
 
-			// $("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
-			// 										// when a click occurs inside the div.
-			// 	return false;
-			// });
+			$("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
+													// when a click occurs inside the div.
+				return false;
+			});
 
 		})();
 
