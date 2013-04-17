@@ -2,24 +2,6 @@
 
 /* Login */
 
-div#login-popup {
-	width:250px; 
-	height:200px; 
-	border:1px solid black; 
-	position:relative; 
-	top:0; 
-	right:0; 
-	float:right; 
-	margin-right:0px; 
-	z-index:6; 
-	background-color:#fff; 
-	display:block;
-	font-size:12px;
-	font-family:Arial;
-	display:none;
-	text-align:left;
-}
-
 div#login-popup p:first-child {
 	margin-left:15px;
 	margin-top:20px;

@@ -20,10 +20,11 @@
       {{ _('Explore') }}
       <span class="caret"></span>
     </a>
-    {% if h.is_spatialized(res.id,"geometry") %}
-      Spatialized
-    {% endif %}
-    <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Spatialize</button>
+    {% if h.is_spatialized(res.id,"geometry") == 'True' %}
+     <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
+    {% else %}
+       <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Publish as OGC</button>
+      {% endif %}
     <ul class="dropdown-menu">
       {% block resource_item_explore_links %}
       <li>
@@ -47,12 +48,32 @@
 <script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
 <script>
 $(document).ready(function() {
-  if(window.spatialize_handler===null || typeof window.spatialize_handler==='undefined') {
+  if((window.spatialize_handler===null || typeof window.spatialize_handler==='undefined') && ($(".spatialize").length>0)) {
         window.spatialize_handler = 'defined';
         $(".spatialize").click(function(ev){
         var id = ev.currentTarget.value;
         $.ajax({
           url:'/api/action/datastore_spatialize',
+          type:'POST',
+          data:JSON.stringify({
+            id:id,
+            col_geography:"geometry",
+            col_latitude:"LATITUDE",
+            col_longitude:"LONGITUDE"
+          }),
+          success:function(response){
+            console.log(response);
+          }
+        });
+      });
+  }
+
+  if((window.unspatialize_handler===null || typeof window.unspatialize_handler==='undefined') && ($(".unspatialize").length>0)) {
+        window.unspatialize_handler = 'defined';
+        $(".unspatialize").click(function(ev){
+        var id = ev.currentTarget.value;
+        $.ajax({
+          url:'/api/action/datastore_unspatialize',
           type:'POST',
           data:JSON.stringify({
             id:id,

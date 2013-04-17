@@ -51,9 +51,9 @@ var ngds = ngds || { };
 					$("#not-implemented-popup").hide();
 				}
 
-				if(isLoginPopupVisible()) { // If the login popup is active, hide it.
-					$(".login-popup").hide();
-				}				
+				// if(isLoginPopupVisible()) { // If the login popup is active, hide it.
+				// 	$(".login-popup").hide();
+				// }				
 			});
 
 		$(document).keyup(function(e){ // On ESC hide the Not Implemented Yet popup, if it's visible.
@@ -62,68 +62,68 @@ var ngds = ngds || { };
 			}
 		});
 
-		(function(){ // Handle login popup events.
+		// (function(){ // Handle login popup events.
 
-			$(".login").click(function(){ // When clicked, toggle between visible and hidden.
-				if(isLoginPopupVisible()) {
-					$(".login-popup").hide();
-				}
-				else {
-					$(".login-popup").show();
-				}
-				return false;
-			});
+		// 	$(".login").click(function(){ // When clicked, toggle between visible and hidden.
+		// 		if(isLoginPopupVisible()) {
+		// 			$(".login-popup").hide();
+		// 		}
+		// 		else {
+		// 			$(".login-popup").show();
+		// 		}
+		// 		return false;
+		// 	});
 
-			$(document).keyup(function(e){ // On ESC toggle between visible and hidden.
-				if(e.keyCode===27 && isLoginPopupVisible()) {
-					$(".login-popup").hide();
-				}
-			});
+		// 	$(document).keyup(function(e){ // On ESC toggle between visible and hidden.
+		// 		if(e.keyCode===27 && isLoginPopupVisible()) {
+		// 			$(".login-popup").hide();
+		// 		}
+		// 	});
 
-			// $("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
-			// 										// when a click occurs inside the div.
-			// 	return false;
-			// });
+		// 	// $("#login-popup").click(function(){ // Prevent the click event propagating upwards to document and resulting in the login popup being hidden
+		// 	// 										// when a click occurs inside the div.
+		// 	// 	return false;
+		// 	// });
 
-		})();
+		// })();
 
 
-		(function(){ // Handle username and password state transitions.
+		// (function(){ // Handle username and password state transitions.
 			
-			$("#username").click(function(e){
-				return false;
-			});
+		// 	$("#username").click(function(e){
+		// 		return false;
+		// 	});
 
-			$("#password").click(function(e){ // Preventing the click event from firing on the document and resulting in the login popup from vanishing
-												// due to the focus event binding below.
-				return false;
-			});
+		// 	$("#password").click(function(e){ // Preventing the click event from firing on the document and resulting in the login popup from vanishing
+		// 										// due to the focus event binding below.
+		// 		return false;
+		// 	});
 
-			$("#username").focus(function(e) {
-					if(this.value==="username") {
-						this.value = "";
-					}
-				});
+		// 	$("#username").focus(function(e) {
+		// 			if(this.value==="username") {
+		// 				this.value = "";
+		// 			}
+		// 		});
 
-			$("#username").blur(function(e) {
-					if(this.value==="") {
-						this.value = "username";
-					}
-				});
+		// 	$("#username").blur(function(e) {
+		// 			if(this.value==="") {
+		// 				this.value = "username";
+		// 			}
+		// 		});
 
-			$("#password").focus(function(e) {
-					if(this.value==="password") {
-						this.value = "";
-					}
-				});
+		// 	$("#password").focus(function(e) {
+		// 			if(this.value==="password") {
+		// 				this.value = "";
+		// 			}
+		// 		});
 
-			$("#password").blur(function(e) {
-					if(this.value==="") {
-						this.value = "password";
-					}
-				});
+		// 	$("#password").blur(function(e) {
+		// 			if(this.value==="") {
+		// 				this.value = "password";
+		// 			}
+		// 		});
 
-		})();
+		// })();
 
 
 		$("#accordion").accordion({ // Create and configure the library search page's accordion menu.
@@ -135,9 +135,9 @@ var ngds = ngds || { };
 		    	collapsible:true
 			});
 
-		function isLoginPopupVisible(){
-				return ($(".login-popup").css('display')!=='none');
-			}
+		// function isLoginPopupVisible(){
+		// 		return ($(".login-popup").css('display')!=='none');
+		// 	}
 	
 	    var dataset = ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
 	    if(dataset!==null && typeof(dataset)!=='undefined') {

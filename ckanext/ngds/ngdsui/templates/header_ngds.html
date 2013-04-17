@@ -18,7 +18,7 @@
 							<li><a href="#" id="login" class="login">{{ c.user|capitalize }}</a></li>
 						{% else %}	
 							<li><a href="{{ h.url_for(controller='user', action='register') }}" >{{ _('Sign Up') }}</a></li>
-							<li><a href="#" id="login" class="login">{{ _('Login') }}</a></li> 
+							<li><a href="/user/login" id="login" class="login">{{ _('Login') }}</a></li> 
 						{% endif %}
 
 						
@@ -36,7 +36,7 @@
 						</ul>
 					</div>
 					{% else %}
-					<div class="login-popup" id="login-popup">
+					<!-- <div class="login-popup" id="login-popup">
 						<p>Your email address:</p>
 						<form name="login-form" method ="post" action="{{ h.get_login_url() }}">
 							<input type="text" id="username" name="login"/>
@@ -45,7 +45,7 @@
 							<input type="checkbox" name="remember" value="50000"/><span>Remember me</span>
 							<input type="submit" value="Login"/>
 						</form>
-					</div>					
+					</div>		 -->			
 					{% endif %}
 			</header>
 				<div id="main-nav"> <!-- This is a container div for the second-level menu. -->

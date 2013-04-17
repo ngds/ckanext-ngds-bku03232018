@@ -60,5 +60,8 @@ def get_language(id):
 		return ""
 
 def is_spatialized(res_id,col_geo):
-	context = {'model': model, 'session': model.Session }
-	return geoserver_actions.datastore_is_spatialized(context,{res_id,col_geo})
+	context = {'model': model, 'session': model.Session,\
+                   'user': c.user or c.author, 'for_view': True}
+
+	is_spatialized = geoserver_actions.datastore_is_spatialized(context,{'id':res_id,'col_geography':col_geo})['is_spatialized']
+	return is_spatialized
