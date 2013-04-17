@@ -249,7 +249,7 @@ header {
 
 	#search-container {
 		height:140px;
-		.left-container-common('/assets/border_box_1.png');
+		.dialog-common('/assets/border_box_1.png');
 
 		.search-bar {
 			width:210px;
@@ -265,12 +265,41 @@ header {
 	}
 }
 
-.left-container-common(@image-url) {
+.dialog-common(@image-url) {
 	width:295px;
 	border-top:4px solid #236393;
 	margin-left:20px;
 	padding-top:10px;
     background:url(@image-url) no-repeat;
+    font-family:"Arial";
+	font-size:11px;
+	margin-top:5px;
+	margin-bottom:0px;
+	color:#959595;
+}
+
+.dialog-small {
+	.dialog-common('/assets/border_box_1.png');
+	height:140px;
+	input[type="text"] {
+		width:210px;
+		margin-left:20px;
+		margin-top:12px;
+		height:25px;
+	}
+	.menu-caption {
+		.left-container-item-common;
+		font-size:13px; 
+		font-family:Arial; 
+		line-height:16px;
+		margin-top:0px;
+		text-align:left;
+		color:#515151;
+	}
+}
+
+.dialog-large {
+	.dialog-common('/assets/border_box_2.png');
 }
 
 .left-container-item-common {
@@ -278,11 +307,8 @@ header {
 	margin-right:20px;
 }
 
-
-
-
 #data-watch-container {
-	.left-container-common('/assets/border_box_2.png');
+	.dialog-common('/assets/border_box_2.png');
 	margin-top:20px;
 	height:330px;
 
@@ -306,13 +332,8 @@ header {
 		}
 
 		p {
-			font-family:"Arial";
-			font-size:11px;
 			font-style:italic;
 			text-align:right;
-			margin-top:5px;
-			margin-bottom:0px;
-			color:#959595;
 		}
 	}
 }

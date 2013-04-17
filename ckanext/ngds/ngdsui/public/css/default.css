@@ -422,7 +422,7 @@ div#content-container section.search-results div.search-results-container div.se
 	margin-left:25px;
 }
 
-div.map-search {
+/*div.map-search {
 	background-color:#dadada;
 	height:120px;
 	width:320px;
@@ -454,7 +454,7 @@ div.map-search input[type="submit"] {
 	width:50px;
 	height:30px;
 	margin-left:10px;
-}
+}*/
 
 
 /*Contribute Central Styles*/
