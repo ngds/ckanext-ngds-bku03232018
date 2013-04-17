@@ -57,6 +57,10 @@ body {
 	height:@height;
 }
 
+input[type="submit"] {
+	.ngds-button(40px,35px);			
+}
+
 header {
 	text-align:right;
 	display:block;
@@ -276,11 +280,7 @@ header {
 	margin-top:5px;
 	margin-bottom:0px;
 	color:#959595;
-}
 
-.dialog-small {
-	.dialog-common('/assets/border_box_1.png');
-	height:140px;
 	input[type="text"] {
 		width:210px;
 		margin-left:20px;
@@ -296,6 +296,19 @@ header {
 		text-align:left;
 		color:#515151;
 	}
+
+	.menu-align {
+		.left-container-item-common;
+		width:200px;
+		margin-top:10px;
+		margin-bottom:5px;
+		text-align:left;
+	}
+}
+
+.dialog-small {
+	.dialog-common('/assets/border_box_1.png');
+	height:140px;
 }
 
 .dialog-large {
