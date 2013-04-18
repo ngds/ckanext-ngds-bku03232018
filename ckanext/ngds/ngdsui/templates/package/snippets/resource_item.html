@@ -14,12 +14,14 @@
     {% endif %}
   </p>
   {% block resource_item_explore %}
+   {{ h.get_url_for_file("2013-04-09T22:36:08.124Z/small-with-lat-long.csv") }}
   <div class="dropdown btn-group">
     <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
       <i class="icon-share-alt"></i>
       {{ _('Explore') }}
       <span class="caret"></span>
     </a>
+
     {% if h.is_spatialized(res.id,"geometry")==True %}
      <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
     {% else %}
