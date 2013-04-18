@@ -20,12 +20,13 @@
       {{ _('Explore') }}
       <span class="caret"></span>
     </a>
-
-    {% if h.is_spatialized(res.id,"geometry")==True %}
-     <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
-    {% else %}
-       <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Publish as OGC</button>
+    {% if h.is_plugin_enabled('geoserver') %}
+      {% if h.is_spatialized(res.id,"geometry")==True %}
+       <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
+      {% else %}
+         <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Publish as OGC</button>
       {% endif %}
+    {% endif %}
     <ul class="dropdown-menu">
       {% block resource_item_explore_links %}
       <li>

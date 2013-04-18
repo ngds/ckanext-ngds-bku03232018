@@ -66,3 +66,10 @@ def get_url_for_file(label):
 	ofs = storage.get_ofs()
 	print ofs.get_url(BUCKET,label)
 	return ofs.get_url(BUCKET,label)
+
+def is_plugin_enabled(plugin):
+	plugins = config.get('ckan.plugins').split(' ')
+	if plugin in plugins:
+		return True
+	return False
+

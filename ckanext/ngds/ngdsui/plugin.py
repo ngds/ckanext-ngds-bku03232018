@@ -133,13 +133,12 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_default_group':helpers.get_default_group,
 			'get_login_url':helpers.get_login_url,
 			'get_language':helpers.get_language,
-			'get_url_for_file':helpers.get_url_for_file
+			'get_url_for_file':helpers.get_url_for_file,
+			'is_plugin_enabled':helpers.is_plugin_enabled
 		}
 
 	implements(IPackageController,inherit=True)
 	def before_search(self,search_params):
-		search_params['q'] = search_params['q']+' groups:"public"'
-		
 		if 'fq' not in search_params:
 			search_params['fq'] = ''
 
