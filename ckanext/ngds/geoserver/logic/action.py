@@ -274,11 +274,13 @@ def datastore_is_exposed_as_layer(context, data_dict):
     
     
     cat = Catalog(geoserver_rest_url)
-    layer = cat.get_layer(res_id)
-    if layer is not None:
-        result = {'is_exposed_as_layer': True}
-    else:
+    #layer = cat.get_layer(res_id)
+    layer = cat.get_resource(res_id)
+    #print ">>>>>>>>>>>>>>>>>>>>> got Resource :"+resource.name
+    if layer is None:
         result = {'is_exposed_as_layer': False}
+    else:
+        result = {'is_exposed_as_layer': True}
     
     return result 
             
@@ -330,9 +332,12 @@ def datastore_expose_as_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>>>>  begin create store >>>>>>>>>>>>>>>>>>>>>>>>"
     #get existing or create new datastore
  
+    # populate default values
     config_login      = 'ckanuser'
     config_passwd     = 'pass'
     config_datastore  = 'datastore'
+    
+    # extract values from development.ini file
     datastore_url = config.get('ckan.datastore.write_url','postgresql://ckanuser:pass@localhost/datastore')
     
     parsed_login_pass = datastore_url.split('://')[1].split('@')[0]
@@ -380,7 +385,7 @@ def datastore_expose_as_layer(context, data_dict):
     result_dict = datastore_is_spatialized(context, data_dict)
     is_spatialized = result_dict['is_spatialized']
     if not is_spatialized:
-        return {'success':False, 'reason':'resource '+res_id+' not already spatialized'}
+        return {'success':False, 'reason':'resource '+res_id+' not yet spatialized'}
         '''
         raise Exception({
                 'table': res_id+" not yet spatialzied"
@@ -391,12 +396,14 @@ def datastore_expose_as_layer(context, data_dict):
     
     # we utilize the resource id as the layer name
     data_dict['layer_name'] = res_id
-    _geoserver_create_layer(context, data_dict)
+    succeeded = _geoserver_create_layer(context, data_dict)
     
     web_geoserver = data_dict['geoserver'].replace("/rest", "/web")
     web_url = web_geoserver+"?wicket:bookmarkablePage=:org.geoserver.web.data.resource.ResourceConfigurationPage&name="+res_id+"&wsName="+data_dict['workspace_name']
-    
-    return  {'success':True, 'web_url':web_url}
+    if succeeded:
+        return  {'success':True, 'web_url':web_url}
+    else:
+        return {'success': False}
 
 def datastore_remove_exposed_layer(context, data_dict):
     '''Remove an exposed layer from geoserver
@@ -410,18 +417,21 @@ def datastore_remove_exposed_layer(context, data_dict):
      # read geoserver information from development.ini
     geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
    
+    layer_name = _get_or_bust(data_dict, 'layer_name')
+    data_dict['resource_id'] = layer_name
+   
     print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
     # verifies if the user calling the method has permission to execute this call
     p.toolkit.check_access('datastore_remove_exposed_layer', context, data_dict) 
    
-    layer_name = _get_or_bust(data_dict, 'layer_name')
-   
     cat = Catalog(geoserver_rest_url)
-    layer = cat.get_layer(layer_name)
+    #layer = cat.get_layer(layer_name)
+    layer = cat.get_resource(layer_name)
     if layer is None:
         return {'success':False, 'reason':'layer '+layer_name+' not found'}
     else:
-        cat.delete(layer)
+        cat.delete(layer, purge = True)
+        cat._cache.clear()
         return {'success':True}
     
 
@@ -535,6 +545,7 @@ def geoserver_delete_workspace(context, data_dict):
     workspace = cat.get_workspace(workspace_name)
     if workspace is not None:
         cat.delete(workspace)
+        cat._cache.clear()
         return {'success':True}
     else:
         return {'success':False, 'reason':'workspace '+workspace_name+' not found'}
@@ -677,6 +688,7 @@ def geoserver_delete_store(context, data_dict):
         return {'success':False, 'reason':'could not find store '+store_name}
     else:
         cat.delete(store)
+        cat._cache.clear()
         return {'success':True}
         
 
@@ -831,8 +843,9 @@ def _geoserver_create_layer(context, data_dict):
         _create_postgis_sql_layer(context, data_dict)
     else:
         print ">>>>>>>>>>>>>>>>>>>> layer already exists >>>>>>>>>>>>>>>>>>>>"
+        return False
     
-    return
+    return True
     
     
 
