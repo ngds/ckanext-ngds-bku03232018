@@ -210,6 +210,7 @@ var ngds = ngds || { };
 			$(".content-model-marker+div").after(div);	       
 	    });	
 
+
 		if($("button[name='save']").length!==0) {
 			$("button[name='save']").click(function() {
 				console.log("inside");
@@ -223,12 +224,26 @@ var ngds = ngds || { };
 						type:'POST',
 						data:JSON.stringify({
 							cm_uri:content_model_selected,
-							cm_version:content_model_version,
+							cm_version:content_model_version.substr(content_model_version.lastIndexOf("/")+1),
 							cm_resource_url:resource_url
 						}),
 						success:function(response) {
-							console.log(response);
-							// $(".dataset-resource-form").submit();
+							var div = $("<div/>",{id:"dialog-message",title:"Validation Errors"});
+							var p = $("<p/>");
+							var text = response.result.message;
+							p.text(text);
+							div.append(p);
+							$("#content-container").append(div);
+							$( "#dialog-message" ).dialog({
+							      modal: true,
+							      width:"700px",
+							      buttons: {
+							        Ok: function() {
+							          $( this ).dialog( "close" );
+							        }
+							      }
+						    });
+							// alert(response.result.message);
 						}
 					});
 				}
@@ -236,7 +251,6 @@ var ngds = ngds || { };
 				
 			});
 		}
-
 	});
 
 })();
