@@ -58,14 +58,19 @@ def validate_existence(fieldModelList, dataHeaderList, dataListList):
             index = [i for i, field in enumerate(fieldModelList) if field.name == header]
             linkToFieldInfoFromHeader.append(index[0])
         except:
-            msg = "header: %s couldn't be found in the field_info" %(header)
+            msg = "header: %s could NOT be found in the field_info" %(header)
             print msg
             validation_messages.append(msg)
-        
+    print "linkToFieldInfoFromHeader"
+    print linkToFieldInfoFromHeader
+    
     OptionalFalseIndex = []
     for i in xrange(len(dataHeaderList)):
-        if fieldModelList[linkToFieldInfoFromHeader[i]].optional == False:
-            OptionalFalseIndex.append(i)
+        try:
+            if fieldModelList[linkToFieldInfoFromHeader[i]].optional == False:
+                OptionalFalseIndex.append(i)
+        except:
+            pass
     print "OptionalFalseIndex:"
     print OptionalFalseIndex
     
@@ -92,16 +97,22 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
     # fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]
     linkToFieldInfoFromHeader = []
     for header in dataHeaderList:
-        index = [i for i, field in enumerate(fieldModelList) if field.name == header]
-        linkToFieldInfoFromHeader.append(index[0])
+        try:
+            index = [i for i, field in enumerate(fieldModelList) if field.name == header]
+            linkToFieldInfoFromHeader.append(index[0])
+        except:
+            pass
     
     IntTypeIndex = []
     DoubleTypeIndex = []
     for i in xrange(len(dataHeaderList)):
-        if   fieldModelList[linkToFieldInfoFromHeader[i]].typeString == 'int':
-            IntTypeIndex.append(i)
-        elif fieldModelList[linkToFieldInfoFromHeader[i]].typeString == 'double':
-            DoubleTypeIndex.append(i)
+        try:
+            if   fieldModelList[linkToFieldInfoFromHeader[i]].typeString == 'int':
+                IntTypeIndex.append(i)
+            elif fieldModelList[linkToFieldInfoFromHeader[i]].typeString == 'double':
+                DoubleTypeIndex.append(i)
+        except:
+            pass
     print "IntTypeIndex:"
     print IntTypeIndex
     print "DoubleTypeIndex:"
@@ -112,23 +123,19 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
         for i in xrange(len(IntTypeIndex)):
             data = dataListList[jd][IntTypeIndex[i]]
             if isInteger(data) == False:
-                if len(data) == 0:
-                    msg = "cell (%d,%d): null (field %s) is expected to be an Integer" %(jd+2, i+1,       dataHeaderList[IntTypeIndex[i]])
-                else:
+                if len(data) > 0:
                     msg = "cell (%d,%d): %s (field %s) is expected to be an Integer"   %(jd+2, i+1, data, dataHeaderList[IntTypeIndex[i]])
-                print msg
-                validation_messages.append(msg)
+                    print msg
+                    validation_messages.append(msg)
 
         # check the double type
         for i in xrange(len(DoubleTypeIndex)):
             data = dataListList[jd][DoubleTypeIndex[i]]
             if isNumber(data) == False:
-                if len(data) == 0:
-                    msg = "cell (%d,%d): null (field %s) is expected to be a Numeric" %(jd+2, i+1,       dataHeaderList[DoubleTypeIndex[i]])
-                else:
+                if len(data) > 0:
                     msg = "cell (%d,%d): %s (field %s) is expected to be a Numeric"   %(jd+2, i+1, data, dataHeaderList[DoubleTypeIndex[i]])
-                print msg
-                validation_messages.append(msg)
+                    print msg
+                    validation_messages.append(msg)
 
     print "about to finish field numeric checking"
     return validation_messages
