@@ -140,3 +140,18 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
     print "about to finish field numeric checking"
     return validation_messages
 # def validate_numericType(fieldModelList, dataHeaderList, dataListList)
+
+import ckan.controllers.storage as storage
+from pylons import config
+
+def get_url_for_file(label):
+    # storage_controller = StorageController()
+    resourcename_fullpath = None
+    try:
+        ofs = storage.get_ofs()
+        BUCKET = config.get('ckan.storage.bucket', 'default')
+        resourcename_fullpath = ofs.get_url(BUCKET,label)
+    except:
+        pass
+    return resourcename_fullpath 
+# def get_url_for_file(label)
