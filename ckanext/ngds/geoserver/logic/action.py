@@ -425,12 +425,13 @@ def datastore_remove_exposed_layer(context, data_dict):
     p.toolkit.check_access('datastore_remove_exposed_layer', context, data_dict) 
    
     cat = Catalog(geoserver_rest_url)
-    #layer = cat.get_layer(layer_name)
-    layer = cat.get_resource(layer_name)
-    if layer is None:
+    layer = cat.get_layer(layer_name)
+    resource = cat.get_resource(layer_name)
+    if resource is None:
         return {'success':False, 'reason':'layer '+layer_name+' not found'}
     else:
-        cat.delete(layer, purge = True)
+        cat.delete(layer)
+        cat.delete(resource, purge = True)
         cat._cache.clear()
         return {'success':True}
     
