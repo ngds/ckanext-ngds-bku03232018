@@ -108,9 +108,9 @@ class ContributeController(NGDSBaseController):
 
 		resource_list = filter(dir_filter,zfile.namelist())
 
-		status = self._validate_uploadfile(csvfilepath,upload_dir,resource_list)
+		status,err_msg = self._validate_uploadfile(csvfilepath,upload_dir,resource_list)
 
-		self._create_bulk_upload_record(c.user or c.author,datafilename,resourcesfilename,upload_dir,status)
+		self._create_bulk_upload_record(c.user or c.author,datafilename,resourcesfilename,upload_dir,status,err_msg)
 
 		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload')
 		redirect(url)		
@@ -120,24 +120,25 @@ class ContributeController(NGDSBaseController):
 
 		#import ckanext.ngds.lib.importer.validator.NGDSValidator
 		import ckanext.ngds.lib.importer.validator as validator
-            		
+		err_msg = ""            		
 		try:
 			validator = validator.NGDSValidator(filepath=data_file,resource_path=resource_path,resource_list=resource_list)
 			validator.validate()
 			status="VALID"
 			h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
 		except Exception, e:
-			h.flash_error(_('Files Uploaded but it is invalid. Error: "%s" '%e.__str__()), allow_html=True)
+			err_msg = e.__str__()
+			h.flash_error(_('Files Uploaded but it is invalid. Error: "%s" '%err_msg), allow_html=True)
 			status ="INVALID"
 
-		return status
+		return status,err_msg
 
-	def _create_bulk_upload_record(self,user,data_file,resources,path,status):
+	def _create_bulk_upload_record(self,user,data_file,resources,path,status,comments):
 		#print "inside _create_bulk_upload_record:",c.user
 
 		userObj = model.User.by_name(c.user.decode('utf8'))
 
-		data = {'data_file':data_file,'resources':resources,'path':path,'status':status,'uploaded_by':userObj.id}
+		data = {'data_file':data_file,'resources':resources,'path':path,'status':status,'comments':comments,uploaded_by':userObj.id}
 		data_dict = {'model':'BulkUpload'}
 		data_dict['data']=data
 		data_dict['process']='create'
