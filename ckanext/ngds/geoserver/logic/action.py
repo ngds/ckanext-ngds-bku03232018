@@ -72,9 +72,12 @@ def datastore_spatialize(context, data_dict):
     res_exists = results.rowcount > 0
         
     if not res_exists:
+        return {'success': False, 'reason':  'Resource "{0}" was not found.'.format(res_id)}
+        '''
         raise p.toolkit.ObjectNotFound(p.toolkit._(
             'Resource "{0}" was not found.'.format(res_id)
         ))
+        '''
 
     # We now verify if the resource has the geography column.
     # if it does not have it, we create that column.
@@ -100,7 +103,9 @@ def datastore_spatialize(context, data_dict):
                         "SELECT AddGeometryColumn('public', '"+res_id+
                         "', '"+ col_geography+"', 4326, 'GEOMETRY', 2)")
             trans.commit()
-
+        else:
+            return {'success':False, 'reason':'resource '+res_id+' is already spatialized'}
+        
         print ">>>>>>>>>>>>>>>>>>>> Updating column geography >>>>>>>>>>>>>>>>"
         # call a stored procedure from postgis to convert the longitude and latitude
         # columns into a geography shape
@@ -164,10 +169,13 @@ def datastore_spatialize(context, data_dict):
     except Exception, e:
         trans.rollback()
         if 'due to statement timeout' in str(e):
+            return {'success':False, 'reason':'query took too long'}
+            '''
             raise ValidationError({
                 'query': ['Query took too long']
             })
-        raise
+            '''
+        return {'success':False, 'reason':'unknown error'}
     finally:
         context['connection'].close()
     
@@ -372,9 +380,12 @@ def datastore_expose_as_layer(context, data_dict):
     result_dict = datastore_is_spatialized(context, data_dict)
     is_spatialized = result_dict['is_spatialized']
     if not is_spatialized:
+        return {'success':False, 'reason':'resource '+res_id+' not already spatialized'}
+        '''
         raise Exception({
                 'table': res_id+" not yet spatialzied"
             })
+        '''   
     
     print ">>>>>>>>>>>>>>>>>>>>>> start create layer >>>>>>>>>>>>>>>>>>>>>>>>"
     
@@ -385,8 +396,7 @@ def datastore_expose_as_layer(context, data_dict):
     web_geoserver = data_dict['geoserver'].replace("/rest", "/web")
     web_url = web_geoserver+"?wicket:bookmarkablePage=:org.geoserver.web.data.resource.ResourceConfigurationPage&name="+res_id+"&wsName="+data_dict['workspace_name']
     
-    
-    return web_url
+    return  {'success':True, 'web_url':web_url}
 
 def datastore_remove_exposed_layer(context, data_dict):
     '''Remove an exposed layer from geoserver
@@ -408,7 +418,12 @@ def datastore_remove_exposed_layer(context, data_dict):
    
     cat = Catalog(geoserver_rest_url)
     layer = cat.get_layer(layer_name)
-    cat.delete(layer)
+    if layer is None:
+        return {'success':False, 'reason':'layer '+layer_name+' not found'}
+    else:
+        cat.delete(layer)
+        return {'success':True}
+    
 
 
 def datastore_list_exposed_layers(contect, data_dict):
@@ -438,7 +453,7 @@ def datastore_list_exposed_layers(contect, data_dict):
     cat = Catalog(geoserver_rest_url)
     list_of_layers = cat.get_layers()
     
-    return list_of_layers
+    return {'success':False, 'list_of_layers':list_of_layers}
 
     
 def geoserver_create_workspace(context, data_dict):
@@ -483,6 +498,8 @@ def geoserver_create_workspace(context, data_dict):
     cat = Catalog(geoserver_rest_url)
     cat.create_workspace(workspace_name, workspace_uri)
     
+    return {'success':True}
+    
 
 def geoserver_delete_workspace(context, data_dict):
     '''Delete a workspace on a geoserver
@@ -516,7 +533,11 @@ def geoserver_delete_workspace(context, data_dict):
 
     cat = Catalog(geoserver)
     workspace = cat.get_workspace(workspace_name)
-    cat.delete(workspace)
+    if workspace is not None:
+        cat.delete(workspace)
+        return {'success':True}
+    else:
+        return {'success':False, 'reason':'workspace '+workspace_name+' not found'}
 
 
 def geoserver_create_store(context, data_dict):
@@ -582,9 +603,13 @@ def geoserver_create_store(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>>>> getting workspace >>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     print "workspace_name = ", workspace_name
     workspace = cat.get_workspace(workspace_name)
+    if workspace is None:
+        return {'success':False, 'reason':'workspace '+workspace_name+' not found'}
     
     print ">>>>>>>>>>>>>>>>>>>>>> create_datastore >>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     ds = cat.create_datastore(store_name, workspace)
+    if ds is None:
+        return {'success':False, 'reason':'error creating datastore '+store_name}
     
     print ">>>>>>>>>>>>>>>>>>>>>> updating connection parameters >>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     print "password = ",pg_password
@@ -599,11 +624,13 @@ def geoserver_create_store(context, data_dict):
     
     # check if the store was created successfully
     ds = cat.get_store(store_name)
+    if ds is None:
+        return {'success':False, 'reason':'error creating datastore '+store_name}
     
     #TODO: it is not setting the password correctly, which is causing a 500 error
     ds.connection_parameters.update( user = pg_user, password = pg_password)
     
-    return store_name
+    return {'success':True, 'store_name': store_name}
 
 
 def geoserver_delete_store(context, data_dict):
@@ -646,7 +673,12 @@ def geoserver_delete_store(context, data_dict):
 
     cat = Catalog(geoserver_rest_url)
     store = cat.get_store(store_name, workspace_name)
-    cat.delete(store)
+    if store is None:
+        return {'success':False, 'reason':'could not find store '+store_name}
+    else:
+        cat.delete(store)
+        return {'success':True}
+        
 
 def _create_postgis_sql_layer(context, data_dict):
     '''Create a layer on geoserver through its restful API
