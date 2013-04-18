@@ -138,7 +138,7 @@ class ContributeController(NGDSBaseController):
 
 		userObj = model.User.by_name(c.user.decode('utf8'))
 
-		data = {'data_file':data_file,'resources':resources,'path':path,'status':status,'comments':comments,uploaded_by':userObj.id}
+		data = {'data_file':data_file,'resources':resources,'path':path,'status':status,'comments':comments,'uploaded_by':userObj.id}
 		data_dict = {'model':'BulkUpload'}
 		data_dict['data']=data
 		data_dict['process']='create'
