@@ -139,9 +139,8 @@ class NgdsuiPlugin(SingletonPlugin):
 
 	implements(IPackageController,inherit=True)
 	def before_search(self,search_params):
-		if 'fq' not in search_params:
-			search_params['fq'] = ''
-
+		# if 'fq' not in search_params:
+		# 		search_params['fq'] = ''
 		# search_params['fq'] = search_params['fq']+' capacity:"public"'
 		if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:
 			# do some validation

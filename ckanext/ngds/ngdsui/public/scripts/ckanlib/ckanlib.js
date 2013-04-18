@@ -134,7 +134,7 @@ ngds.ckanlib = {
 		var url = '/api/action/package_search';
 		var type = 'POST';
 	
-		var data = { };
+		var data = { 'sort':'' };
 		
 		for(key in parameter_obj) {
 			if(parameter_obj[key]!==null && typeof parameter_obj[key]!== 'undefined') {
