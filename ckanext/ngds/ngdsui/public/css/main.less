@@ -56,16 +56,42 @@ a {
 	color:#626262;
 }
 
-.ngds-button(@width,@height) {
+.ngds-button-common() {
 	background:url('/assets/go_button_middle_slice.png') repeat-x;
 	color:#fff;
 	border-radius:5px;
+	cursor:pointer;
+}
+
+.ngds-button(@height) {
+	.ngds-button-common;
+	height:@height;
+}
+
+.ngds-button(@width,@height) {
+	.ngds-button-common;
 	width:@width;
 	height:@height;
 }
 
+.ngdsbutton {
+	.ngds-button(40px,35px);
+}
+
 input[type="submit"] {
+	.ngds-button(35px);			
+}
+
+input[value="Go"] {
 	.ngds-button(40px,35px);			
+}
+
+button[type="submit"] {
+	.ngds-button(35px);
+}
+
+input[type="reset"] {
+	.ngds-button(35px);
 }
 
 header {

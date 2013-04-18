@@ -20,7 +20,7 @@
       {{ _('Explore') }}
       <span class="caret"></span>
     </a>
-    {% if h.is_spatialized(res.id,"geometry") == 'True' %}
+    {% if h.is_spatialized(res.id,"geometry")==True %}
      <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
     {% else %}
        <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Publish as OGC</button>
@@ -62,7 +62,20 @@ $(document).ready(function() {
             col_longitude:"LONGITUDE"
           }),
           success:function(response){
-            console.log(response);
+            // Now expose it as a layer.
+            $.ajax({
+              url:'/api/action/datastore_expose_as_layer',
+              type:'POST',
+              data:JSON.stringify({
+                  id:id,
+                  col_geography:"geometry",
+                  col_latitude:"LATITUDE",
+                  col_longitude:"LONGITUDE"
+              }),
+              success:function(response) {
+                console.log(response);
+              }
+            })
           }
         });
       });
@@ -73,13 +86,10 @@ $(document).ready(function() {
         $(".unspatialize").click(function(ev){
         var id = ev.currentTarget.value;
         $.ajax({
-          url:'/api/action/datastore_unspatialize',
+          url:'/api/action/datastore_remove_exposed_layer',
           type:'POST',
           data:JSON.stringify({
-            id:id,
-            col_geography:"geometry",
-            col_latitude:"LATITUDE",
-            col_longitude:"LONGITUDE"
+           layer_name:id
           }),
           success:function(response){
             console.log(response);
