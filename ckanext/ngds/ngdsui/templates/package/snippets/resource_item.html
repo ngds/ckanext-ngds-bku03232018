@@ -94,7 +94,10 @@ $(document).ready(function() {
            layer_name:id
           }),
           success:function(response){
-            console.log(response);
+            if(response.result.success===true) {
+              window.alert("This resource has now been unpublished.");
+              window.location.reload();
+            }
           }
         });
       });
