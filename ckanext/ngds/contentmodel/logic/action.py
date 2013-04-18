@@ -137,8 +137,8 @@ def contentmodel_checkFile(context, data_dict):
     :param cm_version: version of the content model.
     :type cm_version: string
 
-    :param csvfile: full path of a uploaded csv file
-    :type csvfile: string
+    :param cm_resource_url: the URL to the resource
+    :type cm_resource_url: string
     
     **Results:**
     :returns: A status object (either success, or failed).
@@ -146,9 +146,20 @@ def contentmodel_checkFile(context, data_dict):
     '''
     cm_uri     = _get_or_bust(data_dict, 'cm_uri')
     cm_version = _get_or_bust(data_dict, 'cm_version')
-    csv_filename = _get_or_bust(data_dict, 'csvfile')
+    cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
+    
+    print "input URL: " + cm_resource_url
+    modified_resource_url = cm_resource_url.replace("%3A", ":")
+    truncated_url = modified_resource_url.split("/storage/f/")[1]
+    print "real  URL: " + truncated_url
+    csv_filename_withfile = get_url_for_file(truncated_url)
     
     validation_msg = []
+    
+    if csv_filename_withfile is None:
+        validation_msg.append("can NOT find the full path from the resources from %s" %(cm_resource_url))
+    else:
+        print "filename full path: "  + csv_filename_withfile
     
     print "about to start schema reading"
     user_schema = contentmodel_get(context, data_dict)
@@ -167,20 +178,23 @@ def contentmodel_checkFile(context, data_dict):
     print "about to start CSV reading"
     dataHeaderList = []
     dataListList = []
-    try:
-        csv_reader = csv.reader(open(csv_filename, "rb"))
-        header = csv_reader.next()
-        dataHeaderList = [x.strip() for x in header]
-        
-        for row in csv_reader:
-            new_row = [x.strip() for x in row]
-            dataListList.append(new_row)
-    except csv.Error as e:
-        msg = "csv.Error file %s, line %d: %s" %(csv_filename, csv_reader.line_num, e)
-        validation_msg.append(msg)
-    except IOError as e:
-        msg = "IOError file %s, %s" %(csv_filename, e)
-        validation_msg.append(msg)
+    if len(validation_msg) == 0:
+        try:
+            csv_filename = csv_filename_withfile.split("file://")[1]
+            print "csv_filename: %s" %(csv_filename)
+            csv_reader = csv.reader(open(csv_filename, "rb"))
+            header = csv_reader.next()
+            dataHeaderList = [x.strip() for x in header]
+            
+            for row in csv_reader:
+                new_row = [x.strip() for x in row]
+                dataListList.append(new_row)
+        except csv.Error as e:
+            msg = "csv.Error file %s, line %d: %s" %(csv_filename, csv_reader.line_num, e)
+            validation_msg.append(msg)
+        except IOError as e:
+            msg = "IOError file %s, %s" %(csv_filename, e)
+            validation_msg.append(msg)
     print "about to finish CSV reading"
 
     if len(validation_msg) == 0:
