@@ -210,10 +210,12 @@ var ngds = ngds || { };
 			$(".content-model-marker+div").after(div);	       
 	    });	
 
-		if($("button[name='mine']").length!==0) {
-			$("button[name='mine']").click(function() {
+		if($("button[name='save']").length!==0) {
+			$("button[name='save']").click(function() {
+				console.log("inside");
 				var content_model_selected = $("select[name='content_model']").val();
 				var content_model_version = $("select[name='content_model_version']").val();
+				var resource_url = $("input[name='url']").val();
 
 				if(content_model_selected!==null && typeof content_model_selected!=='undefined' && content_model_version!==null && typeof content_model_version!=='undefined') {
 					$.ajax({
@@ -222,15 +224,15 @@ var ngds = ngds || { };
 						data:JSON.stringify({
 							cm_uri:content_model_selected,
 							cm_version:content_model_version,
-							csvfile:'/hardcoded'
+							cm_resource_url:resource_url
 						}),
 						success:function(response) {
 							console.log(response);
-							$(".dataset-resource-form").submit();
+							// $(".dataset-resource-form").submit();
 						}
 					});
 				}
-				$(".dataset-resource-form").submit();
+				// $(".dataset-resource-form").submit();
 				
 			});
 		}
