@@ -41,12 +41,13 @@ class GeoserverPlugin(p.SingletonPlugin):
         actions = {'datastore_spatialize' : action.datastore_spatialize,
                    'datastore_expose_as_layer': action.datastore_expose_as_layer,
                    'datastore_is_spatialized' : action.datastore_is_spatialized,
+                   'datastore_is_exposed_as_layer' : action.datastore_is_exposed_as_layer,
                    'datastore_remove_exposed_layer' : action.datastore_remove_exposed_layer,
                    'datastore_list_exposed_layers' : action.datastore_list_exposed_layers,
                    'geoserver_create_workspace' : action.geoserver_create_workspace,
                    'geoserver_delete_workspace' : action.geoserver_delete_workspace,
                    'geoserver_create_store' : action.geoserver_create_store,
-                   'geoserver_delete_store' : action.geoserver_delete_store}
+                   'geoserver_delete_store' : action.geoserver_delete_store }
         
         return actions
 
@@ -54,6 +55,7 @@ class GeoserverPlugin(p.SingletonPlugin):
         functions =  {'datastore_spatialize' : auth.datastore_create, 
                 'datastore_expose_as_layer' : auth.datastore_create,
                 'datastore_is_spatialized' : auth.datastore_search,
+                'datastore_is_exposed_as_layer' : auth.datastore_search,
                 'datastore_remove_exposed_layer' : auth.datastore_delete,
                 'datastore_list_exposed_layers' : auth.datastore_search,
                 'geoserver_create_workspace' : auth.datastore_create,

@@ -231,6 +231,48 @@ def datastore_is_spatialized(context, data_dict):
             
     #formatted_results = db.format_results(context, results, data_dict)
     return result
+
+def datastore_is_exposed_as_layer(context, data_dict):
+    '''Verifies if a table is exposed as a layer in geoserver
+
+    The datastore_is_exposed_as_layer API action allows a user to verify if a table is
+    exposed as a layer in geoserver
+    
+    In order for this method to work, a unique resource id has to be defined:
+
+    :param resource_id: resource/table name that is going to be verified for exposition.
+    :type resource_id: string
+    
+    **Results:**
+
+    :returns: is_exposed_as_layer:true if the resource is exposed, false otherwise.
+    :rtype: boolean
+    
+    '''
+    
+    if 'id' in data_dict:
+        data_dict['resource_id'] = data_dict['id']
+    res_id = _get_or_bust(data_dict, 'resource_id')
+    print ">>>>>>>>>>>>>>>>> working with: ",res_id
+    
+    # read geoserver information from development.ini
+    geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
+    #workspace_name     = pylons.config.get('ckan.geoserver.workspace_name', 'NGDS')
+    #workspace_url      = pylons.config.get('ckan.geoserver.workspace_URL', 'http://localhost:5000/ngds')
+    
+    print ">>>>>>>>>>>>>>>>> Checking access >>>>>>>>>>>>>>>>>>>>"
+    # verifies if the user calling the method has permission to execute this call
+    p.toolkit.check_access('datastore_is_exposed_as_layer', context, data_dict)
+    
+    
+    cat = Catalog(geoserver_rest_url)
+    layer = cat.get_layer(res_id)
+    if layer is not None:
+        result = {'is_exposed_as_layer': True}
+    else:
+        result = {'is_exposed_as_layer': False}
+    
+    return result 
             
 
 def datastore_expose_as_layer(context, data_dict):
