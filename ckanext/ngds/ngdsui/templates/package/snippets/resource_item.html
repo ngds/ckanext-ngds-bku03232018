@@ -73,7 +73,8 @@ $(document).ready(function() {
                   col_longitude:"LONGITUDE"
               }),
               success:function(response) {
-                console.log(response);
+                window.alert("This resource has now been published as an OGC service.");
+                window.location.reload();
               }
             })
           }

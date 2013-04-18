@@ -3,12 +3,14 @@ import pylons
 from sqlalchemy.exc import ProgrammingError
 
 import ckan.plugins as p
+from ckan.plugins import ITemplateHelpers
 import ckanext.ngds.geoserver.logic.action as action
 import ckanext.datastore.logic.auth as auth
 import ckanext.datastore.db as db
 from ckanext.datastore.plugin import DatastoreException
 import ckan.logic as logic
 import ckan.model as model
+import ckanext.ngds.geoserver.misc.helpers as helpers
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -64,3 +66,9 @@ class GeoserverPlugin(p.SingletonPlugin):
                 'geoserver_delete_store' : auth.datastore_delete}
         
         return functions
+
+    p.implements(ITemplateHelpers,inherit=True)
+    def get_helpers(self):
+      return {
+        'is_spatialized':helpers.is_spatialized,
+      }
