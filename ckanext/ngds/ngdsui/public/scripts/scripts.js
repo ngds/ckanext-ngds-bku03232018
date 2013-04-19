@@ -243,11 +243,13 @@ var ngds = ngds || { };
 							        }
 							      }
 						    });
-							// alert(response.result.message);
+							$(".dataset-resource-form").submit();
 						}
 					});
 				}
-				// $(".dataset-resource-form").submit();
+				else {
+						$(".dataset-resource-form").submit();
+					}
 				
 			});
 		}
