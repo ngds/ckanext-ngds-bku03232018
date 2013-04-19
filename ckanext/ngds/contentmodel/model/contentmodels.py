@@ -11,6 +11,10 @@ log = logging.getLogger(__name__)
 contentmodels= []
 usgin_url= None
 
+checkfile_maxerror= 5
+checkfile_checkheader= False
+checkfile_checkoptionalfalse= False
+
 class ContentModelRecord(object):
     """
     Class representing one ContentModel Record to be cached on the local node.

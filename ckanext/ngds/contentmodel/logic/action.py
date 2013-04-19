@@ -182,7 +182,7 @@ def contentmodel_checkFile(context, data_dict):
         try:
             csv_filename = csv_filename_withfile.split("file://")[1]
             print "csv_filename: %s" %(csv_filename)
-            csv_reader = csv.reader(open(csv_filename, "rb"))
+            csv_reader = csv.reader(open(csv_filename, "rbU"))
             header = csv_reader.next()
             dataHeaderList = [x.strip() for x in header]
             
@@ -195,18 +195,28 @@ def contentmodel_checkFile(context, data_dict):
         except IOError as e:
             msg = "IOError file %s, %s" %(csv_filename, e)
             validation_msg.append(msg)
+    print "load %d headers" %(len(dataHeaderList))
+    print "load %d row records" %(len(dataListList))
     print "about to finish CSV reading"
 
     if len(validation_msg) == 0:
-        validation_existence_messages = validate_existence(fieldModelList, dataHeaderList, dataListList)
-        if len(validation_existence_messages) > 0:
-            validation_msg.extend(validation_existence_messages)
+        if ckanext.ngds.contentmodel.model.contentmodels.checkfile_checkheader == True:
+            validate_header_messages = validate_header(fieldModelList, dataHeaderList, dataListList)
+            if len(validate_header_messages) > 0:
+                validation_msg.extend(validate_header_messages)
+
+        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
+            if ckanext.ngds.contentmodel.model.contentmodels.checkfile_checkoptionalfalse == True:
+                validation_existence_messages = validate_existence(fieldModelList, dataHeaderList, dataListList)
+                if len(validation_existence_messages) > 0:
+                    validation_msg.extend(validation_existence_messages)
         
-        validation_numericType_messages = validate_numericType(fieldModelList, dataHeaderList, dataListList)
-        if len(validation_numericType_messages) > 0:
-            validation_msg.extend(validation_numericType_messages)
+        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
+            validation_numericType_messages = validate_numericType(fieldModelList, dataHeaderList, dataListList)
+            if len(validation_numericType_messages) > 0:
+                validation_msg.extend(validation_numericType_messages)
         
-        print "validation detailed error message"
+        print "validation detailed error message", len(validation_msg)
         print validation_msg
 
     if len(validation_msg) == 0:

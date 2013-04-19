@@ -1,3 +1,4 @@
+import ckanext.ngds.contentmodel.model.contentmodels
 
 def isNumber(s):
     """
@@ -46,8 +47,8 @@ class ContentModel_FieldInfoCell(object):
 
 # class ContentModel_FieldInfoCell(object)
 
-def validate_existence(fieldModelList, dataHeaderList, dataListList):
-    print "about to start field existence checking"
+def validate_header(fieldModelList, dataHeaderList, dataListList):
+    print "about to start header checking"
     
     validation_messages = []
     # build link between dataHeaderList and fieldInfoList
@@ -63,6 +64,23 @@ def validate_existence(fieldModelList, dataHeaderList, dataListList):
             validation_messages.append(msg)
     print "linkToFieldInfoFromHeader"
     print linkToFieldInfoFromHeader
+    print "about to finish header checking"
+    return validation_messages
+# def validate_header(fieldModelList, dataHeaderList, dataListList)
+
+def validate_existence(fieldModelList, dataHeaderList, dataListList):
+    print "about to start field existence checking"
+    
+    validation_messages = []
+    # build link between dataHeaderList and fieldInfoList
+    # fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]
+    linkToFieldInfoFromHeader = []
+    for header in dataHeaderList:
+        try:
+            index = [i for i, field in enumerate(fieldModelList) if field.name == header]
+            linkToFieldInfoFromHeader.append(index[0])
+        except:
+            pass
     
     OptionalFalseIndex = []
     for i in xrange(len(dataHeaderList)):
@@ -84,6 +102,9 @@ def validate_existence(fieldModelList, dataHeaderList, dataListList):
                     msg = "cell (%d,%d): '%s' (field %s) is defined as optional false" %(jd+2, i+1, data, dataHeaderList[OptionalFalseIndex[i]])
                 print msg
                 validation_messages.append(msg)
+
+        if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
+            break
 
     print "about to finish field existence checking"
     return validation_messages
@@ -136,6 +157,9 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
                     msg = "cell (%d,%d): %s (field %s) is expected to be a Numeric"   %(jd+2, i+1, data, dataHeaderList[DoubleTypeIndex[i]])
                     print msg
                     validation_messages.append(msg)
+
+        if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
+            break
 
     print "about to finish field numeric checking"
     return validation_messages

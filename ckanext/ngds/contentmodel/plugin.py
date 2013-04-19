@@ -46,6 +46,38 @@ class ContentModelPlugin(p.SingletonPlugin):
         # Access the URL and fill the cache
         print "Caching Content Models from USGIN: " + contentmodels.usgin_url
         action.contentmodel_refreshCache(None, None)
+        
+        True_List = ["true", "1", "t", "y", "yes", "yeah", "yup", "certainly"]
+
+        if "checkfile_maxerror" in config:
+            try:
+                checkfile_maxerror= config["checkfile_maxerror"]
+                contentmodels.checkfile_maxerror = int(checkfile_maxerror)
+            except:
+                print "DON'T UNDERSTAND the 'checkfile_maxerror' in the development.ini, it is not an Integer"
+        print "checkfile_maxerror", contentmodels.checkfile_maxerror
+
+        if "checkfile_checkheader" in config:
+            try:
+                checkfile_checkheader= config["checkfile_checkheader"]
+                if checkfile_checkheader in True_List:
+                    contentmodels.checkfile_checkheader = True
+                else:
+                    contentmodels.checkfile_checkheader = False
+            except:
+                print "DON'T UNDERSTAND the 'checkfile_checkheader' in the development.ini, it is not a boolean string"
+        print "checkfile_checkheader", contentmodels.checkfile_checkheader
+
+        if "checkfile_checkoptionalfalse" in config:
+            try:
+                checkfile_checkoptionalfalse= config["checkfile_checkoptionalfalse"]
+                if checkfile_checkoptionalfalse in True_List:
+                    contentmodels.checkfile_checkoptionalfalse = True
+                else:
+                    contentmodels.checkfile_checkoptionalfalse = False
+            except:
+                print "DON'T UNDERSTAND the 'checkfile_checkoptionalfalse' in the development.ini, it is not a boolean string"
+        print "checkfile_checkoptionalfalse", contentmodels.checkfile_checkoptionalfalse
 
     def get_actions(self):
         actions = {'contentmodel_refreshCache' : action.contentmodel_refreshCache, 'contentmodel_list' : action.contentmodel_list, 'contentmodel_list_short' : action.contentmodel_list_short, 'contentmodel_get': action.contentmodel_get, 'contentmodel_checkFile': action.contentmodel_checkFile}
