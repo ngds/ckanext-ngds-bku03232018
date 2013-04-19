@@ -228,22 +228,26 @@ var ngds = ngds || { };
 							cm_resource_url:resource_url
 						}),
 						success:function(response) {
-							var div = $("<div/>",{id:"dialog-message",title:"Validation Errors"});
-							var p = $("<p/>");
-							var text = response.result.message;
-							p.text(text);
-							div.append(p);
-							$("#content-container").append(div);
-							$( "#dialog-message" ).dialog({
-							      modal: true,
-							      width:"700px",
-							      buttons: {
-							        Ok: function() {
-							          $( this ).dialog( "close" );
-							          $(".dataset-resource-form").submit();
-							        }
-							      }
-						    });
+							if(response.result.valid==='false') {
+								var div = $("<div/>",{id:"dialog-message",title:"Validation Errors"});
+								var p = $("<p/>");
+								var text = response.result.message;
+								p.text(text);
+								div.append(p);
+								$("#content-container").append(div);
+								$( "#dialog-message" ).dialog({
+								      modal: true,
+								      width:"700px",
+								      buttons: {
+								        Ok: function() {
+								          $( this ).dialog( "close" );
+								        }
+								      }
+							    });
+							}
+							else {
+								$(".dataset-resource-form").submit();
+							}
 						}
 					});
 				}
