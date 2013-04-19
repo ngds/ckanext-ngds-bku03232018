@@ -240,10 +240,10 @@ var ngds = ngds || { };
 							      buttons: {
 							        Ok: function() {
 							          $( this ).dialog( "close" );
+							          $(".dataset-resource-form").submit();
 							        }
 							      }
 						    });
-							$(".dataset-resource-form").submit();
 						}
 					});
 				}
