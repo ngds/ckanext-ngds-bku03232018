@@ -211,8 +211,8 @@ var ngds = ngds || { };
 	    });	
 
 
-		if($("button[name='save']").length!==0) {
-			$("button[name='save']").click(function() {
+		if($("button[name='save-metadata']").length!==0) {
+			$("button[name='save-metadata']").click(function() {
 				console.log("inside");
 				var content_model_selected = $("select[name='content_model']").val();
 				var content_model_version = $("select[name='content_model_version']").val();
