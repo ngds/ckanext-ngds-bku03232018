@@ -56,6 +56,12 @@ ngds.Pager = function(rows) {
 
 	this.move = function(page_number,fn,finish_fn) {
 		ngds.Map.clear_layer('geojson');
+		ngds.Map.zoom_handler.clear_listeners();
+		
+		var new_page = new CustomEvent("new_page",{
+			"page":page_number
+		});
+
 		handler = fn;
 		ngds.Map.labeller.reset();
 		start = (page_number - 1) * rows;

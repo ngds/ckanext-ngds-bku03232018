@@ -310,6 +310,7 @@ ngds.Map = {
 					},
 				onEachFeature:function(feature_data,layer){
 					if(layer.feature.type==='Polygon'){
+						ngds.Map.zoom_handler(layer);
 						var label = ngds.Map.labeller.get_cur_label();
 						var shapes_map = ngds.Map.state.shapes_map || (ngds.Map.state.shapes_map={});
 						shapes_map[label]=layer;
