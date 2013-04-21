@@ -34,7 +34,7 @@ var zoom_handler = ngds.Map.zoom_handler = function(layer) {
 			layer._shown = false;
 			ngds.Map.get_layer('geojson').removeLayer(layer);
 		}
-		else if((bbox_minx>=map_minx) && (bbox_maxx<=map_maxx) && (bbox_miny>=map_miny) && (bbox_maxy<=map_maxy) && layer._shown===false){
+		else if(((bbox_minx>=map_minx) && (bbox_maxx<=map_maxx) && (bbox_miny>=map_miny) && (bbox_maxy<=map_maxy) && layer._shown===false) || ngds.Map.map.getZoom()===0){
 			ngds.Map.get_layer('geojson').addLayer(layer);	
 			layer._shown = true;
 		}
