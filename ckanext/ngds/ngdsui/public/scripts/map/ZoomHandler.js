@@ -29,7 +29,7 @@ var zoom_handler = ngds.Map.zoom_handler = function(layer) {
 		var bbox_minx = bbox._southWest.lng;
 		var bbox_maxy = bbox._northEast.lat;
 		var bbox_maxx = bbox._northEast.lng;
-
+		console.log(ngds.Map.map.getZoom());
 		if((bbox_minx<map_minx) && (bbox_maxx>map_maxx) && (bbox_miny<map_miny) && (bbox_maxy>map_maxy) && layer._shown===true) {
 			layer._shown = false;
 			ngds.Map.get_layer('geojson').removeLayer(layer);
