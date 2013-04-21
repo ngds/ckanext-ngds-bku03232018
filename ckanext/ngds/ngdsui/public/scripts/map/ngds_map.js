@@ -24,13 +24,6 @@ ngds.Map = {
 			    attribution: "SMU Well Data"
 			});
 			
-			// ngds_layer = L.tileLayer.wms("http://localhost:8080/geoserver/NGDS/wms",{
-			// 	layers:"NGDS:45276b7a-4335-4548-aa92-e82ffbbde56f",
-			// 	format: 'image/png',
-			//     transparent: true,
-			//     attribution: "NGDS",
-			//     opacity:'0.9999'
-			// });
 			var _geoJSONLayer = this.geoJSONLayer = new L.geoJson(null,{onEachFeature:function(a,b){
 
 			}}); // Geo JSON Layer where we'll display all our features.
