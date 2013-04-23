@@ -253,6 +253,18 @@ ngds.Map = {
 				pager.set_state(count,query);
 			});
 		},
+		reset_styles:function(label) {
+			$('.result').css('background-color','#fff');
+			var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
+	 		for(var i=0;i<labels_colored.length;i++){
+	 			labels_colored[i].attr("src","/images/marker.png");
+	 		}
+	 		for(var shape_index in ngds.Map.state.shapes_map){
+				if(ngds.Map.state.shapes_map[shape_index]!==null && typeof ngds.Map.state.shapes_map[shape_index]!=='undefined' && shape_index!==label) {
+					ngds.Map.state.shapes_map[shape_index].setStyle({weight:ngds.Map.state.shapes_map[shape_index].orig_weight,color:ngds.Map.state.shapes_map[shape_index].orig_color});
+				}
+			}
+		},
 		get_layer:function(key) {
 			if(key in this.layers) {
 				return this.layers[key];
@@ -287,7 +299,7 @@ ngds.Map = {
 				});
 			});
 		},
-		add_raw_result_to_geojson_layer:function(result,options) { // Expects response.result, not response.
+		add_raw_result_to_geojson_layer:function(result,options) { // Expects response.result, not response. Seq id passed in.
 			try {				
 				var dataset = ngds.ckandataset(result);	
 				var feature = dataset.getGeoJSON();				
@@ -295,16 +307,29 @@ ngds.Map = {
 			}
 			catch(e) {
 				return;
-			}
-			// var geoJSONRepresentation = L.geoJson(feature);															
+			}														
 			var geoJSONRepresentation = L.geoJson(feature,{
 					style:{
 						weight:2
 					},
 				onEachFeature:function(feature_data,layer){
+					var type = (function(layer){
+						if(layer.feature.type=='Point') {
+							return 'Marker';
+						}
+						else {
+							return 'Feature';
+						}
+					})(layer);
+					PubSub.publish('Map.add_feature',{
+						'feature':layer,
+						'seq_id':options['seq'],
+						'type':type
+					
+					});
 					if(layer.feature.type==='Polygon'){
 						ngds.Map.zoom_handler(layer);
-						var label = ngds.Map.labeller.get_cur_label();
+						var label = options['seq'];
 						var shapes_map = ngds.Map.state.shapes_map || (ngds.Map.state.shapes_map={});
 						shapes_map[label]=layer;
 						shapes_map[label].orig_color="blue";
@@ -312,7 +337,7 @@ ngds.Map = {
 					}
 				},
 				pointToLayer:function(feature,latlng) {
-					var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:ngds.Map.labeller.get_cur_label(),className:options.iconimg_id})});
+					var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:options['seq'],className:'lmarker-'+options['seq']})});
 					return marker;						
 				}
 			});	
@@ -320,52 +345,6 @@ ngds.Map = {
 			geoJSONRepresentation.bindPopup(popup);
 
 			this.add_to_layer([geoJSONRepresentation],'geojson');
-		},
-		bind_zoom_listeners:function() {
-			var _ev = function(ev) {	
-				var map_bounds = ngds.Map.map.getBounds();				
-				var map_sw_lat = map_bounds._southWest.lat;
-				var map_sw_lng = map_bounds._southWest.lng;
-				var map_ne_lat = map_bounds._northEast.lat;
-				var map_ne_lng = map_bounds._northEast.lng;
-				var layers = ngds.Map.zoom_managed_list;
-				for(var i in ngds.Map.zoom_managed_list) {
-					var lid=layers[i]._leaflet_id;
-						var bbox_sw_lat = layers[i].bbox_bounds._southWest.lat;
-						var bbox_sw_lng = layers[i].bbox_bounds._southWest.lng;
-						var bbox_ne_lat = layers[i].bbox_bounds._northEast.lat;
-						var bbox_ne_lng = layers[i].bbox_bounds._northEast.lng;
-
-						if((map_sw_lat>bbox_sw_lat) && (map_sw_lng>bbox_sw_lng) && (map_ne_lat<bbox_ne_lat) && (map_ne_lng<bbox_ne_lng)) {
-							if(layers[i]._shown) {
-								layers[i].parent.removeLayer(layers[i].layer);
-								layers[i]._shown=false;
-							}
-						}
-						else {
-							if(!layers[i]._shown) {
-								layers[i].parent.addLayer(layers[i].layer);
-								layers[i]._shown=true;
-							}
-						}
-					}
-			};
-			ngds.Map.map.on('zoomend',_ev);
-			ngds.Map.zoom_listeners.push(_ev);
-		},
-		manage_zoom:function(bounding_box,layer,parent) {
-			var bbox_bounds = bounding_box.get_leaflet_bbox();
-			ngds.Map.zoom_managed_list[layer._leaflet_id] = { };
-			ngds.Map.zoom_managed_list[layer._leaflet_id].bbox_bounds = bbox_bounds;
-			ngds.Map.zoom_managed_list[layer._leaflet_id].parent = parent;
-			ngds.Map.zoom_managed_list[layer._leaflet_id]._shown = false;
-			ngds.Map.zoom_managed_list[layer._leaflet_id].layer = layer;
-		},
-		removeZoomEventListeners:function() {
-			$.each(ngds.Map.zoom_listeners,function(index,item) {
-				ngds.Map.map.removeEventListener('zoomend',item);				
-			});
-			ngds.Map.zoom_listeners = [];
 		},
 		// Exposes a set of utility functions to work with the map.
 		utils:{
@@ -398,31 +377,6 @@ ngds.Map = {
 			})();
 			
 			this.query_provider = "#"+id_provider;
-		},
-		set_search_mode:function(mode) {
-
-			(function() {
-				if(mode === null || typeof mode === 'undefined') {
-					throw "Allowed modes are 'search' and 'filter'";
-				}
-			})();
-
-			this.mode = mode;
-		},
-		get_search_mode:function() {
-			return this.mode;
-		},
-		labeller:{
-			get_label:function() {
-				this._count = (this._count || (this._count=0))+1;
-				return this._count;
-			},
-			reset:function() {
-				this._count=0;
-			},
-			get_cur_label:function() {
-				return this._count;
-			}
 		},
 		state:{ // Maintain state of various components in here ... make sure your keys are unique
 
