@@ -8,6 +8,7 @@ from ckan.logic import (tuplize_dict,clean_dict,
                         parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
 from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
+import ckanext.ngds.lib.importer.helper as import_helper
 
 import os
 import shutil
@@ -109,6 +110,12 @@ class ContributeController(NGDSBaseController):
 		resource_list = filter(dir_filter,zfile.namelist())
 
 		status,err_msg = self._validate_uploadfile(csvfilepath,upload_dir,resource_list)
+
+		print "upload_dir: ",upload_dir
+
+		if status == "INVALID":
+			import_helper.delete_extracted_files(file_path=upload_dir,ignore_files=[datafilename,resourcesfilename])
+
 
 		self._create_bulk_upload_record(c.user or c.author,datafilename,resourcesfilename,upload_dir,status,err_msg)
 
