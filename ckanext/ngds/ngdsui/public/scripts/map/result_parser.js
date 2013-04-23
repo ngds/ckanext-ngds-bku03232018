@@ -53,7 +53,7 @@ ngds.render_search_results = function(topic,results) { //Subscription - 'Map.res
 		var shaped_loop_scope = ngds.ckandataset(results[i]).get_feature_type()['type'];
 		var marker_container = { };
 		
-		PubSub.publish('Map.feature_received',{
+		ngds.publish('Map.feature_received',{
 				'feature':results[i],
 				'seq':seq.current()
 			});
@@ -90,4 +90,4 @@ ngds.render_search_results = function(topic,results) { //Subscription - 'Map.res
 	}
 };
 
-PubSub.subscribe('Map.results_received',ngds.render_search_results);
+ngds.subscribe('Map.results_received',ngds.render_search_results);

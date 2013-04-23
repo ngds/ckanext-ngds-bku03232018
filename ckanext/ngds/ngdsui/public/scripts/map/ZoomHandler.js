@@ -32,11 +32,11 @@ var zoom_handler = ngds.Map.zoom_handler = function(layer) {
 
 		if((bbox_minx<map_minx) && (bbox_maxx>map_maxx) && (bbox_miny<map_miny) && (bbox_maxy>map_maxy) && layer._shown===true) {
 			layer._shown = false;
-			console.log("Hiding");
+			ngds.log("Hiding layer : "+layer,layer);
 			ngds.Map.get_layer('geojson').removeLayer(layer);
 		}
-		else if((bbox_minx>map_minx) && (bbox_maxx<map_maxx) && (bbox_miny>map_miny) && (bbox_maxy<map_maxy) && layer._shown===false){
-			console.log("Showing");
+		else if((bbox_minx>map_minx) || (bbox_maxx<map_maxx) || (bbox_miny>map_miny) || (bbox_maxy<map_maxy) && layer._shown===false){
+			ngds.log("Showing layer : "+layer,layer);
 			ngds.Map.get_layer('geojson').addLayer(layer);	
 			layer._shown = true;
 		}

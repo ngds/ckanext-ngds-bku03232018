@@ -5,6 +5,45 @@
 
 var ngds = ngds || ( ngds= { } );
 
+(function setup_debugging(){
+	if(window.document.location.hash==="#!debug") {
+		
+		ngds.log = function(msg,last_log) {
+			ngds.last_log = last_log;
+			console.log(msg);
+		};
+
+		ngds.error = function(msg,last_error) {
+			ngds.last_error = last_error;
+			console.error(msg);
+		};
+
+	}
+	else {
+		
+		ngds.log = function(msg,last_log) {
+			ngds.last_log = last_log;
+			// swallow it.
+		};
+
+		ngds.error = function(msg,last_error) {
+			ngds.last_error = last_error;
+			// swallow it.
+		}
+
+	}
+})();
+
+ngds.publish = function(topic,msg) {
+	ngds.log("Published message : "+msg+" to topic : "+topic,msg);
+	PubSub.publish(topic,msg);
+};
+
+ngds.subscribe = function(topic,handler) {
+	ngds.log("Subscribed to topic : "+topic+" with handler : "+handler,handler);
+	PubSub.subscribe(topic,handler);
+}
+
 ngds.feature_event_manager = { //A container for state information on event bindings for features.
 		/*
 		*	Scheme - id -> { 
@@ -36,7 +75,7 @@ ngds.Map.initialize();
 
 (function publish_pager_advance() {
 	$("#map-search").click(function(){
-		PubSub.publish('Map.search_initiated',{
+		ngds.publish('Map.search_initiated',{
 
 		});
 		var geoj = ngds.Map.get_layer('drawnItems');
@@ -51,7 +90,7 @@ ngds.Map.initialize();
 
 	$(".page-num").click(function(ev){
 			var page = ev.target.firstChild.data;
-			PubSub.publish('page.advance',{ 'page':page });
+			ngds.publish('page.advance',{ 'page':page });
 		});
 })();
 
@@ -63,7 +102,7 @@ ngds.Map.initialize();
 (function subscribe_page_advance() {
 	ngds.pager = new ngds.Search();
 
-	PubSub.subscribe('page.advance',function(msg,data) {
+	ngds.subscribe('page.advance',function(msg,data) {
 		ngds.feature_ngds_id_mapping = {
 			// Clearing the state table.
 		};
@@ -82,7 +121,7 @@ ngds.Map.map.on('draw:rectangle-created',function(e) {
 	ngds.Map.clear_layer('drawnItems');
 	ngds.Map.add_to_layer([e.rect],'drawnItems');
 
-	PubSub.publish("Map.area_selected",{ 
+	ngds.publish("Map.area_selected",{ 
 		'type':'rectangle',
 		'feature':e
 	});
@@ -92,7 +131,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	ngds.Map.clear_layer('drawnItems');
 	ngds.Map.add_to_layer([e.poly],'drawnItems');
 
-	PubSub.publish("Map.area_selected",{
+	ngds.publish("Map.area_selected",{
 		'type':'polygon',
 		'feature':e
 	});
@@ -100,22 +139,19 @@ ngds.Map.map.on('draw:poly-created',function(e){
 
 
 (function subscribe_feature_received(){
-	PubSub.subscribe('Map.feature_received',function(topic,data){
+	ngds.subscribe('Map.feature_received',function(topic,data){
 		ngds.Map.add_raw_result_to_geojson_layer(data['feature'],{'seq':data['seq']});
 	});
 
 	$('.results').on('mouseover',null,function(ev){
-		var tag = ngds.util.node_matcher(ev.currentTarget.firstChild.className,/result-\d*/);
-		if(tag===null) {
-			console.log("Got null tag for mouseover");
+		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
+		if(tag_index===null) {
+			ngds.error("Got null tag for mouseover");
 			return;
 		}
 
-		var tag_index = tag[tag.indexOf("-")+1];
-
 		var feature = ngds.layer_map[tag_index];
-
-		PubSub.publish('Layer.mouseover',{
+		ngds.publish('Layer.mouseover',{
 			'Layer':feature,
 			'tag_index':tag_index
 		});
@@ -123,18 +159,16 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	});
 
 	$('.results').on('mouseout',null,function(ev){
-		var tag = ngds.util.node_matcher(ev.currentTarget.firstChild.className,/result-\d*/);
+		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
 		
-		if(tag===null) {
-			console.log("Got null tag for mouseout");
+		if(tag_index===null) {
+			ngds.error("Got null tag for mouseout");
 			return;
 		}
 
-		var tag_index = tag[tag.indexOf("-")+1];
-
 	 	var feature = ngds.layer_map[tag_index];
 	 	
-	 	PubSub.publish('Layer.mouseout',{
+	 	ngds.publish('Layer.mouseout',{
 	 		'Layer':feature,
 	 		'tag_index':tag_index
 	 	});
@@ -142,16 +176,14 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	});
 
 	$('.results').on('click',null,function(ev){
-		var tag = ngds.util.node_matcher(ev.currentTarget.firstChild.className,/result-\d*/);
+		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
 		
-		if(tag===null) {
+		if(tag_index===null) {
 			return;
 		}
 
-		var tag_index = tag[tag.indexOf("-")+1];
-		ngds.Map.reset_styles(tag_index);
 		var feature = ngds.layer_map[tag_index];
-	 	PubSub.publish('Layer.click',{
+	 	ngds.publish('Layer.click',{
 	 		'Layer':feature,
 	 		'tag_index':tag_index
 	 	});
@@ -166,29 +198,33 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	*
 	*
 	*/
-	PubSub.subscribe('Layer.mouseover',function(topic,data){
+	ngds.subscribe('Layer.mouseover',function(topic,data){
 		var is_active = data['Layer'].is_active || null;
 		if(is_active === null || is_active===false) {
 			ngds.util.apply_feature_hover_styles(data['Layer'],data['tag_index'])
 		}
 	});
 
-	PubSub.subscribe('Layer.mouseout',function(topic,data){
+	ngds.subscribe('Layer.mouseout',function(topic,data){
 		var is_active = data['Layer'].is_active || null;
 		if(is_active === null || is_active===false) {
 			ngds.util.apply_feature_default_styles(data['Layer'],data['tag_index']);
 		}
 	});
 
-	PubSub.subscribe('Layer.click',function(topic,data){
+	ngds.subscribe('Layer.click',function(topic,data){
+		for(var l in ngds.layer_map) {
+			console.log(l);
+			ngds.util.apply_feature_default_styles(ngds.layer_map[l],l);
+		}
 		ngds.util.apply_feature_active_styles(data['Layer'],data['tag_index']);
 	});
 
-	PubSub.subscribe('Layer.add',function(topic,data){
+	ngds.subscribe('Layer.add',function(topic,data){
 
 	});
 
-	PubSub.subscribe('Layer.remove',function(topic,data){
+	ngds.subscribe('Layer.remove',function(topic,data){
 
 	});
 })();
@@ -197,7 +233,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	// Ref : ngds.feature_event_manager
 	// Ref : ngds.feature_ngds_id_mapping
 
-	PubSub.subscribe('Map.add_feature',function(topic,data){
+	ngds.subscribe('Map.add_feature',function(topic,data){
 		var feature = data['feature'];
 		ngds.layer_map[data['seq_id']] = feature;
 		
@@ -208,14 +244,14 @@ ngds.Map.map.on('draw:poly-created',function(e){
 		
 		feature.on('mouseover',function(feature){
 
-			PubSub.publish('Layer.mouseover',{
+			ngds.publish('Layer.mouseover',{
 				'Layer':feature.layer,
 				'tag_index':data['seq_id']
 			});
 		});
 
 		feature.on('mouseout',function(feature){
-			PubSub.publish('Layer.mouseout',{
+			ngds.publish('Layer.mouseout',{
 				'Layer':feature.layer,
 				'tag_index':data['seq_id']
 			});
@@ -230,7 +266,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 					ngds.layer_map[l].is_active = false;
 				}
 			}
-			PubSub.publish('Layer.click',{
+			ngds.publish('Layer.click',{
 				'Layer':feature.layer,
 				'tag_index':data['seq_id']
 			});

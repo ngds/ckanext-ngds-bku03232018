@@ -31,11 +31,18 @@ ngds.util.sequence_generator = function() {
 
 // Fix this !!!
 ngds.util.node_matcher = function(node,match_exp) { 
-	if(node.match(match_exp)) {
-		return node;
+	if(node.className.match(match_exp)!==null) {
+		return node.className.substring(node.className.indexOf("-")+1,node.length);
 	}
 	
-	else return null;
+	var parents = $(node).parents();
+	for(var i=0;i<parents.length;i++) {
+		if(parents[i].className.match(match_exp)!==null) {
+			var clazz = parents[i].className;
+			return clazz.substring(clazz.indexOf("-")+1,clazz.length);
+		}
+	}
+	return null;		
 };
 
 ngds.util.apply_feature_hover_styles = function(feature,tag_index) {
@@ -56,6 +63,7 @@ ngds.util.apply_feature_hover_styles = function(feature,tag_index) {
 
 
 ngds.util.apply_feature_default_styles = function(feature,tag_index) {
+	console.log(feature);
 	if(feature.feature.type==='Point') {
 		var marker_tag = $('.lmarker-'+tag_index);
 		marker_tag.css("width","25px");

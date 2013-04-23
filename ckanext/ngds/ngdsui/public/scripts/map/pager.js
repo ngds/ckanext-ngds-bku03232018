@@ -1,7 +1,7 @@
 ngds.Search = function() {
 	var package_extras='';
 
-	PubSub.subscribe('Map.area_selected',function(msg,data){
+	ngds.subscribe('Map.area_selected',function(msg,data){
 		if(data['type']==='rectangle') {
 			bbox = new ngds.Map.BoundingBox();
 			bbox.construct_from_leaflet_shape(data['feature']['rect']);
