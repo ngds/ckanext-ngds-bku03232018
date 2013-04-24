@@ -1,7 +1,10 @@
 
-ngds.render_search_results = function(topic,results) { //Subscription - 'Map.result_received'
+ngds.render_search_results = function(topic,result) { //Subscription - 'Map.result_received'
 	var seq = new ngds.util.sequence_generator();
-	var results = results['results'];
+	var count = result['count'];
+	var results = result['results'];
+	ngds.log("Received "+count+" results : "+results,results);
+	
 	for(var i=0;i<results.length;i++) {
 		var skeleton = {
 			'tag':'div',

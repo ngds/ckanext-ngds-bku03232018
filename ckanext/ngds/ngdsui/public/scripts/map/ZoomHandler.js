@@ -18,8 +18,7 @@ var zoom_handler = ngds.Map.zoom_handler = function(layer) {
 
 	layer._shown = true;
 	var handlers = ngds.Map.handlers || ( ngds.Map.handlers = [ ] );
-
-	ngds.Map.map.on('zoomend',function handler() {
+	var handler = function () {
 		var map_bounds = ngds.Map.map.getBounds();				
 		var map_miny = map_bounds._southWest.lat;
 		var map_minx = map_bounds._southWest.lng;
@@ -40,14 +39,18 @@ var zoom_handler = ngds.Map.zoom_handler = function(layer) {
 			ngds.Map.get_layer('geojson').addLayer(layer);	
 			layer._shown = true;
 		}
-		ngds.Map.handlers.push(handler);
-	});
+	}
+	ngds.Map.map.on('zoomend',handler);
+	ngds.Map.handlers.push(handler);
+	ngds.log("Pushing zoom handler to : "+ngds.Map.handlers);
 };
 
 zoom_handler.clear_listeners = function() { // Unregister the zoom event handlers from the previous page.
 	if(typeof ngds.Map.handlers!=='undefined') {
+		console.log(ngds.Map.handlers);
 		for(var i=0;i<ngds.Map.handlers.length;i++) {
 			ngds.Map.map.off('zoomend',ngds.Map.handlers[i]);
+			ngds.log("Removing zoom handler");
 		}
 	}
 	ngds.Map.handlers = [];

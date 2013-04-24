@@ -88,10 +88,11 @@ ngds.Map.initialize();
 		});
 	});
 
-	$(".page-num").click(function(ev){
+	$(".search-results-page-nums").on('click',null,function(ev){
+		console.log(ev);
 			var page = ev.target.firstChild.data;
 			ngds.publish('page.advance',{ 'page':page });
-		});
+	});
 })();
 
 
@@ -107,8 +108,11 @@ ngds.Map.initialize();
 			// Clearing the state table.
 		};
 		ngds.Map.clear_layer('geojson');
+		$(".results").empty();
+		$(".search-results-page-nums").empty();
+		console.log(ngds.Map.handlers);
 		ngds.Map.zoom_handler.clear_listeners();
-		pager.go_to({
+		ngds.pager.go_to({
 			'page':data['page'],
 			'action':ngds.ckanlib.package_search,
 			'rows':5
@@ -146,7 +150,6 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	$('.results').on('mouseover',null,function(ev){
 		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
 		if(tag_index===null) {
-			ngds.error("Got null tag for mouseover");
 			return;
 		}
 
@@ -162,7 +165,6 @@ ngds.Map.map.on('draw:poly-created',function(e){
 		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
 		
 		if(tag_index===null) {
-			ngds.error("Got null tag for mouseout");
 			return;
 		}
 
@@ -182,7 +184,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 			return;
 		}
 		
-		ngds.Map.reset_styles(tag_index);
+		ngds.util.reset_result_styles();
 		var feature = ngds.layer_map[tag_index];
 	 	ngds.publish('Layer.click',{
 	 		'Layer':feature,
@@ -214,7 +216,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	});
 
 	ngds.subscribe('Layer.click',function(topic,data){
-		ngds.Map.reset_styles(data['tag_index']);
+		ngds.util.reset_result_styles();
 		for(var l in ngds.layer_map) {
 			ngds.util.apply_feature_default_styles(ngds.layer_map[l],l);
 			if(ngds.layer_map[l]._leaflet_id===data['Layer']._leaflet_id) {

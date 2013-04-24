@@ -84,3 +84,7 @@ ngds.util.apply_feature_active_styles = function(feature,tag_index) {
 		feature.setStyle({weight:3,color:"red"});
 	}
 };
+
+ngds.util.reset_result_styles = function() {
+	$('.result').css('background-color','#fff');
+}

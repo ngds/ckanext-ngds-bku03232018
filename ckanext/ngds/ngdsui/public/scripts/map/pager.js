@@ -36,7 +36,7 @@ ngds.Search = function() {
 		else {
 			me._q = params['q'];
 		}
-		
+		ngds.log("Searching for term : "+q+", rows : "+rows+", page : "+page+" start : "+start);
 		if(package_extras==='') {
 			var southWest = new L.LatLng(-90, -180),
 		    northEast = new L.LatLng(90, 180),
@@ -54,9 +54,23 @@ ngds.Search = function() {
 			'start':start,
 			'extras':package_extras
 		},function(response){
-			PubSub.publish('Map.results_received',{
-				'results':response.result.results
+			console.log(response.result.count);
+			ngds.publish('Map.results_received',{
+				'results':response.result.results,
+				'count':response.result.count
 			});
+			var num_pages = Math.ceil(response.result.count/rows);
+			var pager_div = $(".search-results-page-nums");
+			for(var i=1;i<num_pages+1;i++) {
+				pager_div.append(ngds.util.dom_element_constructor({
+					'tag':'a',
+					'attributes':{
+						'class':'page-num',
+						'text':i
+					}
+				}));
+			}
+			
 		});
 
 	};

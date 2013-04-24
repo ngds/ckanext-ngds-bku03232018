@@ -253,18 +253,6 @@ ngds.Map = {
 				pager.set_state(count,query);
 			});
 		},
-		reset_styles:function(label) {
-			$('.result').css('background-color','#fff');
-			var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
-	 		for(var i=0;i<labels_colored.length;i++){
-	 			labels_colored[i].attr("src","/images/marker.png");
-	 		}
-	 		for(var shape_index in ngds.Map.state.shapes_map){
-				if(ngds.Map.state.shapes_map[shape_index]!==null && typeof ngds.Map.state.shapes_map[shape_index]!=='undefined' && shape_index!==label) {
-					ngds.Map.state.shapes_map[shape_index].setStyle({weight:ngds.Map.state.shapes_map[shape_index].orig_weight,color:ngds.Map.state.shapes_map[shape_index].orig_color});
-				}
-			}
-		},
 		get_layer:function(key) {
 			if(key in this.layers) {
 				return this.layers[key];
