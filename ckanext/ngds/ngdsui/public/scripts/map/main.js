@@ -181,7 +181,8 @@ ngds.Map.map.on('draw:poly-created',function(e){
 		if(tag_index===null) {
 			return;
 		}
-
+		
+		ngds.Map.reset_styles(tag_index);
 		var feature = ngds.layer_map[tag_index];
 	 	ngds.publish('Layer.click',{
 	 		'Layer':feature,
@@ -213,9 +214,15 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	});
 
 	ngds.subscribe('Layer.click',function(topic,data){
+		ngds.Map.reset_styles(data['tag_index']);
 		for(var l in ngds.layer_map) {
-			console.log(l);
 			ngds.util.apply_feature_default_styles(ngds.layer_map[l],l);
+			if(ngds.layer_map[l]._leaflet_id===data['Layer']._leaflet_id) {
+				ngds.layer_map[l].is_active=true;
+			}
+			else{
+				ngds.layer_map[l].is_active=false;
+			}
 		}
 		ngds.util.apply_feature_active_styles(data['Layer'],data['tag_index']);
 	});
@@ -258,14 +265,6 @@ ngds.Map.map.on('draw:poly-created',function(e){
 		});
 
 		feature.on('click',function(feature){
-			for(l in ngds.layer_map) {
-				if(ngds.layer_map[l]._leaflet_id===feature.layer._leaflet_id) {
-					ngds.layer_map[l].is_active = true;
-				}
-				else {
-					ngds.layer_map[l].is_active = false;
-				}
-			}
 			ngds.publish('Layer.click',{
 				'Layer':feature.layer,
 				'tag_index':data['seq_id']

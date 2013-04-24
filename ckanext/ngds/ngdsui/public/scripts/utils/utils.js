@@ -1,7 +1,5 @@
 ngds.util = { };
 
-console.log("Fix node matcher");
-
 ngds.util.dom_element_constructor = function(payload) {	
 	var parent = $('<'+payload['tag']+'/>',payload['attributes']);
 	if(typeof payload['children']!=='undefined') {
@@ -63,9 +61,9 @@ ngds.util.apply_feature_hover_styles = function(feature,tag_index) {
 
 
 ngds.util.apply_feature_default_styles = function(feature,tag_index) {
-	console.log(feature);
 	if(feature.feature.type==='Point') {
 		var marker_tag = $('.lmarker-'+tag_index);
+		marker_tag.attr("src","/images/marker.png")
 		marker_tag.css("width","25px");
  		marker_tag.css("height","41px");
  		var span_elem = $('.lmarker-'+tag_index).next();
@@ -78,8 +76,8 @@ ngds.util.apply_feature_default_styles = function(feature,tag_index) {
 };
 
 ngds.util.apply_feature_active_styles = function(feature,tag_index) {
+	$('.result-'+tag_index).css('background-color','#dadada');
 	if(feature.feature.type==='Point') {
-		$('.result-'+tag_index).css('background-color','#dadada');
  		$('.lmarker-'+tag_index).attr("src","/images/marker-red.png");
 	}
 	else {
