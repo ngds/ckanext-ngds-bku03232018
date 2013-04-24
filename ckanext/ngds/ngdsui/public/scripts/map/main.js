@@ -89,7 +89,6 @@ ngds.Map.initialize();
 	});
 
 	$(".search-results-page-nums").on('click',null,function(ev){
-		console.log(ev);
 			var page = ev.target.firstChild.data;
 			ngds.publish('page.advance',{ 'page':page });
 	});
@@ -110,7 +109,6 @@ ngds.Map.initialize();
 		ngds.Map.clear_layer('geojson');
 		$(".results").empty();
 		$(".search-results-page-nums").empty();
-		console.log(ngds.Map.handlers);
 		ngds.Map.zoom_handler.clear_listeners();
 		ngds.pager.go_to({
 			'page':data['page'],

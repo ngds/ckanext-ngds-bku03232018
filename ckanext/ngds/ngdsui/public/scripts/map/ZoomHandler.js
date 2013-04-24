@@ -47,7 +47,6 @@ var zoom_handler = ngds.Map.zoom_handler = function(layer) {
 
 zoom_handler.clear_listeners = function() { // Unregister the zoom event handlers from the previous page.
 	if(typeof ngds.Map.handlers!=='undefined') {
-		console.log(ngds.Map.handlers);
 		for(var i=0;i<ngds.Map.handlers.length;i++) {
 			ngds.Map.map.off('zoomend',ngds.Map.handlers[i]);
 			ngds.log("Removing zoom handler");

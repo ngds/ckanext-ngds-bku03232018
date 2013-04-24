@@ -54,7 +54,6 @@ ngds.Search = function() {
 			'start':start,
 			'extras':package_extras
 		},function(response){
-			console.log(response.result.count);
 			ngds.publish('Map.results_received',{
 				'results':response.result.results,
 				'count':response.result.count
