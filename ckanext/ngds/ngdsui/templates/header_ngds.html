@@ -9,7 +9,7 @@
 							<span>{{ g.logo_text }}</span>
 					</a>
 				</div>
-				<nav>
+				<nav class="span12">
 					<ul>
 						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{ _('Home') }}</a></li>
 						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">{{ _('About') }}</a></li>
