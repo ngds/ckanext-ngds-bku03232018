@@ -3,9 +3,7 @@
 
 {%- block content %}
 
-<div class="map-search dialog-small" style="float:left;">
-	<p class="main-menu-item menu-align">SEARCH</p>
-	<p class="menu-caption">Known geothermal resource area, latitude/longitude, geothermal area</p>
+<div class="map-search dialog-small-map" style="float:left;">
 	<form action="#">
 		<fieldset>
 			<input id="map-query" type="text"/>
@@ -20,10 +18,12 @@
 	<div class="preamble-container">
 		<div class="preamble"></div>
 	</div>
-	<div class="results"></div>
-	<div class="search-results-pagination">
+	<div class="results">
+		<div class="search-results-pagination">
 		<div class="search-results-page-nums"></div>
 	</div>
+	</div>
+	
  </div>	
 <!-- <div id="temporary-wms-div" style="position:absolute; bottom:0px; left:0px; background-color:#dadada; width:310px;">
 	<label for="wms" style="font-family:arial; font-size:12px;">Temporary WMS viewer</label>

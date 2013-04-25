@@ -566,9 +566,10 @@ Map widget
 	margin-left:2px;
 }
 
-.leaflet-container .leaflet-control-zoom {
+.leaflet-container {
 	/*margin-top:80px;*/
 }
+
 
 .map-widget-menu-item {
 	position:absolute;
@@ -1385,8 +1386,9 @@ margin-left: 40px;
 }
 
 .results { 
-	margin-top:20px;
 	margin-left:20px;
+	position:absolute;
+	top:80px;
 }
 
 .result {
@@ -1925,7 +1927,3 @@ font-size: 11px;
 }
 
 /* Profile page end......... */
-
-#map-container { 
-width:945px; height:600px; float:right; position:relative;
-}

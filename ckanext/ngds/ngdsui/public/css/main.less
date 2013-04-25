@@ -24,6 +24,10 @@ a {
 	}
 }
 
+.l-control-zoom {
+	margin-left:330px;
+}
+
 #top-level-container {
 	width:1280px;
 	text-align:center;
@@ -406,6 +410,40 @@ header {
 .dialog-small {
 	.dialog-common('/assets/border_box_1.png');
 	height:140px;
+}
+
+.dialog-small-map {
+	background-color:#fff;
+}
+
+.map-search {
+	position:absolute;
+	z-index:5000;
+	width:310px;
+	top:10px;
+	left:10px; 
+
+	form {
+		margin-top:20px;
+		margin-left:10px;
+
+		input[type="text"] {
+			margin-bottom:0px;
+			padding-bottom:0px;
+			height:25px;
+			width:230px;
+		}
+
+		input[type="button"]{
+			width:40px;
+		}
+	}
+}
+
+#map-container {
+	width:1260px;
+	height:600px;
+	position:relative
 }
 
 .dialog-large {
