@@ -1,175 +1,80 @@
-/**
-*	@author - Vivek
-*	Pager to page search results for the map.
-*/
-ngds.Pager = function(rows) {
-	// Must keep in mind to clear the dom each time.
+ngds.Search = function() {
+	var package_extras='';
 
-	var start = 0;
-	var rows = rows;
-	var num_pages = 0;
-	var pager_div = $(".search-results-page-nums");
-	pager_div.empty();
+	ngds.subscribe('Map.area_selected',function(msg,data){
+		if(data['type']==='rectangle') {
+			bbox = new ngds.Map.BoundingBox();
+			bbox.construct_from_leaflet_shape(data['feature']['rect']);
+			package_extras = {
+				'ext_bbox':bbox.get_bbox_array().join(',')
+			};
+		}
+		else if(data['type']==='polygon'){
+			var coords = [];
+			$.each(data['feature']['poly']._latlngs,function(index,item){
+					coords.push([item.lat,item.lng]);
+			});
+			package_extras = {
+				'poly':coords
+			}
+		}
+	});
+
 	var me = this;
-	var handler = null;
-	var cur_page = 0;
+	var pager_div = $(".search-results-page-nums");
 
-	var preamble = $(".preamble");
-	this.set_state = function(count,query) {
+	var go_to = function(params) {
+		var q ='';
+		var rows = params['rows'];
+		var action = params['action'];
+		var page = params['page'];
+		var start = (page - 1) * rows;
 
-		preamble.empty();
-		preamble.text("Found $1 results for \"$2\"".replace("$1",count).replace("$2",query));
-	};
-
-	this.set_action = function(action, params) {
-		(function() {
-			if(typeof action !== 'function') {
-				throw "Expected a function";
-			}
-		})();
-
-		me._action = action;
-		me._params = params;
-	};
-
-	var construct_anchor = function(i) {
-		var anchor = $("<a/>",{class:"page-num"});
-		anchor.text(i);
-		return anchor;
-	};
-
-	var initialize_pages_ui = function(n) {
-		for(var i=1;i<n+1;i++) {
-			pager_div.append(construct_anchor(i));
+		if(typeof params['q'] === 'undefined') {
+			q = me._q;
 		}
-		$(".page-num").click(function(ev){
-			var page_number = ev.target.firstChild.data;
-			me.move(page_number,handler,function(count){
-				// me.set_state(count,query);
+		else {
+			me._q = params['q'];
+		}
+		ngds.log("Searching for term : "+q+", rows : "+rows+", page : "+page+" start : "+start);
+		if(package_extras==='') {
+			var southWest = new L.LatLng(-90, -180),
+		    northEast = new L.LatLng(90, 180),
+		    bounds = new L.LatLngBounds(southWest, northEast);
+			bbox = new ngds.Map.BoundingBox();
+			bbox.store_raw(bounds);
+			package_extras = {
+				'ext_bbox':bbox.get_bbox_array().join(',')
+			};
+		}
+
+		action({
+			'rows':rows,
+			'q':q,
+			'start':start,
+			'extras':package_extras
+		},function(response){
+			ngds.publish('Map.results_received',{
+				'results':response.result.results,
+				'count':response.result.count
 			});
-		});
-	};
-
-	var clear_results_div = function() {
-		$(".results").empty();
-	};
-
-	this.move = function(page_number,fn,finish_fn) {
-		ngds.Map.clear_layer('geojson');
-		ngds.Map.zoom_handler.clear_listeners();
-		
-		var new_page = new CustomEvent("new_page",{
-			"page":page_number
-		});
-
-		handler = fn;
-		ngds.Map.labeller.reset();
-		start = (page_number - 1) * rows;
-		// ngds.Map.removeZoomEventListeners();
-		if(start>(num_pages*rows+1)) {
-			return;
-		}
-
-		var params = me._params;
-		params['rows'] = rows;
-		params['start'] = start;
-		if(ngds.Map.shape.str!==null && typeof ngds.Map.shape.str !== 'undefined') {
-			if(ngds.Map.shape.str==='rect') {
-				params['extras'] = { "ext_bbox":ngds.Map.bounding_box.get_bbox_array().join(',')};		
-			}
-			else {
-				params['extras'] = { 'poly':ngds.Map.params }
+			var num_pages = Math.ceil(response.result.count/rows);
+			var pager_div = $(".search-results-page-nums");
+			for(var i=1;i<num_pages+1;i++) {
+				pager_div.append(ngds.util.dom_element_constructor({
+					'tag':'a',
+					'attributes':{
+						'class':'page-num',
+						'text':i
+					}
+				}));
 			}
 			
-		}
-		
-		me._action(params,function(response){
-			var result = ngds.SearchResult(response.result);
-			var rows_to_req = 0;
-			if(response.result.results.length<rows) {
-				rows_to_req = response.result.results.length;	
-			}
-			else {
-				rows_to_req = rows;
-			}
-			num_pages = Math.ceil(result.get('count')/rows_to_req);
-			
-			clear_results_div();
-			var results_div = $(".results");
-
-			var results = response.result.results;
-			for(var i=0;i<results.length;i++){
-				var each_result = $("<div/>",{class:"result"});
-				var title = $('<a/>',{class:'description',href:['/dataset',results[i].name].join('/'),target:"_blank"});
-				
-				var notes = $('<p/>',{class:'notes'});
-				var type = $('<p/>',{class:'type'});
-				var wms = $('<button/>',{class:'wms',id:results[i]['resources'][0].id});
-				var published = $('<p/>',{class:'published'});
-				
-				var marker_or_shape='';
-				if(ngds.ckandataset(results[i]).get_feature_type().type==='Point'){
-					var label = ngds.Map.labeller.get_label();
-					each_result.addClass('result-'+label);
-					var marker_container = $("<div/>",{class:'result-marker-container marker-'+label});
-					var marker_image = $("<img/>",{src:"/images/marker.png",class:'result-marker'});
-					var marker_label = $("<span/>",{class:'result-marker-label marker-label-'+label});
-					marker_label.text(label);
-					marker_container.append(marker_image);
-					marker_container.append(marker_label);
-					each_result.append(marker_container);
-					marker_or_shape='marker'
-				}
-				else if (ngds.ckandataset(results[i]).get_feature_type().type==='Polygon'){
-					var label = ngds.Map.labeller.get_label();
-					each_result.addClass('result-'+label);
-					marker_or_shape='shape'
-				}
-				published.attr('id','ngds'+i);
-				notes.text(results[i]['notes']);
-				title.text(results[i]['title']);
-				type.text(results[i]['type']);
-				wms.text("WMS");
-				published.text(new Date(results[i]['metadata_created']).toLocaleDateString());
-			
-				each_result.append(title);
-				each_result.append(notes);
-				each_result.append(type);
-				each_result.append(wms);
-				each_result.append(published);
-				results_div.append(each_result);
-				fn(results[i],marker_or_shape);
-			}
-			inc = 1;
-			$(".wms").click(function(ev){
-				var id=ev.currentTarget.id;
-						var ngds_layer = L.tileLayer.wms('http://'+window.location.hostname+":8080/geoserver/NGDS/wms",{
-						layers:"NGDS:"+id,
-						format: 'image/png',
-					    transparent: true,
-					    attribution: "NGDS",
-					    tileSize:128,
-					    opacity:'0.9999'
-					});
-
-				layer_control.addOverlay(ngds_layer,"WMS"+inc);
-				inc++;
-			});
-
-			if($('.page-num').length==0) {
-				initialize_pages_ui(num_pages);
-			}
-			finish_fn(response.result.count);
 		});
 
-		start = start + rows;
 	};
-
 
 	return {
-		'set_state':this.set_state,
-		'set_action':this.set_action,
-		'move':this.move,
-		'is_defined':this.is_defined
-	};
+		'go_to':go_to
+	}
 };

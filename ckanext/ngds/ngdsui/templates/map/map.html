@@ -6,10 +6,10 @@
 <div class="map-search dialog-small" style="float:left;">
 	<p class="main-menu-item menu-align">SEARCH</p>
 	<p class="menu-caption">Known geothermal resource area, latitude/longitude, geothermal area</p>
-	<form action="javascript:ngds.Map.map_search()">
+	<form action="#">
 		<fieldset>
 			<input id="map-query" type="text"/>
-			<input id="map-search" type="submit" value="Go"/>
+			<input id="map-search" type="button" value="Go"/>
 		</fieldset>
 	</form>
 
@@ -41,15 +41,18 @@
 	{{ super() }}
 	<script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
 	<script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
+	<script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
+	<script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
 	<script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
 	<script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
-	<script type="text/javascript" src="/scripts/map/map.js"></script>
 	<script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
 	<script type="text/javascript" src="/scripts/map/pager.js"></script>
 	<script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
-	<script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
+	<script type="text/javascript" src="/scripts/map/main.js"></script>
+	<script type="text/javascript" src="/scripts/map/result_parser.js"></script>
+	<script type="text/javascript" src="/scripts/utils/utils.js"></script>
 
 {% endblock %}    
