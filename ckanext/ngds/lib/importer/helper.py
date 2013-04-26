@@ -42,7 +42,10 @@ def upload_file_return_path(file_name=None,file_path=None):
 
     return uploaded_file_url
 
-def delete_extracted_files(file_path,files_to_delete=None,ignore_files=None):
+def validate_bulkupload_datafile(file_name):
+    print "validate the data file..."
+
+def delete_files(file_path,files_to_delete=None,ignore_files=None):
 
     import os
     os.chdir(file_path)    
