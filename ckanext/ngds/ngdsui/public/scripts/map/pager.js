@@ -28,6 +28,7 @@ ngds.Search = function() {
 		var rows = params['rows'];
 		var action = params['action'];
 		var page = params['page'];
+		ngds.Map.cur_page = page;
 		var start = (page - 1) * rows;
 
 		if(typeof params['q'] === 'undefined') {
@@ -36,6 +37,7 @@ ngds.Search = function() {
 		else {
 			me._q = params['q'];
 		}
+		ngds.Map.current_query = me._q;
 		ngds.log("Searching for term : "+q+", rows : "+rows+", page : "+page+" start : "+start);
 		if(package_extras==='') {
 			var southWest = new L.LatLng(-90, -180),
@@ -56,18 +58,26 @@ ngds.Search = function() {
 		},function(response){
 			ngds.publish('Map.results_received',{
 				'results':response.result.results,
+				'query':ngds.Map.current_query,
 				'count':response.result.count
 			});
 			var num_pages = Math.ceil(response.result.count/rows);
 			var pager_div = $(".search-results-page-nums");
+			$(".results").addClass("full");
 			for(var i=1;i<num_pages+1;i++) {
-				pager_div.append(ngds.util.dom_element_constructor({
+				var a_to_append = ngds.util.dom_element_constructor({
 					'tag':'a',
 					'attributes':{
 						'class':'page-num',
 						'text':i
 					}
-				}));
+				});
+				pager_div.append(a_to_append);
+
+				if(parseInt(ngds.Map.cur_page)===i) {
+					x=a_to_append;
+					x.addClass("page-active");
+				}
 			}
 			
 		});

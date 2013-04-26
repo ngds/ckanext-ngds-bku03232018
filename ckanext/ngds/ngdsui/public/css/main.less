@@ -25,7 +25,7 @@ a {
 }
 
 .l-control-zoom {
-	margin-left:330px;
+	margin-left:310px;
 }
 
 #top-level-container {
@@ -421,10 +421,11 @@ header {
 	z-index:5000;
 	width:310px;
 	top:10px;
-	left:10px; 
+	left:5px; 
+	border-top: 4px solid #236393;
 
 	form {
-		margin-top:20px;
+		margin-top:10px;
 		margin-left:10px;
 
 		input[type="text"] {
@@ -441,8 +442,7 @@ header {
 }
 
 #map-container {
-	width:1260px;
-	height:600px;
+	height:700px;
 	position:relative
 }
 
@@ -732,3 +732,136 @@ div.postface {
 	}
 }  // End of postface
 
+
+.map-search-results {
+	width:320px;
+
+	.results, .pager {
+		font-family:Arial;
+		font-size:12px;
+	}
+
+	.results { 
+		position:absolute;
+		top:78px;
+		width:310px;
+		background-color:#fff;
+		opacity:0.8;
+		box-sizing:border-box;
+		-moz-box-sizing:border-box;
+		-webkit-box-sizing:border-box;
+		border-bottom:20px solid #236393;
+		margin-left:5px;
+		overflow:auto;
+
+		scrollbar-face-color: #000000;
+		scrollbar-shadow-color: #2D2C4D;
+		scrollbar-highlight-color:#7D7E94;
+		scrollbar-3dlight-color: #7D7E94;
+		scrollbar-darkshadow-color: #2D2C4D;
+		scrollbar-track-color: #7D7E94;
+		scrollbar-arrow-color: #C1C1D1;
+
+		.result {
+			margin-top:20px;
+		
+			&:hover {
+				cursor:pointer;
+			}
+
+			.description {
+				font-size:14px;
+				font-weight:bold;
+				text-decoration:none;
+				color:#0b3656;
+				cursor:pointer;
+				margin-left:10px;
+				margin-bottom:5px;
+			}
+
+
+			.type, .published {
+				display:inline;
+				margin-left:40px;
+				color:grey;
+				font-weight:bold;
+			}
+
+			.published {
+				margin-left:70px;
+				color:grey;
+			}
+
+			.notes {
+				margin-left:40px;
+				margin-right:30px;
+				font-weight:bold;
+				margin-bottom:0px;
+			}
+		}
+
+		.search-results-pagination {
+			display:block;
+			position:relative;
+			text-align:center;
+			top:20px;
+			width:100%;
+
+			.search-results-page-nums {
+				a {
+					margin-left:5px;
+					font-weight:bold;
+					color:grey;
+					font-size:14px;
+
+					&:hover {
+						cursor:pointer;
+					}
+				}
+
+				.page-active {
+					color:#236393;
+				}
+			}
+
+		}
+
+		.result-marker-label {
+			position: absolute;
+			margin-top: 8px;
+			left: 8px;
+			color: #fff;
+			font-size: 12.5pt;
+			font-weight: bold;
+		}
+
+		.result-marker { 
+			width:25px;
+			height:41px;
+		}
+
+		.result-marker-container {
+			position:relative;
+			margin-left:5px;
+			display:inline-block;
+		}
+
+		div.result-marker-container:hover{
+			cursor:pointer;
+		}
+
+		.reader { 
+			margin-top: 15px;
+			font-weight: bold;
+			margin-left: 15px;
+		}
+
+	}
+
+	.full {
+		.results;
+		height:615px; // Map height - top of results - TODO
+	}
+
+	
+}

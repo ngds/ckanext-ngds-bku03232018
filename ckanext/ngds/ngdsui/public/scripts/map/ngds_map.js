@@ -106,7 +106,7 @@ ngds.Map = {
 					}
 				});
 
-			this.initialize_controls();
+			// this.initialize_controls();
 			// this.initialize_map_search();
 			ngds.publish("Map.loaded",{ });
 		},

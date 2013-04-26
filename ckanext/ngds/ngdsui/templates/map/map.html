@@ -4,7 +4,7 @@
 {%- block content %}
 
 <div class="map-search dialog-small-map" style="float:left;">
-	<form action="#">
+	<form action="javascript:ngds.Map.top_level_search()">
 		<fieldset>
 			<input id="map-query" type="text"/>
 			<input id="map-search" type="button" value="Go"/>
@@ -43,16 +43,17 @@
 	<script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
 	<script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
 	<script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
+	<script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
 	<script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
 	<script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
 	<script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
 	<script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
-	<script type="text/javascript" src="/scripts/map/pager.js"></script>
 	<script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
+	<script type="text/javascript" src="/scripts/map/pager.js"></script>
+	<script type="text/javascript" src="/scripts/utils/utils.js"></script>
 	<script type="text/javascript" src="/scripts/map/main.js"></script>
 	<script type="text/javascript" src="/scripts/map/result_parser.js"></script>
-	<script type="text/javascript" src="/scripts/utils/utils.js"></script>
 
 {% endblock %}    

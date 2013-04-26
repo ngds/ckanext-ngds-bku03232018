@@ -44,6 +44,9 @@ ngds.subscribe = function(topic,handler) {
 	PubSub.subscribe(topic,handler);
 }
 
+ngds.pager = new ngds.Search();
+
+
 ngds.feature_event_manager = { //A container for state information on event bindings for features.
 		/*
 		*	Scheme - id -> { 
@@ -78,24 +81,32 @@ ngds.layer_map = { // A mapping table to map ngds result ids(dom) to leaflet ids
 
 ngds.Map.initialize();
 
-
-(function publish_pager_advance() {
-	$("#map-search").click(function(){
-		ngds.publish('Map.search_initiated',{
+ngds.Map.top_level_search = function() {
+	ngds.publish('Map.search_initiated',{
 
 		});
 		var geoj = ngds.Map.get_layer('drawnItems');
 		var query = $("#map-query").val();
+		ngds.util.clear_map_state();
 		ngds.pager.go_to({
 			'page':1,
 			'action':ngds.ckanlib.package_search,
 			'rows':5,
 			'q':query
 		});
+};
+
+(function publish_pager_advance() {
+	$("#map-search").click(function(){
+		ngds.Map.top_level_search();
 	});
 
 	$(".search-results-page-nums").on('click',null,function(ev){
 			var page = ev.target.firstChild.data;
+			if(typeof page==='undefined') {
+				return;
+			}
+			console.log("Going to page : "+page);
 			ngds.publish('page.advance',{ 'page':page });
 	});
 })();
@@ -106,15 +117,11 @@ ngds.Map.initialize();
 */ 
 
 (function subscribe_page_advance() {
-	ngds.pager = new ngds.Search();
-
 	ngds.subscribe('page.advance',function(msg,data) {
 		ngds.feature_ngds_id_mapping = {
 			// Clearing the state table.
 		};
-		ngds.Map.clear_layer('geojson');
-		$(".results").empty();
-		$(".search-results-page-nums").empty();
+		ngds.util.clear_map_state();
 		ngds.Map.zoom_handler.clear_listeners();
 		ngds.pager.go_to({
 			'page':data['page'],

@@ -87,4 +87,11 @@ ngds.util.apply_feature_active_styles = function(feature,tag_index) {
 
 ngds.util.reset_result_styles = function() {
 	$('.result').css('background-color','#fff');
-}
+};
+
+ngds.util.clear_map_state = function() {
+	$(".result").remove();
+	$(".reader").remove();
+	$(".search-results-page-nums").empty();
+	ngds.Map.clear_layer('geojson');
+};

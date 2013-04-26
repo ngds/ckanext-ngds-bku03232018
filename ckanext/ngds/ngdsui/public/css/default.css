@@ -332,38 +332,18 @@ div#content-container section.search-results div.search-results-container div.se
 	font-size:14px;
 }
 
-div.search-results-pagination {
-	margin-top:25px;
-}
-
-div.search-results-pagination p {
-	display:inline;
-}
-
-div.search-results-pagination div.search-results-page-nums {
-	margin-left:20px;
-	display:inline;
-}
-
-div.search-results-pagination div.search-results-page-nums a {
-	font-family:Arial;
-	font-size:13px;
-	margin-left:5px;
-	margin-right:5px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-pagination div.search-results-num-items {
+div#content-container section.search-results div.search-results-container div.search-results-num-items {
 	display:inline;
 	float:right;
 	margin-left:20px;
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-pagination div.search-results-num-items select {
+div#content-container section.search-results div.search-results-container div.search-results-num-items select {
 	width:50px;
 	margin-left:10px;
 }
 
-div#content-container section.search-results div.search-results-container div.search-results-pagination div.search-results-num-items p {
+div#content-container section.search-results div.search-results-container div.search-results-num-items p {
 	font-size:14px;
 }
 
@@ -1380,45 +1360,6 @@ margin-left: 40px;
 	margin-left:10px;
 }
 
-.results, .pager {
-	font-family:Arial;
-	font-size:12px;
-}
-
-.results { 
-	margin-left:20px;
-	position:absolute;
-	top:80px;
-}
-
-.result {
-	margin-left:30px;
-	margin-top:15px;
-}
-
-div.result:hover {
-	cursor:pointer;
-}
-
-.description {
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:underline;
-	cursor:pointer;
-}
-
-.type, .published {
-	display:inline;
-}
-
-.published {
-	margin-left:70px;
-}
-
-.map-search-results {
-	width:320px;
-}
-
 .wms {
 	display:inline;
 }
@@ -1434,29 +1375,6 @@ div.result:hover {
 .leaflet-marker-iconlabel {
 	background:transparent;
 	border-radius:0px;
-}
-
-.result-marker-label {
-	position: absolute;
-	margin-top: 8px;
-	left: 8px;
-	color: #fff;
-	font-size: 12.5pt;
-	font-weight: bold;
-}
-
-.result-marker { 
-	width:25px;
-	height:41px;
-}
-
-.result-marker-container {
-	position:relative;
-	display:inline-block;
-}
-
-div.result-marker-container:hover{
-	cursor:pointer;
 }
 
 .flash-msg-close {

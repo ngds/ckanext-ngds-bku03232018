@@ -3,9 +3,11 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 	var seq = new ngds.util.sequence_generator();
 	var count = result['count'];
 	var results = result['results'];
+	var query = result['query'];
 	ngds.log("Received "+count+" results : "+results,results);
 	
 	for(var i=0;i<results.length;i++) {
+		results[i]["type"] = results[i]["type"][0].toUpperCase() + results[i]["type"].slice(1,results[i]["type"].length);
 		var skeleton = {
 			'tag':'div',
 			'attributes':{
@@ -13,7 +15,7 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 			},
 			'children':[
 				{
-					'tag':'anchor',
+					'tag':'a',
 					'attributes':{
 						'class':'description',
 						'href':['/dataset',results[i]['name']].join('/'),
@@ -36,19 +38,19 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 						'text':results[i]['type']
 					}
 				},
-				{
-					'tag':'button',
-					'attributes':{
-						'class':'wms',
-						'id':results[i]['resources'][0]['id'],
-						'text':"WMS"
-					}
-				},
+				// {
+				// 	'tag':'button',
+				// 	'attributes':{
+				// 		'class':'wms',
+				// 		'id':results[i]['resources'][0]['id'],
+				// 		'text':"WMS"
+				// 	}
+				// },
 				{
 					'tag':'p',
 					'attributes':{
 						'class':'published',
-						'text':new Date(results[i]['metadata_created']).toLocaleDateString()
+						'text':"Published "+new Date(results[i]['metadata_created']).toLocaleDateString()
 					}
 				}
 			]
@@ -89,8 +91,16 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 		}
 
 		var dom_node = ngds.util.dom_element_constructor(skeleton);
-		$('.results').append(dom_node);
+		$('.results').prepend(dom_node);
+		var reader = ngds.util.dom_element_constructor({
+			'tag':'p',
+			'attributes':{
+				'text':'Found '+count+" results for \""+query+"\"",
+				'class':'reader'
+			}
+		});
 	}
+	$('.results').prepend(reader);
 };
 
 ngds.subscribe('Map.results_received',ngds.render_search_results);
