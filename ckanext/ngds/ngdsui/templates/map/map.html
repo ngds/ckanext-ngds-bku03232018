@@ -15,7 +15,7 @@
 
 <div id="map-container" style=""></div>
 <div class="map-search-results">
-	<div class="results">
+	<div id="results" class="results">
 		
 	</div>
 	<div class="search-results-pagination">
@@ -36,6 +36,7 @@
 	<link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
 	<link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
 	<link rel="stylesheet" href="/vendor/iconlabel/leaflet.iconlabel.css" />
+	<link rel="stylesheet" href="/vendor/jscrollpane/jquery.jscrollpane.css" />
 	{{ super() }}
 {% endblock %}
 {% block scripts %}
@@ -56,5 +57,7 @@
 	<script type="text/javascript" src="/scripts/utils/utils.js"></script>
 	<script type="text/javascript" src="/scripts/map/main.js"></script>
 	<script type="text/javascript" src="/scripts/map/result_parser.js"></script>
-
+	<script type="text/javascript" src="/vendor/jscrollpane/jquery.jscrollpane.min.js"></script>
+	<script type="text/javascript" src="/vendor/jscrollpane/jquery.mousewheel.js"></script>
+	<script type="text/javascript" src="/vendor/jscrollpane/mwheelIntent.js"></script>
 {% endblock %}    

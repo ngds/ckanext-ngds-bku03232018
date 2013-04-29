@@ -28,7 +28,7 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 					'tag':'p',
 					'attributes':{
 						'class':'notes',
-						'text':results[i]['notes']
+						'text':ngds.util.get_n_chars(results[i]['notes'],58)
 					}
 				},
 				{
@@ -101,6 +101,7 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 		});
 	}
 	$('.results').prepend(reader);
+	$("#results").jScrollPane({contentWidth:'0px'});
 };
 
 ngds.subscribe('Map.results_received',ngds.render_search_results);

@@ -91,9 +91,12 @@ ngds.Map.top_level_search = function() {
 		ngds.pager.go_to({
 			'page':1,
 			'action':ngds.ckanlib.package_search,
-			'rows':5,
+			'rows':10,
 			'q':query
 		});
+		ngds.publish('Map.expander.toggle',{
+			'no_toggle':true
+	});
 };
 
 (function publish_pager_advance() {
@@ -289,32 +292,32 @@ ngds.Map.map.on('draw:poly-created',function(e){
 
 
 (function publish_map_search_results_expanded() {
-	var operation = 'contract';
-
 	$(".map-expander").on('click',null,function() {
-		if(operation==='contract') {
-			operation = 'expand';
-		}
-		else {
-			operation = 'contract';
-		}
-
-		ngds.publish("Map.expander.clicked",{
-			'operation':operation
+		ngds.publish("Map.expander.toggle",{
+			// Empty payload
 		});
 	});
 })();
 
 (function subscribe_map_search_results_expanded() {
-	ngds.subscribe('Map.expander.clicked',function(topic,data){
-		if(data['operation']==='expand') {
+	var operation='contract';
+	ngds.subscribe('Map.expander.toggle',function(topic,data){
+		var no_toggle = data['no_toggle'] || false;
+		if(operation==='contract' && no_toggle===false) {
+			operation='expand';
 			$(".results").hide();
 			$(".search-results-pagination").hide();
+			$(".search-results-pagination").addClass("no-padding");
 		}
 		else {
+			operation='contract';
 			$(".results").show();
 			$(".search-results-pagination").show();
+			$(".search-results-pagination").removeClass("no-padding");
 		}
 	});
 })();
 
+ngds.publish('Map.expander.toggle',{
+	// Empty payload		
+});

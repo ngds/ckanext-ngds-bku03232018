@@ -90,8 +90,17 @@ ngds.util.reset_result_styles = function() {
 };
 
 ngds.util.clear_map_state = function() {
+	$("#jspContainer").remove();
 	$(".result").remove();
 	$(".reader").remove();
 	$(".search-results-page-nums").empty();
 	ngds.Map.clear_layer('geojson');
+};
+
+ngds.util.get_n_chars = function(words_str,num_chars) {
+	var spliced = words_str.slice(0,num_chars-4);
+	while(spliced[spliced.length-1]==='.' || spliced[spliced.length-1]===' ') {
+		spliced=spliced.slice(0,spliced.length-1);
+	}
+	return spliced+" ...";
 };

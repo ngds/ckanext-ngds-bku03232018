@@ -75,11 +75,10 @@ ngds.Search = function() {
 				pager_div.append(a_to_append);
 
 				if(parseInt(ngds.Map.cur_page)===i) {
-					x=a_to_append;
-					x.addClass("page-active");
+					var a=a_to_append;
+					a.addClass("page-active");
 				}
-			}
-			
+			}			
 		});
 
 	};
