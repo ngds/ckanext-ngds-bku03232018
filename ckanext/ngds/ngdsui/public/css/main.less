@@ -423,6 +423,7 @@ header {
 	top:10px;
 	left:5px; 
 	border-top: 4px solid #236393;
+	opacity:0.8;
 
 	form {
 		margin-top:10px;
@@ -735,6 +736,8 @@ div.postface {
 
 .map-search-results {
 	width:320px;
+	position:absolute;
+	top:0px;
 
 	.results, .pager {
 		font-family:Arial;
@@ -742,15 +745,15 @@ div.postface {
 	}
 
 	.results { 
-		position:absolute;
+		position:relative;
 		top:78px;
 		width:310px;
 		background-color:#fff;
 		opacity:0.8;
-		box-sizing:border-box;
-		-moz-box-sizing:border-box;
-		-webkit-box-sizing:border-box;
-		border-bottom:20px solid #236393;
+		//box-sizing:border-box;
+		//-moz-box-sizing:border-box;
+		//-webkit-box-sizing:border-box;
+		//border-bottom:20px solid #236393;
 		margin-left:5px;
 		overflow:auto;
 
@@ -800,32 +803,6 @@ div.postface {
 			}
 		}
 
-		.search-results-pagination {
-			display:block;
-			position:relative;
-			text-align:center;
-			top:20px;
-			width:100%;
-
-			.search-results-page-nums {
-				a {
-					margin-left:5px;
-					font-weight:bold;
-					color:grey;
-					font-size:14px;
-
-					&:hover {
-						cursor:pointer;
-					}
-				}
-
-				.page-active {
-					color:#236393;
-				}
-			}
-
-		}
-
 		.result-marker-label {
 			position: absolute;
 			margin-top: 8px;
@@ -860,8 +837,48 @@ div.postface {
 
 	.full {
 		.results;
-		height:615px; // Map height - top of results - TODO
+		height:550px; // Map height - top of results - TODO
 	}
 
+	.search-results-pagination {
+		display:block;
+		position:relative;
+		text-align:center;
+		background-color:#fff;
+		opacity:0.8;
+		top:79px;
+		width:310px;
+		left:5px;
+		margin-top:-1px;
+
+		.search-results-page-nums {
+			padding-top:25px;
+			a {
+				margin-left:5px;
+				font-weight:bold;
+				color:grey;
+				font-size:14px;
+
+				&:hover {
+					cursor:pointer;
+				}
+			}
+
+			.page-active {
+				color:#236393;
+			}
+		}
+
+	}
+
+	.map-expander {
+		width:310px;
+		top:80px;
+		left:5px;
+		height:25px;
+		background-color:#0b3656;
+		position:relative;
+		cursor:pointer;
+	}
 	
 }

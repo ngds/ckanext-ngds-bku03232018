@@ -288,3 +288,33 @@ ngds.Map.map.on('draw:poly-created',function(e){
 })();
 
 
+(function publish_map_search_results_expanded() {
+	var operation = 'contract';
+
+	$(".map-expander").on('click',null,function() {
+		if(operation==='contract') {
+			operation = 'expand';
+		}
+		else {
+			operation = 'contract';
+		}
+
+		ngds.publish("Map.expander.clicked",{
+			'operation':operation
+		});
+	});
+})();
+
+(function subscribe_map_search_results_expanded() {
+	ngds.subscribe('Map.expander.clicked',function(topic,data){
+		if(data['operation']==='expand') {
+			$(".results").hide();
+			$(".search-results-pagination").hide();
+		}
+		else {
+			$(".results").show();
+			$(".search-results-pagination").show();
+		}
+	});
+})();
+
