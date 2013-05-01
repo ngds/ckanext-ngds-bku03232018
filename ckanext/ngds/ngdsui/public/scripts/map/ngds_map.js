@@ -12,6 +12,11 @@ ngds.Map = {
 			
 			var base = new L.TileLayer('http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8');
 
+			var soil = new L.AgsDynamicLayer();
+			soil.initialize('http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer/');
+
+			var water = new L.AgsDynamicLayer();
+			water.initialize('http://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer/');
 
 			var powergrid = new L.AgsDynamicLayer();
 			powergrid.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',
@@ -23,11 +28,28 @@ ngds.Map = {
 			    transparent: true,
 			    attribution: "SMU Well Data"
 			});
+
+			var land = L.tileLayer.wms('http://www.geocommunicator.gov/arcgis/services/Basemaps/MapServer/WMSServer',{
+				layers:'0,1,3,4,5,6,7,8,9,10,11,12,13,14,15',
+				format:'image/png',
+				transparent:true
+			});
+
+			var topography = new L.TileLayer('http://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}');
 			
 			var _geoJSONLayer = this.geoJSONLayer = new L.geoJson(null,{onEachFeature:function(a,b){
 
 			}}); // Geo JSON Layer where we'll display all our features.
-			var map = this.map = new L.Map('map-container', {layers:[base,_geoJSONLayer], center: new L.LatLng(34.1618, -100.53332), zoom: 3});
+			var map = this.map = new L.Map('map-container', {
+				layers:[base,_geoJSONLayer], 
+				center: new L.LatLng(34.1618, -100.53332), 
+				zoom: 3
+			});
+
+			L.control.fullscreen({
+			  position: 'topleft',
+			  title: 'Show me the fullscreen !'
+			}).addTo(map);
 
 			var _drawControl = new L.Control.Draw({
 				position: 'topright',
@@ -43,18 +65,26 @@ ngds.Map = {
 			this.layers = {
 				'geojson':_geoJSONLayer,
 				'drawnItems': _drawnItems,
-				'powergrid':powergrid
+				'powergrid':powergrid,
+				'soil':soil,
+				'water':water,
+				'land':land,
+				'topography':topography
 			};
 			// this.initialize_controls();
 
 			var baseMaps = {
 				"Terrain":base,
+				'USGS National Hydrography Dataset':water,
+				"US Topographic Map":topography
 			};
 
 			overlayMaps = {				
 				"Power Grid":powergrid,
 				"Search Results":_geoJSONLayer,
 				"SMU Wells":wells,
+				"USA Soil Survey":soil,
+				'USBLM Urban Areas, Counties':land
 				// "ngds":ngds_layer
 			};
 
