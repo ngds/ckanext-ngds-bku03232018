@@ -94,6 +94,7 @@ ngds.util.clear_map_state = function() {
 	$(".result").remove();
 	$(".reader").remove();
 	$(".search-results-page-nums").empty();
+	ngds.Map.zoom_handler.clear_listeners();
 	ngds.Map.clear_layer('geojson');
 };
 

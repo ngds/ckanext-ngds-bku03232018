@@ -5,7 +5,8 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 	var results = result['results'];
 	var query = result['query'];
 	ngds.log("Received "+count+" results : "+results,results);
-	
+	$(".results").remove();
+	$(".map-search-results").prepend($("<div/>",{"class":"results full","id":"results"}));
 	for(var i=0;i<results.length;i++) {
 		results[i]["type"] = results[i]["type"][0].toUpperCase() + results[i]["type"].slice(1,results[i]["type"].length);
 		var skeleton = {
@@ -101,7 +102,7 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 		});
 	}
 	$('.results').prepend(reader);
-	$("#results").jScrollPane({contentWidth:'0px'});
+	$(".results").jScrollPane({contentWidth:'0px'});
 };
 
 ngds.subscribe('Map.results_received',ngds.render_search_results);

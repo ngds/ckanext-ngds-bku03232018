@@ -5,6 +5,10 @@
 
 var ngds = ngds || ( ngds= { } );
 
+ngds.config = { 
+	'number_of_rows':10
+};
+
 (function setup_debugging(){
 	if(window.document.location.hash==="#!debug") {
 		
@@ -91,7 +95,7 @@ ngds.Map.top_level_search = function() {
 		ngds.pager.go_to({
 			'page':1,
 			'action':ngds.ckanlib.package_search,
-			'rows':10,
+			'rows':ngds.config['number_of_rows'],
 			'q':query
 		});
 		ngds.publish('Map.expander.toggle',{
@@ -161,7 +165,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 		ngds.Map.add_raw_result_to_geojson_layer(data['feature'],{'seq':data['seq']});
 	});
 
-	$('.results').on('mouseover',null,function(ev){
+	$('.map-search-results').on('mouseover',null,function(ev){
 		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
 		if(tag_index===null) {
 			return;
@@ -175,9 +179,10 @@ ngds.Map.map.on('draw:poly-created',function(e){
 
 	});
 
-	$('.results').on('mouseout',null,function(ev){
+	$('.map-search-results').on('mouseout',null,function(ev){
 		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
-		
+		console.log(tag_index);
+		console.log(ev.srcElement);
 		if(tag_index===null) {
 			return;
 		}
@@ -191,7 +196,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 		
 	});
 
-	$('.results').on('click',null,function(ev){
+	$('.map-search-results').on('click',null,function(ev){
 		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
 		
 		if(tag_index===null) {
