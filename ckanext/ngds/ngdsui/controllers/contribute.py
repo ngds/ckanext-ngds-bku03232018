@@ -8,6 +8,7 @@ from ckan.logic import (tuplize_dict,clean_dict,
                         parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
 from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
+import ckanext.ngds.lib.importer.helper as import_helper
 
 import os
 import shutil
@@ -55,7 +56,7 @@ class ContributeController(NGDSBaseController):
 
 	def bulk_upload_handle(self):
 		"""	
-		Render the about page
+		Handles the bulk upload of datasets. Recieves the dataset file and zip file as part of the request and validates them.
 		"""
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
@@ -64,15 +65,11 @@ class ContributeController(NGDSBaseController):
 		except NotAuthorized, error:
 			abort(401,error.__str__())	
 
-		from datetime import datetime
-		myzipfile = request.POST['myzipfile']
-		mycsvfile = request.POST['mycsvfile']
-
-		datafilename = mycsvfile.filename
-		resourcesfilename = myzipfile.filename
+		#Validate the dataset file.
 
 		bulk_dir = config.get('ngds.bulk_upload_dir')
 
+		from datetime import datetime
 		ts = datetime.isoformat(datetime.now()).replace(':','').split('.')[0]
 
 		upload_dir = os.path.join(bulk_dir, ts)
@@ -81,34 +78,58 @@ class ContributeController(NGDSBaseController):
 			os.makedirs(upload_dir)
 
 
+		# Recieve the dataset file to be processed.
+		datasetfile = request.POST['datasetfile']
 
-		csvfilepath =os.path.join(upload_dir,mycsvfile.filename.replace(os.sep, '_'))
-		zipfilepath =os.path.join(upload_dir,myzipfile.filename.replace(os.sep, '_'))
-
-		permanent_zip_file = open(zipfilepath,'wb')
-		permanent_csv_file = open(csvfilepath,'wb')
-
-		shutil.copyfileobj(myzipfile.file, permanent_zip_file )
-		shutil.copyfileobj(mycsvfile.file, permanent_csv_file )
-		myzipfile.file.close()
-		mycsvfile.file.close()
-		permanent_zip_file.close()
-		permanent_csv_file.close()
+		if datasetfile == "":
+			#raise Exception (_("Data file can't be empty."))
+			abort(500,_("Data file can't be empty."))	
 
 
-		zfile = zipfile.ZipFile(zipfilepath)
-		
+		datafilename = datasetfile.filename		
 
-		zfile.extractall(path=upload_dir)
+		datafilepath =os.path.join(upload_dir,datasetfile.filename.replace(os.sep, '_'))
 
-		def dir_filter(s):
-			if os.path.isdir(os.path.join(upload_dir,s)):
-				return False
-   			return True
+		permanent_data_file = open(datafilepath,'wb')		
+		shutil.copyfileobj(datasetfile.file, permanent_data_file )		
+		datasetfile.file.close()		
+		permanent_data_file.close()		
 
-		resource_list = filter(dir_filter,zfile.namelist())
 
-		status,err_msg = self._validate_uploadfile(csvfilepath,upload_dir,resource_list)
+
+		resourcefile = request.POST['resourceszip']
+		resource_list = None
+		resourcesfilename = None
+
+		if resourcefile !="":
+			resourcesfilename = resourcefile.filename
+			resfilepath =os.path.join(upload_dir,resourcefile.filename.replace(os.sep, '_'))
+			permanent_zip_file = open(resfilepath,'wb')
+			shutil.copyfileobj(resourcefile.file, permanent_zip_file )
+			resourcefile.file.close()
+			permanent_zip_file.close()
+
+
+			zfile = zipfile.ZipFile(resfilepath)
+			
+
+			zfile.extractall(path=upload_dir)
+
+			def dir_filter(s):
+				if os.path.isdir(os.path.join(upload_dir,s)):
+					return False
+	   			return True
+
+			
+			resource_list = filter(dir_filter,zfile.namelist())
+
+
+		status,err_msg = self._validate_uploadfile(datafilepath,upload_dir,resource_list)
+
+
+		if status == "INVALID":
+			import_helper.delete_files(file_path=upload_dir,ignore_files=[datafilename,resourcesfilename])
+
 
 		self._create_bulk_upload_record(c.user or c.author,datafilename,resourcesfilename,upload_dir,status,err_msg)
 

@@ -42,5 +42,27 @@ def upload_file_return_path(file_name=None,file_path=None):
 
     return uploaded_file_url
 
+def validate_bulkupload_datafile(file_name):
+    print "validate the data file..."
+
+def delete_files(file_path,files_to_delete=None,ignore_files=None):
+
+    import os
+    os.chdir(file_path)    
+
+    if files_to_delete:
+        files_to_iterate = files_to_delete
+    else:
+        files_to_iterate = os.listdir(".")
+
+    for filename in files_to_iterate:
+        isIgnore = False
+        if ignore_files :
+            if filename in ignore_files:
+                isIgnore = True
+        if not isIgnore:
+            os.unlink(filename)
+
+
 
 

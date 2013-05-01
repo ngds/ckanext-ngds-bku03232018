@@ -47,8 +47,8 @@ class NGDSValidator(object):
 
         self._validate_mandatory_field()
         self._validate_date_field()
-        if self._resource_list:
-            self._validate_resources_tobe_uploaded()
+        #if self._resource_list:
+        self._validate_resources_tobe_uploaded()
 
         return True
 
@@ -103,9 +103,19 @@ class NGDSValidator(object):
             upload_field_list.extend(filter(bool,self.xl_data.sheet.col_values(col_index,
                 start_rowx=self.first_record_index)))
 
-        for resource in self._resource_list:
-            if resource not in upload_field_list:
-                raise Exception("Uploaded resource %s is not referenced against any dataset."%resource)
+        upload_field_list = list(set(upload_field_list))
+
+        if self._resource_list:
+            for resource in self._resource_list:
+                if resource not in upload_field_list:
+                    raise Exception("Uploaded resource %s is not referenced against any dataset."%resource)
+                    
+            if len(upload_field_list) > len(self._resource_list):
+                raise Exception("Referenced resources are not uploaded.")                    
+
+        else:
+            if len(upload_field_list) > 0 :
+                raise Exception("Referenced resources are not uploaded.")
         
     def find_column_pos(self):
         """

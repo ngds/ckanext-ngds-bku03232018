@@ -99,6 +99,7 @@ class BulkUploader(object):
                 bulk_upload_record.status = "FAILURE"
                 bulk_upload_record.comments = e.message
             finally:
+                import_helper.delete_extracted_files(file_path=bulk_upload_record.path,ignore_files=[bulk_upload_record.data_file,bulk_upload_record.resources])
                 bulk_upload_record.last_updated = None
                 bulk_upload_record.save()
 
