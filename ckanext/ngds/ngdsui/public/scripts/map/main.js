@@ -245,6 +245,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 				ngds.layer_map[l].is_active=false;
 			}
 		}
+		data['Layer'].openPopup();
 		ngds.util.apply_feature_active_styles(data['Layer'],data['tag_index']);
 	});
 
