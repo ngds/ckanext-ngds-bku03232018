@@ -75,7 +75,6 @@ ngds.Map = {
 
 			var baseMaps = {
 				"Terrain":base,
-				'USGS National Hydrography Dataset':water,
 				"US Topographic Map":topography
 			};
 

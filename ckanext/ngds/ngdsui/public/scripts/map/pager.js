@@ -36,6 +36,7 @@ ngds.Search = function() {
 		}
 		else {
 			me._q = params['q'];
+			q=me._q;
 		}
 		ngds.Map.current_query = me._q;
 		ngds.log("Searching for term : "+q+", rows : "+rows+", page : "+page+" start : "+start);

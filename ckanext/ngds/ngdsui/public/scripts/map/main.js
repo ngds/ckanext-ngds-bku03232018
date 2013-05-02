@@ -91,6 +91,7 @@ ngds.Map.top_level_search = function() {
 		});
 		var geoj = ngds.Map.get_layer('drawnItems');
 		var query = $("#map-query").val();
+		console.log("srarching for "+query);
 		ngds.util.clear_map_state();
 		ngds.pager.go_to({
 			'page':1,
