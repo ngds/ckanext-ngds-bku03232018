@@ -113,7 +113,7 @@ ngds.Map.top_level_search = function() {
 			if(typeof page==='undefined') {
 				return;
 			}
-			console.log("Going to page : "+page);
+			ngds.log("Going to page : "+page);
 			ngds.publish('page.advance',{ 'page':page });
 	});
 })();
@@ -166,7 +166,14 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	});
 
 	$('.map-search-results').on('mouseover',null,function(ev){
-		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
+		var node = '';
+		if(typeof ev.srcElement==='undefined') {
+			node=ev.target;
+		}
+		else {
+			node = ev.srcElement;
+		}
+		var tag_index = ngds.util.node_matcher(node,/result-\d.*/);
 		if(tag_index===null) {
 			return;
 		}
@@ -180,9 +187,15 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	});
 
 	$('.map-search-results').on('mouseout',null,function(ev){
-		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
-		console.log(tag_index);
-		console.log(ev.srcElement);
+		var node = '';
+		if(typeof ev.srcElement==='undefined') {
+			node=ev.target;
+		}
+		else {
+			node = ev.srcElement;
+		}
+		var tag_index = ngds.util.node_matcher(node,/result-\d.*/);
+	
 		if(tag_index===null) {
 			return;
 		}
@@ -197,7 +210,14 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	});
 
 	$('.map-search-results').on('click',null,function(ev){
-		var tag_index = ngds.util.node_matcher(ev.srcElement,/result-\d.*/);
+		var node = '';
+		if(typeof ev.srcElement==='undefined') {
+			node=ev.target;
+		}
+		else {
+			node = ev.srcElement;
+		}
+		var tag_index = ngds.util.node_matcher(node,/result-\d.*/);
 		
 		if(tag_index===null) {
 			return;
@@ -327,3 +347,15 @@ ngds.Map.map.on('draw:poly-created',function(e){
 ngds.publish('Map.expander.toggle',{
 	// Empty payload		
 });
+
+
+(function() {
+	ngds.subscribe('Map.size_changed',function(topic,data){
+		if(data['fullscreen']===true) {
+			ngds.Map.state['fullscreen'] = true;
+		}
+		else {
+			ngds.Map.state['fullscreen'] = false;
+		}
+	});
+})();

@@ -27,7 +27,6 @@ ngds.util.sequence_generator = function() {
 	}
 };
 
-// Fix this !!!
 ngds.util.node_matcher = function(node,match_exp) { 
 	if(node.className.match(match_exp)!==null) {
 		return node.className.substring(node.className.indexOf("-")+1,node.length);

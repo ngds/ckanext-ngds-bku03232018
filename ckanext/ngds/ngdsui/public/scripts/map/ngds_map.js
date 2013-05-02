@@ -399,5 +399,11 @@ ngds.Map = {
 		},
 		state:{ // Maintain state of various components in here ... make sure your keys are unique
 
+		},
+		is_fullscreen:function() {
+			if(typeof ngds.Map.state['fullscreen']==='undefined') {
+				return false;
+			}
+			return ngds.Map.state['fullscreen'];
 		}
 	};

@@ -140,11 +140,17 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 			}
 		}
 		fullScreenApi.requestFullScreen = function(el) {
-			console.log("Here");
-			console.log(el);
-			console.log(this.prefix);
+			ngds.publish("Map.size_changed",{
+				'fullscreen':true
+			});
+
 			ngds.Map.state['map-container-height']=$("#map-container").css("height");
-			document.getElementById("content-container").webkitRequestFullScreen();
+			if(typeof $("#content-container")[0].webkitRequestFullScreen!=='undefined') {
+				$("#content-container")[0].webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+			}
+			if(typeof $("#content-container")[0].mozRequestFullScreen!=='undefined') {
+				$("#content-container")[0].mozRequestFullScreen();
+			}
 			setTimeout(function() {
 				var ch = $("#content-container").css("height");
 				$("#map-container").css("height",ch);
@@ -153,7 +159,7 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 				ngds.Map.state['orig_jspTrack_height'] = $(".jsptrack").css("height");
 				ngds.Map.state['orig_jspDrag_height'] = $(".jspDrag").css("height");
 				
-				$(".results").css("height","700px");
+				$(".results").addClass("large");
 				
 				$(".jspContainer").css("height","700px");
 				
@@ -166,12 +172,15 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 			// return (this.prefix === '') ? el.requestFullscreen() : el[this.prefix + 'RequestFullScreen']();
 		}
 		fullScreenApi.cancelFullScreen = function(el) {
+			ngds.publish("Map.size_changed",{
+				'fullscreen':false
+			});
 
 			$("#map-container").css("height",ngds.Map.state['map-container-height']);
 			$(".jspDrag").css("height",ngds.Map.state['orig_jspDrag_height']);
 			$(".jspTrack").css("height",ngds.Map.state['orig_jspTrack_height']);
 			$(".jspContainer").css("height",ngds.Map.state['orig_jspContainer_height']);
-			$(".results").css("height",ngds.Map.state["orig_results_height"]);
+			$(".results").removeClass("large");
 			return (this.prefix === '') ? document.exitFullscreen() : document[this.prefix + 'CancelFullScreen']();
 		}		
 	}

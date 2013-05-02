@@ -63,7 +63,7 @@ ngds.Search = function() {
 			});
 			var num_pages = Math.ceil(response.result.count/rows);
 			var pager_div = $(".search-results-page-nums");
-			// $(".results").addClass("full");
+			
 			for(var i=1;i<num_pages+1;i++) {
 				var a_to_append = ngds.util.dom_element_constructor({
 					'tag':'a',
