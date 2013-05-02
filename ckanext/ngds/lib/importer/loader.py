@@ -37,26 +37,28 @@ class ResourceLoader(loader.ResourceSeriesLoader):
 
         for resource in pkg_dict['resources']:
 
-            #print "resource: ",resource
+            if resource.get('upload_file'):
+                try:
+                    #file_path = self.resource_dir+resource['upload_file']
+                    file_path = os.path.join(self.resource_dir,resource['upload_file'])
+                    #print "File to be uploaded: ",file_path
+                    #print "self.ckanclient.api_key: ",self.ckanclient.api_key
+                    uploaded_file_url,dummy = self.ckanclient.upload_file(file_path)
+                    #print "In Update Resource: uploaded_file_url: ", uploaded_file_url
+                    resource['url']=uploaded_file_url
+                    del resource['upload_file']
 
-            if resource.get('upload_file') is None:
-                continue
-            try:
-                #file_path = self.resource_dir+resource['upload_file']
-                file_path = os.path.join(self.resource_dir,resource['upload_file'])
-                #print "File to be uploaded: ",file_path
-                #print "self.ckanclient.api_key: ",self.ckanclient.api_key
-                uploaded_file_url,dummy = self.ckanclient.upload_file(file_path)
-                #print "In Update Resource: uploaded_file_url: ", uploaded_file_url
-                resource['url']=uploaded_file_url
-                del resource['upload_file']
-            except CkanApiNotAuthorizedError:
-                raise
-            except CkanApiError:
-                raise LoaderError('Error (%s) uploading file over API: %s' % (self.ckanclient.last_status,self.ckanclient.last_message))
-            except Exception, e:
-                print "Error Accessing:",e
-                raise
+                    if resource.get('content_model'):
+                        self.validate_content_model(resource['content_model'],resource.get('content_model_version'),uploaded_file_url)
+
+                except CkanApiNotAuthorizedError:
+                    raise
+                except CkanApiError:
+                    raise LoaderError('Error (%s) uploading file over API: %s' % (self.ckanclient.last_status,self.ckanclient.last_message))
+                except Exception, e:
+                    print "Error Accessing:",e
+                    raise
+
         return pkg_dict
 
 
@@ -117,3 +119,7 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         #print "Inside NGDS Resource Loader"
         #print "Resource URL ",res.get('name')
         return res.get('name')
+
+    def validate_content_model(self,content_model,version,file_path):
+        #Validatation method needs to be called.
+        return True
