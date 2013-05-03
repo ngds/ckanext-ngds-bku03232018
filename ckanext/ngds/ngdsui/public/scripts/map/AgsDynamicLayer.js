@@ -127,6 +127,9 @@
 
     _getImageUrl: function () {
         //construct the export image url
+        if(ngds.Map.map.getZoom()<=3) {
+            return null;
+        }
         var bnds = this._map.getBounds();
         var sz = this._map.getSize();
         //bboxsr & imagesr params need to be specified like so to avoid alignment problems on some map services - not sure why
@@ -145,7 +148,10 @@
 
     _updateLayer: function () {
         if (!this._image.updating) {
-            //console.log('Updating layer NW: ' + map.getBounds().getNorthWest());            
+            //console.log('Updating layer NW: ' + map.getBounds().getNorthWest());    
+            if(this._getImageUrl()===null) {
+                return;
+            }        
             this._image.updating = true;
 
             //update the src based on the new location
