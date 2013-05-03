@@ -91,7 +91,6 @@ ngds.Map.top_level_search = function() {
 		});
 		var geoj = ngds.Map.get_layer('drawnItems');
 		var query = $("#map-query").val();
-		console.log("srarching for "+query);
 		ngds.util.clear_map_state();
 		ngds.pager.go_to({
 			'page':1,
@@ -220,7 +219,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 		}
 		var tag_index = ngds.util.node_matcher(node,/result-\d.*/);
 		
-		if(tag_index===null) {
+		if(tag_index===null || typeof tag_index==='undefined') {
 			return;
 		}
 		
@@ -266,6 +265,28 @@ ngds.Map.map.on('draw:poly-created',function(e){
 				ngds.layer_map[l].is_active=false;
 			}
 		}
+		var latlngs = data['Layer']._latlng || data['Layer']._latlngs;
+		
+		var approximate_center = (function(latlngs) {
+			if(typeof latlngs==='object' && typeof latlngs[0]==='undefined') { // Then it's a point
+				return latlngs;
+			}
+			var minx = ngds.Map.utils.get_bound(latlngs,'lat','min');
+			var maxx = ngds.Map.utils.get_bound(latlngs,'lat','max');
+			var miny = ngds.Map.utils.get_bound(latlngs,'lng','min');
+			var maxy = ngds.Map.utils.get_bound(latlngs,'lng','max');
+
+			var lat_c = (minx+maxx)/2;
+			var lng_c = (miny+maxy)/2;
+
+			return {
+				'lat':lat_c,
+				'lng':lng_c
+			}
+
+		})(latlngs);
+
+		ngds.Map.map.panTo(approximate_center);
 		data['Layer'].openPopup();
 		ngds.util.apply_feature_active_styles(data['Layer'],data['tag_index']);
 	});
