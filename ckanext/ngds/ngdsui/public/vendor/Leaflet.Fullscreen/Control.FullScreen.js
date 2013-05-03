@@ -151,23 +151,31 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 			if(typeof $("#content-container")[0].mozRequestFullScreen!=='undefined') {
 				$("#content-container")[0].mozRequestFullScreen();
 			}
+			fullsc = '';
 			setTimeout(function() {
 				var ch = $("#content-container").css("height");
-				$("#map-container").css("height",ch);
-				ngds.Map.state["orig_results_height"] = $(".results").css("height");
-				ngds.Map.state['orig_jspContainer_height'] = $(".jspContainer").css("height");
-				ngds.Map.state['orig_jspTrack_height'] = $(".jsptrack").css("height");
-				ngds.Map.state['orig_jspDrag_height'] = $(".jspDrag").css("height");
+				$("#map-container").css("height","100%");
+				// ngds.Map.state["orig_results_height"] = $(".results").css("height");
+				// ngds.Map.state['orig_jspContainer_height'] = $(".jspContainer").css("height");
+				// ngds.Map.state['orig_jspTrack_height'] = $(".jsptrack").css("height");
+				// ngds.Map.state['orig_jspDrag_height'] = $(".jspDrag").css("height");
 				
-				$(".results").addClass("large");
+				// $(".results").addClass("large");
 				
-				$(".jspContainer").css("height","700px");
+				// $(".jspContainer").css("height","700px");
 				
-				$(".jspTrack").css("height","700px");
+				// $(".jspTrack").css("height","700px");
 				
-				$(".jspDrag").css("height","500px");
+				// $(".jspDrag").css("height","500px");
 				ngds.Map.map.invalidateSize();
+
+
+				
+
+				fullsc = true;
+
 			},100);
+
 			return true;
 			// return (this.prefix === '') ? el.requestFullscreen() : el[this.prefix + 'RequestFullScreen']();
 		}
@@ -175,13 +183,16 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 			ngds.publish("Map.size_changed",{
 				'fullscreen':false
 			});
-
-			$("#map-container").css("height",ngds.Map.state['map-container-height']);
-			$(".jspDrag").css("height",ngds.Map.state['orig_jspDrag_height']);
-			$(".jspTrack").css("height",ngds.Map.state['orig_jspTrack_height']);
-			$(".jspContainer").css("height",ngds.Map.state['orig_jspContainer_height']);
-			$(".results").removeClass("large");
-			return (this.prefix === '') ? document.exitFullscreen() : document[this.prefix + 'CancelFullScreen']();
+			(this.prefix === '') ? document.exitFullscreen() : document[this.prefix + 'CancelFullScreen']();
+			setTimeout(function() {
+						$("#map-container").css("height","700px");
+			// $(".jspDrag").css("height",ngds.Map.state['orig_jspDrag_height']);
+			// $(".jspTrack").css("height",ngds.Map.state['orig_jspTrack_height']);
+			// $(".jspContainer").css("height",ngds.Map.state['orig_jspContainer_height']);
+			// $(".results").removeClass("large");
+			
+			},100);
+			return true;
 		}		
 	}
 

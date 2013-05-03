@@ -381,3 +381,10 @@ ngds.publish('Map.expander.toggle',{
 		}
 	});
 })();
+
+
+$(document).on(fullScreenApi.prefix+"fullscreenchange",null,function(ev) {
+	if(fullScreenApi.isFullScreen()===false) {
+		fullScreenApi.cancelFullScreen();
+	}
+});
