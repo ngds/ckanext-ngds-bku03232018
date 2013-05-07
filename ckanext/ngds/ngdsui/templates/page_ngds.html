@@ -21,6 +21,7 @@
   <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
   <link rel="stylesheet/less" type="text/css" href="/css/main.less"/>
   <script type="text/javascript" src="/vendor/less/less.min.js"></script>
+  <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
 {% endblock %}
 {% block bodytag %}
 {%- endblock -%}
@@ -92,6 +93,9 @@
   {%- block footer %}
     {% include "footer_ngds.html" %}
   {% endblock -%}
+  </div>
+  <div id="errors">
+
   </div>
 {%- endblock -%}
 
