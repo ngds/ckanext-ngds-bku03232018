@@ -124,34 +124,35 @@
         });
         this._map.getPanes().overlayPane.appendChild(this._image);
     },
+    img_map:{ 
 
+    },
     _getImageUrl: function () {
         //construct the export image url
-        if(ngds.Map.map.getZoom()<=3) {
-            return null;
-        }
+        // if(typeof this.img_map[ngds.Map.map.getZoom()]!=='undefined') {
+        //     console.log(this.img_map);
+        //     return this.img_map[ngds.Map.map.getZoom()];
+        // }
         var bnds = this._map.getBounds();
         var sz = this._map.getSize();
         //bboxsr & imagesr params need to be specified like so to avoid alignment problems on some map services - not sure why
         var bbox = 'bbox=' + bnds.getSouthEast().lng + ',' + bnds.getSouthEast().lat + ',' + bnds.getNorthWest().lng + ',' + bnds.getNorthWest().lat + '&bboxsr=4326&imageSR=3857';
         var size = '&size=' + sz.x + ',' + sz.y;
-        var format = '&format=' + this.options.format;
+        var format = '&format=png24';
         var transparent = '&transparent=' + this.options.transparent;
         var url = this._url + '/export?' + bbox + size + format + transparent + '&f=image';
         if (this.options.layers) {
             var layers = '&layers=' + this.options.layers;
             url += layers;
         }
+        this.img_map[ngds.Map.map.getZoom()] = url;
 
         return url; // this._url + '/export?' + bbox + size + layers + format + transparent + '&f=image';
     },
 
     _updateLayer: function () {
         if (!this._image.updating) {
-            //console.log('Updating layer NW: ' + map.getBounds().getNorthWest());    
-            if(this._getImageUrl()===null) {
-                return;
-            }        
+            // console.log('Updating layer NW: ' + ngds.Map.lmap.getBounds().getNorthWest());            
             this._image.updating = true;
 
             //update the src based on the new location
@@ -176,6 +177,9 @@
     },
 
     _moveEnd: function () {
+        if(ngds.Map.map.getZoom()<=3) {
+            return;
+        }
         //console.log('in _moveEnd : NW: ' + map.getBounds().getNorthWest());
         //don't set display:none for moves - makes for smoother panning - no flicker
         //oops, that didn't work on mobile
@@ -186,6 +190,9 @@
     },
 
     _zoomEnd: function () {
+        if(ngds.Map.map.getZoom()<=3) {
+            return;
+        }
         //console.log('in _moveEnd');
 
         //        //zoom the image...(animate it?)
@@ -205,6 +212,9 @@
     },
 
     _reset: function () {
+        if(ngds.Map.map.getZoom()<=3) {
+            return;
+        }
         if (this._image) {
             c=this._map.getPanes().overlayPane;
             if(this._map.getPanes().overlayPane.hasChildNodes()) {

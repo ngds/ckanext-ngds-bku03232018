@@ -24,12 +24,206 @@ ngds.ckandataset = function(raw) {
 			});
 			var geojson = $.parseJSON(spatial_extra);
 			var description = raw.notes;
-			var popupHTML = '<p>';
-			popupHTML+='<b> Title : '+raw.title+'</b><br>';
-			popupHTML+='Author : '+raw.author+'<br>';
-			popupHTML+='Description : '+description+'<br>';
-			popupHTML+='Published : '+(new Date()).toLocaleDateString()+'<br>';
-			popupHTML+='</p>';
+			console.log(raw);
+
+			var popup_skeleton = {
+				'tag':'div',
+				'children':[
+					{
+						'tag':'p',
+						'attributes':{
+							'style':'margin-bottom:3px; margin-top:3px;'
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Title : '
+								}
+							},
+							{
+								'tag':'a',
+								'attributes':{
+									'href':'/dataset/'+raw.name,
+									'text':raw.title,
+									'target':'_blank'
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':raw.type
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Type : ',
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':raw.author
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Author : ',
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':raw.author_email
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Author\'s Email : ',
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':raw.maintainer
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Maintainer : ',
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':raw.maintainer_email
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Maintainer\'s Email : ',
+								}
+							}
+						]
+					},					
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':ngds.util.get_n_chars(description,150)
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Description : ',
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':(new Date(raw.metadata_created)).toLocaleDateString()
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Created : ',
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':(new Date(raw.metadata_modified)).toLocaleDateString()
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Last Modified : ',
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px;',
+							'text':raw.num_resources
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Number of Resources : ',
+								}
+							}
+						]
+					},
+					{
+						'tag':'p',
+						'attributes':{							
+							'style':'margin-bottom:3px; margin-top:3px; color:blue;',
+							'text':ngds.util.deep_joiner(raw.tags,'display_name',', ')
+						},
+						'children':[
+							{
+								'tag':'strong',
+								'priority':1,
+								'attributes':{
+									'text':'Tags : ',
+									'style':'color:#000;'
+								}
+							}
+						]
+					}					
+				]
+			};
+
+			var popupHTML = ngds.util.dom_element_constructor(popup_skeleton)[0].innerHTML;
+			
+			// var popupHTML = '<p>';
+			// popupHTML+='<b> Title : '+raw.title+'</b><br>';
+			// popupHTML+='Author : '+raw.author+'<br>';
+			// popupHTML+='Description : '+description+'<br>';
+			// popupHTML+='Published : '+(new Date()).toLocaleDateString()+'<br>';
+			// popupHTML+='</p>';
 
 			return {
 						getGeoJSON:function() { // return the geojson feature associated with the dataset.

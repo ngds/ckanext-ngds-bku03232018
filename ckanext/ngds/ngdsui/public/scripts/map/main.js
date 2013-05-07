@@ -276,12 +276,9 @@ ngds.Map.map.on('draw:poly-created',function(e){
 			var miny = ngds.Map.utils.get_bound(latlngs,'lng','min');
 			var maxy = ngds.Map.utils.get_bound(latlngs,'lng','max');
 
-			var lat_c = (minx+maxx)/2;
-			var lng_c = (miny+maxy)/2;
-
 			return {
-				'lat':lat_c,
-				'lng':lng_c
+				'lat':(minx+maxx)/2,
+				'lng':(miny+maxy)/2
 			}
 
 		})(latlngs);
@@ -366,6 +363,16 @@ ngds.Map.map.on('draw:poly-created',function(e){
 	});
 })();
 
+(function subscribe_notifications_received() {
+	ngds.subscribe('Notifications.received',function(topic,data){
+		var handler = ngds.notifications.handlers[data['type']]; // Find a display handler for this type of error message.
+		handler(data['data']);
+	});
+})();
+
+
+
+
 ngds.publish('Map.expander.toggle',{
 	// Empty payload		
 });
@@ -388,3 +395,128 @@ $(document).on(fullScreenApi.prefix+"fullscreenchange",null,function(ev) {
 		fullScreenApi.cancelFullScreen();
 	}
 });
+
+
+var err = {
+	'type':'content_model_validation_error',
+	'display':'Validation errors',
+    "data": [
+		        {
+		            "message": "cell (2,4): '5.5' (field LongDegree) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 4,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,5): \"5.6\" (field LocationUncertaintyRadius) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 5,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,6): double (field DrillerTotalDepth) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 6,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,7): double (field TrueVerticalDepth) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 7,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,8): double (field ElevationKB) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 8,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,9): double (field ElevationDF) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 9,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,10): double (field ElevationGL) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 10,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,11): double (field BitDiameterTD) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 11,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,12): double (field MaximumRecordedTemperature) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 12,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,13): double (field MeasuredTemperature) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 13,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,14): double (field CorrectedTemperature) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 14,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,15): double (field CirculationDuration) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 15,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,16): double (field DepthOfMeasurement) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 16,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,17): double (field CasingBottomDepthDriller) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 17,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,18): double (field CasingTopDepth) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 18,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,19): double (field CasingPipeDiameter) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 19,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,20): double (field CasingWeight) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 20,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,21): double (field CasingThickness) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 21,
+		            "row": 2
+		        },
+		        {
+		            "message": "cell (2,22): double (field pH) is expected to be a Numeric",
+		            "errorType": "numericCellViolation",
+		            "col": 22,
+		            "row": 2
+		        }
+		    ],
+		    "valid": "false"
+		};
+
+

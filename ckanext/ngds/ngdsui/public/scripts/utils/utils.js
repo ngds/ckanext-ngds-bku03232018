@@ -27,6 +27,16 @@ ngds.util.sequence_generator = function() {
 	}
 };
 
+ngds.util.tick = {
+	'hand':0,
+	'next':function() {
+		return ++this.hand;
+	},
+	'current':function() {
+		return this.hand;
+	}
+};
+
 ngds.util.node_matcher = function(node,match_exp) { 
 	if(node.className.match(match_exp)!==null) {
 		return node.className.substring(node.className.indexOf("-")+1,node.length);
@@ -104,3 +114,12 @@ ngds.util.get_n_chars = function(words_str,num_chars) {
 	}
 	return spliced+" ...";
 };
+
+ngds.util.deep_joiner = function(data,property,separator) {
+	var final_list = [ ];
+	for(var i=0;i<data.length;i++) {
+		final_list.push(data[i][property]);
+	}
+
+	return final_list.join(separator) || "None";
+}
