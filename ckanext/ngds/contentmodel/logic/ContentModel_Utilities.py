@@ -26,6 +26,21 @@ def isInteger(s):
     return False
 # def isInteger(s)
 
+def enum(*sequential, **named):
+    enums = dict(zip(sequential, range(len(sequential))), **named)
+    return type('Enum', (), enums)
+
+
+class Error_Message:
+    row = 0
+    col = 0
+    Types = enum('columnNameDoesntExist', 'nonOptionalCellEmpty', 'integerCellViolation', 'numericCellViolation', 'dateCellViolation', 'columnNameOptionalFalseMissing', 'systemError')    
+    def __init__(self, row, col, Types, messge):
+        self.row = row
+        self.col = col
+        self.errorType = Types
+        self.message = message
+
 class ContentModel_FieldInfoCell(object):
     '''
     field information cell
@@ -61,7 +76,7 @@ def validate_header(fieldModelList, dataHeaderList, dataListList):
         except:
             msg = "header: %s could NOT be found in the field_info" %(header)
             print msg
-            validation_messages.append(msg)
+            validation_messages.append({'row':0, 'col':0, 'errorType': 'columnNameDoesntExist', 'message':msg})
     print "linkToFieldInfoFromHeader"
     print linkToFieldInfoFromHeader
     print "about to finish header checking"
@@ -101,7 +116,7 @@ def validate_existence(fieldModelList, dataHeaderList, dataListList):
                 elif data.isspace():
                     msg = "cell (%d,%d): '%s' (field %s) is defined as optional false" %(jd+2, i+1, data, dataHeaderList[OptionalFalseIndex[i]])
                 print msg
-                validation_messages.append(msg)
+                validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'columnNameDoesntExist', 'message':msg})
 
         if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             break
@@ -147,7 +162,7 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
                 if len(data) > 0:
                     msg = "cell (%d,%d): %s (field %s) is expected to be an Integer"   %(jd+2, i+1, data, dataHeaderList[IntTypeIndex[i]])
                     print msg
-                    validation_messages.append(msg)
+                    validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'integerCellViolation', 'message':msg})
 
         # check the double type
         for i in xrange(len(DoubleTypeIndex)):
@@ -156,7 +171,7 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
                 if len(data) > 0:
                     msg = "cell (%d,%d): %s (field %s) is expected to be a Numeric"   %(jd+2, i+1, data, dataHeaderList[DoubleTypeIndex[i]])
                     print msg
-                    validation_messages.append(msg)
+                    validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'numericCellViolation', 'message':msg})
 
         if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             break
