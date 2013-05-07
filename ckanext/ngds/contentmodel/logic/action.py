@@ -5,6 +5,8 @@ import ckan.logic as logic
 import ckan.plugins as p
 import sqlalchemy
 
+import json
+
 from pylons import config
 
 import csv
@@ -157,7 +159,8 @@ def contentmodel_checkFile(context, data_dict):
     validation_msg = []
     
     if csv_filename_withfile is None:
-        validation_msg.append("can NOT find the full path from the resources from %s" %(cm_resource_url))
+        msg = "can NOT find the full path from the resources from %s" %(cm_resource_url)
+        validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
     else:
         print "filename full path: "  + csv_filename_withfile
     
@@ -191,10 +194,10 @@ def contentmodel_checkFile(context, data_dict):
                 dataListList.append(new_row)
         except csv.Error as e:
             msg = "csv.Error file %s, line %d: %s" %(csv_filename, csv_reader.line_num, e)
-            validation_msg.append(msg)
+            validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
         except IOError as e:
             msg = "IOError file %s, %s" %(csv_filename, e)
-            validation_msg.append(msg)
+            validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
     print "load %d headers" %(len(dataHeaderList))
     print "load %d row records" %(len(dataListList))
     print "about to finish CSV reading"
@@ -219,7 +222,50 @@ def contentmodel_checkFile(context, data_dict):
         print "validation detailed error message", len(validation_msg)
         print validation_msg
 
+    print 'validation last step'
+    print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
-        return {"valid": "true", "message": "ok."}
+        return json.dumps({"valid": "true", "messages": "ok."})
     else:
-        return {"valid": "false", "message": validation_msg}
+        return json.dumps({"valid": "false", "messages": validation_msg})
+
+@logic.side_effect_free
+def contentmodel_checkBulkFile(context, uri, version, resource_url ):
+    '''Check whether the given content model is a valid one.
+    Check whether the given csv file follows the specified content model.
+    This action returns detailed description of inconsistent cells.
+    **Parameters:**
+    :param cm_uri: uri of the content model.
+    :type cm_uri: string
+
+    :param cm_version: version of the content model.
+    :type cm_version: string
+
+    :param cm_resource_url: the URL to the resource
+    :type cm_resource_url: string
+    
+    **Results:**
+    :returns: A status object (either success, or failed).
+    :rtype: dictionary
+    '''
+    
+    schema= [ rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels
+        if rec['uri'] == uri ]
+    if schema.__len__() != 1:
+        errorMessage = {"valid": "false", "message": "the model is wrong"}
+        return json.dumps(errorMessage)
+
+    
+    # schema is a list with a single entry
+    schema_versions= schema[0]['versions']
+    
+    version= [ rec for rec in schema_versions if rec['version'] == cm_version]
+    if version.__len__() != 1:
+        errorMessage = {"valid": "false", "message": "the version is wrong"}
+        return json.dumps(errorMessage)
+    
+ 
+
+    data_dict = {'cm_uri': uri, 'cm_version': version, 'cm_resource_url': resource_url}
+    return contentmodel_checkFile(context, data_dict)
+

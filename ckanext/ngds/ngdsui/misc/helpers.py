@@ -4,12 +4,19 @@ import ckan.logic as logic
 import ckan.controllers.storage as storage
 DataError = dictization_functions.DataError
 from pylons import config
+import inspect
 
 
 def get_responsible_party_name(id):
 	"""
 	Get the name of a responsible party for an id.
 	"""
+	print "get_responsible_party_name  " 
+	print id
+	#print inspect.stack()
+	# frm = inspect.stack()[0]
+	# mod = inspect.getmodule(frm[0])
+	# print '[%s] %s' % (mod.__name__, id)
 	# If we don't get an int id, return an empty string.
 	if id:
 		try:
