@@ -12,6 +12,21 @@ ngds.Map = {
 			
 			var base = new L.TileLayer('http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8');
 
+			var nerc = new L.AgsDynamicLayer();
+			nerc.initialize("https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export",{
+				'layers':'show:42'
+			});
+
+			var geothermal_potential = new L.AgsDynamicLayer();
+			geothermal_potential.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',{
+				'layers':'show:36'
+			});
+
+			var counties = new L.AgsDynamicLayer();
+			counties.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',{
+				'layers':'show:1'
+			});
+
 			var soil = new L.AgsDynamicLayer();
 			soil.initialize('http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer/');
 
@@ -69,13 +84,15 @@ ngds.Map = {
 				'soil':soil,
 				'water':water,
 				'land':land,
-				'topography':topography
+				'topography':topography,
+				'nerc':nerc,
+				'geothermal_potential':geothermal_potential,
+				'counties':counties
 			};
 			// this.initialize_controls();
 
 			var baseMaps = {
 				"Terrain":base,
-				'USGS National Hydrography Dataset':water,
 				"US Topographic Map":topography
 			};
 
@@ -84,7 +101,10 @@ ngds.Map = {
 				"Search Results":_geoJSONLayer,
 				"SMU Wells":wells,
 				"USA Soil Survey":soil,
-				'USBLM Urban Areas, Counties':land
+				'USBLM Urban Areas, Counties':land,
+				'NERC Regions':nerc,
+				'Geothermal Potential':geothermal_potential,
+				'US County Boundaries':counties
 				// "ngds":ngds_layer
 			};
 
@@ -399,5 +419,11 @@ ngds.Map = {
 		},
 		state:{ // Maintain state of various components in here ... make sure your keys are unique
 
+		},
+		is_fullscreen:function() {
+			if(typeof ngds.Map.state['fullscreen']==='undefined') {
+				return false;
+			}
+			return ngds.Map.state['fullscreen'];
 		}
 	};
