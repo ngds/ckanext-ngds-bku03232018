@@ -24,7 +24,8 @@ def datastore_spatialize(context, data_dict):
     the datastore_create action. The available methods are:
 
     *spatialize*
-        It first checks if the GEOMETRY column already exists. If not, it creates it.
+        It first checks if the GEOMETRY column already exists in the resource. 
+        If not, it creates that column.
         Afterwards it iterates through all rows and updates the value of the GEOMETRY 
         column.
 
@@ -52,11 +53,11 @@ def datastore_spatialize(context, data_dict):
     col_latitude  = _get_or_bust(data_dict, 'col_latitude')
     col_geography = _get_or_bust(data_dict, 'col_geography') 
     
-    # read geoserver information from development.ini
+    # reads geoserver information from development.ini file or returns a default value
     geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
     
     print ">>>>>>>>>>>>>>>>>>>> Connect to database >>>>>>>>>>>>>>>>"
-    # reads the database connection URI from the development.ini file   
+    # reads the database connection URI from the development.ini file or returns a default value
     data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:pass@localhost/datastore')  
     engine = db._get_engine(None, data_dict)
     context['connection'] = engine.connect()
@@ -305,6 +306,8 @@ def datastore_expose_as_layer(context, data_dict):
     
     '''
     
+    print "data_dict: ",data_dict
+    
     if 'id' in data_dict:
         data_dict['resource_id'] = data_dict['id']
     res_id = _get_or_bust(data_dict, 'resource_id')
@@ -436,8 +439,49 @@ def datastore_remove_exposed_layer(context, data_dict):
         return {'success':True}
     
 
+def datastore_remove_all_exposed_layers_using_catalog_api(context, data_dict):
+    '''Remove all exposed layers from geoserver
 
-def datastore_list_exposed_layers(contect, data_dict):
+    The datastore_remove_all_exposed_layers removes all exposed layers from geoserver.
+             
+    **Results:**
+
+    :returns: List of exposed layers
+    :rtype: list
+    '''
+     # read geoserver information from development.ini
+    geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')
+    cat = Catalog(geoserver_rest_url)
+    list_of_layers = cat.get_layers()
+    for layer in list_of_layers:
+        resource = cat.get_resource(layer)
+        cat.delete(layer)
+        cat.delete(resource, purge = True)
+
+    return {'success':True, 'list_of_deleted_layers':list_of_layers}
+
+def datastore_remove_all_exposed_layers(context, data_dict):
+    '''Remove all exposed layers from geoserver
+
+    The datastore_remove_all_exposed_layers removes all exposed layers from geoserver.
+             
+    **Results:**
+
+    :returns: List of exposed layers
+    :rtype: list
+    '''
+    data_dict['workspace_name'] = "NGDS"
+    data_dict['store_name'] = "datastore"
+    
+    resource_id = _get_or_bust(data_dict, 'resource_id')
+    data_dict["resource_id"] = resource_id
+    data_dict["id"] = resource_id
+     
+     
+    _delete_feature_type_layer(context, data_dict)
+
+
+def datastore_list_exposed_layers(context, data_dict):
     '''List datastore exposed layers in the geoserver
 
     The datastore_list_exposed_layers API action allows a user to get a list of tables that
@@ -462,6 +506,7 @@ def datastore_list_exposed_layers(contect, data_dict):
     p.toolkit.check_access('datastore_list_exposed_layers', context, data_dict) 
    
     cat = Catalog(geoserver_rest_url)
+    print ">>>>>>>>>>>>>>>>> Get list of layers >>>>>>>>>>>>>>>>>>>>"
     list_of_layers = cat.get_layers()
     
     return {'success':False, 'list_of_layers':list_of_layers}
@@ -693,7 +738,7 @@ def geoserver_delete_store(context, data_dict):
         return {'success':True}
         
 
-def _create_postgis_sql_layer(context, data_dict):
+def _create_feature_type_layer(context, data_dict):
     '''Create a layer on geoserver through its restful API
 
     The _create_postgis_sql_layer API action allows a user to create a layer in
@@ -724,19 +769,16 @@ def _create_postgis_sql_layer(context, data_dict):
     workspace_name  = _get_or_bust(data_dict, 'workspace_name')
     store_name      = _get_or_bust(data_dict, 'store_name')
     resource_id     = _get_or_bust(data_dict, 'resource_id')
+    
     # opitonal parameter
-    baseServerUrl   = data_dict['geoserver']
-    
-    # There should be a geoserver key in the development.ini file 
-    if baseServerUrl is None:
-        baseServerUrl = config.get('geoserver','http://localhost:8080/geoserver/rest')
+    baseServerUrl = config.get('geoserver','http://localhost:8080/geoserver/rest')
     
     
-    print ">>>>>>>>>>> connecting to database >>>>>>>>>>>>>"
-    data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+    #print ">>>>>>>>>>> connecting to database >>>>>>>>>>>>>"
+    #data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
     
-    engine = db._get_engine(None, data_dict)
-    context['connection'] = engine.connect()
+    #engine = db._get_engine(None, data_dict)
+    #context['connection'] = engine.connect()
     
     # 'layer_name', 'connection' and 'resource_id'
     # will be read by the SqlFeatureTypeDef
@@ -774,6 +816,85 @@ def _create_postgis_sql_layer(context, data_dict):
     cat._cache.clear()
 
     return cat.get_layer(name)
+
+def _delete_feature_type_layer(context, data_dict):
+    '''Create a layer on geoserver through its restful API
+
+    The _create_postgis_sql_layer API action allows a user to create a layer in
+    geoserver.
+    
+    The available methods are:
+
+    *POST*
+        It first creates then configures the layer.
+        
+    :param geoserver: url of the geoserver
+    :type geoserver: string
+    :param workspace_name: the name of the workspace containing the store that shall be deleted
+    :type workspace_name: string
+    :param layer_name: the name of the layer to be created
+    :type layer_name: string
+    :param resource_id: the name of the table to be published as a layer
+    :type resource_id: string
+    :param connection: a live database connectinon to the database containing the resouce_id table
+    :type connection: database connection
+    
+    **Results:**
+
+    :returns: The name of the layer.
+    :rtype: dictionary
+    '''
+   
+    workspace_name  = _get_or_bust(data_dict, 'workspace_name')
+    store_name      = _get_or_bust(data_dict, 'store_name')
+    resource_id     = _get_or_bust(data_dict, 'resource_id')
+
+    # opitonal parameter
+    baseServerUrl = config.get('geoserver','http://localhost:8080/geoserver/rest')
+    
+    
+    #print ">>>>>>>>>>> connecting to database >>>>>>>>>>>>>"
+    #data_dict['connection_url'] = pylons.config['ckan.datastore.write_url']
+    
+    #engine = db._get_engine(None, data_dict)
+    #context['connection'] = engine.connect()
+    
+    # 'layer_name', 'connection' and 'resource_id'
+    # will be read by the SqlFeatureTypeDef
+    
+    print ">>>>>>>>>>> connectiong to catalog at: "+baseServerUrl
+    cat = Catalog(baseServerUrl)
+    
+    # builds the meta-data object used for the createion of the layer
+    #print ">>>>>>>>>>>>>>>>> building definition >>>>>>>>>>>>>>>>"
+    #definition = SqlFeatureTypeDef(context, data_dict)
+    
+    #print ">>>>>>>>>>>>>>>>> serializing definition >>>>>>>>>>>>>>>>"
+    #print definition.serialize()
+    
+    
+    #headers = { "Content-Type": "application/json" }
+    
+    print ">>>>>>>>>>>>>>>>> sending create layer DELETE >>>>>>>>>>>>>>>>"
+    
+    #headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
+    featureType_url = baseServerUrl + "/workspaces/" + workspace_name + "/datastores/"+store_name+"/featuretypes/"
+    print ">>>>>>>>>>>>>>>>> feature URL: "+featureType_url
+    
+    name = resource_id
+    xml =  ("<featureType>"
+             "<name>{name}</name>"
+           "</featureType>").format(name=name)
+
+    headers = {"Content-type": "text/xml"}
+
+    headers, response = cat.http.request(featureType_url, "DELETE", xml, headers)
+    
+    print ">>>>>>>>>>>>>>>>> sent create layer DELETE >>>>>>>>>>>>>>>>"
+    assert 200 <= headers.status < 300, "Tried to delete Geoserver layer but encountered a " + str(headers.status) + " error: " + response
+    cat._cache.clear()
+
+
 
     
 def _geoserver_create_layer(context, data_dict):
@@ -820,15 +941,15 @@ def _geoserver_create_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>>>> start create layer >>>>>>>>>>>>>>>>>>>>>>>>"
     
     geoserver      = _get_or_bust(data_dict, 'geoserver')
-    workspace_name = _get_or_bust(data_dict, 'workspace_name')
+    #workspace_name = _get_or_bust(data_dict, 'workspace_name')
     #workspace_uri = _get_or_bust(data_dict, 'workspace_uri')
-    store_name     = _get_or_bust(data_dict, 'store_name')
-    pg_host        = _get_or_bust(data_dict, 'pg_host')
-    pg_port        = _get_or_bust(data_dict, 'pg_port')
-    pg_db          = _get_or_bust(data_dict, 'pg_db')
-    pg_user        = _get_or_bust(data_dict, 'pg_user')
-    pg_password    = _get_or_bust(data_dict, 'pg_password')
-    db_type        = _get_or_bust(data_dict, 'db_type')
+    #store_name     = _get_or_bust(data_dict, 'store_name')
+    #pg_host        = _get_or_bust(data_dict, 'pg_host')
+    #pg_port        = _get_or_bust(data_dict, 'pg_port')
+    #pg_db          = _get_or_bust(data_dict, 'pg_db')
+    #pg_user        = _get_or_bust(data_dict, 'pg_user')
+    #pg_password    = _get_or_bust(data_dict, 'pg_password')
+    #db_type        = _get_or_bust(data_dict, 'db_type')
 
     layer_name     = _get_or_bust(data_dict, 'layer_name')
 
@@ -841,7 +962,7 @@ def _geoserver_create_layer(context, data_dict):
     print ">>>>>>>>>>>>>>>>>>>> check if layer exists >>>>>>>>>>>>>>>>>>>>"
     if cat.get_layer(layer_name) is None:
         print ">>>>>>>>>>>>>>>>>>>> create new layer object >>>>>>>>>>>>>>>>>>>>"
-        _create_postgis_sql_layer(context, data_dict)
+        _create_feature_type_layer(context, data_dict)
     else:
         print ">>>>>>>>>>>>>>>>>>>> layer already exists >>>>>>>>>>>>>>>>>>>>"
         return False
