@@ -140,10 +140,10 @@ class ContributeController(NGDSBaseController):
 	def _validate_uploadfile(self,data_file,resource_path,resource_list):
 
 		#import ckanext.ngds.lib.importer.validator.NGDSValidator
-		import ckanext.ngds.lib.importer.validator as validator
+		import ckanext.ngds.lib.importer.validator as ngdsvalidator
 		err_msg = ""            		
 		try:
-			validator = validator.NGDSValidator(filepath=data_file,resource_path=resource_path,resource_list=resource_list)
+			validator = ngdsvalidator.NGDSValidator(filepath=data_file,resource_path=resource_path,resource_list=resource_list)
 			validator.validate()
 			status="VALID"
 			h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
