@@ -1,12 +1,14 @@
 from nose.tools import ok_, eq_
 import httplib
 import ckan.model as model
-
+import pylons
 import json
 import ast
 
 import requests
 
+from ckanclient import CkanClient
+import ckanext.datastore.db as db
 
 # Use this method to initialize the database
 def setUp(self):
@@ -172,14 +174,90 @@ def _get_user_api_key():
     '''
     # this is hardcoded now.
     return  '6397972f-fd52-456b-a6ee-cc4c6a4d7fdb'
+
+def _get_ckan_base_url():
+    #TODO: read this from the configuration file
+    return "http://localhost:5000/api"
+
+# this function restores the test database to its prestine state
+# this currently marks the record as deleted but it does not remove it from the databae.
+# a purse must be called in order to clean the database.
+def _clean_test_database(package_name, id):
+    
+    testclient = CkanClient(base_location=_get_ckan_base_url(), api_key=_get_user_api_key())
+    #package_name ='spatialize_test_resource_3'
+    testclient.package_entity_delete(package_name)
+    
+     
+     #also remove table from database using id
+    data_dict = {}
+    data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:pass@localhost/datastore')  
+    engine = db._get_engine(None, data_dict)
+    connection = engine.connect()
+    resources_sql = 'DROP TABLE IF EXISTS "'+id+'";'
+    #resources_sql = 'DROP TABLE "b11351a2-5bbc-4f8f-8078-86a4eef1c7b0";'
+    try:
+        print '>>>>>>>>>>>>> Executing command: ',resources_sql
+        results = connection.execute(resources_sql) 
+    except Exception, e:
+        print "exception",e
+        assert False
+# this function imports a resource to ckan. the resource will originate a
+# databse in the postgress database
+# in order for this to work, dont forget to run paster celeryd before using this function
+def _setup_test_database(package_name):
+    
+    print ">>>>>>>>>>>>>>>>>> creating package: ",package_name
+    try:
+        testclient = CkanClient(base_location=_get_ckan_base_url(), api_key=_get_user_api_key())
+        file_url,status = testclient.upload_file("./testData/small_with_lat_long.csv")
+    
+        print "created file_url:",file_url
+        
+    except:
+        assert False   
+
+    #construct package  and resource json object. set this file path in the resources.
+
+    '''    
+    package_dict = {u'name': package_name, u'title': u'Spatialize test resource 7', u'notes': u'dummy notes', 
+    'owner_org': 'public', u'private': u'False', u'state': u'active', 'extras': {u'status': u'Completed', 
+    u'spatial': u'{"type":"Polygon","coordinates":[[[-112.8515625,33.61461929233378],[-112.8515625,35.28150065789119],[-108.28125,35.28150065789119],[-108.28125,33.61461929233378],[-112.8515625,33.61461929233378]]]}'}, 
+    'resources': [{'description': u'Resource Document Description','format': u'csv', 'url': file_url, 'name': u'Resouce in alaska3'}]}
+    '''
+    package_dict = {u'name': package_name, u'title': u'Spatialize test resource 7', u'notes': u'dummy notes', 
+    'owner_org': 'public', u'private': u'False', u'state': u'active',   
+    'resources': [{'description': u'Resource Document Description','format': u'csv', 'url': file_url, 'name': u'Resouce in alaska3'}]}
+    
+    print "package_dict: at test: ",package_dict
+     
+    try:
+        ret_pack = testclient.package_register_post(package_dict)
+        resources = ret_pack['resources']
+        database_id = resources[0]['id'] 
+    
+        print ">>>>>>>>>>>>>>>>>>>>>>>> database_id:",database_id
+    except:
+        assert False
+    
+    return database_id
+    
          
 '''
 This gets executed if one runs this .py file by itself.
 This file should be called with the nosetests command, so this will never execute.    
 '''
 if __name__ == '__main__':
-   #test_datastore_expose_as_layer()
-   test_datastore_expose_as_layer()
-   #test_datastore_list_exposed_layers()
-   #test_datastore_remove_exposed_layer()
+    
+    import time
+    millis = int(round(time.time() * 1000))
+    
+    package_name ='spatialize_test_resource_'+str(millis)       
+    id = _setup_test_database(package_name)
+    time.sleep(2)
+    _clean_test_database(package_name, id)
+    #test_datastore_expose_as_layer()
+    #test_datastore_expose_as_layer()
+    #test_datastore_list_exposed_layers()
+    #test_datastore_remove_exposed_layer()
    
