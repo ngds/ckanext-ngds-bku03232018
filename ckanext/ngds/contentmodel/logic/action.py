@@ -218,6 +218,11 @@ def contentmodel_checkFile(context, data_dict):
             validation_numericType_messages = validate_numericType(fieldModelList, dataHeaderList, dataListList)
             if len(validation_numericType_messages) > 0:
                 validation_msg.extend(validation_numericType_messages)
+
+        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
+            validation_dateType_messages = validate_dateType(fieldModelList, dataHeaderList, dataListList)
+            if len(validation_dateType_messages) > 0:
+                validation_msg.extend(validation_dateType_messages)
         
         print "validation detailed error message", len(validation_msg)
         print validation_msg
@@ -230,7 +235,7 @@ def contentmodel_checkFile(context, data_dict):
         return json.dumps({"valid": "false", "messages": validation_msg})
 
 @logic.side_effect_free
-def contentmodel_checkBulkFile(context, uri, version, resource_url ):
+def contentmodel_checkBulkFile(context, title, version, resource_url ):
     '''Check whether the given content model is a valid one.
     Check whether the given csv file follows the specified content model.
     This action returns detailed description of inconsistent cells.
@@ -248,24 +253,38 @@ def contentmodel_checkBulkFile(context, uri, version, resource_url ):
     :returns: A status object (either success, or failed).
     :rtype: dictionary
     '''
-    
+    modelsshort= [] 
+    for model in ckanext.ngds.contentmodel.model.contentmodels.contentmodels:
+        m= {}
+        m['title']= model['title']
+        m['description']= model['description']
+        versions= []
+        for version in model['versions']:
+            v= {}
+            v['uri']= version['uri']
+            v['version']= version['version']
+            versions.append(v)
+        m['versions']= versions
+        m['uri']= model['uri']
+        modelsshort.append(m)   
+
+    return modelsshort    
     schema= [ rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels
-        if rec['uri'] == uri ]
+        if rec['title'] == title ]
     if schema.__len__() != 1:
-        errorMessage = {"valid": "false", "message": "the model is wrong"}
+        errorMessage = {"valid": "false", "message": "the model title is wrong"}
         return json.dumps(errorMessage)
 
     
     # schema is a list with a single entry
-    schema_versions= schema[0]['versions']
+    schema_version= schema[0]['version']
     
-    version= [ rec for rec in schema_versions if rec['version'] == cm_version]
-    if version.__len__() != 1:
+    if schema_version != version:
         errorMessage = {"valid": "false", "message": "the version is wrong"}
         return json.dumps(errorMessage)
     
  
 
-    data_dict = {'cm_uri': uri, 'cm_version': version, 'cm_resource_url': resource_url}
+    data_dict = {'cm_uri': schema_version['uri'], 'cm_version': version, 'cm_resource_url': resource_url}
     return contentmodel_checkFile(context, data_dict)
 
