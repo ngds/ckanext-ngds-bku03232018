@@ -253,22 +253,7 @@ def contentmodel_checkBulkFile(context, title, version, resource_url ):
     :returns: A status object (either success, or failed).
     :rtype: dictionary
     '''
-    modelsshort= [] 
-    for model in ckanext.ngds.contentmodel.model.contentmodels.contentmodels:
-        m= {}
-        m['title']= model['title']
-        m['description']= model['description']
-        versions= []
-        for version in model['versions']:
-            v= {}
-            v['uri']= version['uri']
-            v['version']= version['version']
-            versions.append(v)
-        m['versions']= versions
-        m['uri']= model['uri']
-        modelsshort.append(m)   
-
-    return modelsshort    
+ 
     schema= [ rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels
         if rec['title'] == title ]
     if schema.__len__() != 1:
@@ -285,6 +270,6 @@ def contentmodel_checkBulkFile(context, title, version, resource_url ):
     
  
 
-    data_dict = {'cm_uri': schema_version['uri'], 'cm_version': version, 'cm_resource_url': resource_url}
+    data_dict = {'cm_uri': schema[0]['uri'], 'cm_version': version, 'cm_resource_url': resource_url}
     return contentmodel_checkFile(context, data_dict)
 
