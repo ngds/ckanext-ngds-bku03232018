@@ -198,7 +198,7 @@ def validate_dateType(fieldModelList, dataHeaderList, dataListList):
     for i in xrange(len(dataHeaderList)):
         try:
             if   fieldModelList[linkToFieldInfoFromHeader[i]].typeString == 'datetime':
-                IntTypeIndex.append(i)
+                DateTypeIndex.append(i)
         except:
             pass
     print "DateTypeIndex:"
@@ -210,11 +210,11 @@ def validate_dateType(fieldModelList, dataHeaderList, dataListList):
         for i in xrange(len(DateTypeIndex)):
             data = dataListList[jd][DateTypeIndex[i]]
             try:
-                timestamp =datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
+                timestamp =datetime.datetime.strptime(data, "%Y-%m-%dT%H:%M:%S")
             except:
-                msg = "cell (%d,%d): %s (field %s) is expected to be a ISO 1861 Format datatime"   %(jd+2, i+1, data, dataHeaderList[DateTypeIndex[i]])
+                msg = "cell (%d,%d): %s (field %s) is expected to be a ISO 1861 Format datetime"   %(jd+2, DateTypeIndex[i]+1, data, dataHeaderList[DateTypeIndex[i]])
                 print msg
-                validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'dateCellViolation', 'message':msg})
+                validation_messages.append({'row':jd+2, 'col':DateTypeIndex[i]+1, 'errorType': 'dateCellViolation', 'message':msg})
                 pass
 
 
