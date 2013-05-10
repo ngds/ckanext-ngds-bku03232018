@@ -20,8 +20,9 @@
   <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
   <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
   <link rel="stylesheet/less" type="text/css" href="/css/main.less"/>
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
   <script type="text/javascript" src="/vendor/less/less.min.js"></script>
-  <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
 {% endblock %}
 {% block bodytag %}
 {%- endblock -%}
@@ -104,8 +105,32 @@
       <script>
    var ngds = ngds || (ngds = { });
    </script>
-   
+   <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
+   <script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
+  <script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
+  <script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
+  <script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
+  <script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
+
+  <script type="text/javascript" src="/vendor/jscrollpane/jquery.jscrollpane.min.js"></script>
+  <script type="text/javascript" src="/vendor/jscrollpane/jquery.mousewheel.js"></script>
+  <script type="text/javascript" src="/vendor/jscrollpane/mwheelIntent.js"></script>
+ <!-- // <script type="text/javascript" src="/vendor/Leaflet.Fullscreen/Control.FullScreen.js"></script> -->
+    <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
+    <script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
+    <script type="text/javascript" src="/scripts/map/pager.js"></script>
+    <script type="text/javascript" src="/scripts/map/main.js"></script>
+  <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
+  
+  <script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
+  <script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
+  <script type="text/javascript" src="/scripts/map/result_parser.js"></script>
    <script type="text/javascript" src="/scripts/scripts.js"></script>
+   <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
+   <script type="text/javascript" src="/scripts/utils/utils.js"></script>
   <script type="text/javascript" src="/scripts/autocomplete.js"></script>
   
   <!--

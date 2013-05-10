@@ -162,6 +162,7 @@ var ngds = ngds || { };
 	    });
 
 	    $("input:radio[name='type-of-data']").change(function(ev){
+	    	console.log("Adding content model combo");
 	      var structured_or_un = ev.currentTarget.value;
 	      
 	      if(structured_or_un==='structured') {
@@ -189,6 +190,7 @@ var ngds = ngds || { };
 
 	    $(".module-content").on('change','.content-model-div-marker',function() {
 	    	
+	    	console.log("Adding version");
 	    	if($(".content-model-version-marker")!==null && typeof $(".content-model-version-marker")!=='undefined') {
 	      		$(".content-model-version-marker").remove();
 	      	}
@@ -196,6 +198,7 @@ var ngds = ngds || { };
 	    	if(ngds.content_models[content_model_selected]===null || typeof ngds.content_models[content_model_selected]==='undefined') {
 	    		return;
 	    	}
+	    	console.log("version");
 	    	var div = $("<div/>",{class:"control-group control-full content-model-version-marker"});
 	    	var content_model_version = $("<label/>",{for:'content-model_version',text:'Version: ',class:'control-label'});
 	    	var content_model_version_combo = $("<select/>",{ name:"content_model_version" });
@@ -228,31 +231,25 @@ var ngds = ngds || { };
 							cm_resource_url:resource_url
 						}),
 						success:function(response) {
-							if(response.result.valid==='false') {
-								var div = $("<div/>",{id:"dialog-message",title:"Validation Errors"});
-								var p = $("<p/>");
-								var text = response.result.message;
-								p.text(text);
-								div.append(p);
-								$("#content-container").append(div);
-								$( "#dialog-message" ).dialog({
-								      modal: true,
-								      width:"700px",
-								      buttons: {
-								        Ok: function() {
-								          $( this ).dialog( "close" );
-								        }
-								      }
-							    });
+							var decoded_response = JSON.parse(response.result);
+
+							if(decoded_response.valid==='false') {
+								var err = {
+									'type':'content_model_validation_error',
+									'display':'Validation errors',
+									'data':decoded_response.messages
+								};
+
+								ngds.publish('Notifications.received',err);
 							}
 							else {
-								$(".dataset-resource-form").submit();
+								// $(".dataset-resource-form").submit();
 							}
 						}
 					});
 				}
 				else {
-						$(".dataset-resource-form").submit();
+						// $(".dataset-resource-form").submit();
 					}
 				
 			});

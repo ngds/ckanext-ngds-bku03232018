@@ -68,11 +68,18 @@
       {{ form.input('mimetype_inner', id='field-mimetype-inner', label=_('MIME Type'), placeholder=_('eg. application/json'), value=data.mimetype_inner, error=errors.mimetype_inner, classes=[]) }}
     {% endif %}
   {% endblock %}
-<div class="control-group control-full content-model-marker">
+<div class="control-group control-full content-model-marker"> <!-- content-model-marker has to be unique on this page. Do not copy and paste.-->
   <label class="control-label" for="type-of-data">Type of Data</label>
     <div class="controls radio-group">
       <input type="radio" name="type-of-data" value="structured">Structured</input>
       <input type="radio" name="type-of-data" value="unstructured" checked>Unstructured</input>
+    </div>
+</div>
+
+<div class="control-group control-full">
+  <label class="control-label" for="shape-file">Shape File</label>
+    <div class="controls radio-group">
+      <input type="file" name="shape-file"/>
     </div>
 </div>
 
