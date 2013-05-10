@@ -19,24 +19,34 @@ Ckan with NGDS extensions is expected on port 5000 of localhost
 '''
 
 class TestGeoserverIntegration (TestCase):
-
+    
+    millis = int(round(time.time() * 1000))
+    package_name ='spatialize_test_resource_'+str(millis)
+    id = "" # id of the resource used during testing
+    
     # constructor of the class
     def __init__(self):
+        print ">>>>>>>>> Constructor >>>>>>>"
         assert True
 
-    # Use this method to initialize the database
+    # This method is called by nose before all tests are executed.
+    # We use it to initialize the database
     def setUp(self):
         print ">>>>>>>>> Test Steup >>>>>>>>"
+        self.id = self._setup_test_database(self.package_name)
         assert True
     
     
-    # Use this method to reset the database
+    # This method is called after all tests are executed
+    # we use it to clean up the database
     def teardown(self):
         print ">>>>>>>>>> Test Teardown >>>>>>>"
+        self._clean_test_database(self.package_name, self.id)
         assert True
     
     
     def test_datastore_spatialize(self):
+        
         assert True
         
         
@@ -61,18 +71,21 @@ class TestGeoserverIntegration (TestCase):
         print ">>>>>>>>>>>>>>>>> sending create layer POST >>>>>>>>>>>>>>>>"
         
         #headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
-        hostname = '127.0.0.1'
-        port = 5000
-        url = '/api/action/datastore_expose_as_layer'
-        api_key = _get_user_api_key()
+        hostname = self._get_hostname()
+        port = self._get_port()
+        action_uri = _get_action_uri()
+        url = action_uri+'/datastore_expose_as_layer'
+        api_key = self._get_user_api_key()
+        resource_id =  self._get_resource_id()
+        
         body =  '''{
-        "resource_id": "e82f6b50-c7b4-42f9-ab24-0a1a2903557c",
-        "col_geography": "shape",
-        "col_longitude": "LONGITUDE", 
-        "col_latitude": "LATITUDE",
-        'Authorization': api_key,
-        'X-CKAN-API-Key': api_key
-        }'''
+            "resource_id": {0},
+            "col_geography": "shape",
+            "col_longitude": "LONGITUDE", 
+            "col_latitude": "LATITUDE",
+            'Authorization': api_key,
+            'X-CKAN-API-Key': api_key
+            }'''.format(resource_id)
         
         json_body = json.dumps(body)
         
@@ -97,20 +110,38 @@ class TestGeoserverIntegration (TestCase):
     
     
     def test_datastore_is_exposed_as_layer(self):
-        assert True
+        api_key = self._get_user_api_key()
+        id = self._get_resource_id()
+        payload = {
+           "resource_id": id,
+        }
+        
+        url = self._get_action_uri()+'/datastore_is_exposed_as_layer'
+        headers = {'Authorization': api_key,
+                   'X-CKAN-API-Key': api_key,
+                   'Content-Type':'application/json'}
+        
+        response = requests.post(url,data=json.dumps(payload),headers=headers)
+        content = response.content
+        content_dict = json.loads(content)
+        result = content_dict["result"]
+        
+        print result
+        assert result["success"] == True
     
     
     def test_datastore_expose_as_layer(self):
         
-        api_key=_get_user_api_key()
+        api_key=self._get_user_api_key()
+        id = self._get_resource_id()
         payload = {
-        "resource_id": "e82f6b50-c7b4-42f9-ab24-0a1a2903557c",
+        "resource_id": id,
         "col_geography": "shape",
         "col_longitude": "LONGITUDE", 
         "col_latitude": "LATITUDE"
         }
         
-        url = 'http://localhost:5000/api/action/datastore_expose_as_layer'
+        url = self._get_action_uri()+'/datastore_expose_as_layer'
         headers = {'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
                    'Content-Type':'application/json'}
@@ -126,12 +157,12 @@ class TestGeoserverIntegration (TestCase):
     
     def test_datastore_list_exposed_layers(self):
         
-        api_key=_get_user_api_key()
+        api_key=self._get_user_api_key()
         payload = {
         
         }
         
-        url = 'http://localhost:5000/api/action/datastore_list_exposed_layers'
+        url = self._get_action_uri()+'/datastore_list_exposed_layers'
         headers = { 'Authorization': api_key,
                     'X-CKAN-API-Key': api_key,
                     'Content-Type':'application/json'}
@@ -142,12 +173,14 @@ class TestGeoserverIntegration (TestCase):
         
     def test_datastore_remove_exposed_layer(self):
         
-        api_key=_get_user_api_key()
+        api_key = self._get_user_api_key()
+        layer_name = self._get_resource_id()
+        
         payload = {
-           "layer_name": "e82f6b50-c7b4-42f9-ab24-0a1a2903557c"
+           "layer_name": layer_name
         }
         
-        url = 'http://localhost:5000/api/action/datastore_remove_exposed_layer'
+        url = self._get_base_uri()+'/datastore_remove_exposed_layer'
         headers = { 'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
                    'Content-Type':'application/json'}
@@ -189,17 +222,36 @@ class TestGeoserverIntegration (TestCase):
         # this is hardcoded now.
         return  '6397972f-fd52-456b-a6ee-cc4c6a4d7fdb'
     
-    def _get_ckan_base_url(self):
+    def _get_ckan_base_api_url(self):
         #TODO: read this from the configuration file
-        return "http://localhost:5000/api"
+        port = self._get_ckan_port()
+        hostname = self._get_ckan_hostname()
+        
+        return "http://"+hostname+":"+port+"/api"
+    
+    def _get_action_uri(self):
+        base_url = self._get_ckan_base_api_url()
+        return base_url+"/action"
+    
+    def _get_ckan_port(self):
+        return str(5000)
+    
+    def _get_ckan_hostname(self):
+        return '127.0.0.1'
+    
+    def _get_resource_id(self):
+        return self.id
+   
+    def _get_package_name(self):
+        return self.package_name
     
     # this function restores the test database to its prestine state
     # this currently marks the record as deleted but it does not remove it from the databae.
     # a purse must be called in order to clean the database.
     def _clean_test_database(self, package_name, id):
         
-        base_location=self._get_ckan_base_url()
-        api_key=self._get_user_api_key()
+        base_location = elf._get_ckan_base_api_url()
+        api_key = self._get_user_api_key()
         testclient = CkanClient(base_location, api_key)
         #package_name ='spatialize_test_resource_3'
         testclient.package_entity_delete(package_name)
@@ -225,8 +277,8 @@ class TestGeoserverIntegration (TestCase):
         
         print ">>>>>>>>>>>>>>>>>> creating package: ",package_name
         try:
-            base_location=self._get_ckan_base_url()
-            api_key=self._get_user_api_key()
+            base_location = self._get_ckan_base_api_url()
+            api_key = self._get_user_api_key()
             testclient = CkanClient(base_location, api_key)
             file_url,status = testclient.upload_file("./testData/small_with_lat_long.csv")
         
@@ -270,14 +322,19 @@ This file should be called with the nosetests command, so this will never execut
 if __name__ == '__main__':
     
     
-    millis = int(round(time.time() * 1000))
+   
     
-    test = TestGeoserverIntegration()
+    testObj = TestGeoserverIntegration()
     
-    package_name ='spatialize_test_resource_'+str(millis)       
-    id = test._setup_test_database(package_name)
+    package_name = testObj._get_package_name()      
+    id = testObj._setup_test_database(package_name)
+    
+    testObj.test_datastore_expose_as_layer()
+    testObj.test_datastore_is_exposed_as_layer()
+    
+    
     time.sleep(2) # wait for the database to be updated
-    test._clean_test_database(package_name, id)
+    testObj._clean_test_database(package_name, id)
     #test_datastore_expose_as_layer()
     #test_datastore_expose_as_layer()
     #test_datastore_list_exposed_layers()
