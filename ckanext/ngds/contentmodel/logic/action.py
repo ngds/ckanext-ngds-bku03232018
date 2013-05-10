@@ -90,6 +90,7 @@ def contentmodel_list_short(context, data_dict):
         m['uri']= model['uri']
         modelsshort.append(m)   
 
+    print modelsshort
     return modelsshort
 
 @logic.side_effect_free

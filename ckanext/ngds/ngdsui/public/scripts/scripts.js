@@ -155,6 +155,7 @@ var ngds = ngds || { };
 	        something:'something' // Ckan needs something in the body or the request is not accepted.
 	      }),
 	      success:function(response) {
+	      	console.log(response);
 	        for(var i=0;i<response.result.length;i++) {
 	        	content_models[response.result[i].uri]= response.result[i];
 	        }
@@ -217,6 +218,8 @@ var ngds = ngds || { };
 		if($("button[name='save-metadata']").length!==0) {
 			$("button[name='save-metadata']").click(function() {
 				console.log("inside");
+				$(".dataset-resource-form").submit();
+
 				var content_model_selected = $("select[name='content_model']").val();
 				var content_model_version = $("select[name='content_model_version']").val();
 				var resource_url = $("input[name='url']").val();

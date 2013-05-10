@@ -10,7 +10,7 @@
     {% endif %}
 {% endmacro %}
 
-<form class="dataset-form dataset-resource-form form-horizontal" method="post" action="{{ action }}" data-module="basic-form resource-form">
+<form class="dataset-form dataset-resource-form form-horizontal" method="post" action='/ngds/contribute/create_or_update_resource' data-module="basic-form resource-form">
   {% block stages %}
     {# An empty stages variable will not show the stages #}
     {% if stage %}
@@ -73,13 +73,6 @@
     <div class="controls radio-group">
       <input type="radio" name="type-of-data" value="structured">Structured</input>
       <input type="radio" name="type-of-data" value="unstructured" checked>Unstructured</input>
-    </div>
-</div>
-
-<div class="control-group control-full">
-  <label class="control-label" for="shape-file">Shape File</label>
-    <div class="controls radio-group">
-      <input type="file" name="shape-file"/>
     </div>
 </div>
 
@@ -147,7 +140,7 @@
   </div>
 
   
-
+  <input type="hidden" name="dataset_name" value="{{ pkg_name }}">
   <div class="form-actions">
     {% block delete_button %}
       {% if data.id %}
@@ -164,8 +157,8 @@
     {% block again_button %}
     <button class="btn" name="save" value="again" type="submit">{{ _('Save & add another') }}</button>
     {% endblock %}
-    <input type="hidden" name="save" value="go-metadata"/>
-    <button class="btn btn-primary" name="save-metadata" value="go-metadata" type="button">{% block save_button_text %}{{ _('Next: Additional Info') }}{% endblock %}</button>
+    
+    <button class="btn btn-primary" name="save" value="go-metadata" type="submit">{% block save_button_text %}{{ _('Next: Additional Info') }}{% endblock %}</button>
     {% else %}
     <button class="btn btn-primary" name="save" value="go-dataset-complete" type="submit">{{ _('Add') }}</button>
     {% endif %}
