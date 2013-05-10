@@ -215,6 +215,11 @@ def contentmodel_checkFile(context, data_dict):
                     validation_msg.extend(validation_existence_messages)
         
         if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
+            validation_dateType_messages = validate_dateType(fieldModelList, dataHeaderList, dataListList)
+            if len(validation_dateType_messages) > 0:
+                validation_msg.extend(validation_dateType_messages)
+                
+        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             validation_numericType_messages = validate_numericType(fieldModelList, dataHeaderList, dataListList)
             if len(validation_numericType_messages) > 0:
                 validation_msg.extend(validation_numericType_messages)
@@ -253,23 +258,25 @@ def contentmodel_checkBulkFile(context, title, version, resource_url ):
     :returns: A status object (either success, or failed).
     :rtype: dictionary
     '''
- 
     schema= [ rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels
         if rec['title'] == title ]
     if schema.__len__() != 1:
-        errorMessage = {"valid": "false", "message": "the model title is wrong"}
+        errorMessage = {"valid": "false", "message": "the model is wrong"}
         return json.dumps(errorMessage)
 
-    
     # schema is a list with a single entry
-    schema_version= schema[0]['version']
-    
-    if schema_version != version:
+    content_model = schema[0]
+
+    versionExists = False
+
+    for c_version in content_model['versions']:
+        if c_version['version'] == version:
+            versionExists = True
+
+    if not versionExists:
         errorMessage = {"valid": "false", "message": "the version is wrong"}
         return json.dumps(errorMessage)
-    
- 
 
-    data_dict = {'cm_uri': schema[0]['uri'], 'cm_version': version, 'cm_resource_url': resource_url}
+    data_dict = {'cm_uri': content_model['uri'], 'cm_version': version, 'cm_resource_url': resource_url}
     return contentmodel_checkFile(context, data_dict)
 
