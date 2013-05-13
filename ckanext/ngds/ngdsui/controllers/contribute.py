@@ -208,7 +208,7 @@ class ContributeController(NGDSBaseController):
 
 		node_id = data['id'] or id
 
-		print "Data Dict Values on Edit: " ,data
+		# print "Data Dict Values on Edit: " ,data
 
 		#Update responsible Party
 
@@ -254,7 +254,7 @@ class ContributeController(NGDSBaseController):
 		harvestNode.title = data['title']
 		harvestNode.node_admin_id = data['node_admin_id']
 			
-		print "Harvest the data: ",harvestNode
+		# print "Harvest the data: ",harvestNode
 
 		harvestNode.save()
 		"""
@@ -262,7 +262,7 @@ class ContributeController(NGDSBaseController):
 		data_dict['data']=data
 		data_dict['process']='create'
 
-		print "Data dict: ",data_dict
+		# print "Data dict: ",data_dict
 
 		context = {'model': model}
 
@@ -283,7 +283,7 @@ class ContributeController(NGDSBaseController):
 		data_dict['data']={'id':id}
 		data_dict['process']='delete'
 
-		print "Data dict: ",data_dict
+		# print "Data dict: ",data_dict
 
 		context = {'model': model}
 
@@ -327,7 +327,7 @@ class ContributeController(NGDSBaseController):
 		data_dict['process']='create'
 		
 
-		print "Data dict: ",data_dict		
+		# print "Data dict: ",data_dict		
 		context = {'model': model}
 
 		data_dict = get_action('additional_metadata')(context, data_dict)
@@ -353,7 +353,7 @@ class ContributeController(NGDSBaseController):
 		data_dict['process']='update'
 		
 
-		print "Data dict: ",data_dict		
+		# print "Data dict: ",data_dict		
 		context = {'model': model}
 
 		data_dict = get_action('additional_metadata')(context, data_dict)
@@ -422,7 +422,7 @@ class ContributeController(NGDSBaseController):
 
 		uploaded_packages=model.BulkUpload_Package.by_bulk_upload(data['id'])
 
-		print "uploaded_packages: ",uploaded_packages
+		# print "uploaded_packages: ",uploaded_packages
 
 		c.uploaded_packages = uploaded_packages
 		c.selected_upload = model.BulkUpload.get(data['id'])
@@ -454,8 +454,17 @@ class ContributeController(NGDSBaseController):
 		url = data['url']
 		dataset_name = data['dataset_name']
 		content_model = None
+		file_attached = False
 
-		if 'content_model' in data:
+		try:
+			if 'url' in data and data['url'].index('storage')>0:
+				print "File attached : "+data['url']
+				file_attached = True
+		except(ValueError):
+			print "No file attached"
+			file_attached=False
+
+		if 'content_model' in data and file_attached:
 			cm_uri = data['content_model']
 			cm_version = data['content_model_version']
 			split_version = cm_version.split('/')

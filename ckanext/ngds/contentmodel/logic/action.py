@@ -90,7 +90,7 @@ def contentmodel_list_short(context, data_dict):
         m['uri']= model['uri']
         modelsshort.append(m)   
 
-    print modelsshort
+    # print modelsshort
     return modelsshort
 
 @logic.side_effect_free
@@ -231,10 +231,10 @@ def contentmodel_checkFile(context, data_dict):
                 validation_msg.extend(validation_dateType_messages)
         
         print "validation detailed error message", len(validation_msg)
-        print validation_msg
+        # print validation_msg
 
     print 'validation last step'
-    print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
+    # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
         return json.dumps({"valid": "true", "messages": "ok."})
     else:
