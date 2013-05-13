@@ -1,4 +1,5 @@
 import ckanext.ngds.contentmodel.model.contentmodels
+import datetime
 
 def isNumber(s):
     """
@@ -210,8 +211,10 @@ def validate_dateType(fieldModelList, dataHeaderList, dataListList):
         for i in xrange(len(DateTypeIndex)):
             data = dataListList[jd][DateTypeIndex[i]]
             try:
-                timestamp =datetime.datetime.strptime(data, "%Y-%m-%dT%H:%M:%S")
-            except:
+                timestamp = data[:-6]
+                timestamp = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
+            except ValueError as e:
+                print e
                 msg = "cell (%d,%d): %s (field %s) is expected to be a ISO 1861 Format datetime"   %(jd+2, DateTypeIndex[i]+1, data, dataHeaderList[DateTypeIndex[i]])
                 print msg
                 validation_messages.append({'row':jd+2, 'col':DateTypeIndex[i]+1, 'errorType': 'dateCellViolation', 'message':msg})
