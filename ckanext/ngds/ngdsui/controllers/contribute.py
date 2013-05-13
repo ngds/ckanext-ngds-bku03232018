@@ -9,6 +9,8 @@ from ckan.logic import (tuplize_dict,clean_dict,
 from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 import ckanext.ngds.lib.importer.helper as import_helper
+from ckan.controllers.package import PackageController
+from ckanext.ngds.contentmodel.logic.action import *
 
 import os
 import shutil
@@ -206,7 +208,7 @@ class ContributeController(NGDSBaseController):
 
 		node_id = data['id'] or id
 
-		print "Data Dict Values on Edit: " ,data
+		# print "Data Dict Values on Edit: " ,data
 
 		#Update responsible Party
 
@@ -252,7 +254,7 @@ class ContributeController(NGDSBaseController):
 		harvestNode.title = data['title']
 		harvestNode.node_admin_id = data['node_admin_id']
 			
-		print "Harvest the data: ",harvestNode
+		# print "Harvest the data: ",harvestNode
 
 		harvestNode.save()
 		"""
@@ -260,7 +262,7 @@ class ContributeController(NGDSBaseController):
 		data_dict['data']=data
 		data_dict['process']='create'
 
-		print "Data dict: ",data_dict
+		# print "Data dict: ",data_dict
 
 		context = {'model': model}
 
@@ -281,7 +283,7 @@ class ContributeController(NGDSBaseController):
 		data_dict['data']={'id':id}
 		data_dict['process']='delete'
 
-		print "Data dict: ",data_dict
+		# print "Data dict: ",data_dict
 
 		context = {'model': model}
 
@@ -325,7 +327,7 @@ class ContributeController(NGDSBaseController):
 		data_dict['process']='create'
 		
 
-		print "Data dict: ",data_dict		
+		# print "Data dict: ",data_dict		
 		context = {'model': model}
 
 		data_dict = get_action('additional_metadata')(context, data_dict)
@@ -351,7 +353,7 @@ class ContributeController(NGDSBaseController):
 		data_dict['process']='update'
 		
 
-		print "Data dict: ",data_dict		
+		# print "Data dict: ",data_dict		
 		context = {'model': model}
 
 		data_dict = get_action('additional_metadata')(context, data_dict)
@@ -420,7 +422,7 @@ class ContributeController(NGDSBaseController):
 
 		uploaded_packages=model.BulkUpload_Package.by_bulk_upload(data['id'])
 
-		print "uploaded_packages: ",uploaded_packages
+		# print "uploaded_packages: ",uploaded_packages
 
 		c.uploaded_packages = uploaded_packages
 		c.selected_upload = model.BulkUpload.get(data['id'])
@@ -444,3 +446,38 @@ class ContributeController(NGDSBaseController):
 		h.flash_notice(_('Initiated Bulk Upload process and it is running in the background.'), allow_html=True)
 		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list')
 		redirect(url)
+
+	def create_or_update_resource(self,data=None):
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+		data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+		url = data['url']
+		dataset_name = data['dataset_name']
+		content_model = None
+		file_attached = False
+
+		try:
+			if 'url' in data and data['url'].index('storage')>0:
+				print "File attached : "+data['url']
+				file_attached = True
+		except(ValueError):
+			print "No file attached"
+			file_attached=False
+
+		if 'content_model' in data and file_attached:
+			cm_uri = data['content_model']
+			cm_version = data['content_model_version']
+			split_version = cm_version.split('/')
+			cm_version = split_version[len(split_version)-1]
+			data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
+			contentmodel_checkFile(context,data_dict)['valid']
+			
+
+
+		if url[len(url)-3:len(url)]=='zip':
+			print "Received a zip file. Checking if this resource conforms to a content model, and if that content model requires a shape file"
+			print "If the content model requires a shape file, checking if the zip file contains one."
+
+		x=PackageController()
+		
+		return x.new_resource(dataset_name)

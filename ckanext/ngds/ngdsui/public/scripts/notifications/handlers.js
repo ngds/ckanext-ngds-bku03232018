@@ -4,77 +4,48 @@ ngds.notifications = { };
 
 ngds.notifications.handlers = {
 	'content_model_validation_error':function(data) {
-		var li_s = [ ];
-		var divs = [ ];
-		var ticks = { };
-		var tick = ngds.util.tick;
-		var messages = data;
-		var categories_ui = [ ];
-		var ids = [ ];
+		var display = data['display'];
+		var data = data['data'];
+		var error_type_tabs = { };
 
-		for(var i=0;i<messages.length;i++) {
-			divs.push({
-				'tag':'div',
-				'attributes':{
-					'id':'tabs'+tick['next']()
-				},
-				'children':[
-					{
-						'tag':'p',
-						'attributes':{
-							'text':messages[i]['message']
-						}
-					}
-				]
-			});
+		var tabs = $('<div/>',{'id':'errors-'+ngds.util.tick['next']()});
+		var tabs_id = 'errors-'+ngds.util.tick['current']();
+		var ul = $("<ul/>");
+		var divs = { };
+		var table = $("<table/>");
+		var thead = $("<thead/>");
 
-			if(categories_ui.indexOf(messages[i]['errorType'])>=0) {
-				continue;
-			}
+		// Figure out how many error types there are and create tabs for them. 
 
-			li_s.push({
-				'tag':'li',
-				'children':[
-					{
-						'tag':'a',
-						'attributes':{
-							'href':'#tabs'+tick['current'](),
-							'text':messages[i]['errorType']
-						}
-					}
-				]
-			});
-			ticks[i] = tick['current']();
-			categories_ui.push(messages[i]['errorType']);
-		}
+		var error_types = _.uniq(_.pluck(data,'errorType'));
+		
+		_.forEach(error_types,function(element,index,list){
+			console.log(element);
+			ul.append($('<li/>').append($('<a/>',{'href':'#tabs-'+ngds.util.tick['next'](), 'text':element})));
+			// error_type_tabs[element] = 'tabs-'+tick_current();
+			divs[element] = $('<div/>',{'id':'tabs-'+ngds.util.tick['current']()});
+		});
+		
+		_.forEach(data,function(element,index,list){
+			divs[element['errorType']].append($('<p/>',{'text':element['message']}));
+		});
 
-		var id = 'error-'+Math.floor(Math.random()*100000);
-		ids.push(id);
+		console.log(divs);
+		tabs.append(ul);
+		_.forEach(data,function(element,index,list){
+			tabs.append(divs[element['errorType']]);
+		});
+		var dialog = $("<div/>",{'id':'dialog-'+ngds.util.tick['next']()});
+		var dialog_id = 'dialog-'+ngds.util.tick['current']();
+		dialog.append(tabs);
 
-		var skeleton = {
-			'tag':'div',
-			'attributes':{
-				'id':id,
-			},
-			'children':[
-				{
-					'tag':'ul',
-					'children':li_s
-				}
-			]
-		};
-
-		for(var i=0;i<divs.length;i++) {
-			skeleton['children'].push(divs[i]);
-		}
-
-		$("#errors").append(ngds.util.dom_element_constructor(skeleton));
-		$("#"+id).tabs();
-		$("#"+id).dialog({'width':800,'title':'Validation Errors'});
-		for(var i=0;i<ids.length;i++) {
-			console.log(ids[i]);
-			$("#"+ids[i]).css('height','250px');
-		}
+		$("#errors").append(dialog);
+		$("#"+dialog_id).dialog({'width':800,'title':display,'height':350});
+		$("#"+tabs_id).tabs();
+		// for(var i=0;i<ids.length;i++) {
+		// 	console.log(ids[i]);
+		// 	$("#"+ids[i]).css('height','250px');
+		// }
 	}
 };
 
