@@ -48,7 +48,9 @@ ngds.subscribe = function(topic,handler) {
 	PubSub.subscribe(topic,handler);
 }
 
-ngds.pager = new ngds.Search();
+if(typeof ngds.Search!=='undefined') {
+	ngds.pager = new ngds.Search();
+}
 
 
 ngds.feature_event_manager = { //A container for state information on event bindings for features.
@@ -83,25 +85,27 @@ ngds.layer_map = { // A mapping table to map ngds result ids(dom) to leaflet ids
 	});
 })();
 
-ngds.Map.initialize();
+if(typeof ngds.Map!=='undefined') {
+	ngds.Map.initialize();
 
-ngds.Map.top_level_search = function() {
-	ngds.publish('Map.search_initiated',{
+	ngds.Map.top_level_search = function() {
+		ngds.publish('Map.search_initiated',{
 
+			});
+			var geoj = ngds.Map.get_layer('drawnItems');
+			var query = $("#map-query").val();
+			ngds.util.clear_map_state();
+			ngds.pager.go_to({
+				'page':1,
+				'action':ngds.ckanlib.package_search,
+				'rows':ngds.config['number_of_rows'],
+				'q':query
+			});
+			ngds.publish('Map.expander.toggle',{
+				'no_toggle':true
 		});
-		var geoj = ngds.Map.get_layer('drawnItems');
-		var query = $("#map-query").val();
-		ngds.util.clear_map_state();
-		ngds.pager.go_to({
-			'page':1,
-			'action':ngds.ckanlib.package_search,
-			'rows':ngds.config['number_of_rows'],
-			'q':query
-		});
-		ngds.publish('Map.expander.toggle',{
-			'no_toggle':true
-	});
-};
+	};
+}
 
 (function publish_pager_advance() {
 	$("#map-search").click(function(){
@@ -139,25 +143,28 @@ ngds.Map.top_level_search = function() {
 })();
 
 
-ngds.Map.map.on('draw:rectangle-created',function(e) {
-	ngds.Map.clear_layer('drawnItems');
-	ngds.Map.add_to_layer([e.rect],'drawnItems');
+if(typeof ngds.Map!=='undefined') {
 
-	ngds.publish("Map.area_selected",{ 
-		'type':'rectangle',
-		'feature':e
+	ngds.Map.map.on('draw:rectangle-created',function(e) {
+		ngds.Map.clear_layer('drawnItems');
+		ngds.Map.add_to_layer([e.rect],'drawnItems');
+
+		ngds.publish("Map.area_selected",{ 
+			'type':'rectangle',
+			'feature':e
+		});
 	});
-});
 
-ngds.Map.map.on('draw:poly-created',function(e){
-	ngds.Map.clear_layer('drawnItems');
-	ngds.Map.add_to_layer([e.poly],'drawnItems');
+	ngds.Map.map.on('draw:poly-created',function(e){
+		ngds.Map.clear_layer('drawnItems');
+		ngds.Map.add_to_layer([e.poly],'drawnItems');
 
-	ngds.publish("Map.area_selected",{
-		'type':'polygon',
-		'feature':e
+		ngds.publish("Map.area_selected",{
+			'type':'polygon',
+			'feature':e
+		});
 	});
-});
+}
 
 
 (function subscribe_feature_received(){
@@ -366,7 +373,7 @@ ngds.Map.map.on('draw:poly-created',function(e){
 (function subscribe_notifications_received() {
 	ngds.subscribe('Notifications.received',function(topic,data){
 		var handler = ngds.notifications.handlers[data['type']]; // Find a display handler for this type of error message.
-		handler(data['data']);
+		handler(data);
 	});
 })();
 
@@ -379,23 +386,36 @@ ngds.publish('Map.expander.toggle',{
 
 
 (function() {
+	if(typeof ngds.Map!=='undefined') {
+		ngds.Map.map.on('enterFullscreen', function(){
+		  ngds.publish("Map.size_changed",{
+		  	'fullscreen':true
+		  });
+		});
+
+		ngds.Map.map.on('exitFullscreen', function(){
+		  ngds.publish("Map.size_changed",{
+		  	'fullscreen':false
+		  });
+		});
+	}
+
 	ngds.subscribe('Map.size_changed',function(topic,data){
 		if(data['fullscreen']===true) {
-			ngds.Map.state['fullscreen'] = true;
+			ngds.Map.state['map-search-results-left'] = $(".map-search-results").css('left');
+			ngds.Map.state['map-search-results-top'] = $(".map-search-results").css('top');
+			ngds.Map.state['map-search-left'] = $(".map-search").css('left');
+			ngds.Map.state['map-search-top'] = $(".map-search").css('top');
+
+			$(".map-search").css({'left':'10px', 'position':'fixed'});
+			$(".map-search-results").css({'left':'10px', 'position':'fixed'});
 		}
 		else {
-			ngds.Map.state['fullscreen'] = false;
+			$(".map-search").css({'left':ngds.Map.state['map-search-left'],'top':ngds.Map.state['map-search-top'],'position':'absolute'});
+			$(".map-search-results").css({'left':ngds.Map.state['map-search-results-left'],'top':ngds.Map.state['map-search-results-top'],'position':'absolute'});	
 		}
 	});
 })();
-
-
-$(document).on(fullScreenApi.prefix+"fullscreenchange",null,function(ev) {
-	if(fullScreenApi.isFullScreen()===false) {
-		fullScreenApi.cancelFullScreen();
-	}
-});
-
 
 var err = {
 	'type':'content_model_validation_error',
@@ -409,7 +429,7 @@ var err = {
 		        },
 		        {
 		            "message": "cell (2,5): \"5.6\" (field LocationUncertaintyRadius) is expected to be a Numeric",
-		            "errorType": "numericCellViolation",
+		            "errorType": "numericCellViolati",
 		            "col": 5,
 		            "row": 2
 		        },

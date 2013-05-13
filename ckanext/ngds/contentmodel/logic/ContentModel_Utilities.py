@@ -1,4 +1,5 @@
 import ckanext.ngds.contentmodel.model.contentmodels
+import datetime
 
 def isNumber(s):
     """
@@ -116,7 +117,7 @@ def validate_existence(fieldModelList, dataHeaderList, dataListList):
                 elif data.isspace():
                     msg = "cell (%d,%d): '%s' (field %s) is defined as optional false" %(jd+2, i+1, data, dataHeaderList[OptionalFalseIndex[i]])
                 print msg
-                validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'columnNameDoesntExist', 'message':msg})
+                validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'nonOptionalCellEmpty', 'message':msg})
 
         if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             break
@@ -177,6 +178,54 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
             break
 
     print "about to finish field numeric checking"
+    return validation_messages
+
+
+def validate_dateType(fieldModelList, dataHeaderList, dataListList):
+    print "about to start date data type checking"
+    
+    validation_messages = []
+    # build link between dataHeaderList and fieldInfoList
+    # fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]
+    linkToFieldInfoFromHeader = []
+    for header in dataHeaderList:
+        try:
+            index = [i for i, field in enumerate(fieldModelList) if field.name == header]
+            linkToFieldInfoFromHeader.append(index[0])
+        except:
+            pass
+    
+    DateTypeIndex = []  
+    for i in xrange(len(dataHeaderList)):
+        try:
+            if   fieldModelList[linkToFieldInfoFromHeader[i]].typeString == 'datetime':
+                DateTypeIndex.append(i)
+        except:
+            pass
+    print "DateTypeIndex:"
+    print DateTypeIndex
+
+    
+    for jd in xrange(len(dataListList)):
+        # check the int type
+        for i in xrange(len(DateTypeIndex)):
+            data = dataListList[jd][DateTypeIndex[i]]
+            try:
+                timestamp = data[:-6]
+                timestamp = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
+            except ValueError as e:
+                print e
+                msg = "cell (%d,%d): %s (field %s) is expected to be a ISO 1861 Format datetime"   %(jd+2, DateTypeIndex[i]+1, data, dataHeaderList[DateTypeIndex[i]])
+                print msg
+                validation_messages.append({'row':jd+2, 'col':DateTypeIndex[i]+1, 'errorType': 'dateCellViolation', 'message':msg})
+                pass
+
+
+
+        if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
+            break
+
+    print "about to finish field datetime checking"
     return validation_messages
 # def validate_numericType(fieldModelList, dataHeaderList, dataListList)
 

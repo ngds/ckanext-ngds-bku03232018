@@ -27,8 +27,17 @@ ngds.Map = {
 				'layers':'show:1'
 			});
 
-			var soil = new L.AgsDynamicLayer();
-			soil.initialize('http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer/');
+			var soil = new L.tileLayer.wms('http://geo.cei.psu.edu:8080/geoserver/wms',{
+				format:'image/png',
+				transparent:true,
+				attribution:'US Soil Survey',
+				layers:'cei:canada,cei:mexicarib,cei:mlra_48,cei:lower48',
+				styles:'other_polygons,other_polygons,llrShadeTest_opaque,state_noFill',
+				srs:'srs:EPSG:102003'
+			});
+
+			// var soil = new L.AgsDynamicLayer();
+			// soil.initialize('http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer/');
 
 			var water = new L.AgsDynamicLayer();
 			water.initialize('http://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer/');
@@ -58,13 +67,14 @@ ngds.Map = {
 			var map = this.map = new L.Map('map-container', {
 				layers:[base,_geoJSONLayer], 
 				center: new L.LatLng(34.1618, -100.53332), 
-				zoom: 3
+				zoom: 3,
+				zoomControl:false
 			});
 
-			L.control.fullscreen({
-			  position: 'topleft',
-			  title: 'Show me the fullscreen !'
-			}).addTo(map);
+			// L.control.fullscreen({
+			//   position: 'topleft',
+			//   title: 'Show me the fullscreen !'
+			// }).addTo(map);
 
 			var _drawControl = new L.Control.Draw({
 				position: 'topright',
@@ -93,20 +103,24 @@ ngds.Map = {
 
 			var baseMaps = {
 				"Terrain":base,
-				"US Topographic Map":topography
+				"US Topographic Map":topography,
+				'Soil Extent Map':soil
 			};
 
 			overlayMaps = {				
 				"Power Grid":powergrid,
 				"Search Results":_geoJSONLayer,
 				"SMU Wells":wells,
-				"USA Soil Survey":soil,
 				'USBLM Urban Areas, Counties':land,
 				'NERC Regions':nerc,
 				'Geothermal Potential':geothermal_potential,
 				'US County Boundaries':counties
 				// "ngds":ngds_layer
 			};
+			var zoomFS = new L.Control.ZoomFS({
+				'position':'topright'
+			}); 
+			map.addControl(zoomFS);
 
 			layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
 			layer_control.addTo(map);

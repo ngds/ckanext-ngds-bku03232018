@@ -30,10 +30,10 @@ ngds.util.sequence_generator = function() {
 ngds.util.tick = {
 	'hand':0,
 	'next':function() {
-		return ++this.hand;
+		return ++this['hand'];
 	},
 	'current':function() {
-		return this.hand;
+		return this['hand'];
 	}
 };
 
