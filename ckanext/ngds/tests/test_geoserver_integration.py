@@ -23,6 +23,7 @@ class TestGeoserverIntegration (TestCase):
     millis = int(round(time.time() * 1000))
     package_name ='spatialize_test_resource_'+str(millis)
     id = "" # id of the resource used during testing
+    
 
 # ============================== Fixtures ===============================
     
@@ -36,6 +37,7 @@ class TestGeoserverIntegration (TestCase):
     def setUp(self):
         print ">>>>>>>>> Test Steup >>>>>>>>"
         self.id = self._setup_test_database(self.package_name)
+        time.sleep(2) # wait for the data to be stored in the database through celeryd
         assert True
     
     
@@ -43,14 +45,14 @@ class TestGeoserverIntegration (TestCase):
     # we use it to clean up the database
     def teardown(self):
         print ">>>>>>>>>> Test Teardown >>>>>>>"
-        time.sleep(1) # wait for the database to be updated
+        #time.sleep(1) # wait for the database to be updated
         self._clean_test_database(self.package_name, self.id)
         assert True
  
  # =========================== Test methods ===============================   
     
     def test_datastore_spatialize(self):
-        result = _REST_datastore_spatialize(self)
+        result = self._REST_datastore_spatialize()
         assert result == True
         
     def test_datastore_is_spatialized(self):
@@ -101,17 +103,21 @@ class TestGeoserverIntegration (TestCase):
         }
         
         url = self._get_action_uri()+'/datastore_spatialize'
+        print ">>>>>>>>>>>>>> Action URL: ",url
+        print ">>>>>>>>>>>>>> Payload: ",json.dumps(payload)
+        
         headers = {'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
                    'Content-Type':'application/json'}
         
         response = requests.post(url,data=json.dumps(payload),headers=headers)
         content = response.content
+        print ">>>>>>>>>>>>>>>>>> Content: ",content
         content_dict = json.loads(content)
         result = content_dict["result"]
         
         print result
-        return boolean(result["success"])
+        return bool(result["success"])
     
         
     def _REST_datastore_is_spatialized(self):
@@ -167,7 +173,7 @@ class TestGeoserverIntegration (TestCase):
         result = content_dict["result"]
         
         print result
-        return boolean(result["success"])
+        return bool(result["success"])
         
     
     def _REST_datastore_list_exposed_layers(self):
@@ -227,7 +233,7 @@ class TestGeoserverIntegration (TestCase):
         print sysadmin_user
         '''
         # this is hardcoded now.
-        return  '6397972f-fd52-456b-a6ee-cc4c6a4d7fdb'
+        return  "6397972f-fd52-456b-a6ee-cc4c6a4d7fdb"
     
     def _get_ckan_base_api_url(self):
         #TODO: read this from the configuration file
@@ -257,7 +263,7 @@ class TestGeoserverIntegration (TestCase):
     # a purse must be called in order to clean the database.
     def _clean_test_database(self, package_name, id):
         
-        base_location = elf._get_ckan_base_api_url()
+        base_location = self._get_ckan_base_api_url()
         api_key = self._get_user_api_key()
         testclient = CkanClient(base_location, api_key)
         #package_name ='spatialize_test_resource_3'
@@ -273,10 +279,15 @@ class TestGeoserverIntegration (TestCase):
         #resources_sql = 'DROP TABLE "b11351a2-5bbc-4f8f-8078-86a4eef1c7b0";'
         try:
             print '>>>>>>>>>>>>> Executing command: ',resources_sql
-            results = connection.execute(resources_sql) 
+            trans = connection.begin()
+            results = connection.execute(resources_sql)
+            trans.commit() 
         except Exception, e:
             print "exception",e
             assert False
+        finally:
+            connection.close()
+            
     # this function imports a resource to ckan. the resource will originate a
     # databse in the postgress database
     # in order for this to work, dont forget to run paster celeryd before using this function
@@ -290,9 +301,10 @@ class TestGeoserverIntegration (TestCase):
             file_url,status = testclient.upload_file("./testData/small_with_lat_long.csv")
         
             print "created file_url:",file_url
+            print "status: ", status
             
         except Exception, e:
-            print "exception",e
+            print "Exception: ",e
             assert False   
     
         #construct package  and resource json object. set this file path in the resources.
@@ -316,8 +328,9 @@ class TestGeoserverIntegration (TestCase):
         
             print ">>>>>>>>>>>>>>>>>>>>>>>> database_id:",database_id
         except Exception, e:
-            print "exception",e
+            print "Exception: ",e
             assert False
+            return ""
         
         return database_id
     
@@ -335,7 +348,7 @@ if __name__ == '__main__':
     testObj = TestGeoserverIntegration()
     
     package_name = testObj._get_package_name()      
-    id = testObj.setUp()
+    testObj.setUp()
     
     testObj.test_datastore_spatialize()
     
@@ -349,4 +362,4 @@ if __name__ == '__main__':
     #test_datastore_expose_as_layer()
     #test_datastore_list_exposed_layers()
     #test_datastore_remove_exposed_layer()
-   
+    
