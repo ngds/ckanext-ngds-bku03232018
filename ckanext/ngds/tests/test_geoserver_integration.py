@@ -52,28 +52,49 @@ class TestGeoserverIntegration (TestCase):
  # =========================== Test methods ===============================   
     
     def test_datastore_spatialize(self):
+        
+        print ">>>>>>>>> No layer should be exposed >>>>>>>>>"
+        result0 = self._REST_datastore_is_exposed_as_layer()
+        assert result0 == False
+        
+        print ">>>>>>>>> Spatializing >>>>>>>>>"
         result = self._REST_datastore_spatialize()
         assert result == True
+    
+        print ">>>>>>>>> verifying spatialization >>>>>>>>>"
+        result2 = self._REST_datastore_is_spatialized()
+        assert result2 == True
+
+        print ">>>>>>>>> Verifying exposing as layer >>>>>>>>>"
+        result3 = self._REST_datastore_is_exposed_as_layer()
+        assert result3 == True    
         
-    def test_datastore_is_spatialized(self):
-        assert True     
-        
-    def test_datastore_is_exposed_as_layer(self):
-        result = self._REST_datastore_is_exposed_as_layer()
-        assert result == True
-   
+    
     def test_datastore_expose_as_layer(self):
+        print ">>>>>>>>> No layer should be exposed >>>>>>>>>"
+        result0 = self._REST_datastore_is_exposed_as_layer()
+        assert result0 == False
+        
+        print ">>>>>>>>> Exposing as layer >>>>>>>>>"
         result = self._REST_datastore_expose_as_layer()
-        assert result == True  
+        assert result == True
+        
+        print ">>>>>>>>> Verifying exposing as layer >>>>>>>>>"
+        result2 = self._REST_datastore_is_exposed_as_layer()
+        assert result2 == True
+        
+        result3 = self._REST_datastore_list_exposed_layers()
+        print "Exposed layers: "
+        print result3
    
-    def test_datastore_list_exposed_layers(self):
-        result = self._REST_datastore_list_exposed_layers()
-        # TODO: result size > 0
-        assert True
                        
     def test_datastore_remove_exposed_layer(self):
         result = self._REST_datastore_remove_exposed_layer()
-        assert True
+        assert result == True
+        
+        print ">>>>>>>>> No layer should be exposed >>>>>>>>>"
+        result2 = self._REST_datastore_is_exposed_as_layer()
+        assert result2 == False
         
     def test_datastore_remove_all_exposed_layers(self):
         assert True
@@ -140,8 +161,8 @@ class TestGeoserverIntegration (TestCase):
         content_dict = json.loads(content)
         result = content_dict["result"]
         
-        print result
-        return bool(result["success"])
+        print "Result: ",result
+        return bool(result["is_exposed_as_layer"])
     
     
     def _REST_datastore_expose_as_layer(self):
@@ -203,16 +224,17 @@ class TestGeoserverIntegration (TestCase):
            "layer_name": layer_name
         }
         
-        url = self._get_base_uri()+'/datastore_remove_exposed_layer'
+        url = self._get_action_uri()+'/datastore_remove_exposed_layer'
         headers = { 'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
                    'Content-Type':'application/json'}
         
         response = requests.post(url,data=json.dumps(payload),headers=headers)
         
-        content = response.content
-        print content
-        #TODO: perform assertion here
+        content = json.loads(response.content)
+        result = content["result"]
+        return bool(result["success"])
+        
     
 
 # ================================ Utility functions ===============================
@@ -351,6 +373,8 @@ if __name__ == '__main__':
     testObj.setUp()
     
     testObj.test_datastore_spatialize()
+    #testObj.test_datastore_expose_as_layer()
+    testObj.test_datastore_remove_exposed_layer()
     
     #testObj.test_datastore_expose_as_layer()
     #testObj.test_datastore_is_exposed_as_layer()
