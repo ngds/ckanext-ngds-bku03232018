@@ -23,8 +23,6 @@ class TestGeoserverIntegration (TestCase):
     millis = int(round(time.time() * 1000))
     package_name ='spatialize_test_resource_'+str(millis)
     id = "" # id of the resource used during testing
-
-# ============================== Fixtures ===============================
     
     # constructor of the class
     def __init__(self):
@@ -43,85 +41,79 @@ class TestGeoserverIntegration (TestCase):
     # we use it to clean up the database
     def teardown(self):
         print ">>>>>>>>>> Test Teardown >>>>>>>"
-        time.sleep(1) # wait for the database to be updated
         self._clean_test_database(self.package_name, self.id)
         assert True
- 
- # =========================== Test methods ===============================   
+    
     
     def test_datastore_spatialize(self):
-        result = _REST_datastore_spatialize(self)
-        assert result == True
+        
+        assert True
+        
         
     def test_datastore_is_spatialized(self):
         assert True     
         
+    
+    # This method is not working properly so we made it private with an _
+    # it is here just as an example on how to interact with the service
+    # directly, i.e. via httplib
+    def _test_datastore_expose_as_layer_old(self):
+        
+        '''
+        sys_user = model.User.get('admin')
+        
+        sysadmin_user = {
+           'id': sys_user.id,
+           'apikey': sys_user.apikey,
+           'name': sys_user.name,
+           }
+        '''
+        print ">>>>>>>>>>>>>>>>> sending create layer POST >>>>>>>>>>>>>>>>"
+        
+        #headers, response = cat.http.request(featureType_url, "POST", definition.serialize(), headers)
+        hostname = self._get_hostname()
+        port = self._get_port()
+        action_uri = _get_action_uri()
+        url = action_uri+'/datastore_expose_as_layer'
+        api_key = self._get_user_api_key()
+        resource_id =  self._get_resource_id()
+        
+        body =  '''{
+            "resource_id": {0},
+            "col_geography": "shape",
+            "col_longitude": "LONGITUDE", 
+            "col_latitude": "LATITUDE",
+            'Authorization': api_key,
+            'X-CKAN-API-Key': api_key
+            }'''.format(resource_id)
+        
+        json_body = json.dumps(body)
+        
+        method = "POST"
+        headers = {"Content-type": "text/xml"}
+    
+        httpServ = httplib.HTTPConnection(hostname, port)
+        httpServ.connect()
+        httpServ.request(method, url, body, headers)
+        
+        print ">>>>>>>>>>>>>>>>> getting response >>>>>>>>>>>>>>>>"
+        response = httpServ.getresponse()
+        print response
+        if response.status == httplib.OK:
+            assert True
+        else:
+            assert False
+        print " Output from HTTP request:"
+        print response.read()
+            
+        httpServ.close()
+    
+    
     def test_datastore_is_exposed_as_layer(self):
-        result = self._REST_datastore_is_exposed_as_layer()
-        assert result == True
-   
-    def test_datastore_expose_as_layer(self):
-        result = self._REST_datastore_expose_as_layer()
-        assert result == True  
-   
-    def test_datastore_list_exposed_layers(self):
-        result = self._REST_datastore_list_exposed_layers()
-        # TODO: result size > 0
-        assert True
-                       
-    def test_datastore_remove_exposed_layer(self):
-        result = self._REST_datastore_remove_exposed_layer()
-        assert True
-        
-    def test_datastore_remove_all_exposed_layers(self):
-        assert True
-        
-    def test_geoserver_create_workspace(self):
-        assert True
-        
-    def test_geoserver_delete_workspace(self):
-        assert True
-        
-    def test_geoserver_create_store(self):
-        assert True
-        
-    def test_geoserver_delete_store(self):    
-        assert True
-    
-# ================================ Auxiliary functions ===============================    
-    
-    def _REST_datastore_spatialize(self):
-        api_key=self._get_user_api_key()
-        id = self._get_resource_id()
-        payload = {
-        "resource_id": id,
-        "col_geography": "shape",
-        "col_longitude": "LONGITUDE", 
-        "col_latitude": "LATITUDE"
-        }
-        
-        url = self._get_action_uri()+'/datastore_spatialize'
-        headers = {'Authorization': api_key,
-                   'X-CKAN-API-Key': api_key,
-                   'Content-Type':'application/json'}
-        
-        response = requests.post(url,data=json.dumps(payload),headers=headers)
-        content = response.content
-        content_dict = json.loads(content)
-        result = content_dict["result"]
-        
-        print result
-        return boolean(result["success"])
-    
-        
-    def _REST_datastore_is_spatialized(self):
-        return True   
-    
-    def _REST_datastore_is_exposed_as_layer(self):
         api_key = self._get_user_api_key()
         id = self._get_resource_id()
         payload = {
-           "resource_id": id
+           "resource_id": id,
         }
         
         url = self._get_action_uri()+'/datastore_is_exposed_as_layer'
@@ -135,26 +127,19 @@ class TestGeoserverIntegration (TestCase):
         result = content_dict["result"]
         
         print result
-        return bool(result["success"])
+        assert result["success"] == True
     
     
-    def _REST_datastore_expose_as_layer(self):
+    def test_datastore_expose_as_layer(self):
         
         api_key=self._get_user_api_key()
         id = self._get_resource_id()
-        
-        payload = {
-        "resource_id": id
-        }
-        
-        '''
         payload = {
         "resource_id": id,
         "col_geography": "shape",
         "col_longitude": "LONGITUDE", 
         "col_latitude": "LATITUDE"
         }
-        '''
         
         url = self._get_action_uri()+'/datastore_expose_as_layer'
         headers = {'Authorization': api_key,
@@ -167,10 +152,10 @@ class TestGeoserverIntegration (TestCase):
         result = content_dict["result"]
         
         print result
-        return boolean(result["success"])
+        assert result["success"] == True
         
     
-    def _REST_datastore_list_exposed_layers(self):
+    def test_datastore_list_exposed_layers(self):
         
         api_key=self._get_user_api_key()
         payload = {
@@ -184,11 +169,9 @@ class TestGeoserverIntegration (TestCase):
         
         response = requests.post(url,data=json.dumps(payload),headers=headers)
         content = response.content
-        
         print content
-        return content
         
-    def _REST_datastore_remove_exposed_layer(self):
+    def test_datastore_remove_exposed_layer(self):
         
         api_key = self._get_user_api_key()
         layer_name = self._get_resource_id()
@@ -203,13 +186,23 @@ class TestGeoserverIntegration (TestCase):
                    'Content-Type':'application/json'}
         
         response = requests.post(url,data=json.dumps(payload),headers=headers)
-        
         content = response.content
         print content
-        #TODO: perform assertion here
     
-
-# ================================ Utility functions ===============================
+    def test_datastore_remove_all_exposed_layers(self):
+        assert True
+        
+    def test_geoserver_create_workspace(self):
+        assert True
+        
+    def test_geoserver_delete_workspace(self):
+        assert True
+        
+    def test_geoserver_create_store(self):
+        assert True
+        
+    def test_geoserver_delete_store(self):    
+        assert True
     
     #TODO: get this information from the real user, instead of hardcode it    
     def _get_user_api_key(self):
@@ -252,7 +245,7 @@ class TestGeoserverIntegration (TestCase):
     def _get_package_name(self):
         return self.package_name
     
-    # this function restores the test database to its original state
+    # this function restores the test database to its prestine state
     # this currently marks the record as deleted but it does not remove it from the databae.
     # a purse must be called in order to clean the database.
     def _clean_test_database(self, package_name, id):
@@ -321,7 +314,6 @@ class TestGeoserverIntegration (TestCase):
         
         return database_id
     
-# ================================ Main method ===============================
          
 '''
 This gets executed if one runs this .py file by itself.
@@ -337,12 +329,11 @@ if __name__ == '__main__':
     package_name = testObj._get_package_name()      
     id = testObj.setUp()
     
-    testObj.test_datastore_spatialize()
-    
-    #testObj.test_datastore_expose_as_layer()
-    #testObj.test_datastore_is_exposed_as_layer()
+    testObj.test_datastore_expose_as_layer()
+    testObj.test_datastore_is_exposed_as_layer()
     
     
+    time.sleep(2) # wait for the database to be updated
     testObj.teardown()
     
     #test_datastore_expose_as_layer()
