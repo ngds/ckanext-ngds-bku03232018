@@ -407,12 +407,12 @@ ngds.publish('Map.expander.toggle',{
 			ngds.Map.state['map-search-left'] = $(".map-search").css('left');
 			ngds.Map.state['map-search-top'] = $(".map-search").css('top');
 
-			$(".map-search").css({'left':'-20%','top':'-130px'});
-			$(".map-search-results").css({'left':'-20%','top':'-140px'});
+			$(".map-search").css({'left':'10px', 'position':'fixed'});
+			$(".map-search-results").css({'left':'10px', 'position':'fixed'});
 		}
 		else {
-			$(".map-search").css({'left':ngds.Map.state['map-search-left'],'top':ngds.Map.state['map-search-top']});
-			$(".map-search-results").css({'left':ngds.Map.state['map-search-results-left'],'top':ngds.Map.state['map-search-results-top']});	
+			$(".map-search").css({'left':ngds.Map.state['map-search-left'],'top':ngds.Map.state['map-search-top'],'position':'absolute'});
+			$(".map-search-results").css({'left':ngds.Map.state['map-search-results-left'],'top':ngds.Map.state['map-search-results-top'],'position':'absolute'});	
 		}
 	});
 })();
