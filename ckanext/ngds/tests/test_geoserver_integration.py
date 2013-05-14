@@ -8,6 +8,8 @@ import ast
 import requests
 import time
 
+from pylons import config
+
 from ckanclient import CkanClient
 import ckanext.datastore.db as db
 
@@ -129,28 +131,180 @@ class TestGeoserverIntegration (TestCase):
         result = self._REST_datastore_remove_all_exposed_layers()
         assert result == True
         
-    def test_geoserver_create_workspace(self):
-        assert True
         
-    def test_geoserver_delete_workspace(self):
-        assert True
+    def test_workspace_and_store_management_functions(self):
+        # create, list, delete workspace
+        print ">>>>>>>>> Creating test workspace >>>>>>>>>"
+        result = self._REST_geoserver_create_workspace()
+        assert result == True
         
-    def test_geoserver_create_store(self):
-        assert True
+        print ">>>>>>>>> Creating test store >>>>>>>>>"
+        result = self._REST_geoserver_create_store()
+        assert result == True
         
-    def test_geoserver_delete_store(self):    
-        assert True
+        print ">>>>>>>>> Creating test store >>>>>>>>>"
+        result = self._REST_geoserver_delete_store()
+        assert result == True
+        
+        print ">>>>>>>>> Deleting test workspace >>>>>>>>>"
+        result = self._REST_geoserver_delete_workspace()
+        assert result == True
+         
     
 # ================================ Auxiliary functions ===============================    
+    
+    def _REST_geoserver_delete_store(self):
+        api_key = self._get_user_api_key()
+        id = self._get_resource_id()
+        
+        store_name  = 'test_datastore'   
+        workspace_name = 'test_workspace'     
+        
+        payload = {
+            'workspace_name': workspace_name,
+            'store_name': store_name
+        }
+        
+        url = self._get_action_uri() + '/geoserver_delete_store'
+        print ">>>>>>>>>>>>>> Action URL: ", url
+        #print ">>>>>>>>>>>>>> Payload: ", json.dumps(payload)
+        
+        headers = {'Authorization': api_key,
+                   'X-CKAN-API-Key': api_key,
+                   'Content-Type':'application/json'}
+        
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        content = response.content
+        #print ">>>>>>>>>>>>>>>>>> Content: ", content
+        content_dict = json.loads(content)
+        result = content_dict["result"]
+        
+        #print result
+        return bool(result["success"])
+
+    def _REST_geoserver_create_store(self):
+        api_key = self._get_user_api_key()
+        id = self._get_resource_id()
+        
+        config_login      = 'ckanuser'
+        config_passwd     = 'pass'
+        config_datastore  = 'test_datastore'
+        
+        # reads geoserver information from development.ini file or returns a default value
+        geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')    
+            
+        # we utilize default values, instead of failing, if those parameters are not provided 
+        geoserver = geoserver_rest_url
+        store_name = config_datastore
+        pg_host = 'localhost'
+        pg_port = '5432'
+        pg_db = config_datastore
+        pg_user = config_login
+        pg_password = config_passwd
+        db_type = 'postgis'
+        workspace_name = 'test_workspace'     
+        
+        payload = {
+            'geoserver': geoserver,
+            'workspace_name': workspace_name,
+            'store_name': store_name,
+            'pg_host': pg_host,
+            'pg_port': pg_port,
+            'pg_db' : pg_db,
+            'pg_user' : pg_user,
+            'pg_password': pg_password,
+            'db_type' : db_type
+        }
+        
+        url = self._get_action_uri() + '/geoserver_create_store'
+        print ">>>>>>>>>>>>>> Action URL: ", url
+        #print ">>>>>>>>>>>>>> Payload: ", json.dumps(payload)
+        
+        headers = {'Authorization': api_key,
+                   'X-CKAN-API-Key': api_key,
+                   'Content-Type':'application/json'}
+        
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        content = response.content
+        #print ">>>>>>>>>>>>>>>>>> Content: ", content
+        content_dict = json.loads(content)
+        result = content_dict["result"]
+        
+        print result
+        return bool(result["success"])
+    
+    def _REST_geoserver_create_workspace(self):
+        api_key = self._get_user_api_key()
+        id = self._get_resource_id()
+        
+        workspace_name = "test_workspace"
+        workspace_uri = 'http://localhost:5000/test_workspace'
+        
+        payload = {
+            "workspace_name": workspace_name,
+            "workspace_uri": workspace_uri
+        }
+        
+        url = self._get_action_uri() + '/geoserver_create_workspace'
+        print ">>>>>>>>>>>>>> Action URL: ", url
+        #print ">>>>>>>>>>>>>> Payload: ", json.dumps(payload)
+        
+        headers = {'Authorization': api_key,
+                   'X-CKAN-API-Key': api_key,
+                   'Content-Type':'application/json'}
+        
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        content = response.content
+        #print ">>>>>>>>>>>>>>>>>> Content: ", content
+        content_dict = json.loads(content)
+        result = content_dict["result"]
+        
+        #print result
+        return bool(result["success"])
+    
+    
+    def _REST_geoserver_delete_workspace(self):
+        api_key = self._get_user_api_key()
+        id = self._get_resource_id()
+        
+        workspace_name = "test_workspace"
+        
+        # reads geoserver information from development.ini file or returns a default value
+        geoserver_rest_url = pylons.config.get('ckan.geoserver.rest_url', 'http://localhost:8080/geoserver/rest')    
+        
+        
+        payload = {
+            "workspace_name": workspace_name,
+            "geoserver": geoserver_rest_url
+        }
+        
+        url = self._get_action_uri() + '/geoserver_delete_workspace'
+        print ">>>>>>>>>>>>>> Action URL: ", url
+        #print ">>>>>>>>>>>>>> Payload: ", json.dumps(payload)
+        
+        headers = {'Authorization': api_key,
+                   'X-CKAN-API-Key': api_key,
+                   'Content-Type':'application/json'}
+        
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        content = response.content
+        #print ">>>>>>>>>>>>>>>>>> Content: ", content
+        content_dict = json.loads(content)
+        result = content_dict["result"]
+        
+        #print result
+        return bool(result["success"])
+    
+    
     
     def _REST_datastore_spatialize(self):
         api_key = self._get_user_api_key()
         id = self._get_resource_id()
         payload = {
-        "resource_id": id,
-        "col_geography": "shape",
-        "col_longitude": "LONGITUDE",
-        "col_latitude": "LATITUDE"
+            "resource_id": id,
+            "col_geography": "shape",
+            "col_longitude": "LONGITUDE",
+            "col_latitude": "LATITUDE"
         }
         
         url = self._get_action_uri() + '/datastore_spatialize'
@@ -221,7 +375,7 @@ class TestGeoserverIntegration (TestCase):
         id = self._get_resource_id()
         
         payload = {
-        "resource_id": id
+            "resource_id": id
         }
         
         '''
@@ -303,9 +457,9 @@ class TestGeoserverIntegration (TestCase):
         
         #print"Content: ",content
         
-        #result = content["result"]
-        #return bool(result["success"])
-        return True
+        result = content["result"]
+        return bool(result["success"])
+        #return True
 
 # ================================ Utility functions ===============================
     
@@ -406,7 +560,7 @@ class TestGeoserverIntegration (TestCase):
         testclient.package_entity_delete(package_name)
         
          
-         # also remove table from database using id
+        # also remove table from database using id
         data_dict = {}
         data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:pass@localhost/datastore')  
         engine = db._get_engine(None, data_dict)
@@ -425,8 +579,8 @@ class TestGeoserverIntegration (TestCase):
             connection.close()
             
     # this function imports a resource to ckan. the resource will originate a
-    # databse in the postgress database
-    # in order for this to work, dont forget to run paster celeryd before using this function
+    # table in the postgres database
+    # in order for this to work, don't forget to run paster celeryd before using this function
     def _setup_test_database(self, package_name):
         
         print ">>>>>>>>>>>>>>>>>> creating package: ", package_name
@@ -454,9 +608,9 @@ class TestGeoserverIntegration (TestCase):
         '''
         package_dict = {u'name': package_name, u'title': u'Spatialize test resource 7', u'notes': u'dummy notes',
         'owner_org': 'public', u'private': u'False', u'state': u'active',
-        'resources': [{'description': u'Resource Document Description', 'format': u'csv', 'url': file_url, 'name': u'Resouce in alaska3'}]}
+        'resources': [{'description': u'Resource Document Description', 'format': u'csv', 'url': file_url, 'name': u'Resource somewhere'}]}
         
-        print "package_dict: at test: ", package_dict
+        #print "package_dict: at test: ", package_dict
          
         try:
             ret_pack = testclient.package_register_post(package_dict)
@@ -475,7 +629,8 @@ class TestGeoserverIntegration (TestCase):
          
 '''
 This gets executed if one runs this .py file by itself.
-This file should be called with the nosetests command, so this will never execute.    
+This file should be called with the nosetests command, so this code
+segment will not be executed by the tests.    
 '''
 if __name__ == '__main__':
     
@@ -486,6 +641,9 @@ if __name__ == '__main__':
     
     package_name = testObj._get_package_name()      
     testObj.setUp()
+    
+    testObj.test_workspace_and_store_management_functions()
+    
     
     testObj.test_datastore_spatialize_scenario()
     
