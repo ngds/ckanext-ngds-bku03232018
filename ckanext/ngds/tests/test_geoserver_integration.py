@@ -118,7 +118,16 @@ class TestGeoserverIntegration (TestCase):
         
         
     def test_datastore_remove_all_exposed_layers(self):
-        assert True
+        
+        print ">>>>>>>>> List all exposed layers >>>>>>>>>"
+        response = self._REST_datastore_list_exposed_layers()
+        result = response["result"]
+        assert result["success"] == True
+        assert len(result["list_of_layers"]) > 0
+        
+        print ">>>>>>>>> Removing all exposed layers >>>>>>>>>"
+        result = self._REST_datastore_remove_all_exposed_layers()
+        assert result == True
         
     def test_geoserver_create_workspace(self):
         assert True
@@ -146,7 +155,7 @@ class TestGeoserverIntegration (TestCase):
         
         url = self._get_action_uri() + '/datastore_spatialize'
         print ">>>>>>>>>>>>>> Action URL: ", url
-        print ">>>>>>>>>>>>>> Payload: ", json.dumps(payload)
+        #print ">>>>>>>>>>>>>> Payload: ", json.dumps(payload)
         
         headers = {'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
@@ -154,11 +163,11 @@ class TestGeoserverIntegration (TestCase):
         
         response = requests.post(url, data=json.dumps(payload), headers=headers)
         content = response.content
-        print ">>>>>>>>>>>>>>>>>> Content: ", content
+        #print ">>>>>>>>>>>>>>>>>> Content: ", content
         content_dict = json.loads(content)
         result = content_dict["result"]
         
-        print result
+        #print result
         return bool(result["success"])
     
         
@@ -202,7 +211,7 @@ class TestGeoserverIntegration (TestCase):
         content_dict = json.loads(content)
         result = content_dict["result"]
         
-        print "Result: ", result
+        #print "Result: ", result
         return bool(result["is_exposed_as_layer"])
     
     
@@ -234,7 +243,7 @@ class TestGeoserverIntegration (TestCase):
         content_dict = json.loads(content)
         result = content_dict["result"]
         
-        print result
+        #print result
         return bool(result["success"])
         
     
@@ -251,9 +260,9 @@ class TestGeoserverIntegration (TestCase):
                     'Content-Type':'application/json'}
         
         response = requests.post(url, data=json.dumps(payload), headers=headers)
-        content = response.content
+        content = json.loads(response.content)
         
-        print content
+        #print content
         return content
         
     def _REST_datastore_remove_exposed_layer(self):
@@ -276,7 +285,27 @@ class TestGeoserverIntegration (TestCase):
         result = content["result"]
         return bool(result["success"])
         
-    
+    def _REST_datastore_remove_all_exposed_layers(self):
+        
+        api_key = self._get_user_api_key()
+        layer_name = self._get_resource_id()
+        
+        payload = {}
+        
+        url = self._get_action_uri() + '/datastore_remove_all_exposed_layers'
+        headers = { 'Authorization': api_key,
+                   'X-CKAN-API-Key': api_key,
+                   'Content-Type':'application/json'}
+        
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        
+        content = json.loads(response.content)
+        
+        #print"Content: ",content
+        
+        #result = content["result"]
+        #return bool(result["success"])
+        return True
 
 # ================================ Utility functions ===============================
     
@@ -463,7 +492,8 @@ if __name__ == '__main__':
     #testObj._clean_all_tables_in_database()
     
     # testObj.test_datastore_expose_as_layer()
-    testObj.test_datastore_remove_exposed_layer()
+    #testObj.test_datastore_remove_exposed_layer()
+    testObj.test_datastore_remove_all_exposed_layers()
     
     # testObj.test_datastore_expose_as_layer()
     # testObj.test_datastore_is_exposed_as_layer()
