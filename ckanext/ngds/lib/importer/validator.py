@@ -23,6 +23,7 @@ class NGDSValidator(object):
         self._resource_path = resource_path
         self._resource_list = resource_list
         self.log = BasicLogger()
+        self.load_XL()
 
     def load_XL(self):
         """
@@ -42,7 +43,6 @@ class NGDSValidator(object):
         This method will validate the data file and the resources.If the validation is 
         successfull then returns Status as "VALID" otherwise throws the exception with error message.
         """ 
-        self.load_XL()
         self.find_column_pos()
 
         self._validate_mandatory_field()
@@ -74,7 +74,7 @@ class NGDSValidator(object):
                         date_tuple = xlrd.xldate_as_tuple(cell, self.xl_data._book.datemode)
                         value = datetime.date(*date_tuple[:3])  
             except Exception , e:
-                raise Exception ("Invalid date value: '%s' for the field: %s" % cell,title)
+                raise Exception ("Invalid date value: '%s' for the field: %s" % (cell,title))
 
     def _validate_mandatory_field(self):
 
