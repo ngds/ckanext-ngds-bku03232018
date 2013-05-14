@@ -86,91 +86,11 @@ def test_invalid_date_fields():
         print "exception: ",e
         assert False
 
-   
-''' 
-    
-def test_datastore_is_spatialized():
-    assert True     
-    
+def test_valid_file():
+    xl_file_path = "./testdata/test_find_pos.xls"
+    print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>xl_file_path:",xl_file_path
+    validator = ngdsvalidator.NGDSValidator(filepath=xl_file_path,resource_path=None,resource_list=None)
 
-def test_datastore_is_exposed_as_layer():
-    assert True
+    validationResponse = validator.validate()
 
-
-def test_datastore_expose_as_layer():
-    
-    api_key=_get_user_api_key()
-    payload = {
-    "resource_id": "e82f6b50-c7b4-42f9-ab24-0a1a2903557c",
-    "col_geography": "shape",
-    "col_longitude": "LONGITUDE", 
-    "col_latitude": "LATITUDE"
-    }
-    
-    url = 'http://localhost:5000/api/action/datastore_expose_as_layer'
-    headers = {'Authorization': api_key,
-               'X-CKAN-API-Key': api_key,
-               'Content-Type':'application/json'}
-    
-    response = requests.post(url,data=json.dumps(payload),headers=headers)
-    content = response.content
-    content_dict = json.loads(content)
-    result = content_dict["result"]
-    
-    print result
-    assert result["success"] == True
-    
-
-def test_datastore_list_exposed_layers():
-    
-    api_key=_get_user_api_key()
-    payload = {
-    
-    }
-    
-    url = 'http://localhost:5000/api/action/datastore_list_exposed_layers'
-    headers = { 'Authorization': api_key,
-                'X-CKAN-API-Key': api_key,
-                'Content-Type':'application/json'}
-    
-    response = requests.post(url,data=json.dumps(payload),headers=headers)
-    content = response.content
-    print content
-    
-def test_datastore_remove_exposed_layer():
-    
-    api_key=_get_user_api_key()
-    payload = {
-       "layer_name": "e82f6b50-c7b4-42f9-ab24-0a1a2903557c"
-    }
-    
-    url = 'http://localhost:5000/api/action/datastore_remove_exposed_layer'
-    headers = { 'Authorization': api_key,
-               'X-CKAN-API-Key': api_key,
-               'Content-Type':'application/json'}
-    
-    response = requests.post(url,data=json.dumps(payload),headers=headers)
-    content = response.content
-    print content
-
-def test_datastore_remove_all_exposed_layers():
-    assert True
-    
-def test_geoserver_create_workspace():
-    assert True
-    
-def test_geoserver_delete_workspace():
-    assert True
-    
-def test_geoserver_create_store():
-    assert True
-    
-def test_geoserver_delete_store():    
-    assert True
-
-#TODO: get this information from the real user, instead of hardcode it    
-def _get_user_api_key():
-    '''
-
-
-   
+    assert validationResponse
