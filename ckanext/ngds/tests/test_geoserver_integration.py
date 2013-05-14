@@ -14,15 +14,15 @@ import ckanext.datastore.db as db
 from unittest import TestCase
 
 '''
-Note that this test requires Celery deamon to be xecuting as well as ckan.
+Note that this test requires Celery deamon to be executing as well as ckan.
 Ckan with NGDS extensions is expected on port 5000 of localhost
 '''
 
 class TestGeoserverIntegration (TestCase):
     
     millis = int(round(time.time() * 1000))
-    package_name ='spatialize_test_resource_'+str(millis)
-    id = "" # id of the resource used during testing
+    package_name = 'spatialize_test_resource_' + str(millis)
+    id = ""  # id of the resource used during testing
     
 
 # ============================== Fixtures ===============================
@@ -37,7 +37,7 @@ class TestGeoserverIntegration (TestCase):
     def setUp(self):
         print ">>>>>>>>> Test Steup >>>>>>>>"
         self.id = self._setup_test_database(self.package_name)
-        time.sleep(2) # wait for the data to be stored in the database through celeryd
+        time.sleep(2)  # wait for the data to be stored in the database through celeryd
         assert True
     
     
@@ -45,32 +45,43 @@ class TestGeoserverIntegration (TestCase):
     # we use it to clean up the database
     def teardown(self):
         print ">>>>>>>>>> Test Teardown >>>>>>>"
-        #time.sleep(1) # wait for the database to be updated
+        # time.sleep(1) # wait for the database to be updated
         self._clean_test_database(self.package_name, self.id)
         assert True
  
  # =========================== Test methods ===============================   
     
-    def test_datastore_spatialize(self):
+    '''
+    Spatialization does everything: it not only spatializes the database table
+    but also publishes it as a layer in geoserver. This is the most complete test.
+    '''
+    def test_datastore_spatialize_scenario(self):
         
-        print ">>>>>>>>> No layer should be exposed >>>>>>>>>"
-        result0 = self._REST_datastore_is_exposed_as_layer()
+        print ">>>>>>>>> The resource is not spatialized yet >>>>>>>>>"
+        result0 = self._REST_datastore_is_spatialized()
         assert result0 == False
         
+        print ">>>>>>>>> No layer should be exposed >>>>>>>>>"
+        result1 = self._REST_datastore_is_exposed_as_layer()
+        assert result1 == False
+        
         print ">>>>>>>>> Spatializing >>>>>>>>>"
-        result = self._REST_datastore_spatialize()
-        assert result == True
+        result2 = self._REST_datastore_spatialize()
+        assert result2 == True
     
         print ">>>>>>>>> verifying spatialization >>>>>>>>>"
-        result2 = self._REST_datastore_is_spatialized()
-        assert result2 == True
+        result3 = self._REST_datastore_is_spatialized()
+        assert result3 == True
 
         print ">>>>>>>>> Verifying exposing as layer >>>>>>>>>"
-        result3 = self._REST_datastore_is_exposed_as_layer()
-        assert result3 == True    
+        result4 = self._REST_datastore_is_exposed_as_layer()
+        assert result4 == True    
         
     
-    def test_datastore_expose_as_layer(self):
+    # Expose as layer is actually called within spatialize function, so we 
+    # do not to test for it explicitly here.
+    '''
+    def test_datastore_expose_as_layer_scnario(self):
         print ">>>>>>>>> No layer should be exposed >>>>>>>>>"
         result0 = self._REST_datastore_is_exposed_as_layer()
         assert result0 == False
@@ -87,14 +98,24 @@ class TestGeoserverIntegration (TestCase):
         print "Exposed layers: "
         print result3
    
-                       
+    '''                   
     def test_datastore_remove_exposed_layer(self):
+        print ">>>>>>>>> The resource is spatialized >>>>>>>>>"
+        result0 = self._REST_datastore_is_spatialized()
+        assert result0 == True
+        
+        print ">>>>>>>>> Layer should be exposed >>>>>>>>>"
+        result1 = self._REST_datastore_is_exposed_as_layer()
+        assert result1 == True
+        
+        print ">>>>>>>>> Removing layer >>>>>>>>>"
         result = self._REST_datastore_remove_exposed_layer()
         assert result == True
         
         print ">>>>>>>>> No layer should be exposed >>>>>>>>>"
         result2 = self._REST_datastore_is_exposed_as_layer()
         assert result2 == False
+        
         
     def test_datastore_remove_all_exposed_layers(self):
         assert True
@@ -114,26 +135,26 @@ class TestGeoserverIntegration (TestCase):
 # ================================ Auxiliary functions ===============================    
     
     def _REST_datastore_spatialize(self):
-        api_key=self._get_user_api_key()
+        api_key = self._get_user_api_key()
         id = self._get_resource_id()
         payload = {
         "resource_id": id,
         "col_geography": "shape",
-        "col_longitude": "LONGITUDE", 
+        "col_longitude": "LONGITUDE",
         "col_latitude": "LATITUDE"
         }
         
-        url = self._get_action_uri()+'/datastore_spatialize'
-        print ">>>>>>>>>>>>>> Action URL: ",url
-        print ">>>>>>>>>>>>>> Payload: ",json.dumps(payload)
+        url = self._get_action_uri() + '/datastore_spatialize'
+        print ">>>>>>>>>>>>>> Action URL: ", url
+        print ">>>>>>>>>>>>>> Payload: ", json.dumps(payload)
         
         headers = {'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
                    'Content-Type':'application/json'}
         
-        response = requests.post(url,data=json.dumps(payload),headers=headers)
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
         content = response.content
-        print ">>>>>>>>>>>>>>>>>> Content: ",content
+        print ">>>>>>>>>>>>>>>>>> Content: ", content
         content_dict = json.loads(content)
         result = content_dict["result"]
         
@@ -142,7 +163,27 @@ class TestGeoserverIntegration (TestCase):
     
         
     def _REST_datastore_is_spatialized(self):
-        return True   
+        api_key = self._get_user_api_key()
+        id = self._get_resource_id()
+        payload = {
+           "resource_id": id,
+           "col_geography": "shape"
+        }
+        
+        url = self._get_action_uri() + '/datastore_is_spatialized'
+        headers = {'Authorization': api_key,
+                   'X-CKAN-API-Key': api_key,
+                   'Content-Type':'application/json'}
+        
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        content = response.content
+        content_dict = json.loads(content)
+        
+        if content_dict["success"] == True:
+            result = content_dict["result"]
+            return bool(result["is_spatialized"])
+        else:
+            return False  
     
     def _REST_datastore_is_exposed_as_layer(self):
         api_key = self._get_user_api_key()
@@ -151,23 +192,23 @@ class TestGeoserverIntegration (TestCase):
            "resource_id": id
         }
         
-        url = self._get_action_uri()+'/datastore_is_exposed_as_layer'
+        url = self._get_action_uri() + '/datastore_is_exposed_as_layer'
         headers = {'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
                    'Content-Type':'application/json'}
         
-        response = requests.post(url,data=json.dumps(payload),headers=headers)
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
         content = response.content
         content_dict = json.loads(content)
         result = content_dict["result"]
         
-        print "Result: ",result
+        print "Result: ", result
         return bool(result["is_exposed_as_layer"])
     
     
     def _REST_datastore_expose_as_layer(self):
         
-        api_key=self._get_user_api_key()
+        api_key = self._get_user_api_key()
         id = self._get_resource_id()
         
         payload = {
@@ -183,12 +224,12 @@ class TestGeoserverIntegration (TestCase):
         }
         '''
         
-        url = self._get_action_uri()+'/datastore_expose_as_layer'
+        url = self._get_action_uri() + '/datastore_expose_as_layer'
         headers = {'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
                    'Content-Type':'application/json'}
         
-        response = requests.post(url,data=json.dumps(payload),headers=headers)
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
         content = response.content
         content_dict = json.loads(content)
         result = content_dict["result"]
@@ -199,17 +240,17 @@ class TestGeoserverIntegration (TestCase):
     
     def _REST_datastore_list_exposed_layers(self):
         
-        api_key=self._get_user_api_key()
+        api_key = self._get_user_api_key()
         payload = {
         
         }
         
-        url = self._get_action_uri()+'/datastore_list_exposed_layers'
+        url = self._get_action_uri() + '/datastore_list_exposed_layers'
         headers = { 'Authorization': api_key,
                     'X-CKAN-API-Key': api_key,
                     'Content-Type':'application/json'}
         
-        response = requests.post(url,data=json.dumps(payload),headers=headers)
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
         content = response.content
         
         print content
@@ -224,12 +265,12 @@ class TestGeoserverIntegration (TestCase):
            "layer_name": layer_name
         }
         
-        url = self._get_action_uri()+'/datastore_remove_exposed_layer'
+        url = self._get_action_uri() + '/datastore_remove_exposed_layer'
         headers = { 'Authorization': api_key,
                    'X-CKAN-API-Key': api_key,
                    'Content-Type':'application/json'}
         
-        response = requests.post(url,data=json.dumps(payload),headers=headers)
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
         
         content = json.loads(response.content)
         result = content["result"]
@@ -239,7 +280,7 @@ class TestGeoserverIntegration (TestCase):
 
 # ================================ Utility functions ===============================
     
-    #TODO: get this information from the real user, instead of hardcode it    
+    # TODO: get this information from the real user, instead of hardcode it    
     def _get_user_api_key(self):
         '''
         sys_user = model.User.get('admin')
@@ -258,15 +299,15 @@ class TestGeoserverIntegration (TestCase):
         return  "6397972f-fd52-456b-a6ee-cc4c6a4d7fdb"
     
     def _get_ckan_base_api_url(self):
-        #TODO: read this from the configuration file
+        # TODO: read this from the configuration file
         port = self._get_ckan_port()
         hostname = self._get_ckan_hostname()
         
-        return "http://"+hostname+":"+port+"/api"
+        return "http://" + hostname + ":" + port + "/api"
     
     def _get_action_uri(self):
         base_url = self._get_ckan_base_api_url()
-        return base_url+"/action"
+        return base_url + "/action"
     
     def _get_ckan_port(self):
         return str(5000)
@@ -281,6 +322,50 @@ class TestGeoserverIntegration (TestCase):
         return self.package_name
     
     # this function restores the test database to its original state
+    # by dropping all tables except geometry_columns and spatial_ref_sys
+    def _clean_all_tables_and_packages_in_database(self):
+        
+    
+        base_location = self._get_ckan_base_api_url()
+        api_key = self._get_user_api_key()
+        testclient = CkanClient(base_location, api_key)
+        
+        # TODO: clean all packages
+         
+         # also remove table from database using id
+        data_dict = {}
+        data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:pass@localhost/datastore')  
+        engine = db._get_engine(None, data_dict)
+        connection = engine.connect()
+        resources_sql = "SELECT * FROM pg_tables;"
+        # resources_sql = 'DROP TABLE "b11351a2-5bbc-4f8f-8078-86a4eef1c7b0";'
+        try:
+            print '>>>>>>>>>>>>> Executing command: ', resources_sql
+            trans = connection.begin()
+            results_cursor = connection.execute(resources_sql)
+            trans.commit() 
+            
+            allTables = results_cursor.fetchall()
+            filteredTables = []
+            for table in allTables:
+                tableName = table[1]
+                if not "pg_" in tableName and not "sql_" in tableName and not tableName == "geometry_columns" and not tableName == "spatial_ref_sys":
+                    filteredTables.append(tableName)
+            
+            trans = connection.begin()        
+            for name in filteredTables:
+                print "dropping table: ", name
+                resource_sql = 'DROP TABLE IF EXISTS "' + name + '";'
+                results = connection.execute(resource_sql)
+            trans.commit() 
+            
+        except Exception, e:
+            print "exception", e
+            assert False
+        finally:
+            connection.close()
+    
+    # this function restores the test database to its original state
     # this currently marks the record as deleted but it does not remove it from the databae.
     # a purse must be called in order to clean the database.
     def _clean_test_database(self, package_name, id):
@@ -288,24 +373,24 @@ class TestGeoserverIntegration (TestCase):
         base_location = self._get_ckan_base_api_url()
         api_key = self._get_user_api_key()
         testclient = CkanClient(base_location, api_key)
-        #package_name ='spatialize_test_resource_3'
+        # package_name ='spatialize_test_resource_3'
         testclient.package_entity_delete(package_name)
         
          
-         #also remove table from database using id
+         # also remove table from database using id
         data_dict = {}
         data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:pass@localhost/datastore')  
         engine = db._get_engine(None, data_dict)
         connection = engine.connect()
-        resources_sql = 'DROP TABLE IF EXISTS "'+id+'";'
-        #resources_sql = 'DROP TABLE "b11351a2-5bbc-4f8f-8078-86a4eef1c7b0";'
+        resources_sql = 'DROP TABLE IF EXISTS "' + id + '";'
+        # resources_sql = 'DROP TABLE "b11351a2-5bbc-4f8f-8078-86a4eef1c7b0";'
         try:
-            print '>>>>>>>>>>>>> Executing command: ',resources_sql
+            print '>>>>>>>>>>>>> Executing command: ', resources_sql
             trans = connection.begin()
             results = connection.execute(resources_sql)
             trans.commit() 
         except Exception, e:
-            print "exception",e
+            print "exception", e
             assert False
         finally:
             connection.close()
@@ -315,21 +400,22 @@ class TestGeoserverIntegration (TestCase):
     # in order for this to work, dont forget to run paster celeryd before using this function
     def _setup_test_database(self, package_name):
         
-        print ">>>>>>>>>>>>>>>>>> creating package: ",package_name
+        print ">>>>>>>>>>>>>>>>>> creating package: ", package_name
         try:
             base_location = self._get_ckan_base_api_url()
             api_key = self._get_user_api_key()
             testclient = CkanClient(base_location, api_key)
-            file_url,status = testclient.upload_file("./testData/small_with_lat_long.csv")
+            file_url, status = testclient.upload_file("./testData/small_with_lat_long.csv")
         
-            print "created file_url:",file_url
+            print "created file_url:", file_url
             print "status: ", status
+            assert True
             
         except Exception, e:
-            print "Exception: ",e
+            print "Exception: ", e
             assert False   
     
-        #construct package  and resource json object. set this file path in the resources.
+        # construct package  and resource json object. set this file path in the resources.
     
         '''    
         package_dict = {u'name': package_name, u'title': u'Spatialize test resource 7', u'notes': u'dummy notes', 
@@ -337,20 +423,20 @@ class TestGeoserverIntegration (TestCase):
         u'spatial': u'{"type":"Polygon","coordinates":[[[-112.8515625,33.61461929233378],[-112.8515625,35.28150065789119],[-108.28125,35.28150065789119],[-108.28125,33.61461929233378],[-112.8515625,33.61461929233378]]]}'}, 
         'resources': [{'description': u'Resource Document Description','format': u'csv', 'url': file_url, 'name': u'Resouce in alaska3'}]}
         '''
-        package_dict = {u'name': package_name, u'title': u'Spatialize test resource 7', u'notes': u'dummy notes', 
-        'owner_org': 'public', u'private': u'False', u'state': u'active',   
-        'resources': [{'description': u'Resource Document Description','format': u'csv', 'url': file_url, 'name': u'Resouce in alaska3'}]}
+        package_dict = {u'name': package_name, u'title': u'Spatialize test resource 7', u'notes': u'dummy notes',
+        'owner_org': 'public', u'private': u'False', u'state': u'active',
+        'resources': [{'description': u'Resource Document Description', 'format': u'csv', 'url': file_url, 'name': u'Resouce in alaska3'}]}
         
-        print "package_dict: at test: ",package_dict
+        print "package_dict: at test: ", package_dict
          
         try:
             ret_pack = testclient.package_register_post(package_dict)
             resources = ret_pack['resources']
             database_id = resources[0]['id'] 
         
-            print ">>>>>>>>>>>>>>>>>>>>>>>> database_id:",database_id
+            print ">>>>>>>>>>>>>>>>>>>>>>>> database_id:", database_id
         except Exception, e:
-            print "Exception: ",e
+            print "Exception: ", e
             assert False
             return ""
         
@@ -372,18 +458,21 @@ if __name__ == '__main__':
     package_name = testObj._get_package_name()      
     testObj.setUp()
     
-    testObj.test_datastore_spatialize()
-    #testObj.test_datastore_expose_as_layer()
+    testObj.test_datastore_spatialize_scenario()
+    
+    #testObj._clean_all_tables_in_database()
+    
+    # testObj.test_datastore_expose_as_layer()
     testObj.test_datastore_remove_exposed_layer()
     
-    #testObj.test_datastore_expose_as_layer()
-    #testObj.test_datastore_is_exposed_as_layer()
+    # testObj.test_datastore_expose_as_layer()
+    # testObj.test_datastore_is_exposed_as_layer()
     
     
     testObj.teardown()
     
-    #test_datastore_expose_as_layer()
-    #test_datastore_expose_as_layer()
-    #test_datastore_list_exposed_layers()
-    #test_datastore_remove_exposed_layer()
+    # test_datastore_expose_as_layer()
+    # test_datastore_expose_as_layer()
+    # test_datastore_list_exposed_layers()
+    # test_datastore_remove_exposed_layer()
     
