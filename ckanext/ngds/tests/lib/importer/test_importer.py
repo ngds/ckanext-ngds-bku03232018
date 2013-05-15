@@ -44,9 +44,9 @@ def test_loadclientconfig_3():
     client_config_path= "./testdata/ckanclient_without_host.cfg"
     bulkuploader = BulkUploader(client_config=client_config_path)
 
-def test_execute_bulk_upload():
-    client_config_path= "./testdata/ckanclient_without_host.cfg"
-    bulkuploader = BulkUploader(client_config=client_config_path)    
+# def test_execute_bulk_upload():
+#     client_config_path= "./testdata/ckanclient_without_host.cfg"
+#     bulkuploader = BulkUploader(client_config=client_config_path)    
 
 '''
     def _clean_test_database(self, package_name, id):
