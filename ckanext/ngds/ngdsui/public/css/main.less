@@ -9,9 +9,19 @@
 @page-margin:0px;
 
 .normal-font () {
-	font-size:13px;
+	font-size:14px;
 	color:#757575;
 }
+
+@font-large:14px;
+@font-regular:12px;
+@light:#545454;
+@hr-color:#cacaca;
+@extra-light:#808080;
+@lcontent-margin:40px;
+@lcontent-small-margin:20px;
+
+
 
 body {
 	margin:@page-margin;
@@ -32,6 +42,12 @@ a {
 	&:visited {
 		text-decoration:none;
 	}
+}
+
+hr {
+	border-top:1px solid @hr-color;
+	margin-left:@lcontent-small-margin;
+	margin-right:@lcontent-small-margin;
 }
 
 p {
@@ -64,7 +80,7 @@ p {
 }
 
 .main-menu-item {
-	font-size:14px; 
+	font-size:@font-large; 
 	margin:0px; 
 	padding:0px;  
 	font-weight:bold;
@@ -97,8 +113,9 @@ p {
 	color:#fff;
 	-webkit-appearance:none;
 	font-size:12px;
-	height:25px;
+	height:23px;
 	width:70px;
+	padding:0px;
 
 	option {
 		color:#000;
@@ -112,12 +129,14 @@ select {
 
 .ngds-button(@height) {
 	.ngds-button-common;
+	padding-bottom:2px;
 	height:@height;
 }
 
 .ngds-button(@width,@height) {
 	.ngds-button-common;
 	width:@width;
+	padding-bottom:2px;
 	height:@height;
 }
 
@@ -131,19 +150,19 @@ select {
 }
 
 input[type="submit"] {
-	.ngds-button(35px);			
+	.ngds-button(23px);			
 }
 
 input[value="Go"] {
-	.ngds-button(40px,35px);			
+	.ngds-button(40px,23px);			
 }
 
 button[type="submit"] {
-	.ngds-button(35px);
+	.ngds-button(23px);
 }
 
 input[type="reset"] {
-	.ngds-button(35px);
+	.ngds-button(23px);
 }
 
 .no-padding {
@@ -177,7 +196,7 @@ header {
 
 				span {
 						.normal-font;
-						font-size:11px;						
+						font-size:@font-regular;						
 						font-weight:bold;
 						margin-top:0px;
 				}
@@ -267,7 +286,7 @@ header {
 	z-index:6; 
 	background-color:#fff; 
 	display:block;
-	font-size:11px;
+	font-size:@font-regular;
 	display:none;
 	text-align:left;
 
@@ -309,7 +328,7 @@ header {
 	z-index:6; 
 	background-color:#fff; 
 	display:block;
-	font-size:11px;
+	font-size:@font-regular;
 	font-family:Arial;
 	display:none;
 	text-align:left;
@@ -376,7 +395,6 @@ header {
 	width:100%;
 	display:table;
 	text-align:left;
-	padding-bottom:30px;
 }
 
 #search-datawatch-container {
@@ -413,8 +431,7 @@ header {
 		}
 
 		input[type="submit"] {
-			margin-top:@input-elem-margin-top;
-			.ngds-button(40px,28px);			
+			margin-top:@input-elem-margin-top;	
 		}
 	}
 }
@@ -422,11 +439,11 @@ header {
 .dialog-common(@image-url) {
 	width:338px;
 	border-top:4px solid #236393;
-	margin-left:40px;
+	margin-left:@lcontent-margin;
 	//padding-top:10px;
     //background:url(@image-url) no-repeat;
     font-family:"Arial";
-	font-size:11px;
+	font-size:@font-regular;
 	margin-top:5px;
 	margin-bottom:0px;
 	color:#959595;
@@ -494,7 +511,12 @@ header {
 
 #map-container {
 	height:700px;
-	position:relative
+	position:relative;
+	z-index:3000;
+}
+
+.leaflet-map-pane {
+	z-index:20;
 }
 
 .dialog-large {
@@ -502,9 +524,9 @@ header {
 }
 
 .left-container-item-common {
-	margin-left:14px;
+	margin-left:@lcontent-small-margin;
 	margin-right:20px;
-	font-size:14px;
+	font-size:@font-large;
 	color:#276795;
 }
 
@@ -519,16 +541,17 @@ header {
 		}
 
 	div {
-		margin-left:15px;
+		margin-left:@lcontent-small-margin;
 		width:260px;
 		margin-bottom:20px;
+		margin-top:20px;
 		
 
 		a {
-			font-size:13px;
+			font-size:@font-regular;
 			font-family:"Arial";
 			font-weight:bold;
-			color:#212121;
+			color:@light;
 			text-decoration:none;
 		}
 
@@ -611,14 +634,20 @@ div#showcase-find-map-container { // Showcase map find container begin
 	height:145px;
 	//position:relative;
 	background-color:#dadada;
+	display:table;
+	width:100%;
+
+	.row {
+		display:table-row;
+	}
 
 	div#footer-links-section {
 		text-align:left;
 		width:660px;
 		height:110px;
 		margin-top:5px;
-		display:table;
-		margin-left:30px;
+		margin-left:40px;
+		padding-left:@lcontent-small-margin;
 
 		div {
 			display:inline;
@@ -630,7 +659,7 @@ div#showcase-find-map-container { // Showcase map find container begin
 				font-family:Arial;
 				font-weight:bold;
 				font-size:12px;
-				margin-bottom:5px;
+				margin-bottom:0px;
 				color:#515151;
 
 			}
@@ -638,7 +667,7 @@ div#showcase-find-map-container { // Showcase map find container begin
 			a {
 				font-family:Arial;
 				font-size:12px;
-				color:#515151;
+				color:@extra-light;
 				text-decoration:none;
 			}
 
@@ -655,7 +684,8 @@ div#showcase-find-map-container { // Showcase map find container begin
 
 
 	.footer-links-feedback-caption-container {
-		width:680px;
+		display:table-cell;
+		width:815px;
 	}
 
 	div#feedback-section {
@@ -663,7 +693,7 @@ div#showcase-find-map-container { // Showcase map find container begin
 		width: 660px;
 		
 		text-align:left;
-		margin-left:25px;
+		margin-left:@lcontent-margin;
 		
 		-webkit-border-bottom-right-radius:6px;
 		border-bottom-right-radius:6px;
@@ -680,10 +710,11 @@ div#showcase-find-map-container { // Showcase map find container begin
 		 p {
 			font-family:Arial;
 			font-size:12px;
+			font-style:italic;
 			line-height:16px;
 			display:inline;
-			color:#515151;
-			margin-left: 5px;
+			color:@extra-light;
+			margin-left: @lcontent-small-margin;
 			margin-top: 0px;
 		//	position: relative;
 		}
@@ -699,7 +730,8 @@ div#data-contributors-container {
 	//position: absolute;
 	top: 15px;
 	right: 0;
-	text-align: left;
+	display:table-cell;
+	text-align:left;
 
 	p {
 		font-size: 12px;
@@ -742,19 +774,20 @@ div.postface {
 	//position:relative;
 	float:left;
 	width:100%;
-	padding-top:15px;
 	height:30px;
 	background-color:#cbcbcb;
 
 	 div.left {
 		float:left;
 		margin-top:5px;
+		margin-left:@lcontent-margin;
 
 		p {
 			margin-top:0px;
-			margin-left:15px;
+			margin-left:20px;
 			font-family:Arial;
-			font-size:10px;
+			font-size:@font-regular;
+			color:@extra-light;
 		}
 	}
 
@@ -764,12 +797,17 @@ div.postface {
 		float:right;
 		width:320px;
 		margin-right:40px;
+		color:@light;
 
 		a {
 			font-family:Arial;
-			font-size:10px;
+			font-size:@font-regular;
 			text-decoration:none;
 			text-align:left;
+
+			&:visited {
+				color:@extra-light;
+			}
 		}
 
 		.center {
@@ -798,10 +836,12 @@ div.postface {
 	position:absolute;
 	top:0px;
 	left:10px;
+	z-index:5001;
 
 	.results, .pager {
 		font-family:Arial;
 		font-size:12px;
+		z-index:5000;
 	}
 
 	.results { 
@@ -810,6 +850,7 @@ div.postface {
 		width:310px;
 		background-color:#fff;
 		opacity:0.8;
+		z-index:5000;
 		//box-sizing:border-box;
 		//-moz-box-sizing:border-box;
 		//-webkit-box-sizing:border-box;
@@ -828,13 +869,14 @@ div.postface {
 
 		.result {
 			margin-top:20px;
+			z-index:10000;
 		
 			&:hover {
 				cursor:pointer;
 			}
 
 			.description {
-				font-size:14px;
+				font-size:@font-large;
 				font-weight:bold;
 				text-decoration:none;
 				color:#0b3656;
@@ -893,6 +935,7 @@ div.postface {
 			margin-top: 15px;
 			font-weight: bold;
 			margin-left: 15px;
+			z-index:5000;
 		}
 
 	}
@@ -904,6 +947,7 @@ div.postface {
 	.full {
 		.results;
 		height:565px; // Map height - top of results - TODO
+		z-index:5000;
 	}
 
 	.search-results-pagination {
@@ -916,14 +960,16 @@ div.postface {
 		width:310px;
 		//left:5px;
 		margin-top:-1px;
+		z-index:5000;
 
 		.search-results-page-nums {
+			z-index:5000;
 			padding-top:10px;
 			a {
 				margin-left:5px;
 				font-weight:bold;
 				color:grey;
-				font-size:14px;
+				font-size:@font-large;
 
 				&:hover {
 					cursor:pointer;
@@ -940,17 +986,23 @@ div.postface {
 	.map-expander {
 		width:310px;
 		top:80px;
+		z-index:5001;
 		//left:5px;
 		height:20px;
 		background-color:#366D96;
 		position:relative;
 		cursor:pointer;
+
 	}
 	
 }
 
 div.about-ngds {
 	min-height:450px;
+}
+
+.jspContainer, .jspPane, .jspVerticalBar {
+	z-index:5000;
 }
 
 div.about-ngds p {
