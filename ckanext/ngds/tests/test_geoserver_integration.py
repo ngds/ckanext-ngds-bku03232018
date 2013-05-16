@@ -1,4 +1,5 @@
-from nose.tools import ok_, eq_
+#from nose.tools import ok_, eq_
+
 import httplib
 import ckan.model as model
 import pylons
@@ -30,20 +31,24 @@ class TestGeoserverIntegration (TestCase):
 # ============================== Fixtures ===============================
     
     # constructor of the class
+    
     def __init__(self):
         print ">>>>>>>>> Constructor >>>>>>>"
         assert True
-
-    # This method is called by nose before all tests are executed.
+    
+    
+    # This method is called by nose before all test_ methods are called in 
+    # instances of this object.
     # We use it to initialize the database
     def setUp(self):
-        print ">>>>>>>>> Test Steup >>>>>>>>"
+        print ">>>>>>>>> Test Setup >>>>>>>>"
         self.id = self._setup_test_database(self.package_name)
         time.sleep(2)  # wait for the data to be stored in the database through celeryd
         assert True
     
     
-    # This method is called after all tests are executed
+    # This method is called after all test* methods are executed in instances of
+    # this class.
     # we use it to clean up the database
     def teardown(self):
         print ">>>>>>>>>> Test Teardown >>>>>>>"
@@ -100,7 +105,9 @@ class TestGeoserverIntegration (TestCase):
         print "Exposed layers: "
         print result3
    
-    '''                   
+    '''
+    # After testing the spatialization functions, we test the
+    # functions that remove the layer from the server                       
     def test_datastore_remove_exposed_layer(self):
         print ">>>>>>>>> The resource is spatialized >>>>>>>>>"
         result0 = self._REST_datastore_is_spatialized()
@@ -118,7 +125,11 @@ class TestGeoserverIntegration (TestCase):
         result2 = self._REST_datastore_is_exposed_as_layer()
         assert result2 == False
         
-        
+    
+    # This test case not only removes the single resource we
+    # published in the former two tests, but also removes any other
+    # resource exposed thorugh the spatialize function in the specific
+    # database    
     def test_datastore_remove_all_exposed_layers(self):
         
         print ">>>>>>>>> List all exposed layers >>>>>>>>>"
@@ -131,7 +142,9 @@ class TestGeoserverIntegration (TestCase):
         result = self._REST_datastore_remove_all_exposed_layers()
         assert result == True
         
-        
+    
+    # This test case verifies the basic functions used to create and
+    # delete workspaces and stores    
     def test_workspace_and_store_management_functions(self):
         # create, list, delete workspace
         print ">>>>>>>>> Creating test workspace >>>>>>>>>"
