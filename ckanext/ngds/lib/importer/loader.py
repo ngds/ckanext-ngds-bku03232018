@@ -119,6 +119,7 @@ class ResourceLoader(loader.ResourceSeriesLoader):
 
     def validate_content_model(self,content_model,version,file_path):
         from ckanext.ngds.contentmodel.logic.action import *
+        import json
         #Validatation method needs to be called.
         validated_json = contentmodel_checkBulkFile(content_model,version,file_path)
 

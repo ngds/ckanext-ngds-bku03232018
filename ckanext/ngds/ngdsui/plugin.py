@@ -1,4 +1,4 @@
-from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers, IPackageController
+from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers, IPackageController, IFacets
 from ckanext.ngds.ngdsui import authorize
 from ckan.lib.base import (model,abort, h, g, c)
 from ckan.logic import get_action,check_access
@@ -156,3 +156,8 @@ class NgdsuiPlugin(SingletonPlugin):
 			print "Definitely not in"
 
 		return search_params
+'''
+	implements(IFacets,inherit=True)
+	def dataset_facets(self,facets_dict,dataset_type):
+		return OrderedDict([('groups', _('Cheese')),('tags', _('Tags')),('res_format', _('Formats')),('license', _('Licence')),])
+'''		

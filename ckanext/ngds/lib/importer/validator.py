@@ -4,7 +4,7 @@ import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
 referenced_keys = ('category','status','topic','protocol')
 
-date_keys = ('publication_date')
+date_keys = ('date_publication')
 mandatory_keys = ('name','title')
 
 class BasicLogger:
