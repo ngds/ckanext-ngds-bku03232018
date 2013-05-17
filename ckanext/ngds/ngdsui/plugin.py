@@ -1,4 +1,4 @@
-from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers, IPackageController, IFacets
+from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, ITemplateHelpers, IPackageController
 from ckanext.ngds.ngdsui import authorize
 from ckan.lib.base import (model,abort, h, g, c)
 from ckan.logic import get_action,check_access
