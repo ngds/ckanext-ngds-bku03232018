@@ -1,0 +1,145 @@
+[
+    {
+        "facet": "Topic",
+        "type": "list",
+        "max_length": "5",
+        "metadatafield": "tags",
+        "subfacet": [
+            {
+                "facet": "Geothermal System",
+                "type": "list",
+                "subfacet": [
+                    {
+                        "facet": "Wells",
+                        "type": "keyword",
+                        "synonymes": [
+                            "borehole"
+                        ]
+                    },
+                    {
+                        "facet": "Geology",
+                        "type": "keyword"
+                    },
+                    {
+                        "facet": "Modeling",
+                        "type": "keyword"
+                    },
+                    {
+                        "facet": "Hydrogeology",
+                        "type": "keyword"
+                    }
+                ]
+            },
+            {
+                "facet": "Geothermal System Types",
+                "type": "list",
+                "subfacet": [
+                    {
+                        "facet": "Sedimentary Aquifier",
+                        "type": "keyword"
+                    },
+                    {
+                        "facet": "Coproduced Fluids",
+                        "type": "keyword"
+                    }
+                ]
+            },
+            {
+                "facet": "Other",
+                "type": "dynamic_keywords"
+            }
+        ]
+    },
+    {
+        "facet": "Date",
+        "type": "date",
+        "metadatafield": "date_publication"
+    },
+    {
+        "facet": "Resource",
+        "type": "list",
+        "subfacet": [
+            {
+                "facet": "Datatype",
+                "type": "dynamic_keywords",
+                "metadatafield": "Datatype"
+            },
+            {
+                "facet": "Online Resource",
+                "type": "list",
+                "subfacet": [
+                    {
+                        "facet": "Service Protocol",
+                        "type": "dynamic_keywords",
+                        "metadatfield": "Protocol"
+                    },
+                    {
+                        "facet": "File Type",
+                        "type": "dynamic_keywords",
+                        "metadatfield": "res_format"
+                    },
+                    {
+                        "facet": "Offline Resource",
+                        "type": "dynamic_keywords",
+                        "metadatfield": "Offline_Resource"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "facet": "Source & Author",
+        "type": "list",
+        "subfacet": [
+            {
+                "facet": "Source",
+                "type": "dynamic_keywords",
+                "metadatafield": "Source"
+            },
+            {
+                "facet": "Author",
+                "type": "dynamic_keywords",
+                "metadatafield": "author"
+            }
+        ]
+    },
+    {
+        "facet": "Status",
+        "type": "list",
+        "metadatafield": "status",
+        "subfacet": [
+            {
+                "facet": "Completed",
+                "type": "keyword"
+            },
+            {
+                "facet": "Ongoing",
+                "type": "keyword"
+            },
+            {
+                "facet": "Deprecated",
+                "type": "keyword"
+            }
+        ]
+    },
+    {
+        "facet": "Content Model",
+        "type": "contentmodel",
+        "metadatafield": "content_model"
+    },
+    {
+        "facet": "Public/ Private",
+        "type": "list",
+        "metadatafield": "private",
+        "subfacet": [
+            {
+                "facet": "Public",
+                "type": "keyword"
+            },
+            {
+                "facet": "Public",
+                "type": "keyword"
+            }
+        ]
+    }
+]

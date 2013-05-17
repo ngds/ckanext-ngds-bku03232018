@@ -45,14 +45,14 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 						'text':results[i]['type']
 					}
 				},
-				// {
-				// 	'tag':'button',
-				// 	'attributes':{
-				// 		'class':'wms',
-				// 		'id':results[i]['resources'][0]['id'],
-				// 		'text':"WMS"
-				// 	}
-				// },
+				{
+					'tag':'button',
+					'attributes':{
+						'class':'wms',
+						'id':results[i]['resources'][0]['id'],
+						'text':"WMS"
+					}
+				},
 				{
 					'tag':'p',
 					'attributes':{
@@ -109,6 +109,23 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 	}
 	$('.results').prepend(reader);
 	$(".results").jScrollPane({contentWidth:'0px'});
+
+	var inc=inc || (inc=0);
+	$(".wms").click(function(ev){
+				var id=ev.currentTarget.id;
+						var ngds_layer = L.tileLayer.wms('http://'+window.location.hostname+":8080/geoserver/NGDS/wms",{
+						layers:"NGDS:"+id,
+						format: 'image/png',
+					    transparent: true,
+					    attribution: "NGDS",
+					    tileSize:128,
+					    opacity:'0.9999'
+					});
+
+				layer_control.addOverlay(ngds_layer,"WMS"+inc);
+				inc++;
+			});
+
 };
 
 ngds.subscribe('Map.results_received',ngds.render_search_results);

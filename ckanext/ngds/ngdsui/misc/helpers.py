@@ -18,7 +18,7 @@ def get_responsible_party_name(id):
 	# mod = inspect.getmodule(frm[0])
 	# print '[%s] %s' % (mod.__name__, id)
 	# If we don't get an int id, return an empty string.
-	if id:
+	if id  and isinstance(id,basestring)==True:
 		try:
 			id_int = int(id)
 		except(ValueError):

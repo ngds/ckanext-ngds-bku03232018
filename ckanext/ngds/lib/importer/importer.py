@@ -28,8 +28,12 @@ referenced_keys = ('category','status','topic','protocol')
 
 class BulkUploader(object):
 
-    def __init__(self):
-        client_config_file = config.get('ngds.client_config_file')
+    def __init__(self,client_config=None):
+
+        if client_config is None:
+            client_config_file = config.get('ngds.client_config_file')
+        else:
+            client_config_file = client_config
         #print "client_config_file: ",client_config_file
         self._loadclientconfig(client_config_file)
         self.ckanclient = self._get_ckanclient()
@@ -149,20 +153,14 @@ class SpreadsheetDataRecords(DataRecords):
     def __init__(self, spreadsheet_data, essential_title):
         assert isinstance(spreadsheet_data, spreadsheet_importer.SpreadsheetData), spreadsheet_data
         self._data = spreadsheet_data
-        # find titles row
         self.titles, self.last_titles_row_index = self.find_titles(essential_title)
-        #print "Titles: ",self.titles
         self._first_record_row = self.find_first_record_row(self.last_titles_row_index + 1)     
 
     def find_titles(self, essential_title):
-        #print "find_titles Here essential_title: ",essential_title
         row_index = 0
         titles = []
         essential_title_lower = essential_title.lower()
-        #print "Number of rows:",self._data.get_num_rows()
-        #print "essential_title:",essential_title
         while True:
-            #print "row_index:",row_index
             if row_index >= self._data.get_num_rows():
                 raise ImportException('Could not find title row')
             row = self._data.get_row(row_index)
@@ -189,8 +187,6 @@ class SpreadsheetDataRecords(DataRecords):
     @property
     def records(self):
         '''Returns each record as a dict.'''
-        #print "Returning from NGDS records...."
-        print "enter records property...."
         for row_index in range(self._first_record_row, self._data.get_num_rows()):
             row = self._data.get_row(row_index)
             row_has_content = False
@@ -211,25 +207,6 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         self._record_params = record_params if record_params != None else ['Title']
         self._record_class = record_class
         super(NGDSPackageImporter, self).__init__(record_class=record_class,**kwargs)
-        
-    # def import_into_package_records(self):
-    #     try: 
-    #         package_data = CsvData(self.log, filepath=self._filepath,
-    #                                buf=self._buf)
-    #     except ImportException:
-    #         package_data = XlData(self.log, filepath=self._filepath,
-    #                               buf=self._buf, sheet_index=0)
-    #         if package_data.get_num_sheets() > 1:
-    #             package_data = [XlData(self.log, filepath=self._filepath,
-    #                               buf=self._buf, sheet_index=i) for i in range(package_data.get_num_sheets())]
-    #     self._package_data_records = MultipleSpreadsheetDataRecords(
-    #         data_list=package_data,
-    #         record_params=self._record_params,
-    #         record_class=self._record_class)
-        
-    # def record_2_package(self, row_dict):
-    #     pkg_dict = self.pkg_xl_dict_to_fs_dict(row_dict, self.log)
-    #     return pkg_dict
 
     @classmethod
     def license_2_license_id(self, license_title, logger=None):
@@ -345,21 +322,3 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                     pkg_fs_dict['extras'][title] = cell
         pkg_fs_dict['owner_org']='public'
         return pkg_fs_dict
-
-                
-# class MultipleSpreadsheetDataRecords(DataRecords):
-#     '''Takes several SpreadsheetData objects and returns records for all
-#     of them combined.
-#     '''
-#     def __init__(self, data_list, record_params, record_class=SpreadsheetDataRecords):
-#         self.records_list = []
-#         if not isinstance(data_list, (list, tuple)):
-#             data_list = [data_list]
-#         for data in data_list:
-#             self.records_list.append(record_class(data, *record_params))
-            
-#     @property
-#     def records(self):
-#         for spreadsheet_records in self.records_list:
-#             for spreadsheet_record in spreadsheet_records.records:
-#                 yield spreadsheet_record

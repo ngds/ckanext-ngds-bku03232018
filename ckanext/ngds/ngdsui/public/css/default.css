@@ -226,7 +226,7 @@ div.search-browse-inverted-dome { /* Tres cool. */
 } 
 
 div#content-container {
-	min-height:400px;
+	padding-bottom:20px;
 }
 
 div#content-container section.search-results {

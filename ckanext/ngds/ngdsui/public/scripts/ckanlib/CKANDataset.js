@@ -24,7 +24,6 @@ ngds.ckandataset = function(raw) {
 			});
 			var geojson = $.parseJSON(spatial_extra);
 			var description = raw.notes;
-			console.log(raw);
 
 			var popup_skeleton = {
 				'tag':'div',

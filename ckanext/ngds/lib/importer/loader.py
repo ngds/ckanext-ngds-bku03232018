@@ -110,16 +110,25 @@ class ResourceLoader(loader.ResourceSeriesLoader):
                 # insert new res
                 merged_dict['resources'].append(pkg_res)
 
-        #log.debug("....Merged resources:\n%s" % pformat(merged_dict["resources"]))
-
         return merged_dict    
 
-    #this has to change just for now doing this....
     def _get_resource_id(self, res):
         #print "Inside NGDS Resource Loader"
         #print "Resource URL ",res.get('name')
         return res.get('name')
 
     def validate_content_model(self,content_model,version,file_path):
+        from ckanext.ngds.contentmodel.logic.action import *
+        import json
         #Validatation method needs to be called.
-        return True
+        validated_json = contentmodel_checkBulkFile(content_model,version,file_path)
+
+        validation_dict = json.loads(validated_json)
+
+        validation_status = validation_dict['valid']
+
+        if validation_status=='true':
+            return True
+        else:
+            raise Exception ("Content Model validation Failed due to : %s" % validation_dict['messages'])
+

@@ -22,6 +22,7 @@
   <link rel="stylesheet/less" type="text/css" href="/css/main.less"/>
   <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
   <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
+  <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css" />
   <script type="text/javascript" src="/vendor/less/less.min.js"></script>
 {% endblock %}
 {% block bodytag %}
@@ -111,6 +112,8 @@
   <script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
   <script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
   <script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
+  <script type="text/javascript" src="/vendor/geosearch/src/js/l.control.geosearch.js"></script>
+  <script type="text/javascript" src="/vendor/geosearch/src/js/l.geosearch.provider.openstreetmap.js"></script>
 
   <script type="text/javascript" src="/vendor/jscrollpane/jquery.jscrollpane.min.js"></script>
   <script type="text/javascript" src="/vendor/jscrollpane/jquery.mousewheel.js"></script>
@@ -132,6 +135,8 @@
    <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
    <script type="text/javascript" src="/scripts/utils/utils.js"></script>
   <script type="text/javascript" src="/scripts/autocomplete.js"></script>
+
+  
   
   <!--
   <script>document.getElementsByTagName('html')[0].className += ' js';</script>

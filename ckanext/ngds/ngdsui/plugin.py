@@ -156,3 +156,8 @@ class NgdsuiPlugin(SingletonPlugin):
 			print "Definitely not in"
 
 		return search_params
+'''
+	implements(IFacets,inherit=True)
+	def dataset_facets(self,facets_dict,dataset_type):
+		return OrderedDict([('groups', _('Cheese')),('tags', _('Tags')),('res_format', _('Formats')),('license', _('Licence')),])
+'''		

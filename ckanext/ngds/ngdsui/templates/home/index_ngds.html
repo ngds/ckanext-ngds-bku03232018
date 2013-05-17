@@ -5,16 +5,20 @@
         <div id="search-datawatch-container">
           <div id="search-container">
               <p class="main-menu-item menu-align">SEARCH</p>
-              <p class="menu-caption">Find geothermal data, images, publications &amp; more</p>
+              <p class="menu-caption">Find geothermal data, images, publications and more</p>
+              <hr />
               <!-- <select class="search-combo"><option>Map</option><option>Search</option></select> -->
               <form>
                 <input type="text" class="search-bar"/>
+                &nbsp;in&nbsp;
+                <select><option>Map</option><option>Library</option></select>
                 <input type="submit" class="search-button not-implemented" value="Go">
               </form>
           </div>
           <div id="data-watch-container">
               <p class="main-menu-item menu-align">DATA WATCH</p>
               <p class="menu-caption">Recently shared with NGDS</p>
+              <hr />
               <div>
                 <a href="#" class="not-implemented">Selected Hydrologic Data, San Pitch River Drainage Basin, Utah</a>
                 <p class="data-watch-feed-caption">By G.B. Robinson. Published February 1, 1968</p>
@@ -41,7 +45,7 @@
           <div id="map-it-container">
               <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map' %}">
                   <span class="map-it-content menu-item-large">
-                    <img src="/assets/MapIt.png" class="star-it-pointer-img" alt="V"/>
+                    <img src="/assets/map-it-new.png" class="star-it-pointer-img" alt="V"/>
                   </span>
               </a>
           </div>
@@ -49,7 +53,7 @@
           <div id="find-in-library-container">
               <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_library' %}">
                   <span class="find-it-content menu-item-large">
-                    <img src="/assets/FindInLibrary.png" class="star-it-pointer-img" alt="VS"/>
+                    <img src="/assets/find-in-library-new.png" class="star-it-pointer-img" alt="VS"/>
                   </span>
               </a>
           </div>
