@@ -32,7 +32,8 @@ class TestGeoserverIntegration (TestCase):
     
     # constructor of the class
     
-    def __init__(self):
+    
+    def __init__(self, test = None, config=None, resultProxy=None):
         print ">>>>>>>>> Constructor >>>>>>>"
         assert True
     
@@ -645,6 +646,7 @@ This gets executed if one runs this .py file by itself.
 This file should be called with the nosetests command, so this code
 segment will not be executed by the tests.    
 '''
+
 if __name__ == '__main__':
     
     
@@ -676,4 +678,4 @@ if __name__ == '__main__':
     # test_datastore_expose_as_layer()
     # test_datastore_list_exposed_layers()
     # test_datastore_remove_exposed_layer()
-    
+  
