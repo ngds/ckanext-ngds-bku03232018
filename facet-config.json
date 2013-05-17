@@ -99,7 +99,7 @@
             {
                 "facet": "Author",
                 "type": "dynamic_keywords",
-                "metadatafield": "Author"
+                "metadatafield": "author"
             }
         ]
     },

@@ -1,5 +1,5 @@
 from ckan.plugins import implements, SingletonPlugin
-from ckan.plugins import IConfigurer, IActions, IRoutes,IFacets
+from ckan.plugins import IConfigurer, IActions, IRoutes,IFacets,IPackageController
 from ckanext.ngds.metadata.controllers.additional_metadata import dispatch
 from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
 
@@ -14,6 +14,8 @@ except ImportError:
     from sqlalchemy.util import OrderedDict
 
 from pylons import config   
+from ckan.lib.base import (model,abort, h, g, c)
+
 
 
 class MetadataPlugin(SingletonPlugin):
@@ -68,6 +70,12 @@ class MetadataPlugin(SingletonPlugin):
     implements(IFacets,inherit=True)
     def dataset_facets(self,facets_dict,dataset_type):
 
+        try:
+            if g.loaded_facets:
+                return g.loaded_facets
+        except AttributeError:
+            print "facets are yet to be loaded from the config."
+
         facets_config_path = config.get('ngds.facets_config')
 
         #facets_dict = OrderedDict([('private', _('Public/ Private')),('tags', _('Tags')),('res_format', _('Formats')),('status', _('Status')),('author', _('Author')),])
@@ -76,6 +84,7 @@ class MetadataPlugin(SingletonPlugin):
             loaded_facets = self.load_facets(facets_config_path=facets_config_path)
         
         if loaded_facets:
+            g.loaded_facets = loaded_facets
             facets_dict = loaded_facets
 
         #print "facets_dict: ",facets_dict
@@ -91,6 +100,8 @@ class MetadataPlugin(SingletonPlugin):
             import json
             from pprint import pprint
             json_data = json.load(json_file)
+
+            g.facet_json_data = json_data
 
             #facets_dict =OrderedDict()
             facets_list = []
@@ -113,3 +124,18 @@ class MetadataPlugin(SingletonPlugin):
                 facet_list = self.read_facet(subfacet,facet_list)
 
         return facet_list
+
+
+    implements(IPackageController,inherit=True)
+    def after_search(self,search_results, search_params):
+
+        try:
+            import json
+            if g.facet_json_data:
+                print "global value is there..."
+        except AttributeError:
+            print "Facet json config is not available. Returning the default facets."
+        
+        #print "search_results: ", json.dumps(search_results)
+
+        return search_results
