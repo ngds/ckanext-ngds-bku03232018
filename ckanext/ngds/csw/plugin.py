@@ -38,7 +38,7 @@ class CswPlugin(SingletonPlugin):
                     action="csw",
                     conditions={"method": ["GET", "POST"]})
 
-        map.connect("xml-record",
+        map.connect("serialize-record",
                     "/dataset/:package_id/:format",
                     controller="ckanext.ngds.csw.controllers.serializer:PackageSerializer",
                     action="dispatch",
