@@ -1,20 +1,18 @@
 [
     {
         "facet": "Topic",
-        "type": "list",
+        "type": "title",
         "max_length": "5",
         "metadatafield": "tags",
         "subfacet": [
             {
                 "facet": "Geothermal System",
-                "type": "list",
+                "type": "title",
                 "subfacet": [
                     {
-                        "facet": "Wells",
-                        "type": "keyword",
-                        "synonymes": [
-                            "borehole"
-                        ]
+                        "display_name": "Wells",
+                        "facet": "wells",
+                        "type": "keyword"
                     },
                     {
                         "facet": "Geology",
@@ -32,7 +30,7 @@
             },
             {
                 "facet": "Geothermal System Types",
-                "type": "list",
+                "type": "title",
                 "subfacet": [
                     {
                         "facet": "Sedimentary Aquifier",
@@ -46,18 +44,14 @@
             },
             {
                 "facet": "Other",
-                "type": "dynamic_keywords"
+                "type": "dynamic_keywords"              
+                
             }
         ]
     },
     {
-        "facet": "Date",
-        "type": "date",
-        "metadatafield": "date_publication"
-    },
-    {
         "facet": "Resource",
-        "type": "list",
+        "type": "title",
         "subfacet": [
             {
                 "facet": "Datatype",
@@ -66,22 +60,22 @@
             },
             {
                 "facet": "Online Resource",
-                "type": "list",
+                "type": "title",
                 "subfacet": [
                     {
                         "facet": "Service Protocol",
                         "type": "dynamic_keywords",
-                        "metadatfield": "Protocol"
+                        "metadatafield": "Protocol"
                     },
                     {
                         "facet": "File Type",
                         "type": "dynamic_keywords",
-                        "metadatfield": "res_format"
+                        "metadatafield": "res_format"
                     },
                     {
                         "facet": "Offline Resource",
                         "type": "dynamic_keywords",
-                        "metadatfield": "Offline_Resource"
+                        "metadatafield": "Offline_Resource"
                     }
                 ]
             }
@@ -89,7 +83,7 @@
     },
     {
         "facet": "Source & Author",
-        "type": "list",
+        "type": "title",
         "subfacet": [
             {
                 "facet": "Source",
@@ -105,7 +99,7 @@
     },
     {
         "facet": "Status",
-        "type": "list",
+        "type": "title",
         "metadatafield": "status",
         "subfacet": [
             {
@@ -124,22 +118,25 @@
     },
     {
         "facet": "Content Model",
-        "type": "contentmodel",
+        "type": "dynamic_keywords",
         "metadatafield": "content_model"
     },
+  
     {
         "facet": "Public/ Private",
-        "type": "list",
+        "type": "title",
         "metadatafield": "private",
         "subfacet": [
             {
-                "facet": "Public",
+                "display_name":"Public",
+                "facet": "false",
                 "type": "keyword"
             },
             {
-                "facet": "Public",
+                "display_name":"Private",
+                "facet": "true",
                 "type": "keyword"
             }
         ]
-    }
+    }    
 ]

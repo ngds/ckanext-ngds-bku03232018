@@ -6,6 +6,13 @@ DataError = dictization_functions.DataError
 from pylons import config
 import inspect
 
+import ckan.plugins as p
+_ = p.toolkit._
+
+try:
+    from collections import OrderedDict # 2.7
+except ImportError:
+    from sqlalchemy.util import OrderedDict
 
 def get_responsible_party_name(id):
 	"""
@@ -80,3 +87,121 @@ def is_plugin_enabled(plugin):
 		return True
 	return False
 
+def load_ngds_facets():
+    try:
+        if g.loaded_facets:
+            return g.loaded_facets
+    except AttributeError:
+        print "facets are yet to be loaded from the config."
+
+    facets_config_path = config.get('ngds.facets_config')
+
+
+    if facets_config_path:
+        loaded_facets = read_facets_json(facets_config_path=facets_config_path)
+    
+    if loaded_facets:
+        g.loaded_facets = loaded_facets
+        facets_dict = loaded_facets
+
+    return  facets_dict
+
+def read_facets_json(facets_config_path=None):
+    '''
+    This Method loads the given facets config file and constructs the facets structure to be used.
+    '''
+
+    with open(facets_config_path, 'r') as json_file:
+        import json
+        from pprint import pprint
+        json_data = json.load(json_file)
+
+        g.facet_json_data = json_data
+
+        #facets_dict =OrderedDict()
+        facets_list = []
+
+        for facet in json_data:
+            facets_list = read_facet(facet,facets_list)
+
+    if facets_list:
+        return OrderedDict(facets_list)
+    else:
+        return None
+
+def read_facet(facet_config,facet_list):
+
+    if facet_config.get("metadatafield") :
+        facet_list.append((facet_config['metadatafield'],_(facet_config.get("facet"))))
+
+    if facet_config.get("subfacet"):
+        for subfacet in facet_config.get("subfacet"):
+            facet_list = read_facet(subfacet,facet_list)
+
+    return facet_list
+
+
+def get_ngdsfacets():
+    print "entering facets..."
+    facet_config = g.facet_json_data
+
+    facets = []
+
+    for facet_group in facet_config:
+        facet_dict = {}
+        facets.append(construct_facet(facet_group,facet_dict=facet_dict,facet_level=1))
+    import json
+    #print "Constructed Facets: ",facets
+
+    return facets
+
+def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,facet_values=None):
+
+    #print "facet_group: ",facet_group
+    print "facet_group.get(metadatafield):",facet_group.get("metadatafield")
+
+    if facet_group.get("metadatafield") :
+        metadatafield = facet_group['metadatafield']
+        facet_dict['facet_field'] = metadatafield
+        facet_values = h.get_facet_items_dict(metadatafield)
+        #print "facet_values:",facet_values
+
+    facet_dict['type'] = facet_group.get("type")
+    if facet_group.get("type") == "title":
+        if facet_level == 1:
+            facet_type = "title"
+        else:
+            facet_type = "subtitle"
+    else:
+        facet_type = "facet"
+
+    facet_dict['display_name'] = facet_group.get('display_name') or facet_group.get('facet')
+    facet_dict['display_type'] = facet_type
+
+    '''
+    [{'count': 1, 'active': False, 'display_name': u'wells', 'name': u'wells'}, {'count': 1, 'active': False, 'display_name': u'Geology', 'name': u'Geology'}]
+    '''
+
+    if facet_group.get("type") == 'dynamic_keywords':
+        facet_dict['fvalues'] = facet_values
+
+    if facet_group.get("type") == 'keyword':
+        found = False
+        for ret_facet in facet_values:
+            if ret_facet['name'] == facet_group.get('facet'):
+                if facet_group.get('display_name'):
+                    ret_facet['display_name'] = facet_group['display_name']
+                facet_dict['fvalues'] = [ret_facet]
+                found = True
+                facet_values.remove(ret_facet)
+                break
+        if not found:
+            facet_dict['fvalues'] = [ {'count': 0,'active': False,'display_name': facet_dict.get('display_name'),'name': facet_group.get('facet')}]
+
+    if facet_group.get("subfacet"):
+        subfacet_dict = []
+        for subfacet in facet_group.get("subfacet"):
+            subfacet_dict.append(construct_facet(subfacet,facet_dict={"facet_field":metadatafield},metadatafield=metadatafield,facet_level=2,facet_values=facet_values))
+        facet_dict['subfacet'] = subfacet_dict
+
+    return facet_dict

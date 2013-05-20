@@ -115,7 +115,6 @@ class NgdsuiPlugin(SingletonPlugin):
 
 		self.customize_ckan_for_ngds()
 
-
 	implements(IAuthFunctions, inherit=True)
 
 	def get_auth_functions(self):
@@ -134,7 +133,9 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_login_url':helpers.get_login_url,
 			'get_language':helpers.get_language,
 			'get_url_for_file':helpers.get_url_for_file,
-			'is_plugin_enabled':helpers.is_plugin_enabled
+			'is_plugin_enabled':helpers.is_plugin_enabled,
+			'load_ngds_facets':helpers.load_ngds_facets,
+			'get_ngdsfacets':helpers.get_ngdsfacets,
 		}
 
 	implements(IPackageController,inherit=True)
@@ -156,8 +157,32 @@ class NgdsuiPlugin(SingletonPlugin):
 			print "Definitely not in"
 
 		return search_params
-'''
+
+	def after_search(self,search_results, search_params):
+		try:
+			if g.facet_json_data:
+				print "global value is there..."
+		except AttributeError:
+			print "Facet json config is not available. Returning the default facets."
+			helpers.load_ngds_facets()
+		print "search_results: ",search_results
+		return search_results
+
 	implements(IFacets,inherit=True)
-	def dataset_facets(self,facets_dict,dataset_type):
-		return OrderedDict([('groups', _('Cheese')),('tags', _('Tags')),('res_format', _('Formats')),('license', _('Licence')),])
-'''		
+	def dataset_facets(self,facets_dict,package_type):
+		print "IFACETS is called.......>>>>>>>>>>>>>>>>"
+		ngds_facets = helpers.load_ngds_facets()
+		
+		if ngds_facets:
+			facets_dict = ngds_facets
+		
+		return facets_dict		
+
+	def organization_facets(self,facets_dict, organization_type, package_type):
+		print "IFACETS is called.......>>>>>>>>>>>>>>>>"
+		ngds_facets = helpers.load_ngds_facets()
+		
+		if ngds_facets:
+			facets_dict = ngds_facets
+		
+		return facets_dict	
