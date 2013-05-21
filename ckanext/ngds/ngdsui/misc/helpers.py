@@ -151,7 +151,7 @@ def get_ngdsfacets():
         facet_dict = {}
         facets.append(construct_facet(facet_group,facet_dict=facet_dict,facet_level=1))
     import json
-    #print "Constructed Facets: ",facets
+    print "Constructed Facets: ",json.dumps(facets)
 
     return facets
 

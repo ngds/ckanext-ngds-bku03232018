@@ -12,12 +12,14 @@
 	<div class="library-search-accordion-header adjusted-top-search">
 		<div class="library-search-browse-header" style="-webkit-border-radius:0;"><p>Narrow your results</p></div>	
 		<div class="search-browse-inverted-dome adjusted-bottom-search"></div>
-    <div style="overflow-y:auto;overflow-x:hidden;height:350px;width:100%">
+    <ul id="accordion">
       {% set facet_list = h.get_ngdsfacets() %}
       {% for facet in facet_list %}
+        <li>
           {{ h.snippet('snippets/ngds_facets.html', facet=facet,topfacet=True,extras={'id':c.group_dict.id}) }}
+        </li>
       {% endfor %}
-    </div>
+    </ul>
 
 	</div>
 

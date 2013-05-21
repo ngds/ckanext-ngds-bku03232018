@@ -111,6 +111,7 @@ div#library-search-container div.library-search-accordion-header {
 	float:left;
 	position: absolute;
 	margin-top:20px;
+	margin-left: 20px;
 	width:240px;
 }
 

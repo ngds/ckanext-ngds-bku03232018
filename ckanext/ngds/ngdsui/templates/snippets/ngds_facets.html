@@ -31,36 +31,28 @@ alternative_url
 
 
 #}
-  <section >
+
     {% if facet.display_type=='title' or (topfacet and facet.type=='dynamic_keywords')%}
     {% set facet_level = 'first' %}
-    <h2 class="module-heading">
-      <i class="icon-medium icon-filter"></i>
-      {{ facet.display_name }}
-    </h2>
+    <h4><a href="#">
+      {{ facet.display_name }}</a>
+    </h4>
     {% elif facet.display_type=='subtitle' or ( not topfacet and facet.type=='dynamic_keywords') %}
     {% set facet_level = 'second' %}
-    <p style="font-size:11px;font-weight:bold;">
-      {{ facet.display_name }}
-    </p>    
+      <span style="font-size:11px;">{{ facet.display_name }}</span>
     {% endif %}
     {% if facet.fvalues %}
-      <nav>
-        <ul style="margin:0px">
+      <div>
           {% for item in facet.fvalues %}
             {% set href = h.remove_url_param(facet.facet_field, item.name, extras=extras, alternative_url=alternative_url) if item.active else h.add_url_param(new_params={facet.facet_field: item.name}, extras=extras, alternative_url=alternative_url) %}
             {% set label = label_function(item) if label_function else h.truncate(item.display_name, 22) %}
             {% set count = count_label(item['count']) if count_label else ('(%d)' % item['count']) %}
-              <li class="{% if item.active %} active{% endif %}">
                 <a href="{{ href }}">
                   <span style="font-size:10px;">{{ label }} {{ count }}</span>
                 </a>
-              </li>
           {% endfor %}
-        </ul>
-      </nav>
       {% if facet.type=='dynamic_keywords' %}
-      <p class="module-footer" style="font-size:10px">
+      <p  style="font-size:10px">
         {% if h.get_param_int('_%s_limit' % facet.facet_field) %}
           <a href="{{ h.remove_url_param('_%s_limit' % facet.facet_field, replace=0, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show More {facet}').format(facet=facet.display_name) }}</a>
         {% else %}
@@ -68,13 +60,18 @@ alternative_url
         {% endif %}
       </p>
       {% endif %}
+      </div>
     {% elif not facet.subfacet %}
-      <br>
-      <p style="font-size:11px;font-weight:normal;padding-left:5px;padding-bottom:10px;margin-bottom:10px;">{{ _('No Results') }}</p>
+      <div>
+      <span style="font-size:10px;font-weight:normal;">{{ _('No Results') }}</span>
+    </div>
     {% endif %}
     {% if facet.subfacet %}
+      <ul id="accordion1">
       {% for subfacet in facet.subfacet %}
+      <li>
         {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
+      </li>
       {% endfor %}
+    </ul>
     {% endif%}
-  </section>
