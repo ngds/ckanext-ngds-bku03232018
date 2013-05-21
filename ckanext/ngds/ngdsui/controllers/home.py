@@ -6,15 +6,11 @@ from ckan.lib.base import (request,
                            abort, h, g, c)
 
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
-<<<<<<< Updated upstream
 from sqlalchemy import orm, types, Column, Table, ForeignKey, desc, and_
-=======
 from ckan.controllers.organization import OrganizationController
 from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
 from ckan.logic import (tuplize_dict,clean_dict,
                         parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
-
->>>>>>> Stashed changes
 from ckan.model import Session, Package
 import ckan.logic as logic
 import ckan.lib.dictization.model_dictize as model_dictize
