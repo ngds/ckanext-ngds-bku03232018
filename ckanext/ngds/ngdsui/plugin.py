@@ -134,7 +134,9 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_login_url':helpers.get_login_url,
 			'get_language':helpers.get_language,
 			'get_url_for_file':helpers.get_url_for_file,
-			'is_plugin_enabled':helpers.is_plugin_enabled
+			'is_plugin_enabled':helpers.is_plugin_enabled,
+			'username_for_id':helpers.username_for_id,
+			'get_formatted_date':helpers.get_formatted_date
 		}
 
 	implements(IPackageController,inherit=True)

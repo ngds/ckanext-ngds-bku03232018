@@ -2,8 +2,11 @@ from ckan.lib.base import model,h,g,c,request
 import ckan.lib.navl.dictization_functions as dictization_functions
 import ckan.logic as logic
 import ckan.controllers.storage as storage
+from ckan.model import User
 DataError = dictization_functions.DataError
 from pylons import config
+from datetime import date
+import iso8601
 import inspect
 
 
@@ -80,3 +83,8 @@ def is_plugin_enabled(plugin):
 		return True
 	return False
 
+def username_for_id(id):
+	return model.User.get(id).name
+
+def get_formatted_date(timestamp):
+	return iso8601.parse_date(timestamp).strftime("%B %d,%Y")

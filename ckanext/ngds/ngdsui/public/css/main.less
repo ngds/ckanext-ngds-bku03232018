@@ -546,18 +546,25 @@ header {
 		margin-bottom:20px;
 		margin-top:20px;
 		
-
-		a {
+		.a-style(@color) {
 			font-size:@font-regular;
 			font-family:"Arial";
 			font-weight:bold;
-			color:@light;
+			color:@color;
 			text-decoration:none;
+		}
+
+		a {
+			.a-style(@light);
 		}
 
 		p {
 			font-style:italic;
 			margin-bottom:0px;
+
+			a {
+				.a-style(@extra-light);
+			}
 		}
 	}
 }
