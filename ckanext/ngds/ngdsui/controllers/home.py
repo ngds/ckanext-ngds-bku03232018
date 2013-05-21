@@ -6,7 +6,15 @@ from ckan.lib.base import (request,
                            abort, h, g, c)
 
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
+<<<<<<< Updated upstream
 from sqlalchemy import orm, types, Column, Table, ForeignKey, desc, and_
+=======
+from ckan.controllers.organization import OrganizationController
+from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
+from ckan.logic import (tuplize_dict,clean_dict,
+                        parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
+
+>>>>>>> Stashed changes
 from ckan.model import Session, Package
 import ckan.logic as logic
 import ckan.lib.dictization.model_dictize as model_dictize
@@ -42,12 +50,12 @@ class HomeController(NGDSBaseController):
 		return render('home/about_ngds.html')
 
 
-	def render_map(self):
+	def render_map(self,query=''):
 		
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		return render('map/map.html')	
+		return render('map/map.html',{'query':query})	
 
 	def render_library(self):
 		
@@ -62,4 +70,15 @@ class HomeController(NGDSBaseController):
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
 		return render('resources/resources.html')
+
+	def initiate_search(self):
+		data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))	
+		query =''
+		if 'query' in data:
+			query=data['query']
+		if data['search-type']=='library':
+			return redirect('/organization/public?q='+query)
+		else:
+			return self.render_map(query)
 		

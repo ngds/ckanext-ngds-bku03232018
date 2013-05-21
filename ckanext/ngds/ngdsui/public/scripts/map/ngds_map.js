@@ -87,9 +87,9 @@ ngds.Map = {
 			var _drawnItems = ngds.Map.drawnItems = new L.LayerGroup();
 			map.addLayer(_drawnItems);
 
-			new L.Control.GeoSearch({
-	            provider: new L.GeoSearch.Provider.OpenStreetMap()
-	        }).addTo(map);
+			// new L.Control.GeoSearch({
+	  //           provider: new L.GeoSearch.Provider.OpenStreetMap()
+	  //       }).addTo(map);
 		
 			this.layers = {
 				'geojson':_geoJSONLayer,
