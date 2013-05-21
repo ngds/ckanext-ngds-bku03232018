@@ -165,12 +165,12 @@ class NgdsuiPlugin(SingletonPlugin):
 		except AttributeError:
 			print "Facet json config is not available. Returning the default facets."
 			helpers.load_ngds_facets()
-		print "search_results: ",search_results
+		#print "search_results: ",search_results
 		return search_results
 
 	implements(IFacets,inherit=True)
 	def dataset_facets(self,facets_dict,package_type):
-		print "IFACETS is called.......>>>>>>>>>>>>>>>>"
+		#print "IFACETS is called.......>>>>>>>>>>>>>>>>"
 		ngds_facets = helpers.load_ngds_facets()
 		
 		if ngds_facets:
@@ -179,7 +179,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		return facets_dict		
 
 	def organization_facets(self,facets_dict, organization_type, package_type):
-		print "IFACETS is called.......>>>>>>>>>>>>>>>>"
+		#print "IFACETS is called.......>>>>>>>>>>>>>>>>"
 		ngds_facets = helpers.load_ngds_facets()
 		
 		if ngds_facets:

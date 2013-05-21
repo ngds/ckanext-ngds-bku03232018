@@ -2,7 +2,6 @@
     {
         "facet": "Topic",
         "type": "title",
-        "max_length": "5",
         "metadatafield": "tags",
         "subfacet": [
             {
@@ -119,7 +118,8 @@
     {
         "facet": "Content Model",
         "type": "dynamic_keywords",
-        "metadatafield": "content_model"
+        "metadatafield": "content_model",
+        "display_type":"title"
     },
   
     {

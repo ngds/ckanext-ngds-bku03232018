@@ -33,12 +33,12 @@ alternative_url
 #}
 
     {% if facet.display_type=='title' or (topfacet and facet.type=='dynamic_keywords')%}
-    {% set facet_level = 'first' %}
+
     <h4><a href="#">
       {{ facet.display_name }}</a>
     </h4>
     {% elif facet.display_type=='subtitle' or ( not topfacet and facet.type=='dynamic_keywords') %}
-    {% set facet_level = 'second' %}
+      
       <span style="font-size:11px;">{{ facet.display_name }}</span>
     {% endif %}
     {% if facet.fvalues %}
@@ -67,7 +67,7 @@ alternative_url
     </div>
     {% endif %}
     {% if facet.subfacet %}
-      <ul id="accordion1">
+      <ul class="ngds-accordion">
       {% for subfacet in facet.subfacet %}
       <li>
         {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}

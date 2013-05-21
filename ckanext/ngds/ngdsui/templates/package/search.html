@@ -16,7 +16,11 @@
       {% set facet_list = h.get_ngdsfacets() %}
       {% for facet in facet_list %}
         <li>
+          {% if c.group_dict.id %}
           {{ h.snippet('snippets/ngds_facets.html', facet=facet,topfacet=True,extras={'id':c.group_dict.id}) }}
+          {% else %}
+          {{ h.snippet('snippets/ngds_facets.html', facet=facet,topfacet=True) }}
+          {% endif %}
         </li>
       {% endfor %}
     </ul>

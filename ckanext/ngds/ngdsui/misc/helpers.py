@@ -104,6 +104,7 @@ def load_ngds_facets():
         g.loaded_facets = loaded_facets
         facets_dict = loaded_facets
 
+    #print "OrderedDict: ",facets_dict
     return  facets_dict
 
 def read_facets_json(facets_config_path=None):
@@ -125,6 +126,7 @@ def read_facets_json(facets_config_path=None):
             facets_list = read_facet(facet,facets_list)
 
     if facets_list:
+        #print "facets_list: ",facets_list
         return OrderedDict(facets_list)
     else:
         return None
@@ -151,14 +153,14 @@ def get_ngdsfacets():
         facet_dict = {}
         facets.append(construct_facet(facet_group,facet_dict=facet_dict,facet_level=1))
     import json
-    print "Constructed Facets: ",json.dumps(facets)
+    #print "Constructed Facets: ",json.dumps(facets)
 
     return facets
 
 def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,facet_values=None):
 
     #print "facet_group: ",facet_group
-    print "facet_group.get(metadatafield):",facet_group.get("metadatafield")
+    #print "facet_group.get(metadatafield):",facet_group.get("metadatafield")
 
     if facet_group.get("metadatafield") :
         metadatafield = facet_group['metadatafield']
@@ -188,6 +190,7 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
     if facet_group.get("type") == 'keyword':
         found = False
         for ret_facet in facet_values:
+            #print "ret_facet['name']: ",ret_facet['name']
             if ret_facet['name'] == facet_group.get('facet'):
                 if facet_group.get('display_name'):
                     ret_facet['display_name'] = facet_group['display_name']
@@ -195,8 +198,13 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
                 found = True
                 facet_values.remove(ret_facet)
                 break
+
         if not found:
-            facet_dict['fvalues'] = [ {'count': 0,'active': False,'display_name': facet_dict.get('display_name'),'name': facet_group.get('facet')}]
+            active = False
+            if facet_type == "facet":
+                if (facet_dict['facet_field'], facet_group.get('facet')) in request.params.items():
+                    active = True
+            facet_dict['fvalues'] = [ {'count': 0,'active': active,'display_name': facet_dict.get('display_name'),'name': facet_group.get('facet')}]
 
     if facet_group.get("subfacet"):
         subfacet_dict = []
