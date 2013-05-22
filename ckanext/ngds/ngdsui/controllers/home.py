@@ -46,12 +46,16 @@ class HomeController(NGDSBaseController):
 		return render('home/about_ngds.html')
 
 
-	def render_map(self,query=''):
+	def render_map(self,query=None):
 		
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		return render('map/map.html',{'query':query})	
+		query_mode = True
+		if query==None:
+			query_mode = False
+
+		return render('map/map.html',{'query':query, 'query_mode':query_mode})	
 
 	def render_library(self):
 		
