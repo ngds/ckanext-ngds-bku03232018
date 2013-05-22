@@ -51,11 +51,9 @@ class HomeController(NGDSBaseController):
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		query_mode = True
-		if query==None:
-			query_mode = False
-
-		return render('map/map.html',{'query':query, 'query_mode':query_mode})	
+		if query:
+			c.query = query
+		return render('map/map.html')	
 
 	def render_library(self):
 		
@@ -74,9 +72,12 @@ class HomeController(NGDSBaseController):
 	def initiate_search(self):
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))	
+		
 		query =''
+		
 		if 'query' in data:
-			query=data['query']
+			query = data['query']
+			
 		if data['search-type']=='library':
 			return redirect('/organization/public?q='+query)
 		else:

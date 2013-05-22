@@ -3,13 +3,12 @@
 
 {%- block content %}
 
-
 <div style="position:relative; height:100%;">
 	<div class="map-search dialog-small-map" style="float:left;">
 		<form action="javascript:ngds.Map.top_level_search()">
 			<fieldset>
-				{% if query_mode %}
-				<input id="map-query" type="text" placeholder="Geothermal Texas" value="{{ query }}"/>
+				{% if c.query %}
+				<input id="map-query" type="text" placeholder="Geothermal Texas" value="{{ c.query }}"/>
 				{% else %}
 				<input id="map-query" type="text" placeholder="Geothermal Texas"/>
 				{% endif %}
@@ -48,10 +47,34 @@
 	<link rel="stylesheet" href="/vendor/Leaflet.Fullscreen/Control.FullScreen.css" />
 {% endblock %}
 {% block scripts %}
-	{{ super() }}
+	<script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
+  <script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
+  <script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
+  <script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
+  <script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
+  <script type="text/javascript" src="/vendor/geosearch/src/js/l.control.geosearch.js"></script>
+  <script type="text/javascript" src="/vendor/geosearch/src/js/l.geosearch.provider.openstreetmap.js"></script>
 
-	{% if query_mode %}
-inside
+  <script type="text/javascript" src="/vendor/jscrollpane/jquery.jscrollpane.min.js"></script>
+  <script type="text/javascript" src="/vendor/jscrollpane/jquery.mousewheel.js"></script>
+  <script type="text/javascript" src="/vendor/jscrollpane/mwheelIntent.js"></script>
+ <!-- // <script type="text/javascript" src="/vendor/Leaflet.Fullscreen/Control.FullScreen.js"></script> -->
+    <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
+    <script type="text/javascript" src="/scripts/utils/utils.js"></script>
+    <script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
+    <script type="text/javascript" src="/scripts/map/pager.js"></script>
+    <script type="text/javascript" src="/scripts/map/main.js"></script>
+  <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
+  
+  <script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
+  <script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
+  <script type="text/javascript" src="/scripts/map/result_parser.js"></script>
+  <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
+
+	{% if c.query %}
 <script>
 	console.log("Initiating search");
 	ngds.Map.top_level_search();
