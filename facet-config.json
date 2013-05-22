@@ -1,6 +1,6 @@
 [
     {
-        "facet": "Topic",
+        "display_name": "Topic",
         "type": "title",
         "metadatafield": "tags",
         "subfacet": [
@@ -118,8 +118,7 @@
     {
         "facet": "Content Model",
         "type": "dynamic_keywords",
-        "metadatafield": "content_model",
-        "display_type":"title"
+        "metadatafield": "content_model"
     },
   
     {

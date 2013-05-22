@@ -87,73 +87,113 @@ def is_plugin_enabled(plugin):
 		return True
 	return False
 
+'''
+This method loads the ngds facet configuration file and finds the facets to be during the search.
+   
+    **Parameters:**
+    None.
+
+    **Results:**
+    :returns: The facets dict to be used for search.
+    :rtype: OrderedDict    
+'''
+
 def load_ngds_facets():
+
+    # Return the loaded facets from global context if available. This will avoid unnecssary reading of config file everytime during search.
     try:
         if g.loaded_facets:
             return g.loaded_facets
     except AttributeError:
         print "facets are yet to be loaded from the config."
 
+
+    # Read the facet config file path from application config file (developement.ini)
     facets_config_path = config.get('ngds.facets_config')
 
 
     if facets_config_path:
         loaded_facets = read_facets_json(facets_config_path=facets_config_path)
     
+    # If facets are loaded and available then set them in global context and return.
     if loaded_facets:
         g.loaded_facets = loaded_facets
         facets_dict = loaded_facets
 
-    #print "OrderedDict: ",facets_dict
     return  facets_dict
 
-def read_facets_json(facets_config_path=None):
-    '''
-    This Method loads the given facets config file and constructs the facets structure to be used.
-    '''
 
+'''
+This Method loads the given facets config file and constructs the facets structure to be used.
+    **Parameters:**
+    facets_config_path - Facets Configuration file (json file) path.
+
+    **Results:**
+    :returns: The facets dict to be used for search.
+    :rtype: OrderedDict    
+'''
+def read_facets_json(facets_config_path=None):
+
+    #Open the json config file and load it as dict.
     with open(facets_config_path, 'r') as json_file:
         import json
         from pprint import pprint
         json_data = json.load(json_file)
 
+        #Dict structure of json config file is placed on global context for future use.
         g.facet_json_data = json_data
 
-        #facets_dict =OrderedDict()
         facets_list = []
-
+        #Pass each facet to read_facet method to find the list of fields.
         for facet in json_data:
             facets_list = read_facet(facet,facets_list)
 
     if facets_list:
-        #print "facets_list: ",facets_list
         return OrderedDict(facets_list)
     else:
         return None
 
-def read_facet(facet_config,facet_list):
+'''
+Reads the input facet_config and its subfacets to find the metadatafields which will be used to used as facets. 
+    **Parameters:**
+    facet_struc - Particular facet structure to be iterated.
+    facets_list - list of found facets to which new facets needs to be added into.
 
-    if facet_config.get("metadatafield") :
-        facet_list.append((facet_config['metadatafield'],_(facet_config.get("facet"))))
+    **Results:**
+    :returns: The facets list 
+    :rtype: list
+'''
+def read_facet(facet_struc,facet_list):
 
-    if facet_config.get("subfacet"):
-        for subfacet in facet_config.get("subfacet"):
+    #If the metadatafield exists in the facet then add it to the list.
+    if facet_struc.get("metadatafield") :
+        facet_list.append((facet_struc['metadatafield'],_(facet_struc.get("facet") or facet_struc.get("display_name"))))
+
+    #If subfacet exists then iterate through entire structure to find the remaining facets.
+    if facet_struc.get("subfacet"):
+        for subfacet in facet_struc.get("subfacet"):
             facet_list = read_facet(subfacet,facet_list)
 
     return facet_list
 
+'''
+This method gets the facets from search results and construct them into NGDS specific structure based on the facet json config file.
+   
+    **Parameters:**
+    None.
 
+    **Results:**
+    :returns: Faceted results dict found from the results.
+    :rtype: Dict    
+'''
 def get_ngdsfacets():
-    print "entering facets..."
+
     facet_config = g.facet_json_data
-
+    
     facets = []
-
     for facet_group in facet_config:
         facet_dict = {}
         facets.append(construct_facet(facet_group,facet_dict=facet_dict,facet_level=1))
-    import json
-    #print "Constructed Facets: ",json.dumps(facets)
 
     return facets
 
@@ -166,23 +206,24 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
         metadatafield = facet_group['metadatafield']
         facet_dict['facet_field'] = metadatafield
         facet_values = h.get_facet_items_dict(metadatafield)
-        #print "facet_values:",facet_values
 
-    facet_dict['type'] = facet_group.get("type")
-    if facet_group.get("type") == "title":
+
+    facet_type = facet_group.get("type")
+
+    facet_dict['type'] = facet_type
+
+
+    if facet_type == "title" or (facet_type == "dynamic_keywords" and not facet_group.get("subfacet")):
         if facet_level == 1:
-            facet_type = "title"
+            display_type = "title"
         else:
-            facet_type = "subtitle"
+            display_type = "subtitle"
     else:
-        facet_type = "facet"
+        display_type = "facet"
 
     facet_dict['display_name'] = facet_group.get('display_name') or facet_group.get('facet')
-    facet_dict['display_type'] = facet_type
+    facet_dict['display_type'] = display_type
 
-    '''
-    [{'count': 1, 'active': False, 'display_name': u'wells', 'name': u'wells'}, {'count': 1, 'active': False, 'display_name': u'Geology', 'name': u'Geology'}]
-    '''
 
     if facet_group.get("type") == 'dynamic_keywords':
         facet_dict['fvalues'] = facet_values
@@ -201,7 +242,7 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
 
         if not found:
             active = False
-            if facet_type == "facet":
+            if display_type == "facet":
                 if (facet_dict['facet_field'], facet_group.get('facet')) in request.params.items():
                     active = True
             facet_dict['fvalues'] = [ {'count': 0,'active': active,'display_name': facet_dict.get('display_name'),'name': facet_group.get('facet')}]

@@ -12,8 +12,9 @@
 	<div class="library-search-accordion-header adjusted-top-search">
 		<div class="library-search-browse-header" style="-webkit-border-radius:0;"><p>Narrow your results</p></div>	
 		<div class="search-browse-inverted-dome adjusted-bottom-search"></div>
-    <ul id="accordion">
+    <ul class="accordion">
       {% set facet_list = h.get_ngdsfacets() %}
+      {% set i=1 %}
       {% for facet in facet_list %}
         <li>
           {% if c.group_dict.id %}

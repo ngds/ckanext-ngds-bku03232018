@@ -32,46 +32,49 @@ alternative_url
 
 #}
 
-    {% if facet.display_type=='title' or (topfacet and facet.type=='dynamic_keywords')%}
+    {% if facet.display_type=='title' %}
 
     <h4><a href="#">
       {{ facet.display_name }}</a>
     </h4>
-    {% elif facet.display_type=='subtitle' or ( not topfacet and facet.type=='dynamic_keywords') %}
+    {% elif facet.display_type=='subtitle' %}
       
-      <span style="font-size:11px;">{{ facet.display_name }}</span>
+      <h4><span style="font-size:11px;">{{ facet.display_name }}</span></h4>
     {% endif %}
     {% if facet.fvalues %}
-      <div>
+        <div>
           {% for item in facet.fvalues %}
             {% set href = h.remove_url_param(facet.facet_field, item.name, extras=extras, alternative_url=alternative_url) if item.active else h.add_url_param(new_params={facet.facet_field: item.name}, extras=extras, alternative_url=alternative_url) %}
+            
             {% set label = label_function(item) if label_function else h.truncate(item.display_name, 22) %}
+            
             {% set count = count_label(item['count']) if count_label else ('(%d)' % item['count']) %}
-                <a href="{{ href }}">
-                  <span style="font-size:10px;">{{ label }} {{ count }}</span>
-                </a>
+
+            <a href="{{ href }}"><span style="font-size:10px;">{{ label }} {{ count }}</span> </a>
           {% endfor %}
-      {% if facet.type=='dynamic_keywords' %}
-      <p  style="font-size:10px">
-        {% if h.get_param_int('_%s_limit' % facet.facet_field) %}
-          <a href="{{ h.remove_url_param('_%s_limit' % facet.facet_field, replace=0, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show More {facet}').format(facet=facet.display_name) }}</a>
-        {% else %}
-          <a href="{{ h.remove_url_param('_%s_limit' % facet.facet_field, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show Only Popular {facet}').format(facet=facet.display_name) }}</a>
-        {% endif %}
-      </p>
-      {% endif %}
-      </div>
+
+          {% if facet.type=='dynamic_keywords' %}
+            <span  style="font-size:10px">
+              {% if h.get_param_int('_%s_limit' % facet.facet_field) %}
+                <a href="{{ h.remove_url_param('_%s_limit' % facet.facet_field, replace=0, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show More {facet}').format(facet=facet.display_name) }}</a>
+              {% else %}
+                <a href="{{ h.remove_url_param('_%s_limit' % facet.facet_field, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show Only Popular {facet}').format(facet=facet.display_name) }}</a>
+              {% endif %}
+            </span>
+          {% endif %}
+        </div>
     {% elif not facet.subfacet %}
       <div>
-      <span style="font-size:10px;font-weight:normal;">{{ _('No Results') }}</span>
-    </div>
+        <span style="font-size:10px;font-weight:normal;">{{ _('No Results') }}</span>
+      </div>
     {% endif %}
+
     {% if facet.subfacet %}
-      <ul class="ngds-accordion">
-      {% for subfacet in facet.subfacet %}
-      <li>
-        {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
-      </li>
-      {% endfor %}
-    </ul>
+      <ul class="accordion">
+        {% for subfacet in facet.subfacet %}
+          <li>
+            {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
+          </li>
+        {% endfor %}
+      </ul>
     {% endif%}
