@@ -1,6 +1,6 @@
 [
     {
-        "display_name": "Topic",
+        "display_name": "Topics",
         "type": "title",
         "metadatafield": "tags",
         "subfacet": [
@@ -139,3 +139,9 @@
         ]
     }    
 ]
+
+
+
+
+
+

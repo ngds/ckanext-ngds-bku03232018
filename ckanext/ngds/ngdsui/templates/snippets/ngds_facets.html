@@ -39,7 +39,7 @@ alternative_url
     </h4>
     {% elif facet.display_type=='subtitle' %}
       
-      <h5><span style="font-size:11px;">{{ facet.display_name }}</span></h5>
+      <h4><span style="font-size:11px;">{{ facet.display_name }}</span></h4>
     {% endif %}
     {% if facet.fvalues %}
         <div>
@@ -62,19 +62,31 @@ alternative_url
               {% endif %}
             </span>
           {% endif %}
+
+          {% if facet.subfacet %}
+            <ul class="accordion">
+              {% for subfacet in facet.subfacet %}
+                <li>
+                  {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif%}
+
         </div>
-    {% elif not facet.subfacet %}
+    {% else %}
       <div>
-        <span style="font-size:10px;font-weight:normal;">{{ _('No Results') }}</span>
+          {% if facet.subfacet %}
+            <ul class="accordion">
+              {% for subfacet in facet.subfacet %}
+                <li>
+                  {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <span style="padding-left:5px;font-size:10px;font-weight:normal;">{{ _('No Results') }}</span>
+          {% endif%}        
       </div>
     {% endif %}
 
-    {% if facet.subfacet %}
-      <ul class="accordion">
-        {% for subfacet in facet.subfacet %}
-          <li>
-            {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif%}
