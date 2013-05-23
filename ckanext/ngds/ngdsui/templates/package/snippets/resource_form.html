@@ -14,27 +14,32 @@
 
   <div class="main-controls">
       <div class="radio-section">
+        <input type="hidden" name="dataset-name" value="{{pkg_name}}"/>
         <input type="radio" id="upload-type-selection" name="upload_type_selection" value="upload_type"/>
         <label for="upload-type-selection">Upload a file</label><br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-structured" class="upload-type" name="upload_type" value="structured"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-structured" class="upload-type" name="upload-type" value="structured"/>
         <label for="upload-type-structured">Structured</label><br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-unstructured" class="upload-type" name="upload_type" value="unstructured"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-unstructured" class="upload-type" name="upload-type" value="unstructured"/>
         <label for="upload-type-unstructured">Unstructured</label>
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="data-service" name="data-service" value="data-service" />
+        <input type="radio" id="data-service" name="upload-type" value="data-service" />
         <label for="data-service">Link to a data service</label>
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="offline-resouece" name="offline-resource" value="offline-resource" />
+        <input type="radio" id="offline-resouece" name="upload-type" value="offline-resource" />
         <label for="offline-resource">Offline resource</label>
       </div>
   </div>
 
 
-
-
+<div class="form-actions">
+  <button type="submit" name="save" value="go-dataset">Previous</button>
+  <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
+  <button type="submit" name="save" value="go-metadata">Additional Metadata</button>
+</div>
 </form>
+
 <script type="text/javascript" src="/scripts/contribute/resource_form.js">

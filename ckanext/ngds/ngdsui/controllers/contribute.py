@@ -448,9 +448,13 @@ class ContributeController(NGDSBaseController):
 		redirect(url)
 
 	def create_or_update_resource(self,data=None):
+		package_controller=PackageController()
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
+		if 'save' in data and data['save']=='go-dataset':
+			return package_controller.new_metadata(data['dataset-name'])
+
 		dataset_name = data['dataset_name']
 		content_model = None
 		file_attached = False
@@ -482,7 +486,4 @@ class ContributeController(NGDSBaseController):
 			else:
 				return contentmodel_checkFile(context,data_dict)
 		
-
-		x=PackageController()
-		
-		return x.new_resource(dataset_name)
+		return package_controller.new_resource(dataset_name)
