@@ -197,11 +197,25 @@ def get_ngdsfacets():
 
     return facets
 
+'''
+This method constructs the facet results for each Facet structure (from json file) 
+   
+    **Parameters:**
+    facet_group - Facet Structure to be filled based on results.
+    facet_dict - newly constrcuted facets dict which needs to be appended with new values.
+    metadatafield - Metadata field of the facet.
+    facet_level - 1 - Top level facet 2 - Other sub level facets.
+    facet_values - Values of the facets returned from search.
+
+
+    **Results:**
+    :returns: Constructed faceted dict from the input facet structure and the results.
+    :rtype: Dict    
+'''
 def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,facet_values=None):
 
-    #print "facet_group: ",facet_group
-    #print "facet_group.get(metadatafield):",facet_group.get("metadatafield")
 
+    #If metadatafield exists, then get the faceted values from the search results.
     if facet_group.get("metadatafield") :
         metadatafield = facet_group['metadatafield']
         facet_dict['facet_field'] = metadatafield
@@ -213,6 +227,8 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
     facet_dict['type'] = facet_type
 
 
+    # Display type of the field is determined here. If the facet level is 1 (i.e. called from get_ngdsfacets()) then it shld be top level title.
+    #Otherwise it will be sub-title. In some cases, top level facet itself will be of type dynamic_keywords. Those types shld be displayed as titles.
     if facet_type == "title" or (facet_type == "dynamic_keywords" and not facet_group.get("subfacet")):
         if facet_level == 1:
             display_type = "title"
@@ -221,13 +237,16 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
     else:
         display_type = "facet"
 
+    #If the displaye_name exits then display that otherwise display facet itself.
     facet_dict['display_name'] = facet_group.get('display_name') or facet_group.get('facet')
     facet_dict['display_type'] = display_type
 
-
+    #if the facet_type is dynamic_keywords then there won't be any sub-facets. Display those dynamic facet values .
     if facet_group.get("type") == 'dynamic_keywords':
         facet_dict['fvalues'] = facet_values
 
+    #If the facet_type is "keyword" then it has to be compared with the results for the count. If matches then remove that from the results so that it won't be in the others list.
+    #If the facet is not matching with any results, then create a dummy facet with count 0.
     if facet_group.get("type") == 'keyword':
         found = False
         for ret_facet in facet_values:
@@ -247,6 +266,7 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
                     active = True
             facet_dict['fvalues'] = [ {'count': 0,'active': active,'display_name': facet_dict.get('display_name'),'name': facet_group.get('facet')}]
 
+    #If subfacet exists in the facet then iterate through the entire sub-facet structure to construct the results.
     if facet_group.get("subfacet"):
         subfacet_dict = []
         for subfacet in facet_group.get("subfacet"):

@@ -134,6 +134,12 @@ var ngds = ngds || { };
 		    	collapsible:true
 			});
 
+		$(".facet").click(function() {
+	      window.location = $(this).attr('href');
+	      return false;
+   		});
+      
+
 /*		var accordions = $(".accordion");
 
 		for(var i=0;i<accordions.length;i++) {
