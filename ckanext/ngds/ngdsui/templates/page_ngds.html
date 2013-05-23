@@ -23,10 +23,13 @@
   <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
   <!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
   <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css" />
-  <script type="text/javascript" src="/vendor/less/less.min.js"></script>
-   <script>
+     <script>
    var ngds = ngds || (ngds = { });
    </script>
+  <script type="text/javascript" src="/vendor/less/less.min.js"></script>
+  <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
+   <script type="text/javascript" src="/scripts/utils/utils.js"></script>
+
 {% endblock %}
 {% block bodytag %}
 {%- endblock -%}
@@ -103,11 +106,10 @@
 
   </div>
 {%- endblock -%}
-
-{%- block scripts %}
-  
-   <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
    
+  {% block scripts %} 
+
+  {% endblock %}
    <!-- // <script type="text/javascript" src="/scripts/scripts.js"></script> -->
    
    
@@ -123,5 +125,4 @@
   <script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/follow.js;modules/popover-context.js;modules/activity-stream.js;modules/dashboard.js">
   </script>
 -->
-{% endblock -%}
 

@@ -683,15 +683,6 @@ div#basemap-combo {
 
 /* These styles have to be re-examined for neccessity and appropriateness. */
 
-.stages {
-	width:699px;
-	display:table;
-	border-collapse:separate;
-	text-align:center;
-	padding-left:0px;
-	margin-left:0px;
-	margin-top:0px;
-}
 
 button.highlight {
 	text-decoration: none;
@@ -703,38 +694,9 @@ button.highlight {
 	cursor: pointer;
 }
 
-section.module {
-	width:750px;
-	margin-left:250px;
-	font-family:Arial;
-	font-weight:bold;
-	font-size:18px;
-	min-height:550px;
-}
 
-div.module-content {
-	width:700px;
-}
-
-.first-stage, .middle-stage, .last-stage {
-	display:table-cell;
-	font-size:14px;
-	font-family:Arial;
-	font-weight:bold;
-	width:100px;
-	height:35px;
-	padding-top:15px;
-	padding-bottom:0px;
-	background-color:#dadada;
-}
-
-.active {
-	background-color:#8A8687;
-}
-
-.control-group, .form-actions {
+/*.control-group, .form-actions {
 	width:670px;
-	/*margin-left:250px;*/
 	text-align:right;
 }
 
@@ -765,14 +727,13 @@ div.module-content {
 }
 
 .controls {
-	/*margin-right:20px;*/
-}
+}*/
 
 .align-left {
 	text-align:left;
 }
 
-label.control-label, span.add-on, div.form-actions a {
+/*label.control-label, span.add-on, div.form-actions a {
 	font-size:16px;
 	font-family:Arial;
 	font-weight:normal;
@@ -793,7 +754,7 @@ div.module-content form.dataset-form {
 
 div.controls select {
 	width:200px;
-	/* margin-left:210px; */
+	
 	margin-top:5px;
 	margin-left:40px;
 	height:25px;
@@ -806,7 +767,7 @@ div.controls div#bbox-map {
 	margin-left: 170px;
 	padding-right: 0px;
 	padding-left: 0px;
-}
+}*/
 
 /*label[for="field-extras-0-remove"], label[for="field-extras-0-key"], 
 label[for="field-extras-0-key"], label[for="field-extras-0-value"], 
@@ -1055,7 +1016,7 @@ div#login-page section {
   width: 320px;
 }
 
-.module-heading {
+/*.module-heading {
   margin: 0;
   padding: 7px 25px;
   font-size: 14px;
@@ -1079,10 +1040,10 @@ div#login-page section {
 }
 
 .form-horizontal input {
-margin-left: 40px;
+/*margin-left: 40px;
 	  display: inline-block;
   *display: inline;
-  /* IE7 inline-block hack */
+  /* IE7 inline-block hack 
 
   *zoom: 1;
   margin-bottom: 0;
@@ -1165,7 +1126,7 @@ margin-left: 40px;
 .form-horizontal .form-actions {
   padding-left: 25px;
   padding-right: 25px;
-}
+}*/
 
 
 .alert {
@@ -1585,16 +1546,6 @@ dd {
 }
 .js .tab-content.active {
   display: block;
-}
-.module {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-  background-color: #ffffff;
-  margin-bottom: 20px;
 }
 
 .module-item {

@@ -18,9 +18,9 @@
         <input type="radio" id="upload-type-selection" name="upload_type_selection" value="upload_type"/>
         <label for="upload-type-selection">Upload a file</label><br/>
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-structured" class="upload-type" name="upload-type" value="structured"/>
-        <label for="upload-type-structured">Structured</label><br/>
+        <label for="upload-type-structured" id="upload-type-structured-label">Structured</label><br/>
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-unstructured" class="upload-type" name="upload-type" value="unstructured"/>
-        <label for="upload-type-unstructured">Unstructured</label>
+        <label for="upload-type-unstructured" id="upload-type-unstructured-label">Unstructured</label>
       </div>
 
       <div class="radio-section">
@@ -34,12 +34,54 @@
       </div>
   </div>
 
+  <div class="form-body">
+    
+    <div class="structured-form" style="display:none;">
+      
+      <div class="input-group">
+        <div class="sp-label"><label for="url">Link to resource</label></div>
+        <input type="text" name="url" id="url" class="structured-input"></input>
 
-<div class="form-actions">
-  <button type="submit" name="save" value="go-dataset">Previous</button>
-  <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
-  <button type="submit" name="save" value="go-metadata">Additional Metadata</button>
+        <div id="file-upload">
+          <input type="submit" name="file" id"file" value="Browse"></input>
+          <input type="file" class="structured-input"></input>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div class="sp-label"><label for="name">Name</label></div>
+        <input type="text" name="name" id="name" class="structured-input"></input>
+      </div>
+
+      <div class="input-group">
+        <div class="sp-label"><label for="content-model">Content Model</label></div>
+        <select name="content_model" id="content_model" class="structured-input"></select>
+      </div>
+
+      <div class="input-group">
+        <div class="sp-label"><label for="content-model-version">Version</label></div>
+        <select name="content_model_version" id="content_model_version" class="structured-input"></select>
+      </div>
+
+       <div class="input-group">
+        <div class="sp-label description-label-div"><label for="description">Description</label></div>
+        <textarea rows="4" cols="1" name="description" id="description" class="structured-input"></textarea>
+      </div>
+
+       <div class="input-group">
+        <div class="sp-label"><label for="format">Format</label></div>
+        <input type="text" name="format" id="format" class="structured-input"></input>
+      </div>
+
+    </div> 
+
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" name="save" value="go-dataset">Previous Page</button>
+    <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
+    <button type="submit" name="save" value="go-metadata">Additional Metadata</button>
 </div>
 </form>
 
-<script type="text/javascript" src="/scripts/contribute/resource_form.js">
+<script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
