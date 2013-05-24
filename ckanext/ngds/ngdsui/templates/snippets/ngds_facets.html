@@ -34,12 +34,12 @@ alternative_url
 
     {% if facet.display_type=='title' %}
 
-    <h4><a href="#">
-      {{ facet.display_name }}</a>
+    <h4><span style="font-size:12px;"><a href="#">
+      {{ facet.display_name }}</a></span>
     </h4>
     {% elif facet.display_type=='subtitle' %}
       
-      <h4><span style="font-size:11px;">{{ facet.display_name }}</span></h4>
+      <h3><span style="font-size:11px;">{{ facet.display_name }}</span></h3>
     {% endif %}
     {% if facet.fvalues %}
         <div>
@@ -51,6 +51,9 @@ alternative_url
             {% set count = count_label(item['count']) if count_label else ('(%d)' % item['count']) %}
 
             <a href="{{ href }}" class="facet"><span style="font-size:10px;">{{ label }} {{ count }}</span> </a>
+            {% if facet.type == 'dynamic_keywords'%}
+              <br>
+            {% endif %}
           {% endfor %}
 
           {% if facet.type=='dynamic_keywords' %}

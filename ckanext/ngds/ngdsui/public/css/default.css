@@ -143,11 +143,7 @@ div#library-search-container div.library-search-accordion-header ul li div {
 	padding-bottom:0px;
 }
 
-.ui-accordion .ui-accordion-content { overflow:hidden !important; }
 
-.ui-accordion .ui-accordion-content span {
-	display:block;
-}
 
 div#library-search-container div.library-search-accordion-header ul li div div {
 	display:block;
@@ -231,9 +227,10 @@ div#content-container {
 }
 
 div#content-container section.search-results {
-	position:relative;
-	top:100px;
+	position:absolute;
 	float:right;
+	left:26%;
+	top:10px;
 	width:750px;
 	padding-bottom:130px;
 }
