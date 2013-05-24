@@ -452,6 +452,9 @@ class ContributeController(NGDSBaseController):
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
+
+		print data
+
 		if 'save' in data and data['save']=='go-dataset':
 			return package_controller.new_metadata(data['dataset-name'])
 

@@ -93,4 +93,9 @@ upload_type_radios.on('change',function(ev){
 	
 });
 
+$("#file").on('change',function(ev){
+	var timestamp = new Date().toISOString();
+	$("#key").value = timestamp;
+	$(".dataset-form").submit();
+});
 
