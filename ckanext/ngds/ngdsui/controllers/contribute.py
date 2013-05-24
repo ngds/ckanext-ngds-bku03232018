@@ -10,8 +10,10 @@ from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 import ckanext.ngds.lib.importer.helper as import_helper
 from ckan.controllers.package import PackageController
+from ckan.controllers.storage import StorageController,StorageAPIController
 from ckanext.ngds.contentmodel.logic.action import *
 
+import json
 import os
 import shutil
 import zipfile
@@ -452,13 +454,16 @@ class ContributeController(NGDSBaseController):
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
-
-		print data
+		dataset_name = data['dataset-name']
 
 		if 'save' in data and data['save']=='go-dataset':
-			return package_controller.new_metadata(data['dataset-name'])
+			return package_controller.new_metadata(dataset_name)
 
-		dataset_name = data['dataset_name']
+		if 'save' in data and data['save']=='go-metadata':
+			print "Going to metadata"
+			return package_controller.new_resource(dataset_name)
+
+		
 		content_model = None
 		file_attached = False
 		file_likely_zip = False
@@ -490,3 +495,22 @@ class ContributeController(NGDSBaseController):
 				return contentmodel_checkFile(context,data_dict)
 		
 		return package_controller.new_resource(dataset_name)
+
+	def upload_file(self,data=None):
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+		data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+		print data
+		storage = StorageController()
+		storage_api = StorageAPIController()
+		package_controller = PackageController()
+		dataset_name = data['dataset-name']
+		form_type = data['form-type']
+
+		if 'file' and 'key' in data:
+			result = storage.upload_handle()
+			metadata = json.loads(storage_api.get_metadata(data['key']))
+			print metadata
+			resource_location = metadata['_location']
+			response.headers['Content-Type'] = 'text/html;charset=utf-8'
+			return package_controller.new_resource(dataset_name,{'save':'other','resource_location':resource_location,'form_type':form_type})

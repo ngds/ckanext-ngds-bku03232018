@@ -4,6 +4,8 @@ var content_models = {
 
 };
 
+var form_type = $("#form-type");
+
 $("#upload-type-structured-label").css("color","#808080");
 $("#upload-type-unstructured-label").css("color","#808080");
 
@@ -44,11 +46,23 @@ content_model_combo.on('change',function(){
 
 var hide_all = function() {
 	$(".structured-form").hide();
+	$("#file-upload").hide();
 };
 
 var show_structured_form = function() {
 	$(".structured-form").show();
+	var url = $("#url");
+	var file_upload = $("#file-upload");
+	file_upload.css("position","absolute");
+	file_upload.css("left",url.position().left+url.width());
+	file_upload.css("top",url.position().top);
+	file_upload.show();
 };
+
+var structured_routine = function() {
+	show_structured_form();
+	form_type.val("structured");
+}
 
 upload_type_radios.on('change',function(ev){
 	var value = ev.target.value;
@@ -68,7 +82,7 @@ upload_type_radios.on('change',function(ev){
 	
 	if(value==='structured') { // Display the structured upload form.
 		$("#upload-type-structured-label").css("color","#545454");
-		show_structured_form();
+		structured_routine();
 	}
 	else {
 		$("#upload-type-structured-label").css("color","#808080");
@@ -95,7 +109,30 @@ upload_type_radios.on('change',function(ev){
 
 $("#file").on('change',function(ev){
 	var timestamp = new Date().toISOString();
-	$("#key").value = timestamp;
-	$(".dataset-form").submit();
+	var file = $("#file").val();
+	var filename = file.substring(file.lastIndexOf("\\")+1);
+	$("#key").val(timestamp+"/"+filename);
+	$("#file-upload-form").submit();
 });
 
+if(form_type_v==='structured') {
+	$("#upload-type-structured").prop("checked",true);
+	structured_routine();
+}
+
+function calculate_resource_extension() {
+	if(typeof resource_location!=='undefined'){
+		$("#url").val(resource_location);
+		$("#name").val(resource_location.substring(resource_location.lastIndexOf("/")+1));
+		extension_index = resource_location.lastIndexOf(".");
+		if(extension_index!==-1){
+			var ind = extension_index;
+			var extension = resource_location.substring(ind+1,resource_location.length);
+			if(extension==='csv' || extension==='json' || extension==='xls' || extension==='pdf') {
+				$("#format").val(extension);
+			}
+		}
+	}
+}
+
+calculate_resource_extension();

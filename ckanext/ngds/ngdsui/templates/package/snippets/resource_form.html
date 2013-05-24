@@ -1,4 +1,24 @@
 
+{{ data }}
+
+<script>
+{% if data %}
+    form_type_v = "{{data['form_type']}}";
+    resource_location = window.location.origin+"{{data['resource_location']}}";
+{% else %}
+  form_type_v = '';
+{% endif %}
+</script>
+<form id="file-upload-form" action="/ngds/contribute/upload_file" method="post" enctype="multipart/form-data">
+  <div id="file-upload" style="display:none;">
+          <input type="submit" name="file-upload-button" value="Browse"></input>
+          <input type="file" id="file" name="file" class="structured-input"></input>
+          <input type="hidden" name="key" id="key"></input>
+          <input type="hidden" name="dataset-name" value="{{pkg_name}}"/>
+          <input type="hidden" name="form-type" id="form-type"/>
+  </div>
+</form>
+
 <form class="dataset-form dataset-resource-form form-horizontal" action="/ngds/contribute/create_or_update_resource" method="post" data-module="resource-form basic-form">
   <ol class="stages stage-2">
     <li class="first-stage complete">
@@ -40,15 +60,7 @@
       
       <div class="input-group">
         <div class="sp-label"><label for="url">Link to resource</label></div>
-        <input type="text" name="url" id="url" class="structured-input"></input>
-
-        <div id="file-upload">
-          <input type="submit" name="file-upload-button" value="Browse"></input>
-          <input type="file" id="file" name="file" class="structured-input"></input>
-          <input type="hidden" name="key" id="key"></input>
-        </div>
-      </div>
-      
+          <input type="text" name="url" id="url" class="structured-input"></input>
       <div class="input-group">
         <div class="sp-label"><label for="name">Name</label></div>
         <input type="text" name="name" id="name" class="structured-input"></input>
@@ -73,7 +85,7 @@
         <div class="sp-label"><label for="format">Format</label></div>
         <input type="text" name="format" id="format" class="structured-input"></input>
       </div>
-
+      <input type="hidden" name="id" value=""></input>
     </div> 
 
   </div>
