@@ -459,9 +459,9 @@ class ContributeController(NGDSBaseController):
 		if 'save' in data and data['save']=='go-dataset':
 			return package_controller.new_metadata(dataset_name)
 
-		if 'save' in data and data['save']=='go-metadata':
-			print "Going to metadata"
-			return package_controller.new_resource(dataset_name)
+		# if 'save' in data and data['save']=='go-metadata':
+		# 	print "Going to metadata"
+		# 	return package_controller.new_resource(dataset_name)
 
 		
 		content_model = None
@@ -492,9 +492,17 @@ class ContributeController(NGDSBaseController):
 				print "Fix me. I need refactoring."
 				print "Dispatch to shape file code here............"
 			else:
-				return contentmodel_checkFile(context,data_dict)
+				storage = StorageController()
+				storage_api = StorageAPIController()
+				package_controller = PackageController()
+				dataset_name = data['dataset-name']
+				contentmodel_checkFile(context,data_dict)
+				print "key : ",data['key']
+				metadata = json.loads(storage_api.get_metadata(data['key']))
+				resource_location = metadata['_location']
+				response.headers['Content-Type'] = 'text/html;charset=utf-8'
+				return package_controller.new_resource(dataset_name,{'save':'other','resource_location':resource_location})
 		
-		return package_controller.new_resource(dataset_name)
 
 	def upload_file(self,data=None):
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
@@ -510,7 +518,6 @@ class ContributeController(NGDSBaseController):
 		if 'file' and 'key' in data:
 			result = storage.upload_handle()
 			metadata = json.loads(storage_api.get_metadata(data['key']))
-			print metadata
 			resource_location = metadata['_location']
 			response.headers['Content-Type'] = 'text/html;charset=utf-8'
 			return package_controller.new_resource(dataset_name,{'save':'other','resource_location':resource_location,'form_type':form_type})

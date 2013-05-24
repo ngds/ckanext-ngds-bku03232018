@@ -111,7 +111,8 @@ $("#file").on('change',function(ev){
 	var timestamp = new Date().toISOString();
 	var file = $("#file").val();
 	var filename = file.substring(file.lastIndexOf("\\")+1);
-	$("#key").val(timestamp+"/"+filename);
+	$("#key1").val(timestamp+"/"+filename);
+	$("#key2").val(timestamp+"/"+filename);
 	$("#file-upload-form").submit();
 });
 
