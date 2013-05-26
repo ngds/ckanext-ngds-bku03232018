@@ -102,5 +102,6 @@ class CswPlugin(SingletonPlugin):
     def get_actions(self):
         return {
             "iso_metadata": view.iso_metadata,
-            "metadata_to_pycsw": pycsw.metadata_to_pycsw
+            "metadata_to_pycsw": pycsw.metadata_to_pycsw,
+            "full_sync": pycsw.full_sync
         }

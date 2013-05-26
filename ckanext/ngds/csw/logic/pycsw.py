@@ -41,8 +41,12 @@ def metadata_to_pycsw(context, data_dict):
     def format_datetime(datetime_str):
         return parser.parse(datetime_str).replace(microsecond=0).isoformat()
 
-    # Get the package
+    # Get the package.
     p = toolkit.get_action("package_show")(context, {"id": data_dict.get("id", "")})
+
+    # Check that we got a dataset back
+    if p is not None and p.get("type") != "dataset":
+        return None
 
     # Create inputs for a new CswRecord
     kwargs = {
@@ -124,3 +128,19 @@ def metadata_to_pycsw(context, data_dict):
         &elementSetName=full"\
 
     return (url % (p["id"])).replace(" ", "").replace("\n", "")
+
+def full_sync(context, data_dict):
+    """
+    Full synchronization between CKAN Packages and pycsw. This may take awhile...
+
+    @param context: CKAN environment
+    @param data_dict: Can optionally specify "purge": true if you want the whole table purged first. Default is not to
+    @return: String message as to whether or not we succeed
+    """
+
+    # If requested, purge the whole table
+    if data_dict.get("purge", False):
+        context["model"].Session.query(CswRecord).delete()
+
+    for pk in toolkit.get_action("package_list")(context, {}):
+        metadata_to_pycsw(context, {"id": pk})
