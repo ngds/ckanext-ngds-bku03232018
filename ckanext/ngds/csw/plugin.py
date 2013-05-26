@@ -61,11 +61,12 @@ class CswPlugin(SingletonPlugin):
         :returns: Modified version of the map object
         """
         return map
-    
+
+    """
     implements(IDomainObjectModification)
     
     def notify(self, entity, operation):
-        """
+
         The goal here is to change the pycsw table when CKAN info is changed.
         
         I think I'll need to listen for changes to ckan.model.Package and ckanext.ngds.metadata.model.ResponsibleParty
@@ -94,7 +95,7 @@ class CswPlugin(SingletonPlugin):
             
         elif isinstance(entity, ResponsibleParty):
             pass
-        """
+    """
 
     implements(IActions)
 

@@ -12,7 +12,6 @@ def iso_metadata(context, data_dict):
     @return: ISO19139 XML string
     """
 
-    # NOTE: If this is a harvested package, we should just return the XML, straight up
     package_id = data_dict.get("id", "")
     p = toolkit.get_action("package_show")(context, {"id": package_id})
 
@@ -21,19 +20,19 @@ def iso_metadata(context, data_dict):
                     .filter(HarvestObject.package_id==p["id"]) \
                     .filter(HarvestObject.current==True) \
                     .first()
-
-    '''if harvest_object:
+    # NOTE: If this is a harvested package, we should just return the XML, without alteration
+    if harvest_object:
         output = harvest_object.content
-    else:'''
-    # Extract BBOX coords from extras
-    bbox = {}
+    else:
+        # Extract BBOX coords from extras
+        bbox = {}
 
-    def extract_coord(extra):
-        bbox[extra["key"].split("-")[1]] = float(extra["value"])
+        def extract_coord(extra):
+            bbox[extra["key"].split("-")[1]] = float(extra["value"])
 
-    [extract_coord(e) for e in p["extras"] if e["key"].startswith("bbox-")]
-    p["extent"] = bbox
+        [extract_coord(e) for e in p["extras"] if e["key"].startswith("bbox-")]
+        p["extent"] = bbox
 
-    output = toolkit.render("package_to_iso.xml", p)
+        output = toolkit.render("package_to_iso.xml", p)
 
     return output
