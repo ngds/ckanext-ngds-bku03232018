@@ -39,27 +39,20 @@
 
     </div>      
       <section class="search-results">
-        
+        <!--
         <div class="search-results-preamble-container">
             <span class="search-results-preamble">Found {{ c.page.item_count }} results for "{{ c.q }}"></span>
-        </div>
+        </div> -->
 
-        <div class="sort-container">
-            <span class="left">Sort By 
-              <select>
-                  <option>Recently Added</option>
-                  <option>Geothermal Topic</option>
-                  <option>Data Format</option>
-                  <option>Date Published</option>
-                </select>
-            </span>
-            <span class="right">
-              <button class="not-implemented">Save this Search</button>
-            </span>
-            <span>
-        </div>
-          <div class="search-results-container">
-      {% snippet 'snippets/search_results.html', packages=c.page.items %}
+          
+
+           {% for package in c.page.items %}
+           <div class="search-results-container">
+              {% snippet 'snippets/search_results.html', package=package %}
+            </div>
+            {% endfor %}
+          
+
               <div class="search-results-pagination">
                   <p class="search-results-num-pages">Page 1 of 100</p>
                       <div class="search-results-page-nums">
@@ -68,20 +61,12 @@
                           <a href="#" class="not-implemented">2</a>
                           <a href="#" class="not-implemented">3</a>
                           <a href="#" class="not-implemented">4</a>
-                          <p>...</p>
+                          <span>...</span>
                           <a href="#" class="not-implemented">100</a>
                           <a href="#" class="not-implemented">&gt;&gt;</a>
                       </div>
-                      <div class="search-results-num-items">
-                        <p>Items per page</p>
-                        <select>
-                          <option>5</option>
-                          <option>10</option>
-                          <option>15</option>
-                        </select>
-                      </div>
-              </div>
-          </div>
+              </div>          
+
       </section>
 
   </div>

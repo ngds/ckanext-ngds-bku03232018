@@ -1056,16 +1056,86 @@ div.about-ngds p.section-title {
 	}
 
 	div#library-search-results {
-	position:relative;
+		
+		position:relative;
 
 		.library-search-accordion{
-			
 			padding-top:10px;
 			width:25%;
 		}
-		#search-results{
-			display:inline;
-			padding-top:10px;
+
+		section.search-results {
+			position:absolute;
+			float:right;
+			display:table;
+			table-layout: fixed;
+			left:26%;
+			top:0px;
+			width:74%;
+			padding-bottom:130px;
+			border:1px solid #FF0000;
+
+		.search-results-preamble-container{
+			display:table-row;
+			width:100%;
+		}
+
+
+		.search-results-container{
+
+				display:table-row;
+
+				.search-item-image{
+					display:table-cell;
+
+					margin-left:20px;
+					word-wrap: break-word;
+					width:15%;
+
+					background:url('/assets/lib-blue-vbar.png') repeat-y;
+					background-size: 30px Auto;
+					background-position:center; 
+
+					.resultimage{
+					 	width: 25%;
+					 	height: 20%;
+					 	display:table-row;
+					 }					 
+
+				}
+
+				.search-results-item {
+					display:table-cell;
+
+					background:#F0F0F0;
+					
+					width:85%;
+					border:1px solid #a9a9a9;
+					margin-top:20px;
+					padding:20px;
+					padding-bottom:10px;
+
+				
+					div.search-results-meta {
+						display:table-cell;
+						width:50%;
+						padding-top:10px;
+					}
+
+					div.search-results-actions {
+						display:table-cell;
+						width:50%;
+					}								
+					.regular-meta-item {
+						margin-top:5px;
+						margin-bottom:5px;
+						font-size:13px;
+					}
+				}
+
+			}
+
 		}		
+		
 	}
 }

@@ -1,4 +1,8 @@
-{% for package in packages %}
+          <div class="search-item-image">
+            
+            <!-- <img src="/assets/search_dataset.png" class="resultimage" /> -->
+            
+            </div>
           <div class="search-results-item">
               <a class="title" href="/dataset/{{package.name}}">{{package.title}}
                {% if package.get('state', '').startswith('draft') %}
@@ -33,4 +37,3 @@
                 <span class="action-item-spaced"><img src="/images/u173_normal.png"/> <a class="regular-meta-item inline not-implemented" href="#">Send</a></span>
               </div>
           </div>
-{% endfor %}
