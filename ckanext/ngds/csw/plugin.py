@@ -38,12 +38,14 @@ class CswPlugin(SingletonPlugin):
                     action="csw",
                     conditions={"method": ["GET", "POST"]})
 
+        """
         map.connect("serialize-record",
                     "/dataset/:package_id/:format",
                     controller="ckanext.ngds.csw.controllers.serializer:PackageSerializer",
                     action="dispatch",
                     conditions={"method": ["GET"]})
-
+        """
+        
         # Test the ISO XML output
         map.connect('iso-test',
                     '/iso-test/:package_id',
