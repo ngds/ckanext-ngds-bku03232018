@@ -8,70 +8,99 @@
 #}
 
 {% block content %}
-<div id="library-search-container">
-	<div class="library-search-accordion-header adjusted-top-search">
-		<div class="library-search-browse-header" style="-webkit-border-radius:0;"><p>Narrow your results</p></div>	
-		<div class="search-browse-inverted-dome adjusted-bottom-search"></div>
-    {% include "/snippets/search_accordion.html" %}
-	</div>
 
-	<div class="library-search-bar adjusted-top-search">
-			<p>Search</p>
-			<form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
-          <fieldset>
-				    <input type="text" class="search-browse-big-bar" name="q" value="{{search_query_context}}"/>
-				    <input type="submit" value="Go"/>
-          </fieldset>
-			</form>
-	</div>
-  
+<div id="library-container">
+{% if g.central %}
+<form action="{% url_for controller='package', action='search' %}" method="get"> 
+{% else %}
+<form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">   
+  {% endif %}
+  <div id="library-search-bar">
+        
+        
+            <fieldset>
+              <label >Search</label>
+              <input type="text" class="search-browse-big-bar" name="q" value="{{ c.q }}" />
+              <input type="submit" value="Go"/>
+            </fieldset>
+        
+  </div>
+  <div id="library-search-results">
+
+    <div class="library-search-accordion">
+      <ul class="accordion">
+ 
+         <img src="/assets/plus_grey.png" title="Expand All" id="expander-image"/> 
+         
+        {% set facet_list = h.get_ngdsfacets() %}
+     
+        {% for facet in facet_list %}
+          <li>
+            {% if c.group_dict.id %}
+            {{ h.snippet('snippets/ngds_facets.html', facet=facet,topfacet=True,extras={'id':c.group_dict.id}) }}
+            {% else %}
+            {{ h.snippet('snippets/ngds_facets.html', facet=facet,topfacet=True) }}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+
+    </div>      
+    <div id="search-result-block">
+
+      <div class="search-results">
+      <div class="search-results-container">
+          
+          <div class="search-item-image">
+            
+           
+          </div>
+          <div class="search-results-item">
+              <div id="search-text-block">
+                <div id="search-text">
+                    {% snippet 'snippets/search_result_text.html', query=c.q, count=c.page.item_count, type='dataset' %}
+                </div>
+                <div id="orderby-block">
+                  {{ h.snippet('snippets/sort_by.html', sort=c.sort_by_selected) }}
+                </div>
+              </div>
+              <div class="filter-list">
+                {% for field in c.fields_grouped %}
+                  <span class="facet">{{ c.facet_titles.get(field) }}:</span>
+                  {% for value in c.fields_grouped[field] %}
+                    <span class="filtered pill">
+                      {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
+                        {{ c.translated_fields[(field,value)] }}
+                      {% else %}
+                        {{ value }}
+                      {% endif %}
+                       <a href="{{ c.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}"><img src="/images/node_delete.png" /></a> 
+                      
+                    </span>
+                  {% endfor %}
+                {% endfor %}
+              </div>
+          </div>
+
+      </div>
+
+          {% snippet 'snippets/search_results.html', packages=c.page.items %}
+          <div id="pager">
+            <div id="dummy">
+            </div>
+            <div class="pagination-container">
+                    {{ c.page.pager(q=c.q) }}         
+            </div>
+          </div>
+      </div>
+    </div>
+
+</div>
+</form>
 </div>
 
 
-<section class="search-results">
-  
-  <div class="search-results-preamble-container">
-      <span class="search-results-preamble">Found {{ c.page.item_count }} results for "{{ c.q }}"></span>
-  </div>
 
-  <div class="sort-container">
-      <span class="left">Sort By 
-        <select>
-            <option>Recently Added</option>
-            <option>Geothermal Topic</option>
-            <option>Data Format</option>
-            <option>Date Published</option>
-          </select>
-      </span>
-      <span class="right">
-        <button class="not-implemented">Save this Search</button>
-      </span>
-      <span>
-  </div>
-    <div class="search-results-container">
-{% snippet 'snippets/search_results.html', packages=c.page.items %}
-        <div class="search-results-pagination">
-            <p class="search-results-num-pages">Page 1 of 100</p>
-                <div class="search-results-page-nums">
-                    <a href="#">&lt;&lt;</a>
-                    <a href="#" class="not-implemented">1</a>
-                    <a href="#" class="not-implemented">2</a>
-                    <a href="#" class="not-implemented">3</a>
-                    <a href="#" class="not-implemented">4</a>
-                    <p>...</p>
-                    <a href="#" class="not-implemented">100</a>
-                    <a href="#" class="not-implemented">&gt;&gt;</a>
-                </div>
-                <div class="search-results-num-items">
-                  <p>Items per page</p>
-                  <select>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                  </select>
-                </div>
-        </div>
-    </div>
-</section>
+<script type="text/javascript" src="/scripts/library/library.js"></script>
 
 {% endblock %}

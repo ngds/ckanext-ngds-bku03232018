@@ -14,7 +14,12 @@
 
 		<div class="library-search-bar">
 			<p>Search</p>
-			<form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
+			{% if g.central %}
+			<form action="{% url_for controller='package', action='search' %}" method="get"> 
+			{% else %}
+			<form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">   
+			  {% endif %}
+
 				<fieldset>
 					<input type="text" name="q"/>
 					<input type="submit" value="Go"/>

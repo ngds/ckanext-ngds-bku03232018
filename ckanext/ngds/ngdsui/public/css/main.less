@@ -1141,3 +1141,248 @@ div.about-ngds p.section-title {
 	margin-left:0px;
 	margin-top:0px;
 }
+
+#library-container{
+
+	margin:20px;
+
+	div#library-search-bar {
+		padding-left: 10px;
+		padding-right: 10px;
+		padding-top: 5px;
+		margin-top: 20px;
+		height:40px;
+		text-align:center;
+		background:url('/assets/lib_search_bar_middle.png') 40px repeat-x;
+		border-radius:5px;
+		-webkit-border-radius:5px;
+
+		form {
+			display:inline;
+			
+			input[type="text"] {
+				height:24px;
+				margin-top:2px;
+				padding-left:10px;
+				margin-right:50px;
+				font-size:18px;
+			}	
+
+			label {
+				height:24px;
+				margin-top:2px;
+				margin-right:50px;
+				font-size:16px;
+				color:#ffffff;
+			}					
+		}
+	}
+
+
+
+	div#library-search-results {
+		
+		width:100%;
+		display:table;
+
+		.library-search-accordion{
+			padding-top:10px;
+			width:25%;
+			display:table-cell;
+		}
+
+		#search-result-block{
+			display:table-cell;
+		}		
+
+		.search-results {
+			display:table;
+			table-layout: fixed;
+			top:0px;
+			width:100%;
+			padding-bottom:30px;
+
+			.search-results-preamble-container{
+				display:table-row;
+				width:100%;
+			}
+		}
+
+
+		#pager{
+			display:table-row;
+		}		
+
+		.pagination-container{
+			display:table-cell;
+			width:100%;
+			.pagination{
+				text-align:center;
+				width:100%;
+				height: 36px;
+				margin: 18px 0;
+				ul{
+					list-style: disc;
+					list-style-type: disc;
+					display: inline-block;
+					line-height: 18px;
+					color: #000000;
+					margin-left: 0;
+					margin-bottom: 0;
+					padding: 0;
+					margin: 0 0 9px 25px;
+					-webkit-border-radius: 3px;
+					-moz-border-radius: 3px;
+					border-radius: 3px;
+					-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+					-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+					box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+					-webkit-margin-before: 1em;
+					-webkit-margin-after: 1em;
+					-webkit-margin-start: 0px;
+					-webkit-margin-end: 0px;
+					-webkit-padding-start: 10px;
+					li{
+						display: inline;
+						color: #000000;
+						line-height: 18px;
+					}
+				}
+
+			}
+		}
+
+	}
+}
+
+.js-hide{
+	display:none;
+}
+.search-results-container{
+
+	display:table-row;
+
+	.search-item-image{
+		display:table-cell;
+
+		margin-left:20px;
+		word-wrap: break-word;
+		width:15%;
+
+		text-align:center;
+		vertical-align:middle;
+
+
+		background:url('/assets/lib-blue-vbar.png') repeat-y;
+		background-size: 30px Auto;
+		background-position:center; 
+
+		.resultimage{
+		 	width: 40%;
+		 	height: 20%;
+		 }					 
+
+	}
+
+	.search-results-item {
+		display:table;
+		vertical-align:top;
+		background:#F0F0F0;
+		
+		width:100%;
+		border:1px solid #a9a9a9;
+		font-family:Arial;
+		font-size:12px;
+
+		margin-top:10px;
+		padding-left:20px;
+		padding-right:20px;
+		padding-bottom:10px;
+
+		#search-text-block{
+			display:table;
+			width:100%;
+			border-bottom:1px solid #a9a9a9;
+
+			#search-text{
+				display:table-cell;
+				width:50%;
+				text-align:left;
+			}
+			#orderby-block{
+				display:table-cell;
+				width:50%;
+				text-align:right;
+			}	
+		}
+
+		.filter-list{
+			padding-top:10px;
+			.filtered{
+				border:1px solid #a9a9a9;
+				border-radius: 5px;
+				padding:5px;
+				margin:5px;
+			}
+		}					
+
+		#search-title-row{
+			display:table-row;
+			width:100%;
+			color:#083656;
+			#title {
+				padding-top:20px;
+				vertical-align:top;
+				display:table-cell;
+				width:90%;
+				text-align:left;
+			}
+			#banner {
+				vertical-align:top;
+				display:table-cell;
+				width:10%;
+				text-align:right;
+				.banner{
+					width:40%;
+				}
+			}
+		}
+
+		#search-meta-row{
+			display:table;
+			width:110%;
+			font-size:11px;
+			font-family:Arial;
+			font-weight:normal;
+			padding:0px;
+			padding-top:10px;
+			border-bottom: 1px solid #a8a8a8;
+			#meta-data-details{
+				vertical-align:top;
+				display:table-cell;
+				width:50%;
+				color:#696466;
+				text-align:left;
+			}
+			#search-review{
+				vertical-align:bottom;
+				display:table-cell;
+				width:50%;
+				text-align:right;
+				font-size:12px;
+				color:#C2C2C2;
+			}
+		}
+		#search-action-row{
+			text-align:right;
+			width:110%;
+			padding-top:5px;
+			.action-image{
+				width:3%;
+				padding-right:5px;
+			}
+		}
+
+	}
+
+}
