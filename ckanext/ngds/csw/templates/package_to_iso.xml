@@ -233,7 +233,7 @@
             <gmd:topicCategory>
                 <gmd:MD_TopicCategoryCode>geoscientificInformation</gmd:MD_TopicCategoryCode>
             </gmd:topicCategory>
-            {% if extras is not None %}
+            {% if extent != {} %}
             <gmd:extent>
                 <gmd:EX_Extent>
                     <gmd:geographicElement>

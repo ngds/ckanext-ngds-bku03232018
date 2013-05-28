@@ -1,6 +1,7 @@
 from ckan.plugins import toolkit
 from ckanext.harvest.model import HarvestObject
-from shapely.wkt import loads
+from shapely.geometry import asShape
+import json
 
 def iso_metadata(context, data_dict):
     """
@@ -25,15 +26,17 @@ def iso_metadata(context, data_dict):
     # NOTE: If this is a harvested package, we should just return the XML, without alteration
     if harvest_object:
         output = harvest_object.content
+
     else:
         # Extract BBOX coords from extras
-        p["extent"] = None
+        p["extent"] = {}
 
-        wkt = p["extras"].get("spatial", None)
+        # stupid python logic to try and get the first item or None from a list
+        geojson = next(iter([k["value"] for k in p["extras"] if k["key"] == "spatial"]), None)
 
-        if wkt is not None:
+        if geojson is not None:
             try:
-                bounds = loads(wkt).bounds
+                bounds = asShape(json.loads(geojson)).bounds
                 p["extent"] = {
                     "west": bounds[0],
                     "south": bounds[1],
