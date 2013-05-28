@@ -45,7 +45,7 @@ class CswPlugin(SingletonPlugin):
                     action="dispatch",
                     conditions={"method": ["GET"]})
         """
-        
+
         # Test the ISO XML output
         map.connect('iso-test',
                     '/iso-test/:package_id',

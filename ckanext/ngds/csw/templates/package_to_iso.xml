@@ -314,8 +314,7 @@
 
             {% for resource in resources %}
             <gmd:transferOptions>
-                <gmd:MD_DigitalTransferOptions
-                        id='{{ resource.id }}'>
+                <gmd:MD_DigitalTransferOptions>
                     <gmd:onLine>
                         <gmd:CI_OnlineResource>
                             <gmd:linkage>
