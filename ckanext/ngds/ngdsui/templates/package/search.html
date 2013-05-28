@@ -38,36 +38,22 @@
       </ul>
 
     </div>      
-      <section class="search-results">
+      <div class="search-results">
         <!--
         <div class="search-results-preamble-container">
             <span class="search-results-preamble">Found {{ c.page.item_count }} results for "{{ c.q }}"></span>
         </div> -->
 
-          
-
-           {% for package in c.page.items %}
-           <div class="search-results-container">
-              {% snippet 'snippets/search_results.html', package=package %}
+          {% snippet 'snippets/search_results.html', packages=c.page.items %}
+          <div id="pager">
+            <div id="dummy">
             </div>
-            {% endfor %}
-          
+          <div class="pagination-container">
+                  {{ c.page.pager(q=c.q) }}         
+          </div>
 
-              <div class="search-results-pagination">
-                  <p class="search-results-num-pages">Page 1 of 100</p>
-                      <div class="search-results-page-nums">
-                          <a href="#">&lt;&lt;</a>
-                          <a href="#" class="not-implemented">1</a>
-                          <a href="#" class="not-implemented">2</a>
-                          <a href="#" class="not-implemented">3</a>
-                          <a href="#" class="not-implemented">4</a>
-                          <span>...</span>
-                          <a href="#" class="not-implemented">100</a>
-                          <a href="#" class="not-implemented">&gt;&gt;</a>
-                      </div>
-              </div>          
 
-      </section>
+      </div>
 
   </div>
 

@@ -227,25 +227,6 @@ div#content-container {
 }
 
 
-.search-results-num-pages {
-	font-size:14px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-num-items {
-	display:inline;
-	float:right;
-	margin-left:20px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-num-items select {
-	width:50px;
-	margin-left:10px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-num-items p {
-	font-size:14px;
-}
-
 .action-item-spaced {
 	margin-left:25px;
 }

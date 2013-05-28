@@ -274,3 +274,8 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
         facet_dict['subfacet'] = subfacet_dict
 
     return facet_dict
+
+def get_formatted_date(datstr):
+    print "type of input 2013-05-28T03:21:29.274541:",datstr
+    from datetime import datetime
+    return datetime.strptime(datstr[:10], '%Y-%m-%d').strftime('%b %d,%Y')

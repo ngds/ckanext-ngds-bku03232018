@@ -67,7 +67,7 @@ alternative_url
           {% endif %}
 
           {% if facet.subfacet %}
-            <ul class="accordion">
+            <ul >
               {% for subfacet in facet.subfacet %}
                 <li>
                   {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
