@@ -38,6 +38,7 @@
       </ul>
 
     </div>      
+    <div id="search-result-block">
       <div class="search-results">
         <!--
         <div class="search-results-preamble-container">
@@ -48,14 +49,12 @@
           <div id="pager">
             <div id="dummy">
             </div>
-          <div class="pagination-container">
-                  {{ c.page.pager(q=c.q) }}         
+            <div class="pagination-container">
+                    {{ c.page.pager(q=c.q) }}         
+            </div>
           </div>
-
-
       </div>
-
-  </div>
+    </div>
 
 </div>
 

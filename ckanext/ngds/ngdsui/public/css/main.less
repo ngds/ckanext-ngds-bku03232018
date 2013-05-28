@@ -1055,24 +1055,29 @@ div.about-ngds p.section-title {
 		}
 	}
 
+
+
 	div#library-search-results {
 		
-		position:relative;
+		width:100%;
+		display:table;
 
 		.library-search-accordion{
 			padding-top:10px;
 			width:25%;
+			display:table-cell;
 		}
 
+		#search-result-block{
+			display:table-cell;
+		}		
+
 		.search-results {
-			position:absolute;
-			float:right;
 			display:table;
 			table-layout: fixed;
-			left:26%;
 			top:0px;
-			width:74%;
-			padding-bottom:130px;
+			width:100%;
+			padding-bottom:30px;
 
 			.search-results-preamble-container{
 				display:table-row;
@@ -1158,7 +1163,7 @@ div.about-ngds p.section-title {
 					vertical-align:top;
 					background:#F0F0F0;
 					
-					width:94%;
+					width:100%;
 					border:1px solid #a9a9a9;
 					font-family:Arial;
 					font-size:12px;

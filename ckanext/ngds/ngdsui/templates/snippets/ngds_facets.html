@@ -34,9 +34,9 @@ alternative_url
 
     {% if facet.display_type=='title' %}
 
-    <h4><span style="font-size:12px;"><a href="#">
+    <h3><span style="font-size:12px;"><a href="#">
       {{ facet.display_name }}</a></span>
-    </h4>
+    </h3>
     {% elif facet.display_type=='subtitle' %}
       
       <h3><span style="font-size:11px;">{{ facet.display_name }}</span></h3>
@@ -67,7 +67,7 @@ alternative_url
           {% endif %}
 
           {% if facet.subfacet %}
-            <ul >
+            <ul  class="sub accordion">
               {% for subfacet in facet.subfacet %}
                 <li>
                   {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
@@ -80,7 +80,7 @@ alternative_url
     {% else %}
       <div>
           {% if facet.subfacet %}
-            <ul class="accordion">
+            <ul class="sub accordion">
               {% for subfacet in facet.subfacet %}
                 <li>
                   {{ h.snippet('snippets/ngds_facets.html', facet=subfacet,topfacet=False,extras=extras) }}
