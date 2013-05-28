@@ -1129,6 +1129,9 @@ div.about-ngds p.section-title {
 	}
 }
 
+.js-hide{
+	display:none;
+}
 		.search-results-container{
 
 				display:table-row;
@@ -1169,6 +1172,33 @@ div.about-ngds p.section-title {
 					padding-left:20px;
 					padding-right:20px;
 					padding-bottom:10px;
+
+					#search-text-block{
+						display:table;
+						width:100%;
+						border-bottom:1px solid #a9a9a9;
+
+						#search-text{
+							display:table-cell;
+							width:50%;
+							text-align:left;
+						}
+						#orderby-block{
+							display:table-cell;
+							width:50%;
+							text-align:right;
+						}	
+					}
+
+					.filter-list{
+						padding-top:10px;
+						.filtered{
+							border:1px solid #a9a9a9;
+							border-radius: 5px;
+							padding:5px;
+							margin:5px;
+						}
+					}					
 
 					#search-title-row{
 						display:table-row;

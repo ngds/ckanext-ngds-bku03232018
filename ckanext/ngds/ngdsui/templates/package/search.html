@@ -10,20 +10,24 @@
 {% block content %}
 
 <div id="library-container">
-
+<!-- <form action="{% url_for controller='package', action='search' %}" method="get"> -->
+<form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">   
   <div id="library-search-bar">
-        <form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
+        
+        
             <fieldset>
               <label >Search</label>
-              <input type="text" class="search-browse-big-bar" name="q" value="{{search_query_context}}"/>
+              <input type="text" class="search-browse-big-bar" name="q" value="{{ c.q }}" />
               <input type="submit" value="Go"/>
             </fieldset>
-        </form>
+        
   </div>
   <div id="library-search-results">
 
     <div class="library-search-accordion">
       <ul class="accordion">
+ 
+         <!-- <img src="/assets/plus_grey.png" title="Expand/Collapse All" id="expander-image"/> -->
         {% set facet_list = h.get_ngdsfacets() %}
      
         {% for facet in facet_list %}
@@ -39,11 +43,42 @@
 
     </div>      
     <div id="search-result-block">
+
       <div class="search-results">
-        <!--
-        <div class="search-results-preamble-container">
-            <span class="search-results-preamble">Found {{ c.page.item_count }} results for "{{ c.q }}"></span>
-        </div> -->
+      <div class="search-results-container">
+          
+          <div class="search-item-image">
+            
+           
+          </div>
+          <div class="search-results-item">
+              <div id="search-text-block">
+                <div id="search-text">
+                    {% snippet 'snippets/search_result_text.html', query=c.q, count=c.page.item_count, type='dataset' %}
+                </div>
+                <div id="orderby-block">
+                  {{ h.snippet('snippets/sort_by.html', sort=c.sort_by_selected) }}
+                </div>
+              </div>
+              <div class="filter-list">
+                {% for field in c.fields_grouped %}
+                  <span class="facet">{{ c.facet_titles.get(field) }}:</span>
+                  {% for value in c.fields_grouped[field] %}
+                    <span class="filtered pill">
+                      {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
+                        {{ c.translated_fields[(field,value)] }}
+                      {% else %}
+                        {{ value }}
+                      {% endif %}
+                       <a href="{{ c.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}"><img src="/images/node_delete.png" /></a> 
+                      
+                    </span>
+                  {% endfor %}
+                {% endfor %}
+              </div>
+          </div>
+
+      </div>
 
           {% snippet 'snippets/search_results.html', packages=c.page.items %}
           <div id="pager">
@@ -57,7 +92,8 @@
     </div>
 
 </div>
-
+</form>
+</div>
 
 
 

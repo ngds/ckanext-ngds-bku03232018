@@ -40,7 +40,37 @@ var ngds = ngds || { };
 		$(".facet").click(function() {
 	      window.location = $(this).attr('href');
 	      return false;
-   		});      
+   		});  
+
+		$('#expander-image').click(function() {
+		    $('.accordion .ui-accordion-header:not(.ui-state-active)').next().slideToggle();
+		    $(this).attr('src', $(this).attr('src') == '/assets/minus_grey.png' ? '/assets/plus_grey.png': '/assets/minus_grey.png') ;
+		    $(this).toggleClass('collapse');
+		    return false;
+		}); 
+
+
+		$('#field-order-by').change(function() {
+		    // $('#hide-button').click();
+		    var params = window.location.href.split('?')[1];
+		    if(typeof params==='undefined'){
+		    	$('#hide-button').click();
+		    }
+		    var split_params = params.split('&');
+		    var acccumulator = [];
+
+		    for(var i=0;i<split_params.length;i++) {		    	
+		       	if(split_params[i].indexOf('sort=')===-1) {
+		    		acccumulator.push(split_params[i]);
+		    	}
+		    }
+		    acccumulator.push('sort='+$('#field-order-by').val());
+		    var finished_string = acccumulator.join('&');
+		    //acccumulator+='&sort='+$('#field-order-by').val();
+		    console.log(finished_string);
+
+		    window.location.href = window.location.href.split('?')[0]+"?"+finished_string;
+		});  		    
 
 
 	});
