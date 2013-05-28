@@ -86,12 +86,14 @@ content_model_combo.on('change',function(){
 
 var hide_all = function() {
 	$(".structured-form").hide();
+	$(".unstructured-form").hide();
+	$(".offline-resource-form").hide();
 	$("#file-upload").hide();
 };
 
 var show_structured_form = function() {
 	$(".structured-form").show();
-	var url = $("#url");
+	var url = $("#structured_url");
 	var file_upload = $("#file-upload");
 	file_upload.css("position","absolute");
 	file_upload.css("left",url.position().left+url.width());
@@ -99,10 +101,34 @@ var show_structured_form = function() {
 	file_upload.show();
 };
 
+var show_unstructured_form = function() {
+	$(".unstructured-form").show();
+	var url = $("#unstructured_url");
+	var file_upload = $("#file-upload");
+	file_upload.css("position","absolute");
+	file_upload.css("left",url.position().left+url.width());
+	file_upload.css("top",url.position().top);
+	file_upload.show();	
+};
+
+var show_offline_resource_form = function() {
+	$(".offline-resource-form").show();
+};
+
 var structured_routine = function() {
 	show_structured_form();
 	form_type.val("structured");
-}
+};
+
+var unstructured_routine = function() {
+	show_unstructured_form();
+	form_type.val("unstructured");
+};
+
+var offline_resource_routine = function() {
+	show_offline_resource_form();
+	form_type.val("offline_resource");
+};
 
 upload_type_radios.on('change',function(ev){
 	var value = ev.target.value;
@@ -131,7 +157,7 @@ upload_type_radios.on('change',function(ev){
 
 	if(value==='unstructured') { // Display the unstructured upload form
 		$("#upload-type-unstructured-label").css("color","#545454");
-		form.append();
+		unstructured_routine();
 	}
 	else {
 		$("#upload-type-unstructured-label").css("color","#808080");
@@ -142,7 +168,7 @@ upload_type_radios.on('change',function(ev){
 	}
 
 	if(value==='offline-resource') { // Display the offline resource upload form
-		form.append();
+		offline_resource_routine();
 	}
 	
 });
@@ -161,9 +187,14 @@ if(form_type_v==='structured') {
 	structured_routine();
 }
 
+if(form_type_v==='unstructured') {
+	$("#upload-type-unstructured").prop("checked",true);
+	unstructured_routine();
+}
+
 function calculate_resource_extension() {
 	if(typeof resource_location!=='undefined'){
-		$("#url").val(resource_location);
+		$("#structured_url").val(resource_location);
 		$("#name").val(resource_location.substring(resource_location.lastIndexOf("/")+1));
 		extension_index = resource_location.lastIndexOf(".");
 		if(extension_index!==-1){

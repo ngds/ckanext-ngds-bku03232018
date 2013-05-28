@@ -479,6 +479,7 @@ class ContributeController(NGDSBaseController):
 		except(ValueError):
 			print "No file attached"
 			file_attached=False
+			return package_controller.new_metadata(dataset_name)
 
 		if data['upload-type'] == 'structured':
 			if 'content_model' in data and data['content_model'] != 'None' and file_attached==True:

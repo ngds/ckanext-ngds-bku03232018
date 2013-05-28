@@ -1,6 +1,3 @@
-
-{{ data }}
-
 <script>
 {% if data %}
     form_type_v = "{{data['form_type']}}";
@@ -48,23 +45,25 @@
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="data-service" name="upload_type" value="data-service" />
+        <input type="radio" id="data-service" name="upload-type" value="data-service" />
         <label for="data-service">Link to a data service</label>
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="offline-resouece" name="upload_type" value="offline-resource" />
+        <input type="radio" id="offline-resouece" name="upload-type" value="offline-resource" />
         <label for="offline-resource">Offline resource</label>
       </div>
   </div>
 
   <div class="form-body">
     
+    <!--  Structured Form Begin  -->
+
     <div class="structured-form" style="display:none;">
       
       <div class="input-group">
-        <div class="sp-label"><label for="url">Link to resource</label></div>
-          <input type="text" name="url" id="url" class="structured-input"></input>
+        <div class="sp-label"><label for="structured_url">Link to resource</label></div>
+          <input type="text" name="url" id="structured_url" class="structured-input"></input>
       <div class="input-group">
         <div class="sp-label"><label for="name">Name</label></div>
         <input type="text" name="name" id="name" class="structured-input"></input>
@@ -88,6 +87,11 @@
         <textarea rows="4" cols="1" name="description" id="description" class="structured-input"></textarea>
       </div>
 
+      <div class="input-group">
+        <div class="sp-label"><label>Distributor</label></div>
+        <input type="text" name="distributor" id="structured_distributor" class="structured-input"></input>
+      </div>
+
        <div class="input-group">
         <div class="sp-label"><label for="format">Format</label></div>
         <input type="text" name="format" id="format" class="structured-input"></input>
@@ -101,6 +105,93 @@
     </div> 
 
   </div>
+
+  <!-- Structured Form End -->
+
+  <!-- Unstructured Form -->
+
+  <!-- <div class="unstructured-form" style="display:none;">
+      
+      <div class="input-group">
+        <div class="sp-label"><label for="unstructured_url">Link to resource</label></div>
+          <input type="text" name="url" id="unstructured_url" class="structured-input"></input>
+      </div>
+      <div class="input-group">
+        <div class="sp-label"><label for="name">Name</label></div>
+        <input type="text" name="s-name" id="name" class="structured-input"></input>
+      </div>
+
+       <div class="input-group">
+        <div class="sp-label description-label-div"><label for="description">Description</label></div>
+        <textarea rows="4" cols="1" name="description" id="description" class="structured-input"></textarea>
+      </div>
+
+      <div class="input-group">
+        <div class="sp-label"><label>Distributor</label></div>
+        <input type="text" name="distributor" id="unstructured_distributor" class="structured-input"></input>
+      </div>
+
+       <div class="input-group">
+        <div class="sp-label"><label for="format">Format</label></div>
+        <input type="text" name="format" id="format" class="structured-input"></input>
+      </div>
+      <input type="hidden" name="id" value=""></input>
+      {% if data['key'] %}
+      <input type="hidden" name="key" id="key2" value="{{data['key']}}"></input>
+      {% else %}
+      <input type="hidden" name="key" id="key2"></input>
+      {% endif %} 
+
+  </div> -->
+
+  <!-- Unstructured Form End -->
+
+  <!-- Offline Resource Begin -->
+
+ <!--  <div class="offline-resource-form" style="display:none;">
+      
+      <div class="input-group">
+        <div class="sp-label"><label for="unstructured_url">Link to resource</label></div>
+          <input type="text" name="url" id="unstructured_url" class="structured-input"></input>
+      </div>
+      <div class="input-group">
+        <div class="sp-label"><label for="name">Name</label></div>
+        <input type="text" name="s1-name" id="name" class="structured-input"></input>
+      </div>
+
+       <div class="input-group">
+        <div class="sp-label description-label-div"><label for="description">Description</label></div>
+        <textarea rows="4" cols="1" name="description" id="description" class="structured-input"></textarea>
+      </div>
+
+      <div class="input-group">
+        <div class="sp-label"><label>Distributor</label></div>
+        <input type="text" name="distributor" id="unstructured_distributor" class="structured-input"></input>
+      </div>
+
+       <div class="input-group">
+        <div class="sp-label"><label for="format">Format</label></div>
+        <input type="text" name="format" id="format" class="structured-input"></input>
+      </div>
+
+       <div class="input-group">
+        <div class="sp-label description-label-div"><label>Ordering Procedure</label></div>
+        <textarea rows="4" cols="1" name="ordering_procedure" class="structured-input"></textarea>
+      </div>
+
+      <input type="hidden" name="id" value=""></input>
+      {% if data['key'] %}
+      <input type="hidden" name="key" id="key2" value="{{data['key']}}"></input>
+      {% else %}
+      <input type="hidden" name="key" id="key2"></input>
+      {% endif %}
+
+
+  </div>
+ -->
+
+
+  <!-- Offline Resource End -->
 
   <div class="form-actions">
     <button type="submit" name="save" value="go-dataset">Previous Page</button>
