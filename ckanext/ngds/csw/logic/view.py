@@ -1,5 +1,7 @@
 from ckan.plugins import toolkit
 from ckanext.harvest.model import HarvestObject
+from shapely.wkt import loads
+
 def iso_metadata(context, data_dict):
     """
     Serialize a CKAN Package as an ISO 19139 XML document
@@ -25,13 +27,22 @@ def iso_metadata(context, data_dict):
         output = harvest_object.content
     else:
         # Extract BBOX coords from extras
-        bbox = {}
+        p["extent"] = None
 
-        def extract_coord(extra):
-            bbox[extra["key"].split("-")[1]] = float(extra["value"])
+        wkt = p["extras"].get("spatial", None)
 
-        [extract_coord(e) for e in p["extras"] if e["key"].startswith("bbox-")]
-        p["extent"] = bbox
+        if wkt is not None:
+            try:
+                bounds = loads(wkt).bounds
+                p["extent"] = {
+                    "west": bounds[0],
+                    "south": bounds[1],
+                    "east": bounds[2],
+                    "north": bounds[3]
+                }
+            except:
+                # Couldn't parse spatial extra into bounding coordinates
+                pass
 
         output = toolkit.render("package_to_iso.xml", p)
 

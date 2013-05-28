@@ -233,6 +233,7 @@
             <gmd:topicCategory>
                 <gmd:MD_TopicCategoryCode>geoscientificInformation</gmd:MD_TopicCategoryCode>
             </gmd:topicCategory>
+            {% if extras is not None %}
             <gmd:extent>
                 <gmd:EX_Extent>
                     <gmd:geographicElement>
@@ -253,6 +254,7 @@
                     </gmd:geographicElement>
                 </gmd:EX_Extent>
             </gmd:extent>
+            {% endif %}
         </gmd:MD_DataIdentification>
     </gmd:identificationInfo>
     <gmd:distributionInfo>
