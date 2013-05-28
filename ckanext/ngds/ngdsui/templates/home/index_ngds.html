@@ -1,3 +1,21 @@
+
+<script type="text/javascript">
+  var imageURLs = [
+       "/assets/banner_image.png"
+     , "/assets/banner_image2.png"
+     , "/assets/banner_image3.png"
+  ];
+  var imgURL = "/assets/banner_image";
+  var numImg = 4;
+  function getImageTag() {
+    var img = '<img src=\"';
+    var randomIndex = Math.floor(Math.random() * numImg);
+    //img += imageURLs[randomIndex];
+    img += imgURL + randomIndex + '.png';
+    img += '\" class="showcase-image" alt=""/>';
+    return img;
+  }
+</script>
 {% extends "page_ngds.html" %}
 {% set active_page = "home" %}   
 {%- block content %}
@@ -40,7 +58,10 @@
         <div id="showcase-find-map-container">
           <div id="showcase-container">
               <!-- Placeholder for the flashy image showcase widget in the middle of the home page. -->
-              <img src="/assets/banner_image.png" class="showcase-image" alt=""/>
+              <script type="text/javascript">
+                  document.write(getImageTag());
+              </script>
+              <!-- <img src="/assets/banner_image.png" class="showcase-image" alt=""/> -->
           </div>
           <div id="map-it-container">
               <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map' %}">
