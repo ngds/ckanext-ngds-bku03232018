@@ -11,11 +11,15 @@
 </script>
 <form id="file-upload-form" action="/ngds/contribute/upload_file" method="post" enctype="multipart/form-data">
   <div id="file-upload" style="display:none;">
-          <input type="submit" name="file-upload-button" value="Browse"></input>
+          <input type="submit" name="file-upload-button" value="Upload"></input>
           <input type="file" id="file" name="file" class="structured-input"></input>
+          {% if data['key'] %}
+          <input type="hidden" name="key" id="key1" value="{{data['key']}}"></input>
+          {% else %}
           <input type="hidden" name="key" id="key1"></input>
-          <input type="hidden" name="dataset-name" value="{{pkg_name}}"/>
-          <input type="hidden" name="form-type" id="form-type"/>
+          {% endif %}
+          <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
+          <input type="hidden" name="form-type" id="form_type"/>
   </div>
 </form>
 
@@ -34,7 +38,7 @@
 
   <div class="main-controls">
       <div class="radio-section">
-        <input type="hidden" name="dataset-name" value="{{pkg_name}}"/>
+        <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
         <input type="radio" id="upload-type-selection" name="upload_type_selection" value="upload_type"/>
         <label for="upload-type-selection">Upload a file</label><br/>
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-structured" class="upload-type" name="upload-type" value="structured"/>
@@ -44,12 +48,12 @@
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="data-service" name="upload-type" value="data-service" />
+        <input type="radio" id="data-service" name="upload_type" value="data-service" />
         <label for="data-service">Link to a data service</label>
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="offline-resouece" name="upload-type" value="offline-resource" />
+        <input type="radio" id="offline-resouece" name="upload_type" value="offline-resource" />
         <label for="offline-resource">Offline resource</label>
       </div>
   </div>
@@ -68,13 +72,16 @@
 
       <div class="input-group">
         <div class="sp-label"><label for="content-model">Content Model</label></div>
-        <select name="content_model" id="content_model" class="structured-input"></select>
+        <select name="content_model" id="content_model" class="structured-input">
+          <option value="None">None</option>
+        </select>
       </div>
 
-      <div class="input-group">
+      <div class="cm-v-marker" style="display:none;"></div>
+     <!--  <div class="input-group content-model-version-marker">
         <div class="sp-label"><label for="content-model-version">Version</label></div>
         <select name="content_model_version" id="content_model_version" class="structured-input"></select>
-      </div>
+      </div> -->
 
        <div class="input-group">
         <div class="sp-label description-label-div"><label for="description">Description</label></div>
@@ -86,7 +93,11 @@
         <input type="text" name="format" id="format" class="structured-input"></input>
       </div>
       <input type="hidden" name="id" value=""></input>
+      {% if data['key'] %}
+      <input type="hidden" name="key" id="key2" value="{{data['key']}}"></input>
+      {% else %}
       <input type="hidden" name="key" id="key2"></input>
+      {% endif %}
     </div> 
 
   </div>

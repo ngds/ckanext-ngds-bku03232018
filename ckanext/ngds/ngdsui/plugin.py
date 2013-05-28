@@ -80,6 +80,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		# map.connect("upload","/ngds/contribute/upload",controller=contribute_controller,action="upload")
 		map.connect("create_or_update_resource","/ngds/contribute/create_or_update_resource",controller=contribute_controller,action="create_or_update_resource",conditions={"method":["POST"]})
 		map.redirect('/ngds/contribute/dataset/{action}', '/dataset/{action}')
+		map.connect('get_structured_form','/ngds/contribute/get_structured_form',controller=contribute_controller,action="get_structured_form",conditions={"method":["GET"]})
 		#map.connect("harvest_new","/ngds/harvest/edit",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="edit")
 		map.connect("bulk_upload","/ngds/bulk_upload",controller=contribute_controller,action="bulk_upload")
 		map.connect("bulk_upload_handle","/ngds/bulk_upload_handle",controller=contribute_controller,action="bulk_upload_handle")

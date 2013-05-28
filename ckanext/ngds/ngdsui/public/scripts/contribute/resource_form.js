@@ -4,7 +4,7 @@ var content_models = {
 
 };
 
-var form_type = $("#form-type");
+var form_type = $("#form_type");
 
 $("#upload-type-structured-label").css("color","#808080");
 $("#upload-type-unstructured-label").css("color","#808080");
@@ -12,6 +12,46 @@ $("#upload-type-unstructured-label").css("color","#808080");
 var content_model_combo = $("#content_model");
 
 var populate_content_model_versions = function() {
+	$('.content-model-version-marker').remove();
+	if(content_model_combo.val()==='None') {
+		return;
+	}
+	
+	var cm_v_str = {
+		'tag':'div',
+		'attributes':{
+			'class':'input-group content-model-version-marker'
+		},
+		'children':[
+			{
+				'tag':'div',
+				'attributes':{
+					'class':'sp-label'
+				},
+				'children':[
+					{
+						'tag':'label',
+						'attributes':{
+							'for':'content-model-version',
+							'text':'Version'
+						}
+					}
+				]
+			},
+			{
+				'tag':'select',
+				'attributes':{
+						'name':'content_model_version',
+						'id':'content_model_version',
+						'class':'structured-input'
+					}
+			}
+		]
+	};
+
+	cm_v_dom = ngds.util.dom_element_constructor(cm_v_str);
+	$(".cm-v-marker").after(cm_v_dom);
+
 	var content_model_selected = $("#content_model").val();
 	var content_model = content_model_combo.val();
 	var content_model_version_combo = $("#content_model_version");
@@ -137,3 +177,7 @@ function calculate_resource_extension() {
 }
 
 calculate_resource_extension();
+
+
+
+
