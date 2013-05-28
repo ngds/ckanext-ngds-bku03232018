@@ -43,11 +43,36 @@ var ngds = ngds || { };
    		});  
 
 		$('#expander-image').click(function() {
-		    $('.accordion .ui-accordion-header:not(.ui-state-active)').next().slideToggle();
-		    $(this).attr('src', $(this).attr('src') == '/assets/minus_grey.png' ? '/assets/plus_grey.png': '/assets/minus_grey.png') ;
-		    $(this).toggleClass('collapse');
+
+			var sections = $('.accordion').find("> li > h3");
+
+			if($(this).attr('src') == '/assets/plus_grey.png'){
+			
+		      sections.each(function(index, section){
+							    if ($(section).hasClass('ui-state-default')) {
+							      $(section).click();
+							    }
+							  });
+		      $(this).attr('src','/assets/minus_grey.png');		    
+		      $(this).attr('title','Collapse All');
+			}
+			else {
+
+				  sections.each(function(index, section){
+				    if ($(section).hasClass('ui-state-active')) {
+				      $(section).click();
+				    }
+				  });
+
+				$(this).attr('src','/assets/plus_grey.png');		    
+				$(this).attr('title','Expand All');
+
+			}
+
 		    return false;
 		}); 
+
+
 
 
 		$('#field-order-by').change(function() {
