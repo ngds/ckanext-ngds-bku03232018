@@ -56,7 +56,12 @@
 								<span class="main-menu-text">{{ _('Find data for a specific geographic area') }}</span>
 							</span>
 						</a>
-						<a href="{% url_for controller='organization', id=default_group , action='read' %}">
+						
+			{% if g.central %}
+				<a href="{% url_for controller='package', action='search' %}">
+			{% else %}
+			<a href="{% url_for controller='organization', id=default_group , action='read' %}">
+			  {% endif %}							
 							{% if active_tab == "library" %} <span class="active main-nav-span borders"> {% else %} <span class="main-nav-span borders"> {% endif %}	
 								<span class="main-menu-item">{{ _('LIBRARY') }}</span>
 								<span class="main-menu-text">{{ _('Look up data, images, publications & more') }}</span>
@@ -68,7 +73,11 @@
 								<span class="main-menu-text">{{ _('Websites & tools for geothermal exploration') }}</span>
 							</span>
 						</a>
-						<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index' %}">
+						{% if g.central %}
+						<a href="/harvest">
+							{% else %}
+							<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index' %}">
+							{% endif %}
 							{% if active_tab == "contribute" %} <span class="active main-nav-span last borders"> {% else %} <span class="main-nav-span last borders"> {% endif %}	
 								<span class="main-menu-item">{% if g.central and  h.check_access('manage_users') %} {{ _('HARVEST') }} {% else %} {{ _('CONTRIBUTE') }} {% endif %}</span>
 								<span class="main-menu-text">{% if g.central and  h.check_access('manage_users') %} {{ _('Harvesting nodes & synchronizing nodes') }} {% else %} {{ _('Share data with NGDS') }} {% endif %}</span>

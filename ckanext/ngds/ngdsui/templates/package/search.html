@@ -10,8 +10,11 @@
 {% block content %}
 
 <div id="library-container">
-<!-- <form action="{% url_for controller='package', action='search' %}" method="get"> -->
+{% if g.central %}
+<form action="{% url_for controller='package', action='search' %}" method="get"> 
+{% else %}
 <form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">   
+  {% endif %}
   <div id="library-search-bar">
         
         
@@ -27,7 +30,8 @@
     <div class="library-search-accordion">
       <ul class="accordion">
  
-         <!-- <img src="/assets/plus_grey.png" title="Expand/Collapse All" id="expander-image"/> -->
+         <img src="/assets/plus_grey.png" title="Expand All" id="expander-image"/> 
+         
         {% set facet_list = h.get_ngdsfacets() %}
      
         {% for facet in facet_list %}

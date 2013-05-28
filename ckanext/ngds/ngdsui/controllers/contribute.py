@@ -10,8 +10,10 @@ from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 import ckanext.ngds.lib.importer.helper as import_helper
 from ckan.controllers.package import PackageController
+from ckan.controllers.storage import StorageController,StorageAPIController
 from ckanext.ngds.contentmodel.logic.action import *
 
+import json
 import os
 import shutil
 import zipfile
@@ -448,10 +450,21 @@ class ContributeController(NGDSBaseController):
 		redirect(url)
 
 	def create_or_update_resource(self,data=None):
+		package_controller=PackageController()
 		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
 		dataset_name = data['dataset_name']
+
+		if 'save' in data and data['save']=='go-dataset':
+			return
+			return package_controller.new_metadata(dataset_name)
+
+		# if 'save' in data and data['save']=='go-metadata':
+		# 	print "Going to metadata"
+		# 	return package_controller.new_resource(dataset_name)
+
+		
 		content_model = None
 		file_attached = False
 		file_likely_zip = False
@@ -466,23 +479,56 @@ class ContributeController(NGDSBaseController):
 		except(ValueError):
 			print "No file attached"
 			file_attached=False
+			return package_controller.new_metadata(dataset_name)
 
-		if 'content_model' in data and file_attached==True:
-			cm_uri = data['content_model']
-			cm_version = data['content_model_version']
-			split_version = cm_version.split('/')
-			cm_version = split_version[len(split_version)-1]
-			data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
-			# We need a way to get just the csv file and validate it here.
-			if file_likely_zip==True:
-				# Skip content model validation for now
-				print "Got a zip file. Need to implement extraction of csv file from the zip file and send it out for validation."
-				print "Fix me. I need refactoring."
-				print "Dispatch to shape file code here............"
+		if data['upload-type'] == 'structured':
+			if 'content_model' in data and data['content_model'] != 'None' and file_attached==True:
+				cm_uri = data['content_model']
+				cm_version = data['content_model_version']
+				split_version = cm_version.split('/')
+				cm_version = split_version[len(split_version)-1]
+				data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
+				# We need a way to get just the csv file and validate it here.
+				if file_likely_zip==True:
+					# Skip content model validation for now
+					print "Got a zip file. Need to implement extraction of csv file from the zip file and send it out for validation."
+					print "Dispatch to shape file code here............"
+				# It's not clear yet if this can be something other than a zip file. 
+				else:
+					return contentmodel_checkFile(context,data_dict)
 			else:
-				return contentmodel_checkFile(context,data_dict)
+				# It's a structured file but not one that conforms to any content models known to us. 
+				storage = StorageController()
+				storage_api = StorageAPIController()
+				package_controller = PackageController()
+				dataset_name = data['dataset_name']
+				# return contentmodel_checkFile(context,data_dict)
+				print "key : ",data['key']
+				metadata = json.loads(storage_api.get_metadata(data['key']))
+				resource_location = metadata['_location']
+				response.headers['Content-Type'] = 'text/html;charset=utf-8'
+				return package_controller.new_resource(dataset_name)
 		
 
-		x=PackageController()
-		
-		return x.new_resource(dataset_name)
+	def upload_file(self,data=None):
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+		data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+		print data
+		storage = StorageController()
+		storage_api = StorageAPIController()
+		package_controller = PackageController()
+		dataset_name = data['dataset_name']
+		form_type = data['form-type']
+
+		if 'file' and 'key' in data:
+			result = storage.upload_handle()
+			metadata = json.loads(storage_api.get_metadata(data['key']))
+			resource_location = metadata['_location']
+			response.headers['Content-Type'] = 'text/html;charset=utf-8'
+			return package_controller.new_resource(dataset_name,{'save':'other','resource_location':resource_location,'form_type':form_type,'key':data['key']})
+
+
+	def get_structured_form(self,data=None):
+		c.data = data
+		return render('package/structured_form.html')

@@ -32,7 +32,7 @@ class HomeController(NGDSBaseController):
 		
 		activity_objects = model.Session.query(model.Activity).join(model.Package, model.Activity.object_id == model.Package.id).\
 		filter(model.Activity.activity_type == 'new package').order_by(desc(model.Activity.timestamp)).\
-		limit(6).all()
+		limit(5).all()
 		activity_dicts = model_dictize.activity_list_dictize(activity_objects, context)
 		# c.recent_activity = logic.get_action('dashboard_activity_list')(
   #           context, {'id': None, 'offset': 0})[1:7]
@@ -51,11 +51,9 @@ class HomeController(NGDSBaseController):
 		"""
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
-		query_mode = True
-		if query==None:
-			query_mode = False
-
-		return render('map/map.html',{'query':query, 'query_mode':query_mode})	
+		if query:
+			c.query = query
+		return render('map/map.html')	
 
 	def render_library(self):
 		
@@ -74,9 +72,12 @@ class HomeController(NGDSBaseController):
 	def initiate_search(self):
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))	
+		
 		query =''
+		
 		if 'query' in data:
-			query=data['query']
+			query = data['query']
+			
 		if data['search-type']=='library':
 			return redirect('/organization/public?q='+query)
 		else:

@@ -23,8 +23,14 @@
   <link rel="stylesheet/less" type="text/css" href="/css/main.less"/>
   <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
   <!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
-  <!-- <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css" /> -->
+  <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css" />
+     <script>
+   var ngds = ngds || (ngds = { });
+   </script>
   <script type="text/javascript" src="/vendor/less/less.min.js"></script>
+  <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
+   <script type="text/javascript" src="/scripts/utils/utils.js"></script>
+
 {% endblock %}
 {% block bodytag %}
 {%- endblock -%}
@@ -101,42 +107,14 @@
 
   </div>
 {%- endblock -%}
-
-{%- block scripts %}
-  
-      <script>
-   var ngds = ngds || (ngds = { });
-   </script>
-   <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
-   <script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
-  <script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
-  <script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
-  <script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
-  <script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
-   <!-- // <script type="text/javascript" src="/vendor/geosearch/src/js/l.control.geosearch.js"></script> -->
-   <!-- // <script type="text/javascript" src="/vendor/geosearch/src/js/l.geosearch.provider.openstreetmap.js"></script> -->
-
-  <script type="text/javascript" src="/vendor/jscrollpane/jquery.jscrollpane.min.js"></script>
-  <script type="text/javascript" src="/vendor/jscrollpane/jquery.mousewheel.js"></script>
-  <script type="text/javascript" src="/vendor/jscrollpane/mwheelIntent.js"></script>
- <!-- // <script type="text/javascript" src="/vendor/Leaflet.Fullscreen/Control.FullScreen.js"></script> -->
-    <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
-    <script type="text/javascript" src="/scripts/utils/utils.js"></script>
-    <script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
-    <script type="text/javascript" src="/scripts/map/pager.js"></script>
-    <script type="text/javascript" src="/scripts/map/main.js"></script>
-  <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
-  <script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
-  <script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
-  
-  <script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
-  <script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
-  <script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
-  <script type="text/javascript" src="/scripts/map/result_parser.js"></script>
-   <script type="text/javascript" src="/scripts/scripts.js"></script>
-   <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
    
-  <script type="text/javascript" src="/scripts/autocomplete.js"></script>
+  {% block scripts %} 
+
+  {% endblock %}
+   <!-- // <script type="text/javascript" src="/scripts/scripts.js"></script> -->
+   
+   
+  <!-- // <script type="text/javascript" src="/scripts/autocomplete.js"></script> -->
 
   
   
@@ -148,5 +126,4 @@
   <script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/follow.js;modules/popover-context.js;modules/activity-stream.js;modules/dashboard.js">
   </script>
 -->
-{% endblock -%}
 

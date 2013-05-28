@@ -122,4 +122,10 @@ ngds.util.deep_joiner = function(data,property,separator) {
 	}
 
 	return final_list.join(separator) || "None";
+};
+
+ngds.util.replace_content = function(container,content) {
+	$(container).empty();
+	container.append(content);
 }
+
