@@ -111,6 +111,7 @@ div#library-search-container div.library-search-accordion-header {
 	float:left;
 	position: absolute;
 	margin-top:20px;
+	margin-left: 20px;
 	width:240px;
 }
 
@@ -142,11 +143,7 @@ div#library-search-container div.library-search-accordion-header ul li div {
 	padding-bottom:0px;
 }
 
-.ui-accordion .ui-accordion-content { overflow:hidden !important; }
 
-.ui-accordion .ui-accordion-content span {
-	display:block;
-}
 
 div#library-search-container div.library-search-accordion-header ul li div div {
 	display:block;
@@ -229,106 +226,6 @@ div#content-container {
 	padding-bottom:20px;
 }
 
-div#content-container section.search-results {
-	position:relative;
-	top:100px;
-	float:right;
-	width:750px;
-	padding-bottom:130px;
-}
-
-div#content-container section.search-results div.search-results-container { 
-	font-family:Arial;
-}
-
-div#content-container section.search-results div.search-results-preamble-container span {
-	font-family:Arial;
-	font-size:16px;
-}
-
-div#content-container section.search-results div.sort-container {
-	margin-top:20px;
-	height: 50px;
-	border: 1px solid #a8a8a8;
-	border-radius: 5px;
-	position:relative;
-	-webkit-border-radius: 5px;
-}
-
-div#content-container section.search-results div.sort-container span {
-	top:13px;
-	position:absolute;
-	padding-left:10px;
-	font-family:Arial;
-	font-size:13px;
-}
-
-div#content-container section.search-results div.sort-container span.left {
-	position:relative;
-	float:left;
-}
-
-div#content-container section.search-results div.sort-container span.right {
-	position:relative;
-	float:right;
-	margin-right:10px;
-}
-
-div#content-container section.search-results div.sort-container span.right button {
-	height:25px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-item {
-	display:table;
-	width:100%;
-	border-bottom:1px solid #a9a9a9;
-	margin-top:20px;
-	padding-bottom:20px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-item a.title {
-	display:table-caption;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-meta {
-	display:table-cell;
-	width:50%;
-	padding-top:10px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-actions {
-	display:table-cell;
-	width:50%;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-item .regular-meta-item {
-	margin-top:5px;
-	margin-bottom:5px;
-	font-size:13px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-item div.search-results-meta .spaced {
-	/*padding-top:10px;*/
-}
-
-.search-results-num-pages {
-	font-size:14px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-num-items {
-	display:inline;
-	float:right;
-	margin-left:20px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-num-items select {
-	width:50px;
-	margin-left:10px;
-}
-
-div#content-container section.search-results div.search-results-container div.search-results-num-items p {
-	font-size:14px;
-}
 
 .action-item-spaced {
 	margin-left:25px;

@@ -124,16 +124,16 @@ var ngds = ngds || { };
 		// 		});
 
 		// })();
+     
 
+/*		var accordions = $(".accordion");
 
-		$("#accordion").accordion({ // Create and configure the library search page's accordion menu.
-		    	autoHeight:false,
-		    	clearStyle: false,
-		    	header:"h4",
-		    	heightStyle:"content",
-		    	active:false,
-		    	collapsible:true
+		for(var i=0;i<accordions.length;i++) {
+			$(accordions[i]).accordion({
+				autoHeight:false,
+				heightStyle:"content"
 			});
+		}*/
 
 		function isLoginPopupVisible(){
 				return ($(".login-popup").css('display')!=='none');
