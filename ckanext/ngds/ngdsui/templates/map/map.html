@@ -41,12 +41,14 @@
 {{ super() }}
 	<!-- <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" /> -->
 	<!-- <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" /> -->
-	<!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
+	<link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
+
 	<link rel="stylesheet" href="/vendor/iconlabel/leaflet.iconlabel.css" />
 	<link rel="stylesheet" href="/vendor/jscrollpane/jquery.jscrollpane.css" />
 	<link rel="stylesheet" href="/vendor/Leaflet.Fullscreen/Control.FullScreen.css" />
 {% endblock %}
 {% block scripts %}
+<script type="text/javascript" src="/scripts/scripts.js"></script> 
 	<script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
   <script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
   <script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
