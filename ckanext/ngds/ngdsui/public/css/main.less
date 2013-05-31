@@ -1164,6 +1164,7 @@ div.about-ngds p.section-title {
 		height:40px;
 		text-align:center;
 		background:url('/assets/lib_search_bar_middle.png') 40px repeat-x;
+		
 		border-radius:5px;
 		-webkit-border-radius:5px;
 
@@ -1210,7 +1211,6 @@ div.about-ngds p.section-title {
 			table-layout: fixed;
 			top:0px;
 			width:100%;
-			padding-bottom:30px;
 
 			.search-results-preamble-container{
 				display:table-row;
@@ -1225,9 +1225,10 @@ div.about-ngds p.section-title {
 
 		.pagination-container{
 			display:table-cell;
+			vertical-align:bottom;
 			width:100%;
 			.pagination{
-				text-align:center;
+				vertical-align:bottom;
 				width:100%;
 				height: 36px;
 				margin: 18px 0;
@@ -1252,10 +1253,32 @@ div.about-ngds p.section-title {
 					-webkit-margin-start: 0px;
 					-webkit-margin-end: 0px;
 					-webkit-padding-start: 10px;
+
+					.active a{
+						color:#083656;
+					}
 					li{
 						display: inline;
-						color: #000000;
-						line-height: 18px;
+						padding: 5px;
+						a{
+							vertical-align:middle;
+							text-decoration: none;
+							color:#8EAFBF;
+							.previous{
+								width:7%;
+								display:inline;
+								vertical-align:bottom;
+							}
+						
+							:link {
+							    color: #8EAFBF;
+							    
+							}
+							:visited {
+								color: #8EAFBF;
+							}					
+						}
+
 					}
 				}
 
@@ -1268,31 +1291,34 @@ div.about-ngds p.section-title {
 .js-hide{
 	display:none;
 }
+
+.search-item-image{
+	display:table-cell;
+
+	margin-left:20px;
+	word-wrap: break-word;
+	width:15%;
+
+	text-align:center;
+	vertical-align:middle;
+
+
+	background:url('/assets/lib-blue-vbar.png') repeat-y;
+	background-size: 30px Auto;
+	background-position:center; 
+
+	.resultimage{
+	 	width: 40%;
+	 	height: 20%;
+	 }					 
+
+}
+
 .search-results-container{
 
 	display:table-row;
 
-	.search-item-image{
-		display:table-cell;
 
-		margin-left:20px;
-		word-wrap: break-word;
-		width:15%;
-
-		text-align:center;
-		vertical-align:middle;
-
-
-		background:url('/assets/lib-blue-vbar.png') repeat-y;
-		background-size: 30px Auto;
-		background-position:center; 
-
-		.resultimage{
-		 	width: 40%;
-		 	height: 20%;
-		 }					 
-
-	}
 
 	.search-results-item {
 		display:table;

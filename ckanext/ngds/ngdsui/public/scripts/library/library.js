@@ -73,6 +73,19 @@ var ngds = ngds || { };
 		}); 
 
 
+		previousElement = $(".pagination ul li a").filter(function(index){return $(this).text()==="«"; })[0];
+
+		if ($(previousElement).length>0){
+			    var newHTML = $(previousElement).html().replace('«','<img src = "/assets/previous.png" class="previous"/>');
+      			$(previousElement).html(newHTML);
+		}
+
+		nextElement = $(".pagination ul li a").filter(function(index){return $(this).text()==="»"; })[0];
+
+		if ($(nextElement).length>0){
+			    var newHTML = $(nextElement).html().replace('»','<img src = "/assets/next.png" class="previous"/>');
+      			$(nextElement).html(newHTML);
+		}		
 
 
 		$('#field-order-by').change(function() {
