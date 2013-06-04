@@ -58,33 +58,110 @@
   <div class="form-body">
    <!-- Offline Resource End -->
 
-      <div class="form-actions">
+   <!-- <div class="input-group">
+        <div class="sp-label"><label>Distributor</label></div>
+        <input type="text" name="distributor" id="structured_distributor" class="structured-input"></input>
+      </div> -->
+
+  </div>
+  <div class="form-actions">
         <button type="submit" name="save" value="go-dataset">Previous Page</button>
         <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
         <button type="submit" name="save" value="go-metadata">Additional Metadata</button>
     </div>
-
-  </div>
 </form>
 
 {% raw %}
 <script>
 var structured_form = {
   'form':[
-    {'label':'Resource URL','name':'name','type':'text'}
+    {
+      'label':'Resource URL',
+      'name':'url',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text id=url';
+      }
+    },
+    {
+      'label':'Name',
+      'name':'name',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+      'label':'Content Model',
+      'name':'content_model',
+      'tag':'select',
+      'id':function() {
+        return 'id=content_model';
+      }
+    },
+    {
+      'label':'Description',
+      'name':'description',
+      'tag':'textarea',
+      'id':function() {
+        return 'id=description';
+      },
+      'additional':function() {
+        return 'rows=4 cols=1'
+      },
+      'classes':function() {
+        return 'description-label-div';
+      }
+    },
+    {
+      'label':'Distributor',
+      'name':'distributor',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+    'label':'Format',
+    'name':'format',
+    'tag':'input',
+    'additional':function() {
+      return 'type=text';
+      }
+    }
   ]
 };
 
+
+
+
+var position_file_uploader = function(selector) {
+  var ref = $(selector);
+  var file_upload = $("#file-upload");
+  file_upload.css("position","absolute");
+  file_upload.css("left",ref.position().left+ref.width()+10);
+  file_upload.css("top",ref.position().top);
+  file_upload.show();
+};
+
 var structured_form_template = "{{#form}}\
-        <input type=\"{{type}}\"></input> \
+        <div class=\"input-group\">\
+            <div class=\"sp-label {{classes}}\"><label>{{label}}</label></div>\
+            <{{tag}} {{additional}} name=\"{{name}}\" {{id}} class=\"structured-input\">{{inner}}</{{tag}}>\
+        </div>\
 {{/form}}";
 
 $('input[name="upload-type"]').on('change',function(ev){
   
   var value = ev.target.value;
+
+  $(".form-body").empty();
+
   if(value==="structured") {
     console.log(Mustache.render(structured_form_template,structured_form));
     $(".form-body").html(Mustache.render(structured_form_template,structured_form));
+    position_file_uploader("#url");
+    populate_content_models("#content_model");
   }
 
 });
@@ -93,4 +170,4 @@ $('input[name="upload-type"]').on('change',function(ev){
 </script>
 {% endraw %}
 
-<!-- <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script> -->
+<script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
