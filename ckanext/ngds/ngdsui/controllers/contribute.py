@@ -12,7 +12,7 @@ import ckanext.ngds.lib.importer.helper as import_helper
 from ckan.controllers.package import PackageController
 from ckan.controllers.storage import StorageController,StorageAPIController
 from ckanext.ngds.contentmodel.logic.action import *
-
+from pylons.decorators import jsonify
 import json
 import os
 import shutil
@@ -532,3 +532,73 @@ class ContributeController(NGDSBaseController):
 	def get_structured_form(self,data=None):
 		c.data = data
 		return render('package/structured_form.html')
+
+	#  Form creation is going to be asynchronous.
+	@jsonify
+	def validate_resource(self):
+		data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+		print data
+		if data['upload-type']=='offline-resource':
+			return self.validate_offline_resource(data)
+		if data['upload-type']=='data-service':
+			return self.validate_data_service(data)
+
+	def validate_data_service(self,data):
+		errors = []
+
+		# A bunch of validations for the offline resource form
+		if not data['url'] or len(data['url'])<3:
+			errors.append({
+				'field':'url',
+				'message':'Resource URL is a mandatory parameter'
+			})
+
+		if not data['name'] or len(data['name'])==0:
+			errors.append({
+					'field':'name',
+					'message':'Name must be non-empty'
+				})
+
+		if not data['protocol'] or len(data['protocol'])==0:
+			errors.append({
+					'field':'protocol',
+					'message':'Protocol must be non-empty'
+				})
+
+		if not data['layer'] or len(data['layer'])==0:
+			errors.append({
+					'field':'layer',
+					'message':'Layer must be non-empty'
+				})
+
+		if len(errors)>0:
+			return errors
+		else:
+			return {
+				'success':True
+			}
+
+
+	def validate_offline_form(self,data):
+		errors = []
+
+		# A bunch of validations for the offline resource form
+		if not data['url'] or len(data['url'])<3:
+			errors.append({
+				'field':'url',
+				'message':'Resource URL is a mandatory parameter'
+			})
+
+		if not data['name'] or len(data['name'])==0:
+			errors.append({
+				'field':'name',
+					'message':'Name must be non-empty'
+				})
+
+		if len(errors)>0:
+			return errors
+		else:
+			return {
+				'success':True
+			}

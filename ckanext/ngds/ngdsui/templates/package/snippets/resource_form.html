@@ -20,7 +20,7 @@
   </div>
 </form>
 
-<form class="dataset-form dataset-resource-form form-horizontal" action="/ngds/contribute/create_or_update_resource" method="post" data-module="resource-form basic-form">
+<form class="dataset-form dataset-resource-form form-horizontal" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
   <ol class="stages stage-2">
     <li class="first-stage complete">
         <button class="highlight" name="save" value="go-dataset" type="submit">1. Create dataset</button>
@@ -67,7 +67,8 @@
   <div class="form-actions">
         <button type="submit" name="save" value="go-dataset">Previous Page</button>
         <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
-        <button type="submit" name="save" value="go-metadata">Additional Metadata</button>
+        <button type="button" id="go-metadata">Additional Metadata</button>
+        <!-- <button type="button" name="save" value="go-metadata">Additional Metadata</button> -->
     </div>
 </form>
 
@@ -358,6 +359,26 @@ $('input[name="upload-type"]').on('change',function(ev){
   }
 });
 
+$("#go-metadata").click(function() {
+  $.ajax({
+    'url':'/ngds/contribute/validate_resource',
+    'data':$(".dataset-form").serializeArray(),
+    'success':function(response) {
+      if(response.success===true) {
+        $(".dataset-form").append($("<input/>",{'type':'hidden','name':'save','value':'go-metadata'}));
+        $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
+        $(".dataset-form").submit();
+      }
+    }
+  });
+});
+
+
+if(typeof continuation!=='undefined') {
+  for(var i=0;i<continuation.length;i++) {
+    $("[name="+continuation['field']+"]").val(continuation['value']);
+  }
+}
 
 </script>
 {% endraw %}

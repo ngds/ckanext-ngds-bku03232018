@@ -89,7 +89,6 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("bulk_upload_package","/ngds/bulkupload_package",controller=contribute_controller,action="bulkupload_package_list")
 		map.connect("execute_bulkupload","/ngds/execute_bulkupload",controller=contribute_controller,action="execute_bulkupload")
 
-
 		#map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
 
 		#Map related paths
@@ -104,7 +103,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("member_new","/ngds/member_new",controller=user_controller,action="member_new")
 		map.connect("poly","/poly",controller=map_controller,action="test")
 		map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
-
+		map.connect("validate_resource","/ngds/contribute/validate_resource",controller=contribute_controller,action="validate_resource")
 
 		return map
 
