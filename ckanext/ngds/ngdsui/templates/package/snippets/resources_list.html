@@ -1,0 +1,51 @@
+{# 
+Renders a list of resources with icons and view links.
+
+resources - A list of resources to render
+pkg - A package object that the resources belong to.
+
+Example:
+
+  {% snippet "package/snippets/resources_list.html", pkg=pkg, resources=pkg.resources %}
+
+#}
+
+<section id="dataset-resources" class="resources module-content ">
+
+    {% if resources %}
+<table class="table table-striped table-bordered table-condensed dataset-detail">
+
+    <tbody>
+     
+        <tr>
+          <th scope="row" class="dataset-label">{{ _('Resources') }}</th>
+          <td class="dataset-details" property="foaf:homepage">
+          
+            <p class="resource-title"><img src= "/assets/20130521_1280x1024_DataSetDetailPage_V4_Assets_CR-08.png" width = 15px height = 15px>        Online Resources </p>
+            <ul class="resource-item">
+              
+      {% for resource in resources %}
+        {% snippet 'package/snippets/resource_item.html', pkg=pkg, res=resource %}
+      {% endfor %}
+    </ul>
+      
+       <p  class="resource-title"><img src= "/assets/20130521_1280x1024_DataSetDetailPage_V4_Assets_CR-09.png" width = 15px height = 15px>        Offline Resources  </p>
+  
+   
+      </td>
+        </tr>
+    </tbody>    
+  </table>
+   
+
+
+    
+  {% else %}
+    <p>
+      {# Comment out "add some" as action doesn't exist yet #}
+      {% trans url=h.url_for(controller='package', action='new_resource', id=pkg.name) %}
+      <p class="empty">This dataset has no data, <a href="{{ url }}">why not add some?</a>
+      {% endtrans %}
+    </p>
+  {% endif %}
+</section>

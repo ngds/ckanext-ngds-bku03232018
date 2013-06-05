@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% set page='page_ngds' %}
+{% block doctype %}
+<!DOCTYPE html>
+{% endblock %}
+{% block title %} 
+	NGDS - National Geothermal Data System 
+{% endblock %}
+
+{% block links -%}
+  
+{% endblock -%}
+
+## Include our css resources in this block
+
+
+{% block styles %}
+	<link rel="stylesheet" type="text/css" title="Demo Stylesheet" href="/css/default.css"/>
+  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
+  <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
+  <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
+  <link rel="stylesheet/less" type="text/css" href="/css/main.less"/>
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
+  <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
+  <script type="text/javascript" src="/vendor/less/less.min.js"></script>
+{% endblock %}
+{% block bodytag %}
+{%- endblock -%}
+
+{%- block page -%}
+
+   <div id="top-level-container">
+  {#
+  Override the header on a page by page basis by extending this block. If
+  making sitewide header changes it is preferable to override the header.html
+  file.
+  #}
+  {%- block header %}
+  {% set active_tab = active_page %}  
+    {% include "header_ngds.html" %}
+  {% endblock -%}
+
+  {# The content block allows you to replace the content of the page if needed #}
+  <div id="body-container">
+
+          {% block flash %}
+            {% set flash_messages = h.flash.pop_messages() | list %}
+            <div class="flash-messages">
+              {% for message in flash_messages %}
+                <div class="alert fade in {{ message.category }}">
+                  <a class="flash-msg-close" href="#">x</a>
+                  {{ h.literal(message) }}
+                </div>
+              {% endfor %}
+            </div>
+
+            <script>
+              $(document).ready(function() {
+                $(".flash-msg-close").click(function(ev){
+                  $(ev.currentTarget.parentElement).fadeOut(500,function() {
+                    ev.currentTarget.parentElement.remove();
+                  });
+                });
+             
+              $(".close").live('click',function(ev){ // Late binding...awesome! Live is deprecated. Replace with 'on' and event delegation.
+                  $(ev.currentTarget.parentElement).fadeOut(500,function() {
+                    ev.currentTarget.parentElement.remove();;
+                  });
+                });
+              });
+            </script>
+          {% endblock %}
+
+
+  {% if active_page=="library" %}
+    <div id="content-container" style="min-height:600px;">
+      {% elif active_page=="home"%}
+    <div id="content-container" style="">
+      {% else %}
+    <div id="content-container">
+      {% endif %}
+  {%- block content %}
+ {% block maintag %}<div role="main">{% endblock %}
+      <div id="content" class="container">
+        {% block main_content %}
+         
+
+          {% block toolbar %}
+            <div class="toolbar">
+              {% block add_action %}
+                {% if self.add_action_content() | trim %}
+                  <div class="add_action">
+                    {% block add_action_content %}{% endblock %}
+                  </div>
+                {% endif %}
+              {% endblock %}
+              {% block breadcrumb %}
+                {% if self.breadcrumb_content() | trim %}
+                  <ol class="breadcrumb">
+                    {% snippet 'snippets/home_breadcrumb_item.html' %}
+                    {% block breadcrumb_content %}{% endblock %}
+                  </ol>
+                {% endif %}
+              {% endblock %}
+            </div>
+          {% endblock %}
+
+          <div class="wrapper{% block wrapper_class %}{% endblock %}">
+
+            {% block actions %}
+              <div class="btn-group actions">
+                {% block actions_content %}{% endblock %}
+              </div>
+            {% endblock %}
+
+            {#
+            The pre_primary block can be used to add content to before the
+            rendering of the main content columns of the page.
+            #}
+            {% block pre_primary %}
+            {% endblock %}
+
+            {% block primary %}
+              <div class="primary">
+                {#
+                The primary_content block can be used to add content to the page.
+                This is the main block that is likely to be used within a template.
+
+                Example:
+
+                  {% block primary_content %}
+                    <h1>My page content</h1>
+                    <p>Some content for the page</p>
+                  {% endblock %}
+                #}
+                {% block primary_content %}{% endblock %}
+              </div>
+            {% endblock %}
+
+            {% block secondary %}
+              <aside class="secondary">
+                {#
+                The secondary_content block can be used to add content to the
+                sidebar of the page. This is the main block that is likely to be
+                used within a template.
+
+                Example:
+
+                  {% block secondary_content %}
+                    <h2>A sidebar item</h2>
+                    <p>Some content for the item</p>
+                  {% endblock %}
+                #}
+                {% block secondary_content %}{% endblock %}
+              </aside>
+            {% endblock %}
+          </div>
+        {% endblock %}
+      </div>
+    </div>
+     
+  {% endblock -%}
+    </div>
+  </div>
+
+  {#
+  Override the footer on a page by page basis by extending this block. If
+  making sitewide header changes it is preferable to override the footer.html-u
+  file.
+  #}
+  {%- block footer %}
+    {% include "footer_ngds.html" %}
+  {% endblock -%}
+  </div>
+  <div id="errors">
+
+  </div>
+{%- endblock -%}
+
+{%- block scripts %}
+  
+      <script>
+   var ngds = ngds || (ngds = { });
+   </script>
+   <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
+   <script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
+  <script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
+  <script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
+  <script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
+  <script type="text/javascript" src="/scripts/map/AgsDynamicLayer.js"></script>
+
+  <script type="text/javascript" src="/vendor/jscrollpane/jquery.jscrollpane.min.js"></script>
+  <script type="text/javascript" src="/vendor/jscrollpane/jquery.mousewheel.js"></script>
+  <script type="text/javascript" src="/vendor/jscrollpane/mwheelIntent.js"></script>
+ <!-- // <script type="text/javascript" src="/vendor/Leaflet.Fullscreen/Control.FullScreen.js"></script> -->
+    <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
+    <script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
+    <script type="text/javascript" src="/scripts/map/pager.js"></script>
+    <script type="text/javascript" src="/scripts/map/main.js"></script>
+  <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
+  
+  <script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
+  <script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
+  <script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
+  <script type="text/javascript" src="/scripts/map/result_parser.js"></script>
+   <script type="text/javascript" src="/scripts/scripts.js"></script>
+   <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
+   <script type="text/javascript" src="/scripts/utils/utils.js"></script>
+  <script type="text/javascript" src="/scripts/autocomplete.js"></script>
+  
+  <!--
+  <script>document.getElementsByTagName('html')[0].className += ' js';</script>
+  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/jquery.min.js"></script>
+  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/:bundle:bootstrap/js/bootstrap-transition.min.js;bootstrap/js/bootstrap-collapse.min.js;bootstrap/js/bootstrap-modal.min.js;bootstrap/js/bootstrap-alert.min.js;bootstrap/js/bootstrap-tab.min.js;bootstrap/js/bootstrap-button.min.js;bootstrap/js/bootstrap-tooltip.js;bootstrap/js/bootstrap-popover.js;bootstrap/js/bootstrap-dropdown.js;jed.min.js;select2/select2.min.js">
+  </script>
+  <script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/follow.js;modules/popover-context.js;modules/activity-stream.js;modules/dashboard.js">
+  </script>
+-->
+{% endblock -%}
+

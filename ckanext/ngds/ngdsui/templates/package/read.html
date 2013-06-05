@@ -1,0 +1,63 @@
+
+{% extends "package/read_base.html" %}
+{% set pkg = c.pkg_dict %}
+
+{% block subtitle %}{{ pkg.title or pkg.name }}{% endblock %}
+
+{% block primary_content_inner %}
+
+ 
+ 
+
+ <div style="width:100%;border-style:none"> 
+   {% block package_description %}
+
+   <section class="module-content ">
+     <h3>{{ _('DATASET DETAIL PAGE') }}</h3>
+         </section>
+    <section class="dataset-detail">
+    <hr >  </section>
+   <!--  <section class="module-content ">
+      
+       
+      {% if pkg.private %}
+        <span class="dataset-private label label-inverse pull-right">
+          <i class="icon-lock"></i>
+          {{ _('Private') }}
+        </span>
+      {% endif %}
+      <h1> 
+        {{ pkg.title or pkg.name }}
+        {% if pkg.state.startswith('draft') %}
+          [{{ _('Draft') }}]
+        {% endif %}
+      </h1>
+      {% if c.pkg_notes_formatted %}
+        <div class="notes embedded-content">
+          {{ c.pkg_notes_formatted }}
+        </div>
+      {% endif %}
+      {# FIXME why is this here? seems wrong #}
+      <span class="insert-comment-thread"></span>
+    </section> -->
+  
+  {% endblock %}
+
+  <div class = "floatleft">
+  {% block package_tags %}
+    {% snippet "package/snippets/tags.html", tags=pkg.tags %}
+  {% endblock %}
+
+  {% block package_additional_info %}
+    {% snippet "package/snippets/additional_info.html", pkg_dict=pkg %}
+  {% endblock %}
+   <hr > 
+  {% block package_resources %}
+    {% snippet "package/snippets/resources_list.html", pkg=pkg, resources=pkg.resources %}
+  {% endblock %}
+  </div>
+<div class = "floatright">
+    {% snippet "package/snippets/map_action.html", pkg=pkg%}
+</div>
+  </div>
+{% endblock %}
