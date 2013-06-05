@@ -12,7 +12,7 @@ import ckanext.ngds.lib.importer.helper as import_helper
 from ckan.controllers.package import PackageController
 from ckan.controllers.storage import StorageController,StorageAPIController
 from ckanext.ngds.contentmodel.logic.action import *
-
+from pylons.decorators import jsonify
 import json
 import os
 import shutil
@@ -519,16 +519,135 @@ class ContributeController(NGDSBaseController):
 		storage_api = StorageAPIController()
 		package_controller = PackageController()
 		dataset_name = data['dataset_name']
-		form_type = data['form-type']
 
 		if 'file' and 'key' in data:
 			result = storage.upload_handle()
 			metadata = json.loads(storage_api.get_metadata(data['key']))
 			resource_location = metadata['_location']
 			response.headers['Content-Type'] = 'text/html;charset=utf-8'
-			return package_controller.new_resource(dataset_name,{'save':'other','resource_location':resource_location,'form_type':form_type,'key':data['key']})
+			return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'form_type':data['form_type'],'url':data['key']})
 
 
 	def get_structured_form(self,data=None):
 		c.data = data
 		return render('package/structured_form.html')
+
+	#  Form creation is going to be asynchronous.
+	@jsonify
+	def validate_resource(self):
+		data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+		print data
+		if data['upload-type']=='offline-resource':
+			return self.validate_offline_resource(data)
+		if data['upload-type']=='data-service':
+			return self.validate_data_service(data)
+		if data['upload-type']=='unstructured':
+			return self.validate_unstructured_resource(data)
+		if data['upload-type']=='structured':
+			return self.validate_structured_resource(data)
+
+	def validate_structured_resource(self,data):
+		errors = []
+		# A bunch of validations for the unstructured resource form
+
+		if not data['url'] or len(data['url'])<3:
+			errors.append({
+				'field':'url',
+				'message':'Resource URL is a mandatory parameter'
+			})
+
+		if not data['name'] or len(data['name'])==0:
+			errors.append({
+					'field':'name',
+					'message':'Name must be non-empty'
+			})
+
+		if len(errors)>0:
+			return errors
+		else:
+			return {
+				'success':True
+			}
+
+	def validate_unstructured_resource(self,data):
+		errors = []
+		# A bunch of validations for the unstructured resource form
+
+		if not data['url'] or len(data['url'])<3:
+			errors.append({
+				'field':'url',
+				'message':'Resource URL is a mandatory parameter'
+			})
+
+		if not data['name'] or len(data['name'])==0:
+			errors.append({
+					'field':'name',
+					'message':'Name must be non-empty'
+			})
+
+		if len(errors)>0:
+			return errors
+		else:
+			return {
+				'success':True
+			}
+
+	def validate_data_service(self,data):
+		errors = []
+
+		# A bunch of validations for the data service resource form
+		if not data['url'] or len(data['url'])<3:
+			errors.append({
+				'field':'url',
+				'message':'Resource URL is a mandatory parameter'
+			})
+
+		if not data['name'] or len(data['name'])==0:
+			errors.append({
+					'field':'name',
+					'message':'Name must be non-empty'
+			})
+
+		if not data['protocol'] or len(data['protocol'])==0:
+			errors.append({
+					'field':'protocol',
+					'message':'Protocol must be non-empty'
+			})
+
+		if not data['layer'] or len(data['layer'])==0:
+			errors.append({
+					'field':'layer',
+					'message':'Layer must be non-empty'
+			})
+
+		if len(errors)>0:
+			return errors
+		else:
+			return {
+				'success':True
+			}
+
+
+	def validate_offline_resource(self,data):
+		errors = []
+
+		# A bunch of validations for the offline resource form
+		if not data['name'] or len(data['name'])==0:
+			errors.append({
+				'field':'name',
+					'message':'Name must be non-empty'
+			})
+
+		if not data['ordering_procedure'] or len(data['ordering_procedure'])==0:
+			errors.append({
+				'field':'ordering_procedure',
+					'message':'Ordering Procedure must be non-empty'
+			})
+
+		if len(errors)>0:
+			return errors
+		else:
+			return {
+				'success':True
+			}

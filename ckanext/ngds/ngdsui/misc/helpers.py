@@ -8,7 +8,7 @@ from pylons import config
 from datetime import date
 import iso8601
 import inspect
-
+import json
 import ckan.plugins as p
 _ = p.toolkit._
 
@@ -289,3 +289,7 @@ def get_formatted_date(datstr):
     from datetime import datetime
     return datetime.strptime(datstr[:10], '%Y-%m-%d').strftime('%b %d,%Y')
 
+
+def to_json(data):
+    print json.dumps(data)
+    return json.dumps(data)

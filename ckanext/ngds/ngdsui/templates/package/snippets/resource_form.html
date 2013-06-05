@@ -1,9 +1,6 @@
 <script>
 {% if data %}
-    form_type_v = "{{data['form_type']}}";
     resource_location = window.location.origin+"{{data['resource_location']}}";
-{% else %}
-  form_type_v = '';
 {% endif %}
 </script>
 <form id="file-upload-form" action="/ngds/contribute/upload_file" method="post" enctype="multipart/form-data">
@@ -16,11 +13,11 @@
           <input type="hidden" name="key" id="key1"></input>
           {% endif %}
           <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
-          <input type="hidden" name="form-type" id="form_type"/>
+          <input type="hidden" name="form_type" id="form_type"/>
   </div>
 </form>
 
-<form class="dataset-form dataset-resource-form form-horizontal" action="/ngds/contribute/create_or_update_resource" method="post" data-module="resource-form basic-form">
+<form class="dataset-form dataset-resource-form form-horizontal" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
   <ol class="stages stage-2">
     <li class="first-stage complete">
         <button class="highlight" name="save" value="go-dataset" type="submit">1. Create dataset</button>
@@ -56,148 +53,347 @@
   </div>
 
   <div class="form-body">
-    
-    <!--  Structured Form Begin  -->
+   <!-- Offline Resource End -->
 
-    <div class="structured-form" style="display:none;">
-      
-      <div class="input-group">
-        <div class="sp-label"><label for="structured_url">Link to resource</label></div>
-          <input type="text" name="url" id="structured_url" class="structured-input"></input>
-      <div class="input-group">
-        <div class="sp-label"><label for="name">Name</label></div>
-        <input type="text" name="name" id="name" class="structured-input"></input>
-      </div>
-
-      <div class="input-group">
-        <div class="sp-label"><label for="content-model">Content Model</label></div>
-        <select name="content_model" id="content_model" class="structured-input">
-          <option value="None">None</option>
-        </select>
-      </div>
-
-      <div class="cm-v-marker" style="display:none;"></div>
-     <!--  <div class="input-group content-model-version-marker">
-        <div class="sp-label"><label for="content-model-version">Version</label></div>
-        <select name="content_model_version" id="content_model_version" class="structured-input"></select>
-      </div> -->
-
-       <div class="input-group">
-        <div class="sp-label description-label-div"><label for="description">Description</label></div>
-        <textarea rows="4" cols="1" name="description" id="description" class="structured-input"></textarea>
-      </div>
-
-      <div class="input-group">
+   <!-- <div class="input-group">
         <div class="sp-label"><label>Distributor</label></div>
         <input type="text" name="distributor" id="structured_distributor" class="structured-input"></input>
-      </div>
-
-       <div class="input-group">
-        <div class="sp-label"><label for="format">Format</label></div>
-        <input type="text" name="format" id="format" class="structured-input"></input>
-      </div>
-      <input type="hidden" name="id" value=""></input>
-      {% if data['key'] %}
-      <input type="hidden" name="key" id="key2" value="{{data['key']}}"></input>
-      {% else %}
-      <input type="hidden" name="key" id="key2"></input>
-      {% endif %}
-    </div> 
+      </div> -->
 
   </div>
-
-  <!-- Structured Form End -->
-
-  <!-- Unstructured Form -->
-
-  <!-- <div class="unstructured-form" style="display:none;">
-      
-      <div class="input-group">
-        <div class="sp-label"><label for="unstructured_url">Link to resource</label></div>
-          <input type="text" name="url" id="unstructured_url" class="structured-input"></input>
-      </div>
-      <div class="input-group">
-        <div class="sp-label"><label for="name">Name</label></div>
-        <input type="text" name="s-name" id="name" class="structured-input"></input>
-      </div>
-
-       <div class="input-group">
-        <div class="sp-label description-label-div"><label for="description">Description</label></div>
-        <textarea rows="4" cols="1" name="description" id="description" class="structured-input"></textarea>
-      </div>
-
-      <div class="input-group">
-        <div class="sp-label"><label>Distributor</label></div>
-        <input type="text" name="distributor" id="unstructured_distributor" class="structured-input"></input>
-      </div>
-
-       <div class="input-group">
-        <div class="sp-label"><label for="format">Format</label></div>
-        <input type="text" name="format" id="format" class="structured-input"></input>
-      </div>
-      <input type="hidden" name="id" value=""></input>
-      {% if data['key'] %}
-      <input type="hidden" name="key" id="key2" value="{{data['key']}}"></input>
-      {% else %}
-      <input type="hidden" name="key" id="key2"></input>
-      {% endif %} 
-
-  </div> -->
-
-  <!-- Unstructured Form End -->
-
-  <!-- Offline Resource Begin -->
-
- <!--  <div class="offline-resource-form" style="display:none;">
-      
-      <div class="input-group">
-        <div class="sp-label"><label for="unstructured_url">Link to resource</label></div>
-          <input type="text" name="url" id="unstructured_url" class="structured-input"></input>
-      </div>
-      <div class="input-group">
-        <div class="sp-label"><label for="name">Name</label></div>
-        <input type="text" name="s1-name" id="name" class="structured-input"></input>
-      </div>
-
-       <div class="input-group">
-        <div class="sp-label description-label-div"><label for="description">Description</label></div>
-        <textarea rows="4" cols="1" name="description" id="description" class="structured-input"></textarea>
-      </div>
-
-      <div class="input-group">
-        <div class="sp-label"><label>Distributor</label></div>
-        <input type="text" name="distributor" id="unstructured_distributor" class="structured-input"></input>
-      </div>
-
-       <div class="input-group">
-        <div class="sp-label"><label for="format">Format</label></div>
-        <input type="text" name="format" id="format" class="structured-input"></input>
-      </div>
-
-       <div class="input-group">
-        <div class="sp-label description-label-div"><label>Ordering Procedure</label></div>
-        <textarea rows="4" cols="1" name="ordering_procedure" class="structured-input"></textarea>
-      </div>
-
-      <input type="hidden" name="id" value=""></input>
-      {% if data['key'] %}
-      <input type="hidden" name="key" id="key2" value="{{data['key']}}"></input>
-      {% else %}
-      <input type="hidden" name="key" id="key2"></input>
-      {% endif %}
-
-
-  </div>
- -->
-
-
-  <!-- Offline Resource End -->
-
   <div class="form-actions">
-    <button type="submit" name="save" value="go-dataset">Previous Page</button>
-    <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
-    <button type="submit" name="save" value="go-metadata">Additional Metadata</button>
-</div>
+        <button type="submit" name="save" value="go-dataset">Previous Page</button>
+        <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
+        <button type="button" id="go-metadata">Additional Metadata</button>
+        <!-- <button type="button" name="save" value="go-metadata">Additional Metadata</button> -->
+    </div>
 </form>
 
+{% raw %}
+<script>
+var structured_form = {
+  'form':[
+    {
+      'label':'Resource URL',
+      'name':'url',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text id=url';
+      }
+    },
+    {
+      'label':'Name',
+      'name':'name',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+      'label':'Content Model',
+      'name':'content_model',
+      'top_classes':function() {
+        return "content_model_marker";
+      },
+      'tag':'select',
+      'id':function() {
+        return 'id=content_model';
+      }
+    },
+    {
+      'label':'Description',
+      'name':'description',
+      'tag':'textarea',
+      'id':function() {
+        return 'id=description';
+      },
+      'additional':function() {
+        return 'rows=4 cols=1'
+      },
+      'classes':function() {
+        return 'description-label-div';
+      }
+    },
+    {
+      'label':'Distributor',
+      'name':'distributor',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+    'label':'Format',
+    'name':'format',
+    'tag':'input',
+    'additional':function() {
+      return 'type=text';
+      }
+    }
+  ]
+};
+
+var unstructured_form = {
+  'form':[
+    {
+      'label':'Resource URL',
+      'name':'url',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text id=url';
+      }
+    },
+    {
+      'label':'Name',
+      'name':'name',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+      'label':'Description',
+      'name':'description',
+      'tag':'textarea',
+      'id':function() {
+        return 'id=description';
+      },
+      'additional':function() {
+        return 'rows=4 cols=1'
+      },
+      'classes':function() {
+        return 'description-label-div';
+      }
+    },
+    {
+      'label':'Distributor',
+      'name':'distributor',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+    'label':'Format',
+    'name':'format',
+    'tag':'input',
+    'additional':function() {
+      return 'type=text';
+      }
+    }
+  ]
+};
+
+
+var offline_resource_form = {
+  'form':[
+    {
+      'label':'Resource URL',
+      'name':'url',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text id=url';
+      }
+    },
+    {
+      'label':'Name',
+      'name':'name',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+      'label':'Description',
+      'name':'description',
+      'tag':'textarea',
+      'id':function() {
+        return 'id=description';
+      },
+      'additional':function() {
+        return 'rows=4 cols=1'
+      },
+      'classes':function() {
+        return 'description-label-div';
+      }
+    },
+    {
+    'label':'Ordering Procedure',
+    'name':'ordering_procedure',
+    'tag':'textarea',
+    'additional':function() {
+        return 'rows=4 cols=1'
+      },
+    'classes':function() {
+        return 'description-label-div';
+      }
+    }
+  ]
+};
+
+var link_data_service_form = {
+  'form':[
+    {
+      'label':'Resource URL',
+      'name':'url',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text id=url';
+      }
+    },
+    {
+      'label':'Name',
+      'name':'name',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+      'label':'Description',
+      'name':'description',
+      'tag':'textarea',
+      'id':function() {
+        return 'id=description';
+      },
+      'additional':function() {
+        return 'rows=4 cols=1'
+      },
+      'classes':function() {
+        return 'description-label-div';
+      }
+    },
+    {
+      'label':'Distributor',
+      'name':'distributor',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      }
+    },
+    {
+    'label':'Protocol',
+    'name':'protocol',
+    'tag':'input',
+    'additional':function() {
+      return 'type=text';
+      }
+    },
+    {
+    'label':'Layer',
+    'name':'layer',
+    'tag':'input',
+    'additional':function() {
+      return 'type=text';
+      }
+    }
+  ]
+};
+
+
+var position_file_uploader = function(selector) {
+  if(typeof selector==='undefined') {
+    $("#file-upload").hide();
+    return;
+  }
+  var ref = $(selector);
+  var r_width = ref.width();
+  var file_upload = $("#file-upload");
+  file_upload.css("position","absolute");
+  ref.css("width",r_width-60);
+  file_upload.css("left",ref.position().left+ref.width()+5);
+  file_upload.css("top",ref.position().top);
+  file_upload.show();
+};
+
+var structured_form_template = "{{#form}}\
+        <div class=\"input-group {{top_classes}}\">\
+            <div class=\"sp-label {{classes}}\"><label>{{label}}</label></div>\
+            <{{tag}} {{additional}} name=\"{{name}}\" {{id}} class=\"structured-input\" {{placeholder}}>{{inner}}</{{tag}}>\
+        </div>\
+{{/form}}";
+
+
+var render_forms = function(value) {
+  $(".form-body").empty();
+  
+  position_file_uploader();
+
+  if(value==='structured' || value==='unstructured') {
+      $("[name=upload_type_selection]").prop("checked",true);
+  }
+  else {
+      $("[name=upload_type_selection]").prop("checked",false); 
+  }
+
+  if(value==="structured") {
+    $("#upload-type-structured").prop("checked",true);
+    $(".form-body").html(Mustache.render(structured_form_template,structured_form));
+    position_file_uploader("#url");
+    populate_content_models();
+  }
+
+  if(value==="unstructured") {
+    $("#upload-type-unstructured").prop("checked",true);
+    $(".form-body").html(Mustache.render(structured_form_template,unstructured_form));
+    position_file_uploader("#url");
+  }
+
+  if(value==="offline-resource") {
+    $(".form-body").html(Mustache.render(structured_form_template,offline_resource_form));
+  }
+
+  if(value==="data-service") {
+    $(".form-body").html(Mustache.render(structured_form_template,link_data_service_form));
+  }
+};
+
+$('input[name="upload-type"]').on('change',function(ev){
+  
+  var value = ev.target.value;
+
+  render_forms(value);
+});
+
+$("#go-metadata").click(function() {
+  $.ajax({
+    'url':'/ngds/contribute/validate_resource',
+    'data':$(".dataset-form").serializeArray(),
+    'success':function(response) {
+      if(response.success===true) {
+        $(".dataset-form").append($("<input/>",{'type':'hidden','name':'save','value':'go-metadata'}));
+        $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
+        $(".dataset-form").submit();
+      }
+    }
+  });
+});
+
+
+if(typeof continuation!=='undefined') {
+  for(var i=0;i<continuation.length;i++) {
+    $("[name="+continuation['field']+"]").val(continuation['value']);
+  }
+}
+
+</script>
+{% endraw %}
+
 <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
+
+
+<script>
+
+(function template_variables_collect(){
+  {% if data %}
+   data="{{data}}";
+   data=data.replace(/u&#39;/g,'\"');
+   data=data.replace(/&#39;/g,'\"');
+   data=JSON.parse(data);
+   console.log(data);
+   activate_populate_form(data);
+  {% endif %}
+})();
+
+
+</script>
