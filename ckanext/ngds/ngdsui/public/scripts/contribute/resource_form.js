@@ -68,3 +68,47 @@ var populate_content_model_versions = function() {
 $(".form-body").on("change","#content_model",function() { // When the content model combo's value changes, populate the content model versions into the content_model_version combo box.
 	populate_content_model_versions();	
 });
+
+$("#file").on('change',function(ev){
+	var timestamp = new Date().toISOString();
+	var file = $("#file").val();
+	var filename = file.substring(file.lastIndexOf("\\")+1);
+	$("#key1").val(timestamp+"/"+filename);
+	$("#key2").val(timestamp+"/"+filename);
+	$("#form_type").val($("[name=upload-type]:checked").val());
+	$("#file-upload-form").submit();
+});
+
+var populate_form = function(data) {
+	for(property in data) {
+		if($("[name="+property+"]").length>0) {
+			console.log($("[name="+property+"]"));
+			if(property==='url') {
+				$("[name="+property+"]").val('http://'+window.location.host+'/storage/f/'+data[property]);
+				continue;
+			}
+			$("[name="+property+"]").val(data[property]);
+		}
+	}
+};
+
+var activate_populate_form = function(data) {
+	render_forms(data['form_type']);
+	populate_form(data);
+};
+
+
+function calculate_resource_extension() {
+	if(typeof resource_location!=='undefined'){
+		$("#structured_url").val(resource_location);
+		$("#name").val(resource_location.substring(resource_location.lastIndexOf("/")+1));
+		extension_index = resource_location.lastIndexOf(".");
+		if(extension_index!==-1){
+			var ind = extension_index;
+			var extension = resource_location.substring(ind+1,resource_location.length);
+			if(extension==='csv' || extension==='json' || extension==='xls' || extension==='pdf') {
+				$("#format").val(extension);
+			}
+		}
+	}
+};

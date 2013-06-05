@@ -140,7 +140,7 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_formatted_date':helpers.get_formatted_date,
 			'load_ngds_facets':helpers.load_ngds_facets,
 			'get_ngdsfacets':helpers.get_ngdsfacets,
-			'get_formatted_date':helpers.get_formatted_date,
+			'get_formatted_date':helpers.get_formatted_date
 		}
 
 	implements(IPackageController,inherit=True)

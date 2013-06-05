@@ -1,9 +1,6 @@
 <script>
 {% if data %}
-    form_type_v = "{{data['form_type']}}";
     resource_location = window.location.origin+"{{data['resource_location']}}";
-{% else %}
-  form_type_v = '';
 {% endif %}
 </script>
 <form id="file-upload-form" action="/ngds/contribute/upload_file" method="post" enctype="multipart/form-data">
@@ -16,7 +13,7 @@
           <input type="hidden" name="key" id="key1"></input>
           {% endif %}
           <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
-          <input type="hidden" name="form-type" id="form_type"/>
+          <input type="hidden" name="form_type" id="form_type"/>
   </div>
 </form>
 
@@ -221,14 +218,6 @@ var offline_resource_form = {
       }
     },
     {
-    'label':'Format',
-    'name':'format',
-    'tag':'input',
-    'additional':function() {
-      return 'type=text';
-      }
-    },
-    {
     'label':'Ordering Procedure',
     'name':'ordering_procedure',
     'tag':'textarea',
@@ -320,14 +309,12 @@ var position_file_uploader = function(selector) {
 var structured_form_template = "{{#form}}\
         <div class=\"input-group {{top_classes}}\">\
             <div class=\"sp-label {{classes}}\"><label>{{label}}</label></div>\
-            <{{tag}} {{additional}} name=\"{{name}}\" {{id}} class=\"structured-input\">{{inner}}</{{tag}}>\
+            <{{tag}} {{additional}} name=\"{{name}}\" {{id}} class=\"structured-input\" {{placeholder}}>{{inner}}</{{tag}}>\
         </div>\
 {{/form}}";
 
-$('input[name="upload-type"]').on('change',function(ev){
-  
-  var value = ev.target.value;
 
+var render_forms = function(value) {
   $(".form-body").empty();
   
   position_file_uploader();
@@ -340,12 +327,14 @@ $('input[name="upload-type"]').on('change',function(ev){
   }
 
   if(value==="structured") {
+    $("#upload-type-structured").prop("checked",true);
     $(".form-body").html(Mustache.render(structured_form_template,structured_form));
     position_file_uploader("#url");
     populate_content_models();
   }
 
   if(value==="unstructured") {
+    $("#upload-type-unstructured").prop("checked",true);
     $(".form-body").html(Mustache.render(structured_form_template,unstructured_form));
     position_file_uploader("#url");
   }
@@ -357,6 +346,13 @@ $('input[name="upload-type"]').on('change',function(ev){
   if(value==="data-service") {
     $(".form-body").html(Mustache.render(structured_form_template,link_data_service_form));
   }
+};
+
+$('input[name="upload-type"]').on('change',function(ev){
+  
+  var value = ev.target.value;
+
+  render_forms(value);
 });
 
 $("#go-metadata").click(function() {
@@ -384,3 +380,20 @@ if(typeof continuation!=='undefined') {
 {% endraw %}
 
 <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
+
+
+<script>
+
+(function template_variables_collect(){
+  {% if data %}
+   data="{{data}}";
+   data=data.replace(/u&#39;/g,'\"');
+   data=data.replace(/&#39;/g,'\"');
+   data=JSON.parse(data);
+   console.log(data);
+   activate_populate_form(data);
+  {% endif %}
+})();
+
+
+</script>
