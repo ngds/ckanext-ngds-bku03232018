@@ -25,6 +25,7 @@
             </fieldset>
         
   </div>
+  
   <div id="library-search-results">
 
     <div class="library-search-accordion">
@@ -60,26 +61,38 @@
                 <div id="search-text">
                     {% snippet 'snippets/search_result_text.html', query=c.q, count=c.page.item_count, type='dataset' %}
                 </div>
+
                 <div id="orderby-block">
                   {{ h.snippet('snippets/sort_by.html', sort=c.sort_by_selected) }}
                 </div>
               </div>
-              <div class="filter-list">
-                {% for field in c.fields_grouped %}
-                  <span class="facet">{{ c.facet_titles.get(field) }}:</span>
-                  {% for value in c.fields_grouped[field] %}
-                    <span class="filtered pill">
-                      {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
-                        {{ c.translated_fields[(field,value)] }}
-                      {% else %}
-                        {{ value }}
-                      {% endif %}
-                       <a href="{{ c.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}"><img src="/images/node_delete.png" /></a> 
-                      
-                    </span>
-                  {% endfor %}
-                {% endfor %}
+
+              <div id="filter-block">
+                  <div class="filter-list">
+                    {% for field in c.fields_grouped %}
+                      <span class="facet">{{ c.facet_titles.get(field) or h.get_field_title(field) }}:</span>
+                      {% for value in c.fields_grouped[field] %}
+                        <span class="filtered pill">
+                          {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
+                            {{ c.translated_fields[(field,value)] }}
+                          {% else %}
+                            {{ value }}
+                          {% endif %}
+                           <a href="{{ c.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}"><img src="/images/node_delete.png" /></a> 
+                          
+                        </span>
+                      {% endfor %}
+                    {% endfor %}
+                  </div>
+                  <div id="date-filter">
+                          <label >Date Range:</label>
+                          <input type="text"  id="from-date"/>
+                          <label >to</label>
+                          <input type="text"  id="to-date"/>
+                          <input type="button" id="filter-pub-date" value="Go"/>
+                  </div>                  
               </div>
+
           </div>
 
       </div>
@@ -99,6 +112,7 @@
 
 </div>
 </form>
+
 </div>
 
 

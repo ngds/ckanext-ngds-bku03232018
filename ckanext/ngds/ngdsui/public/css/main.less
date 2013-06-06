@@ -1076,6 +1076,10 @@ div.about-ngds p.section-title {
 				width:650px;
 			}
 
+			input[name='url'] {
+				width:590px;
+			}
+
 			select {
 
 			}
@@ -1083,8 +1087,6 @@ div.about-ngds p.section-title {
 			.sp-label {
 				display:inline-block;
 				width:170px;
-				margin-right:10px;
-				text-align:right;
 			}
 
 			.description-label-div {
@@ -1340,25 +1342,50 @@ div.about-ngds p.section-title {
 
 			#search-text{
 				display:table-cell;
-				width:50%;
+				width:60%;
 				text-align:left;
 			}
+
 			#orderby-block{
 				display:table-cell;
-				width:50%;
+				width:40%;
 				text-align:right;
 			}	
 		}
 
-		.filter-list{
-			padding-top:10px;
-			.filtered{
-				border:1px solid #a9a9a9;
-				border-radius: 5px;
-				padding:5px;
-				margin:5px;
+		#filter-block{
+			display:table;
+			width:100%;
+			line-height: 10px;
+
+			.filter-list{
+				display:table-cell;
+				padding-top:10px;
+				.filtered{
+					border:1px solid #a9a9a9;
+					border-radius: 5px;
+					padding:5px;
+					margin:5px;
+				}
+			}					
+			#date-filter{
+				display:table-cell;
+				border-left:1px solid #a9a9a9;
+				width:36%;
+				font-size:10px;
+				padding-left:0px;
+				padding-right:0px;
+				text-align:right;
+				input[type="text"] {
+					width:65px;
+				}				
+				input[type="button"] {
+					.ngds-button(20px);
+					width:30px;
+				}
 			}
-		}					
+
+		}
 
 		#search-title-row{
 			display:table-row;
