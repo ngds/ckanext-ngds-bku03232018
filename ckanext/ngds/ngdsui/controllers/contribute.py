@@ -568,7 +568,7 @@ class ContributeController(NGDSBaseController):
 		'valid':True
 		}
 
-		if 'content_model' in data and url[len(url)-3:len(url)]!='zip':
+		if 'content_model' in data and data['content_model']!='none' and url[len(url)-3:len(url)]!='zip':
 			cm_uri = data['content_model']
 			cm_version = data['content_model_version']
 			split_version = cm_version.split('/')

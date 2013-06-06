@@ -6,6 +6,7 @@ from ckan.lib.base import (request,
                            model,
                            abort, h, g, c)
 from ckan.model.resource import Resource
+import ckanext.ngds.geoserver.logic.action as action
 from pylons import config
 from pylons.decorators import jsonify
 from ckan.logic import (tuplize_dict,clean_dict,
@@ -17,13 +18,19 @@ class OGCController(BaseController):
 
 	@jsonify
 	def publish_ogc(self):
+		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))	
 		res = Resource().get(data['id'])
 		url = res.url
 		print url
+		
 		if url[len(url)-3:len(url)]=='zip':
-			print "ZIp"
+			print "shape file invocation here"
+		
+		if url[len(url)-3:len(url)]=='csv':
+			action.datastore_spatialize(context,data)
+
 		return {
 			'success':True,
 			'url':url

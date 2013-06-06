@@ -5,5 +5,5 @@ $("[name=title]").on('input',function(ev){
 	title = title.replace(/-$/,'');
 	title = title.replace(/[^a-zA-Z0-9]/g,'-');
 	title = title.replace(/-{2,}/g,'-');
-	$("[name=name]").val(title);
+	$("[name=name]").val(title.toLowerCase());
 });
