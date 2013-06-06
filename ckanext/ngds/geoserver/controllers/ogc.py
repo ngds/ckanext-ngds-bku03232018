@@ -12,7 +12,10 @@ from pylons.decorators import jsonify
 from ckan.logic import (tuplize_dict,clean_dict,
                         parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
 from ckan.controllers.storage import StorageController,StorageAPIController
+import ckan.controllers.storage as storage
 import json
+import ckanext.ngds.contentmodel
+import sys
 
 class OGCController(BaseController):
 
@@ -23,11 +26,13 @@ class OGCController(BaseController):
             request.params))))	
 		res = Resource().get(data['id'])
 		url = res.url
-		print url
 		
 		if url[len(url)-3:len(url)]=='zip':
-			print "shape file invocation here"
-		
+			ofs = storage.get_ofs()
+			BUCKET = config.get('ckan.storage.bucket', 'default')
+			path_to_file = ofs.get_url(BUCKET,url.replace("%3A", ":").split("/storage/f/")[1])
+	        print "Awaiting shape file magic"
+
 		if url[len(url)-3:len(url)]=='csv':
 			action.datastore_spatialize(context,data)
 

@@ -1,6 +1,6 @@
 __author__ = 'asonnenschein'
 
-import ogr, zipfile, os, json, urllib2
+import ogr, zipfile, os, json, urllib2, sys
 
 # zip file, which on my machine is in the same directory as this code.
 # In the production code, this 'input' variable will point to wherever
