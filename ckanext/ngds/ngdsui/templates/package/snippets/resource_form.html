@@ -17,8 +17,6 @@
   </div>
 </form>
 
-{{ h.get_rating(package_id) }}
-
 <form class="dataset-form dataset-resource-form form-horizontal" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
   <ol class="stages stage-2">
     <li class="first-stage complete">
@@ -367,6 +365,14 @@ $("#go-metadata").click(function() {
         $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
         $(".dataset-form").submit();
       }
+      else {
+        var payload = {
+            'type':'content_model_validation_error',
+            'display':'Validation errors',
+            'data':response.validation_errors
+        };
+        ngds.publish('Notifications.received',payload);
+      }
     }
   });
 });
@@ -380,7 +386,6 @@ if(typeof continuation!=='undefined') {
 
 </script>
 {% endraw %}
-
 <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
 
 
