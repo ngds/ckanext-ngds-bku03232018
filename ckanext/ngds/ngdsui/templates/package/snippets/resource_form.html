@@ -17,6 +17,8 @@
   </div>
 </form>
 
+{{ h.get_rating(package_id) }}
+
 <form class="dataset-form dataset-resource-form form-horizontal" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
   <ol class="stages stage-2">
     <li class="first-stage complete">
@@ -390,7 +392,6 @@ if(typeof continuation!=='undefined') {
    data=data.replace(/u&#39;/g,'\"');
    data=data.replace(/&#39;/g,'\"');
    data=JSON.parse(data);
-   console.log(data);
    activate_populate_form(data);
   {% endif %}
 })();

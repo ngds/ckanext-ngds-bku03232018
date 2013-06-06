@@ -82,7 +82,6 @@ $("#file").on('change',function(ev){
 var populate_form = function(data) {
 	for(property in data) {
 		if($("[name="+property+"]").length>0) {
-			console.log($("[name="+property+"]"));
 			if(property==='url') {
 				$("[name="+property+"]").val('http://'+window.location.host+'/storage/f/'+data[property]);
 				continue;
@@ -95,20 +94,22 @@ var populate_form = function(data) {
 var activate_populate_form = function(data) {
 	render_forms(data['form_type']);
 	populate_form(data);
+	var name = get_prop($("#url").val(),'name');
+	var file_extension = get_prop($("#url").val(),'extension');
+	$("[name=name]").val(name);
+	$("[name=format]").val(file_extension);
 };
 
 
-function calculate_resource_extension() {
-	if(typeof resource_location!=='undefined'){
-		$("#structured_url").val(resource_location);
-		$("#name").val(resource_location.substring(resource_location.lastIndexOf("/")+1));
-		extension_index = resource_location.lastIndexOf(".");
-		if(extension_index!==-1){
-			var ind = extension_index;
-			var extension = resource_location.substring(ind+1,resource_location.length);
-			if(extension==='csv' || extension==='json' || extension==='xls' || extension==='pdf') {
-				$("#format").val(extension);
-			}
-		}
+var get_prop = function(url,what) {
+	if(typeof url === 'undefined' || url.length===0) {
+		return '';
+	}
+	var sp = url.substring(url.lastIndexOf('/')+1);
+	if(what==='name') {
+		return sp.split('.')[0];
+	}
+	if(what==='extension') {
+		return sp.split('.')[1];
 	}
 };
