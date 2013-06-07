@@ -44,7 +44,7 @@ def Unzip(inputZip):
 
 
 class ShapefileToPostGIS:
-	"""This class handles the process of converting a shapefile to a PostGIS table."""
+	"""Handles the process of converting a shapefile to a PostGIS table."""
 	
 	allFields = []
 	host = 'host'
