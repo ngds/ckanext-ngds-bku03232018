@@ -68,20 +68,33 @@ $(document).ready(function() {
           },
           success:function(response){
             // Now expose it as a layer.
-            // $.ajax({
-            //   url:'/api/action/datastore_expose_as_layer',
-            //   type:'POST',
-            //   data:JSON.stringify({
-            //       id:id,
-            //       col_geography:"geometry",
-            //       col_latitude:"LATITUDE",
-            //       col_longitude:"LONGITUDE"
-            //   }),
-            //   success:function(response) {
-            //     window.alert("This resource has now been published as an OGC service.");
-            //     window.location.reload();
-            //   }
-            // })
+            $.ajax({
+              url:'/api/action/datastore_expose_as_layer',
+              type:'POST',
+              data:JSON.stringify({
+                  id:id,
+                  col_geography:"geometry",
+                  col_latitude:"LATITUDE",
+                  col_longitude:"LONGITUDE"
+              }),
+              success:function(response) {
+                window.alert("This resource has now been published as an OGC service.");
+                $.ajax({
+                  url:'/api/action/resource_create',
+                  type:'POST',
+                  data:JSON.stringify({
+                    'package_id':"{{pkg.name}}",
+                    'url':window.location.host+"/geoserver/NGDS/",
+                    'resource_type':'wms',
+                    'resource_reference':id,
+                    'description':"WMS for {{res.name}}"
+                  }),
+                  success:function(response) {
+                    window.location.reload();
+                  }
+                });
+              }
+            })
           }
         });
       });
