@@ -2,45 +2,48 @@ __author__ = 'asonnenschein'
 
 import sys, ogr, zipfile, os, json, urllib2, pylons, re
 
-def directoryCheck(inputZip):
-	if (zipfile.is_zipfile(inputZip)):		
-		pass	
-		valid = []
-		invalid = []	
-		validMandatory = [".shp",".shx",".dbf"]    
-		validOptional = [".prj",".sbn",".sbx",".fbn",".fbx",".ain",".aih",".ixs",".mxs",".atx",".cpg"]
-		with zipfile.ZipFile(inputZip) as zf:	
-			for info in zf.infolist():
-				f = info.filename
-				if os.path.splitext(f)[1] in validMandatory:
-					valid.append(f)
-					pass
-				elif os.path.splitext(f)[1] in validOptional:
-					pass
-				elif f.endswith(".shp.xml"):
-					pass
-				else:
-					invalid.append(f)
-		if len(valid) != 3:
-			print "ERROR: Missing a required filetype ('.shp', '.shx', '.dbf')-- ABORTING"
-			sys.exit(1)
-		if len(invalid) != 0:
-			print "ERROR: One or more invalid filetype(s) were found in .zip directory-- ABORTING"
-			sys.exit(1)
-		else:
-			print "Shapefile is a valid dataset."	
-	else:
-		print "ERROR: Not a .zip file"
-		sys.exit(1)
+inputZip = r"/home/ckan/Downloads/activefaults.zip"
 
-def Unzip(inputZip):
-	if (zipfile.is_zipfile(inputZip)):
+class ZipfileHandler:
+	"""Handles zipfiles."""
+
+	def __init__(self, inputZip):
+		if (zipfile.is_zipfile(inputZip)):
+			print "Path is a .zip directory."
+		else:
+			print "ERROR: Not a .zip file"
+			sys.exit(1)
+
+	def Unzip(self, inputZip):
 		unZippedDir = inputZip[:-4]+"_UNZIPPED"        
 		with zipfile.ZipFile(inputZip) as zf:
 			zf.extractall(unZippedDir)
-	else:
-		print "ERROR: Not a .zip file"
-		sys.exit(1)
+
+	def directoryCheck(self, inputZip):	
+			valid = []
+			invalid = []	
+			validMandatory = [".shp",".shx",".dbf"]    
+			validOptional = [".prj",".sbn",".sbx",".fbn",".fbx",".ain",".aih",".ixs",".mxs",".atx",".cpg"]
+			with zipfile.ZipFile(inputZip) as zf:	
+				for info in zf.infolist():
+					f = info.filename
+					if os.path.splitext(f)[1] in validMandatory:
+						valid.append(f)
+						pass
+					elif os.path.splitext(f)[1] in validOptional:
+						pass
+					elif f.endswith(".shp.xml"):
+						pass
+					else:
+						invalid.append(f)
+			if len(valid) != 3:
+				print "ERROR: Missing a required filetype ('.shp', '.shx', '.dbf')-- ABORTING"
+				sys.exit(1)
+			if len(invalid) != 0:
+				print "ERROR: One or more invalid filetype(s) were found in .zip directory-- ABORTING"
+				sys.exit(1)
+			else:
+				print "Shapefile is a valid dataset."
 
 
 class ShapefileToPostGIS:
