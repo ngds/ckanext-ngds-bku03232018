@@ -34,7 +34,8 @@ class OGCController(BaseController):
 			print "Awaiting shape file magic"
 
 		if url[len(url)-3:len(url)]=='csv':
-			data_dict = {'url':'geoserver/NGDS/wms?layers=NGDS:'+res.id, 'package_id':res.resource_group.package.id,\
+			# Yes, hardcoded for the moment. 
+			data_dict = {'url':'http://http://ec2-184-72-146-8.compute-1.amazonaws.com:8080/geoserver/NGDS/wms?layers=NGDS:'+res.id, 'package_id':res.resource_group.package.id,\
 			'description':'WMS for '+res.name }
 			get_action('resource_create')(context,data_dict)
 			action.datastore_spatialize(context,data)
