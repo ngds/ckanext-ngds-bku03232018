@@ -1,4 +1,4 @@
-__author__ = 'adrian sonnenschein'
+__author__ = 'adriansonnenschein'
 
 import sys, ogr, zipfile, os, json, urllib2, pylons, re
 
