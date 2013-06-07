@@ -108,6 +108,9 @@ ngds.util.clear_map_state = function() {
 };
 
 ngds.util.get_n_chars = function(words_str,num_chars) {
+	if(words_str.length<=num_chars) {
+		return words_str;
+	}
 	var spliced = words_str.slice(0,num_chars-4);
 	while(spliced[spliced.length-1]==='.' || spliced[spliced.length-1]===' ') {
 		spliced=spliced.slice(0,spliced.length-1);

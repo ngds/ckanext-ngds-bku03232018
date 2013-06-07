@@ -21,10 +21,12 @@
       <span class="caret"></span>
     </a>
     {% if h.is_plugin_enabled('geoserver') %}
-      {% if h.is_spatialized(res.id,"geometry")==True %}
-       <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
-      {% else %}
-         <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Publish as OGC</button>
+      {% if h.is_ogc_publishable(res.id) %}
+        {% if h.is_spatialized(res.id,"geometry")==True %}
+         <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
+        {% else %}
+           <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Publish as OGC</button>
+        {% endif %}
       {% endif %}
     {% endif %}
     <ul class="dropdown-menu">
@@ -55,14 +57,15 @@ $(document).ready(function() {
         $(".spatialize").click(function(ev){
         var id = ev.currentTarget.value;
         $.ajax({
-          url:'/api/action/datastore_spatialize',
-          type:'POST',
-          data:JSON.stringify({
-            id:id,
-            col_geography:"geometry",
-            col_latitude:"LATITUDE",
-            col_longitude:"LONGITUDE"
-          }),
+          // url:'/api/action/datastore_spatialize',
+          'url':'/ngds/publish_ogc',
+          'type':'POST',
+          'data':{
+              'id':id,
+              'col_geography':"geometry",
+              'col_latitude':"LATITUDE",
+              'col_longitude':"LONGITUDE"
+          },
           success:function(response){
             // Now expose it as a layer.
             $.ajax({
@@ -76,7 +79,20 @@ $(document).ready(function() {
               }),
               success:function(response) {
                 window.alert("This resource has now been published as an OGC service.");
-                window.location.reload();
+                $.ajax({
+                  url:'/api/action/resource_create',
+                  type:'POST',
+                  data:JSON.stringify({
+                    'package_id':"{{pkg.name}}",
+                    'url':window.location.host+"/geoserver/NGDS/",
+                    'resource_type':'wms',
+                    'resource_reference':id,
+                    'description':"WMS for {{res.name}}"
+                  }),
+                  success:function(response) {
+                    window.location.reload();
+                  }
+                });
               }
             })
           }

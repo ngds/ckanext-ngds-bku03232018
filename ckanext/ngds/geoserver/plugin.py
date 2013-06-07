@@ -3,7 +3,7 @@ import pylons
 from sqlalchemy.exc import ProgrammingError
 
 import ckan.plugins as p
-from ckan.plugins import ITemplateHelpers
+from ckan.plugins import ITemplateHelpers, IRoutes
 import ckanext.ngds.geoserver.logic.action as action
 import ckanext.datastore.logic.auth as auth
 import ckanext.datastore.db as db
@@ -74,3 +74,8 @@ class GeoserverPlugin(p.SingletonPlugin):
       return {
         'is_spatialized':helpers.is_spatialized,
       }
+
+    p.implements(IRoutes,inherit=True)
+    def before_map(self,map):
+      map.connect('spatialize','/ngds/publish_ogc',controller="ckanext.ngds.geoserver.controllers.ogc:OGCController",action="publish_ogc",conditions={"method":["POST"]})
+      return map

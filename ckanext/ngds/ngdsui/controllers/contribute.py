@@ -557,11 +557,31 @@ class ContributeController(NGDSBaseController):
 				'message':'Resource URL is a mandatory parameter'
 			})
 
-		if not data['name'] or len(data['name'])==0:
+		if 'name' not in data or len(data['name'])==0:
 			errors.append({
 					'field':'name',
 					'message':'Name must be non-empty'
 			})
+		url = data['url']
+		
+		cm_validation_results = {
+		'valid':True
+		}
+
+		if 'content_model' in data and data['content_model']!='none' and url[len(url)-3:len(url)]!='zip':
+			cm_uri = data['content_model']
+			cm_version = data['content_model_version']
+			split_version = cm_version.split('/')
+			cm_version = split_version[len(split_version)-1]
+			data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
+			context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+			cm_validation_results=contentmodel_checkFile(context,data_dict)
+
+		if cm_validation_results['valid']==False:
+			return {
+			'success':False,
+			'validation_errors':cm_validation_results['messages']
+			}
 
 		if len(errors)>0:
 			return errors
@@ -574,13 +594,13 @@ class ContributeController(NGDSBaseController):
 		errors = []
 		# A bunch of validations for the unstructured resource form
 
-		if not data['url'] or len(data['url'])<3:
+		if 'url' not in data or len(data['url'])<3:
 			errors.append({
 				'field':'url',
 				'message':'Resource URL is a mandatory parameter'
 			})
 
-		if not data['name'] or len(data['name'])==0:
+		if 'name' not in data or len(data['name'])==0:
 			errors.append({
 					'field':'name',
 					'message':'Name must be non-empty'
@@ -597,25 +617,25 @@ class ContributeController(NGDSBaseController):
 		errors = []
 
 		# A bunch of validations for the data service resource form
-		if not data['url'] or len(data['url'])<3:
+		if 'url' not in data or len(data['url'])<3:
 			errors.append({
 				'field':'url',
 				'message':'Resource URL is a mandatory parameter'
 			})
 
-		if not data['name'] or len(data['name'])==0:
+		if 'name' not in data or len(data['name'])==0:
 			errors.append({
 					'field':'name',
 					'message':'Name must be non-empty'
 			})
 
-		if not data['protocol'] or len(data['protocol'])==0:
+		if 'protocol' not in data or len(data['protocol'])==0:
 			errors.append({
 					'field':'protocol',
 					'message':'Protocol must be non-empty'
 			})
 
-		if not data['layer'] or len(data['layer'])==0:
+		if 'layer' not in data or len(data['layer'])==0:
 			errors.append({
 					'field':'layer',
 					'message':'Layer must be non-empty'
@@ -633,13 +653,13 @@ class ContributeController(NGDSBaseController):
 		errors = []
 
 		# A bunch of validations for the offline resource form
-		if not data['name'] or len(data['name'])==0:
+		if 'name' not in data or len(data['name'])==0:
 			errors.append({
 				'field':'name',
 					'message':'Name must be non-empty'
 			})
 
-		if not data['ordering_procedure'] or len(data['ordering_procedure'])==0:
+		if 'ordering_procedure' not in data or len(data['ordering_procedure'])==0:
 			errors.append({
 				'field':'ordering_procedure',
 					'message':'Ordering Procedure must be non-empty'

@@ -365,6 +365,14 @@ $("#go-metadata").click(function() {
         $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
         $(".dataset-form").submit();
       }
+      else {
+        var payload = {
+            'type':'content_model_validation_error',
+            'display':'Validation errors',
+            'data':response.validation_errors
+        };
+        ngds.publish('Notifications.received',payload);
+      }
     }
   });
 });
@@ -378,7 +386,6 @@ if(typeof continuation!=='undefined') {
 
 </script>
 {% endraw %}
-
 <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
 
 
@@ -390,7 +397,6 @@ if(typeof continuation!=='undefined') {
    data=data.replace(/u&#39;/g,'\"');
    data=data.replace(/&#39;/g,'\"');
    data=JSON.parse(data);
-   console.log(data);
    activate_populate_form(data);
   {% endif %}
 })();

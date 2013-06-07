@@ -8,7 +8,8 @@ from pylons import config
 from datetime import date
 import iso8601
 import inspect
-import json
+from ckan.model.resource import Resource
+
 import ckan.plugins as p
 _ = p.toolkit._
 
@@ -260,7 +261,7 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
         found = False
         for ret_facet in facet_values:
             #print "ret_facet['name']: ",ret_facet['name']
-            if ret_facet['name'].lower() == facet_group.get('facet').lower():
+            if ret_facet['name'] == facet_group.get('facet'):
                 if facet_group.get('display_name'):
                     ret_facet['display_name'] = facet_group['display_name']
                 facet_dict['fvalues'] = [ret_facet]
@@ -288,7 +289,6 @@ def get_formatted_date(datstr):
     from datetime import datetime
     return datetime.strptime(datstr[:10], '%Y-%m-%d').strftime('%b %d,%Y')
 
-
 def to_json(data):
     #print json.dumps(data)
     return json.dumps(data)
@@ -312,3 +312,9 @@ def get_field_title(field_name):
 
     return x
 
+def is_ogc_publishable(resource_id):
+    resource = Resource.get(resource_id)
+    url = resource.url
+    if url[len(url)-3:len(url)]=='zip' or url[len(url)-3:len(url)]=='csv':
+        return True
+    return False

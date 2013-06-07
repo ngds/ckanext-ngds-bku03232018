@@ -142,7 +142,8 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_ngdsfacets':helpers.get_ngdsfacets,
 			'get_formatted_date':helpers.get_formatted_date,
 			'get_field_title':helpers.get_field_title,
-			'is_string_field':helpers.is_string_field
+			'is_string_field':helpers.is_string_field,
+			'is_ogc_publishable':helpers.is_ogc_publishable
 		}
 
 	implements(IPackageController,inherit=True)
