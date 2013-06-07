@@ -1,10 +1,6 @@
 __author__ = 'asonnenschein'
 
-import sys, ogr, zipfile, os, json, urllib2, fnmatch, pylons, re
-
-input = r"/home/ckan/Downloads/azactivefaults.zip"
-uri = "http://schemas.usgin.org/uri-gin/ngds/dataschema/activefault/1.2"
-
+import sys, ogr, zipfile, os, json, urllib2, pylons, re
 
 def directoryCheck(inputZip):
 	if (zipfile.is_zipfile(inputZip)):		
@@ -37,7 +33,7 @@ def directoryCheck(inputZip):
 		print "ERROR: Not a .zip file"
 		sys.exit(1)
 
-def zippy(inputZip):
+def Unzip(inputZip):
 	if (zipfile.is_zipfile(inputZip)):
 		unZippedDir = inputZip[:-4]+"_UNZIPPED"        
 		with zipfile.ZipFile(inputZip) as zf:
