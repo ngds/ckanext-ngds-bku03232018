@@ -1,8 +1,8 @@
 __author__ = 'adriansonnenschein'
 
-import sys, ogr, zipfile, os, json, urllib2, pylons, re
+import sys, ogr, zipfile, os, json, urllib2, pylons, re, glob
 
-inputZip = r"/home/ckan/Downloads/activefaults.zip"
+uri = "http://schemas.usgin.org/uri-gin/ngds/dataschema/activefault/1.2"
 
 class ZipfileHandler:
 	"""Handles zipfiles."""
@@ -17,7 +17,9 @@ class ZipfileHandler:
 	def Unzip(self, inputZip):
 		unZippedDir = inputZip[:-4]+"_UNZIPPED"        
 		with zipfile.ZipFile(inputZip) as zf:
+			print "Extracting .zip directory"
 			zf.extractall(unZippedDir)
+			print "Completed extracting .zip directory"
 
 	def directoryCheck(self, inputZip):	
 			valid = []
@@ -50,18 +52,28 @@ class ShapefileToPostGIS:
 	"""Handles the process of converting a shapefile to a PostGIS table."""
 	
 	allFields = []
+
 	host = 'host'
 	dbname = 'dbname'
 	user = 'user'
 	password = 'password'
 
-	def __init__(self):
+	shapefile = 'shapefile'	
+
+	def __init__(self, path):
 		writeurl = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:password@localhost/datastore_db')
 		self.host = re.search('@(.*)/', writeurl).group(1)
 		self.dbname = re.search('(?=/[^/]*$).*', writeurl).group(0)[1:]
 		self.user = re.search('://(.*):', writeurl).group(1)
 		self.password = re.search('(?=:[^:]*$)(.*)@', writeurl).group(1)[1:]
 	
+		searchDir = path[:-4]+"_UNZIPPED"
+		os.chdir(searchDir)
+		for shp in glob.glob("*.shp"):
+			self.shapefile = shp
+		print self.shapefile
+		
+
 	def fields(self, uri):
 	    url = "http://schemas.usgin.org/contentmodels.json"
 	    reader = urllib2.urlopen(url).read()
@@ -69,9 +81,9 @@ class ShapefileToPostGIS:
 	    fieldInfo = [version["field_info"] for version in data for version in version["versions"] if version["uri"] == uri]
 	    self.allFields = [rec["name"] for rec in fieldInfo for rec in rec if rec["name"] != "OBJECTID"]
 
-	def shp2pg(self, shapeFile):
+	def shp2pg(self):
 	    inputDriver = ogr.GetDriverByName("ESRI Shapefile")
-	    dataSource = inputDriver.Open(shapeFile, 0)
+	    dataSource = inputDriver.Open(self.shapefile, 0)
 	    sourceLayer = dataSource.GetLayerByIndex(0)
 	    sourceRecord = sourceLayer.GetNextFeature()
 	    numFeatures = sourceLayer.GetFeatureCount()

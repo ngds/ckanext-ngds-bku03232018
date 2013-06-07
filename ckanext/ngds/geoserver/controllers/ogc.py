@@ -32,8 +32,13 @@ class OGCController(BaseController):
 			ofs = storage.get_ofs()
 			BUCKET = config.get('ckan.storage.bucket', 'default')
 			path_to_file = ofs.get_url(BUCKET,url.replace("%3A", ":").split("/storage/f/")[1])
-			print path_to_file
-			shapefile.ZipfileHandler(path_to_file)
+			filepath = path_to_file[7:]
+			print filepath
+			shapefile.ZipfileHandler(filepath).directoryCheck(filepath)
+			shapefile.ZipfileHandler(filepath).Unzip(filepath)
+			shapefile.ShapefileToPostGIS(filepath).fields(shapefile.uri)
+			print shapefile.ShapefileToPostGIS.allFields
+			shapefile.ShapefileToPostGIS(filepath).shp2pg()
 
 		if url[len(url)-3:len(url)]=='csv':
 			action.datastore_spatialize(context,data)
