@@ -7,6 +7,7 @@ https://github.com/azavea/Open-Data-Catalog
 import os.path
 from ConfigParser import SafeConfigParser
 from ckan.lib.base import BaseController
+from pylons import config as ckan_config
 
 from pycsw import server
 
@@ -22,32 +23,32 @@ CONFIGURATION = {
         'profiles': 'apiso,dif,fgdc,atom,ebrim',
     },
     'repository': {
-        'database': 'postgresql://ckanuser:secret@localhost:5432/ckan', # read from configuration
+        'database': ckan_config["sqlalchemy.url"], # read from configuration
         'table': 'csw_record'
     },
     'metadata:main': { # Read all from configuration
-        'identification_title': 'NGDS CSW',
-        'identification_abstract': 'NGDS is awesome',
-        'identification_keywords': 'ngds,csw,ogc,catalog',
-        'identification_keywords_type': 'theme',
-        'identification_fees': 'None',
-        'identification_accessconstraints': 'None',
-        'provider_name': 'Roger Mebowitz',
-        'provider_url': 'http://geothermaldatasystem.org',
-        'contact_name': 'Roger Mebowitz',
-        'contact_position': 'Roger Mebowitz',
-        'contact_address': '416 W. Congress St. Ste. 100',
-        'contact_city': 'Tucson',
-        'contact_stateorprovince': 'Arizona',
-        'contact_postalcode': '85701',
-        'contact_country': 'United States of America',
-        'contact_phone': '+01-xxx-xxx-xxxx',
-        'contact_fax': '+01-xxx-xxx-xxxx',
-        'contact_email': 'Roger Mebowitz',
-        'contact_url': 'http://geothermaldatasystem.org',
-        'contact_hours': '0800h - 1600h EST',
-        'contact_instructions': 'During hours of service.  Off on weekends.',
-        'contact_role': 'pointOfContact',
+        'identification_title': ckan_config.get("ngds.csw.title", 'NGDS CSW'),
+        'identification_abstract': ckan_config.get("ngds.csw.abstract", 'NGDS is awesome'),
+        'identification_keywords': ckan_config.get("ngds.csw.keywords", 'ngds,csw,ogc,catalog'),
+        'identification_keywords_type': ckan_config.get("ngds.csw.keywords_type", 'theme'),
+        'identification_fees': ckan_config.get("ngds.csw.fees", 'None'),
+        'identification_accessconstraints': ckan_config.get("ngds.csw.accessconstraints", 'None'),
+        'provider_name': ckan_config.get("ngds.csw.provider.name", 'Roger Mebowitz'),
+        'provider_url': ckan_config.get("ngds.csw.provider.url", 'http://geothermaldatasystem.org'),
+        'contact_name': ckan_config.get("ngds.csw.contact.name", 'Roger Mebowitz'),
+        'contact_position': ckan_config.get("ngds.csw.contact.position", 'Roger Mebowitz'),
+        'contact_address': ckan_config.get("ngds.csw.contact.address", '416 W. Congress St. Ste. 100'),
+        'contact_city': ckan_config.get("ngds.csw.contact.city", 'Tucson'),
+        'contact_stateorprovince': ckan_config.get("ngds.csw.contact.state", 'Arizona'),
+        'contact_postalcode': ckan_config.get("ngds.csw.contact.zip", '85701'),
+        'contact_country': ckan_config.get("ngds.csw.contact.country", 'United States of America'),
+        'contact_phone': ckan_config.get("ngds.csw.contact.phone", '+01-xxx-xxx-xxxx'),
+        'contact_fax': ckan_config.get("ngds.csw.contact.fax", '+01-xxx-xxx-xxxx'),
+        'contact_email': ckan_config.get("ngds.csw.contact.email", 'nothing@false.com'),
+        'contact_url': ckan_config.get("ngds.csw.contact.url", 'http://geothermaldatasystem.org'),
+        'contact_hours': ckan_config.get("ngds.csw.contact.hours", '0800h - 1600h EST'),
+        'contact_instructions': ckan_config.get("ngds.csw.contact.instructions", 'During hours of service.  Off on weekends.'),
+        'contact_role': ckan_config.get("ngds.csw.contact.role", 'pointOfContact'),
     },
     'metadata:inspire': { # from configuration
         'enabled': 'false',
@@ -56,9 +57,9 @@ CONFIGURATION = {
         'date': '2012-06-11',
         'gemet_keywords': 'Utility and governmental services',
         'conformity_service': 'notEvaluated',
-        'contact_name': 'Roger Mebowitz',
-        'contact_email': 'Roger Mebowitz',
-        'temp_extent': '2012-06-11/2012-06-11',
+        'contact_name': ckan_config.get("ngds.csw.contact.name", 'Roger Mebowitz'),
+        'contact_email': ckan_config.get("ngds.csw.contact.email", 'nothing@false.com'),
+        'temp_extent': '2012-06-11/2031-06-11',
     }
 }
 
@@ -111,3 +112,7 @@ class CswController(BaseController):
         return test_csw_package.to_iso_xml()'''
         node = model.HarvestNode("http://debug.catalog.usgin.org/geoportal/csw")
         node.do_harvest()
+
+
+
+

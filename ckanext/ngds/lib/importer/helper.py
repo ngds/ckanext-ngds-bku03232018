@@ -1,5 +1,5 @@
 import datetime as datetime
-from ckan.lib.base import config,h
+from ckan.lib.base import config,h,g
 import ckan.controllers.storage as storage
 
 log = __import__("logging").getLogger(__name__)
@@ -62,7 +62,3 @@ def delete_files(file_path,files_to_delete=None,ignore_files=None):
                 isIgnore = True
         if not isIgnore:
             os.unlink(filename)
-
-
-
-

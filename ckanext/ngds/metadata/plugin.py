@@ -1,5 +1,5 @@
 from ckan.plugins import implements, SingletonPlugin
-from ckan.plugins import IConfigurer, IActions, IRoutes
+from ckan.plugins import IConfigurer, IActions, IRoutes,IPackageController
 from ckanext.ngds.metadata.controllers.additional_metadata import dispatch
 from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
 
@@ -49,5 +49,3 @@ class MetadataPlugin(SingletonPlugin):
             "additional_metadata": dispatch,
             "transaction_data": trans_dispatch
         }
-        
-    

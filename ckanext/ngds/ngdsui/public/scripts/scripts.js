@@ -124,16 +124,16 @@ var ngds = ngds || { };
 		// 		});
 
 		// })();
+     
 
+/*		var accordions = $(".accordion");
 
-		$("#accordion").accordion({ // Create and configure the library search page's accordion menu.
-		    	autoHeight:false,
-		    	clearStyle: false,
-		    	header:"h4",
-		    	heightStyle:"content",
-		    	active:false,
-		    	collapsible:true
+		for(var i=0;i<accordions.length;i++) {
+			$(accordions[i]).accordion({
+				autoHeight:false,
+				heightStyle:"content"
 			});
+		}*/
 
 		function isLoginPopupVisible(){
 				return ($(".login-popup").css('display')!=='none');
@@ -155,7 +155,6 @@ var ngds = ngds || { };
 	        something:'something' // Ckan needs something in the body or the request is not accepted.
 	      }),
 	      success:function(response) {
-	      	console.log(response);
 	        for(var i=0;i<response.result.length;i++) {
 	        	content_models[response.result[i].uri]= response.result[i];
 	        }
@@ -163,7 +162,6 @@ var ngds = ngds || { };
 	    });
 
 	    $("input:radio[name='type-of-data']").change(function(ev){
-	    	console.log("Adding content model combo");
 	      var structured_or_un = ev.currentTarget.value;
 	      
 	      if(structured_or_un==='structured') {
@@ -190,8 +188,6 @@ var ngds = ngds || { };
 	    });
 
 	    $(".module-content").on('change','.content-model-div-marker',function() {
-	    	
-	    	console.log("Adding version");
 	    	if($(".content-model-version-marker")!==null && typeof $(".content-model-version-marker")!=='undefined') {
 	      		$(".content-model-version-marker").remove();
 	      	}
@@ -199,7 +195,6 @@ var ngds = ngds || { };
 	    	if(ngds.content_models[content_model_selected]===null || typeof ngds.content_models[content_model_selected]==='undefined') {
 	    		return;
 	    	}
-	    	console.log("version");
 	    	var div = $("<div/>",{class:"control-group control-full content-model-version-marker"});
 	    	var content_model_version = $("<label/>",{for:'content-model_version',text:'Version: ',class:'control-label'});
 	    	var content_model_version_combo = $("<select/>",{ name:"content_model_version" });
@@ -217,7 +212,6 @@ var ngds = ngds || { };
 
 		if($("button[name='save-metadata']").length!==0) {
 			$("button[name='save-metadata']").click(function() {
-				console.log("inside");
 				$(".dataset-resource-form").submit();
 
 				var content_model_selected = $("select[name='content_model']").val();

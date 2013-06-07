@@ -236,9 +236,9 @@ def contentmodel_checkFile(context, data_dict):
     print 'validation last step'
     # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
-        return json.dumps({"valid": "true", "messages": "ok."})
+        return {"valid": True, "messages": "Okay"}
     else:
-        return json.dumps({"valid": "false", "messages": validation_msg})
+        return {"valid": False, "messages": validation_msg}
 
 @logic.side_effect_free
 def contentmodel_checkBulkFile(context, title, version, resource_url ):
