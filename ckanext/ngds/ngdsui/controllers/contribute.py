@@ -4,7 +4,7 @@ from ckan.lib.base import (request,
                            render,
                            model,
                            abort, h, g, c)
-from ckan.logic import (tuplize_dict,clean_dict,
+from ckan.logic import (tuplize_dict,clean_dict
                         parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
 from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController

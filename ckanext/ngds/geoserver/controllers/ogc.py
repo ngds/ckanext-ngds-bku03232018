@@ -31,9 +31,12 @@ class OGCController(BaseController):
 			ofs = storage.get_ofs()
 			BUCKET = config.get('ckan.storage.bucket', 'default')
 			path_to_file = ofs.get_url(BUCKET,url.replace("%3A", ":").split("/storage/f/")[1])
-	        print "Awaiting shape file magic"
+			print "Awaiting shape file magic"
 
 		if url[len(url)-3:len(url)]=='csv':
+			data_dict = {'url':'/geoserver/NGDS/wms?layers=NGDS:'+res.id, 'package_id':res.resource_group.package.id,\
+			'description':'WMS for '+res.name }
+			get_action('resource_create')(context,data_dict)
 			action.datastore_spatialize(context,data)
 
 		return {
