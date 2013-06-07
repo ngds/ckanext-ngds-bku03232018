@@ -133,6 +133,51 @@ p {
 	color:#757575;
 }
 
+#slideshow{
+    height:400px; 
+    width:840px; 
+    float:left
+}
+#slides {
+    height:400px; 
+    position:relative
+}
+.slide{
+    height:400px; 
+    width:840px; 
+    overflow:hidden; 
+    position:absolute; 
+    background:#000; 
+    color:#fff
+}
+#slides-controls{
+    width:60px; 
+    background-color:#fff; 
+    height:20px; 
+    margin-left:auto; 
+    margin-right:auto; 
+    padding:5px
+    a  {
+       margin:5px; 
+       width:8px; 
+       height:8px; 
+       border-radius:4px; 
+       -moz-border-radius:4px; 
+       -webkit-border-radius:4px; 
+       -o-border-radius:4px; 
+       background:#083656; 
+       border:1px solid #fff; 
+       text-indent:-9000px; 
+       display:block; 
+       overflow:hidden; 
+       float:left
+     
+    }
+}
+#slides-controls a:hover{background:#f60}
+#slides-controls a.highlight{background:#fff; border:1px solid #083656}
+
+
 .ngds-button-common() {
 	background:url('/assets/go_button_middle_slice.png') repeat-x;
 	color:#fff;
