@@ -1,0 +1,105 @@
+__author__ = 'asonnenschein'
+
+import sys, ogr, zipfile, os, json, urllib2, pylons, re
+
+inputZip = r"/home/ckan/Downloads/activefaults.zip"
+class ZipfileHandler:
+	"""Handles zipfiles."""
+
+	def __init__(self, inputZip):
+		if (zipfile.is_zipfile(inputZip)):
+			print "Path is a .zip directory."
+		else:
+			print "ERROR: Not a .zip file"
+			sys.exit(1)
+
+	def Unzip(self, inputZip):
+		unZippedDir = inputZip[:-4]+"_UNZIPPED"        
+		with zipfile.ZipFile(inputZip) as zf:
+			zf.extractall(unZippedDir)
+
+	def directoryCheck(self, inputZip):	
+			valid = []
+			invalid = []	
+			validMandatory = [".shp",".shx",".dbf"]    
+			validOptional = [".prj",".sbn",".sbx",".fbn",".fbx",".ain",".aih",".ixs",".mxs",".atx",".cpg"]
+			with zipfile.ZipFile(inputZip) as zf:	
+				for info in zf.infolist():
+					f = info.filename
+					if os.path.splitext(f)[1] in validMandatory:
+						valid.append(f)
+						pass
+					elif os.path.splitext(f)[1] in validOptional:
+						pass
+					elif f.endswith(".shp.xml"):
+						pass
+					else:
+						invalid.append(f)
+			if len(valid) != 3:
+				print "ERROR: Missing a required filetype ('.shp', '.shx', '.dbf')-- ABORTING"
+				sys.exit(1)
+			if len(invalid) != 0:
+				print "ERROR: One or more invalid filetype(s) were found in .zip directory-- ABORTING"
+				sys.exit(1)
+			else:
+				print "Shapefile is a valid dataset."
+
+
+class ShapefileToPostGIS:
+	"""Handles the process of converting a shapefile to a PostGIS table."""
+	
+	allFields = []
+	host = 'host'
+	dbname = 'dbname'
+	user = 'user'
+	password = 'password'
+
+	def __init__(self):
+		writeurl = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:password@localhost/datastore_db')
+		self.host = re.search('@(.*)/', writeurl).group(1)
+		self.dbname = re.search('(?=/[^/]*$).*', writeurl).group(0)[1:]
+		self.user = re.search('://(.*):', writeurl).group(1)
+		self.password = re.search('(?=:[^:]*$)(.*)@', writeurl).group(1)[1:]
+	
+	def fields(self, uri):
+	    url = "http://schemas.usgin.org/contentmodels.json"
+	    reader = urllib2.urlopen(url).read()
+	    data=json.loads(str(reader))
+	    fieldInfo = [version["field_info"] for version in data for version in version["versions"] if version["uri"] == uri]
+	    self.allFields = [rec["name"] for rec in fieldInfo for rec in rec if rec["name"] != "OBJECTID"]
+
+	def shp2pg(self, shapeFile):
+	    inputDriver = ogr.GetDriverByName("ESRI Shapefile")
+	    dataSource = inputDriver.Open(shapeFile, 0)
+	    sourceLayer = dataSource.GetLayerByIndex(0)
+	    sourceRecord = sourceLayer.GetNextFeature()
+	    numFeatures = sourceLayer.GetFeatureCount()
+	    layerDefn = sourceLayer.GetLayerDefn()
+	    outputDriver = ogr.GetDriverByName("PostgreSQL")	
+	    outputDB = outputDriver.Open("PG: host=" + self.host + " port=5432 dbname=" + self.dbname +" user=" + self.user +" password=" + self.password)
+	    if outputDB is None:
+	        print "Could not open the database or GDAL is not correctly installed."
+	        sys.exit(1)
+	    else:
+	        print "Successfully connected to the database!"	
+	    options = ["OVERWRITE=YES"]
+	    newLayer = outputDB.CreateLayer(layerDefn.GetName(),sourceLayer.GetSpatialRef(),ogr.wkbUnknown,options)
+	    for i in range(layerDefn.GetFieldCount()):
+	        fieldName = sourceLayer.GetLayerDefn().GetFieldDefn(i).GetNameRef()
+	        fieldTypeInt = sourceLayer.GetLayerDefn().GetFieldDefn(i).GetType()
+	        for newField in self.allFields:
+	            if fieldName[:10] == newField[:10].lower():
+	                newLayer.CreateField(ogr.FieldDefn(str(newField), fieldTypeInt))
+	    newLayerDefn = newLayer.GetLayerDefn()
+	    x = 0
+	    while sourceRecord is not None:
+	        newFeature = ogr.Feature(newLayerDefn)
+	        newFeature.SetFrom(sourceRecord)
+	        newLayer.CreateFeature(newFeature)
+	        if x % 128 == 0:
+	            newLayer.CommitTransaction()
+	            newLayer.StartTransaction()
+	        sourceRecord = sourceLayer.GetNextFeature()
+	        x = x + 1
+	    newLayer.CommitTransaction()
+	    outputDB.Destroy()
