@@ -15,7 +15,7 @@ from ckan.controllers.storage import StorageController,StorageAPIController
 import ckan.controllers.storage as storage
 import json
 import ckanext.ngds.contentmodel
-import ckanext.ngds.contentmodel.shp2pg as shape
+import ckanext.ngds.contentmodel.shp2pg as shapefile
 import sys
 
 class OGCController(BaseController):
@@ -33,7 +33,7 @@ class OGCController(BaseController):
 			BUCKET = config.get('ckan.storage.bucket', 'default')
 			path_to_file = ofs.get_url(BUCKET,url.replace("%3A", ":").split("/storage/f/")[1])
 			print path_to_file
-	        shape.ZipfileHandler(path_to_file)
+			shapefile.ZipfileHandler(path_to_file)
 
 		if url[len(url)-3:len(url)]=='csv':
 			action.datastore_spatialize(context,data)
