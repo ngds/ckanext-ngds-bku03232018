@@ -192,7 +192,10 @@ var link_data_service_form = {
     },
     {
       'label':'Distributor',
-      'name':'distributor',
+      'name':'distributor-fake',
+      'id':function() {
+        return "id=distributor-fake";
+      },
       'tag':'input',
       'additional':function() {
         return 'type=text';

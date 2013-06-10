@@ -39,6 +39,7 @@ class OGCController(BaseController):
 			shapefile.ShapefileToPostGIS(filepath).fields(shapefile.uri)
 			print shapefile.ShapefileToPostGIS.allFields
 			shapefile.ShapefileToPostGIS(filepath).shp2pg()
+			action.datastore_spatialize(context,data)
 
 		if url[len(url)-3:len(url)]=='csv':
 			# Yes, hardcoded for the moment. 

@@ -106,6 +106,7 @@ var render_forms = function(value) {
 
   if(value==="data-service") {
     $(".form-body").html(Mustache.render(structured_form_template,link_data_service_form));
+    ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
   }
 };
 
@@ -127,12 +128,8 @@ $("#go-metadata").click(function() {
         $(".dataset-form").submit();
       }
       else {
-        var payload = {
-            'type':'content_model_validation_error',
-            'display':'Validation errors',
-            'data':response.validation_errors
-        };
-        ngds.publish('Notifications.received',payload);
+        console.log(response);
+        ngds.publish('Notifications.received',response);
       }
     }
   });
@@ -147,6 +144,7 @@ if(typeof continuation!=='undefined') {
 
 </script>
 {% endraw %}
+<script type="text/javascript" src="/scripts/autocomplete.js"></script>
 <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
 
 

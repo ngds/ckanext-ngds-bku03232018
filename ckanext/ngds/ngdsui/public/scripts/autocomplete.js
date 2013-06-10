@@ -16,11 +16,6 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
   var display_key = display_key;
   var value_key = value_key;
   
-  if(textbox_component.length===0) {
-    console.log("No such id "+hash_id_elem+" in the DOM. Make sure you're invoking the function with something like '#an_id' (one that is valid)");
-    return;
-  }
-
   var autocomplete = $(textbox_component).autocomplete({
       source: function(request, response) {
           var dict = { };
