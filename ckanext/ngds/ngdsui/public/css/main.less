@@ -212,6 +212,18 @@ p {
 	height:@height;
 }
 
+.ngds-border-radius(@radius){
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+.ngds-border-custom-radius(@tleft,@tright,@bleft,@bright){
+	-webkit-border-radius: @tleft @tright @bright @bleft;
+	-moz-border-radius: @tleft @tright @bright @bleft;
+	border-radius: @tleft @tright @bright @bleft;
+}
+
 .leaflet-control-fullscreen {
       background-image: url('/vendor/zoomfs/zoom.png');
       margin-bottom: 5px;
@@ -1221,49 +1233,131 @@ div.about-ngds p.section-title {
 		padding-right: 10px;
 		padding-top: 5px;
 		margin-top: 20px;
-		height:40px;
+		height:60px;
 		text-align:center;
 		background:url('/assets/lib_search_bar_middle.png') 40px repeat-x;
 		
-		border-radius:5px;
-		-webkit-border-radius:5px;
+		border-radius:2px;
+		-webkit-border-radius:2px;
 
-		form {
+		fieldset {
 			display:inline;
+			margin-top:10px;
 			
 			input[type="text"] {
-				height:24px;
-				margin-top:2px;
-				padding-left:10px;
+				height:30px;
+				font-weight: bold;
 				margin-right:50px;
 				font-size:18px;
+				border:none;
 			}	
+
+			input[type="submit"] {
+				height:32px;
+				width:45px;
+				font-size:14px;
+				border:none;
+			}				
 
 			label {
 				height:24px;
-				margin-top:2px;
 				margin-right:50px;
-				font-size:16px;
+				font-size:24px;
 				color:#ffffff;
 			}					
 		}
 	}
 
-
+    .expandIcon
+    {
+        background-image: url('/assets/expand.png') !important;
+        width: 30px;
+        height: 40px;
+        left: -0.5em;
+		top: 3px;        
+    }
+    .collapseIcon
+    {
+        background-image: url('/assets/collapse.png') !important;
+        width: 30px;
+        height: 40px;
+        left: -0.5em;
+		top: 3px;
+    }
 
 	div#library-search-results {
 		
 		width:100%;
 		display:table;
 		line-height: 10px;
+
 		.library-search-accordion{
-			padding-top:10px;
+			vertical-align:top;
+			//padding-top:5px;
 			width:25%;
-			display:table-cell;
+			display:table-cell;	
+			#search-accoridion{
+				padding:10px;
+				padding-right:20px;
+				padding-bottom:20px;
+				border:1px solid #a9a9a9;
+				border-top:none;				
+			}
+			.ui-corner-all{
+				.ngds-border-radius(0px);
+			}
+	
 		}
 
 		#search-result-block{
 			display:table-cell;
+			#sort-save-bar{
+				display:table;
+				width:97%;
+				border:1px solid #083656;
+				border-bottom:2px solid;
+
+				.ngds-border-custom-radius(0px,0px,5px,5px);
+
+				float:right;
+				padding:5px;
+				font-size:12px;
+				color:@light;
+				#orderby-block{
+					display:table-cell;
+					padding-left: 20px;
+					margin-left:20px;
+					width:34%;
+					text-align:left;					
+				}	
+				#save-block{
+					display:table-cell;
+					width:30%;
+					text-align:right;
+					input[type="button"] {
+						.ngds-button(25px);
+						width:110px;
+						border:none;
+						.ngds-border-radius(0px);
+					}
+				}
+				#date-filter{
+					display:table-cell;
+					width:36%;
+					padding-left:0px;
+					padding-right:0px;
+					text-align:right;
+					input[type="text"] {
+						width:65px;
+					}				
+					input[type="button"] {
+						.ngds-button(25px);
+						width:30px;
+						border:none;
+						.ngds-border-radius(0px);
+					}
+				}				
+			}
 		}		
 
 		.search-results {
@@ -1281,7 +1375,15 @@ div.about-ngds p.section-title {
 
 		#pager{
 			display:table-row;
-		}		
+		}	
+
+		.show-more{
+			font-size:12px;
+			height:25px;
+			border:1px solid #a9a9a9;
+			.ngds-border-radius(2px);		
+			background-color:#ffffff;	
+		}	
 
 		.pagination-container{
 			display:table-cell;
@@ -1374,19 +1476,24 @@ div.about-ngds p.section-title {
 
 }
 
+.valign-bottom{
+	vertical-align:bottom;
+}
+
+
 .search-results-container{
 
+
 	display:table-row;
-
-
 
 	.search-results-item {
 		display:table;
 		vertical-align:top;
-		background:#F0F0F0;
+		//background:#F0F0F0;
 		
 		width:95%;
 		border:1px solid #a9a9a9;
+		border-bottom:2px solid @extra-light;
 		font-family:Arial;
 		font-size:12px;
 
@@ -1400,9 +1507,11 @@ div.about-ngds p.section-title {
 			width:100%;
 			border-bottom:1px solid #a9a9a9;
 
+			padding:5px;
+
 			#search-text{
 				display:table-cell;
-				width:60%;
+				width:100%;
 				text-align:left;
 			}
 
@@ -1416,34 +1525,30 @@ div.about-ngds p.section-title {
 		#filter-block{
 			display:table;
 			width:100%;
-			line-height: 10px;
+			line-height: 30px;
 
 			.filter-list{
 				display:table-cell;
 				padding-top:10px;
+				width:100%;
+				word-wrap:break-word;
+				
+				.facet{
+					color:@extra-light;
+				}
 				.filtered{
+					color:@extra-light;
 					border:1px solid #a9a9a9;
 					border-radius: 5px;
 					padding:5px;
 					margin:5px;
+					.close-button{
+						font-size:14px;
+						color:@light;
+					}
 				}
 			}					
-			#date-filter{
-				display:table-cell;
-				border-left:1px solid #a9a9a9;
-				width:36%;
-				font-size:10px;
-				padding-left:0px;
-				padding-right:0px;
-				text-align:right;
-				input[type="text"] {
-					width:65px;
-				}				
-				input[type="button"] {
-					.ngds-button(20px);
-					width:30px;
-				}
-			}
+
 
 		}
 
@@ -1451,12 +1556,26 @@ div.about-ngds p.section-title {
 			display:table-row;
 			width:100%;
 			color:#083656;
+
 			#title {
 				padding-top:20px;
 				vertical-align:top;
 				display:table-cell;
 				width:90%;
 				text-align:left;
+				@title-color:#083656;
+				a{
+					text-decoration: none;
+					color:@title-color;
+					:link {
+					    color: @title-color;
+					    
+					}
+					:visited {
+						color: @title-color;
+					}					
+				}
+
 			}
 			#banner {
 				vertical-align:top;
@@ -1504,6 +1623,10 @@ div.about-ngds p.section-title {
 			}
 		}
 
+	}
+
+	.no-border{
+		border:none;
 	}
 
 }

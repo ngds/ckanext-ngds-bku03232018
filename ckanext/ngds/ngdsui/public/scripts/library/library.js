@@ -30,10 +30,11 @@ var ngds = ngds || { };
 		$(".accordion").accordion({ // Create and configure the library search page's accordion menu.
 		    	autoHeight:false,
 		    	clearStyle: false,
-		    	header:"> li > h3",
+		    	header:"h3",
 		    	heightStyle:"content",
 		    	active:false,
 		    	collapsible:true,
+		    	icons:{   header: "expandIcon",activeHeader: "collapseIcon"},
 		    	beforeActivate: function(event, ui) {
 						         // The accordion believes a panel is being opened
 						        if (ui.newHeader[0]) {
@@ -51,7 +52,7 @@ var ngds = ngds || { };
 						        currHeader.toggleClass('ui-corner-all',isPanelSelected).toggleClass('accordion-header-active ui-state-active ui-corner-top',!isPanelSelected).attr('aria-selected',((!isPanelSelected).toString()));
 
 						        // Toggle the panel's icon
-						        currHeader.children('.ui-icon').toggleClass('ui-icon-triangle-1-e',isPanelSelected).toggleClass('ui-icon-triangle-1-s',!isPanelSelected);
+						        currHeader.children('.ui-icon').toggleClass('expandIcon',isPanelSelected).toggleClass('collapseIcon',!isPanelSelected);
 
 						         // Toggle the panel's content
 						        currContent.toggleClass('accordion-content-active',!isPanelSelected)    
@@ -61,10 +62,11 @@ var ngds = ngds || { };
 						    }
 		});
 
-		$(".facet").click(function() {
+
+/*		$(".facet").click(function() {
 	      window.location = $(this).attr('href');
 	      return false;
-   		});  
+   		}); */ 
 
 		$('#expander-image').click(function() {
 
