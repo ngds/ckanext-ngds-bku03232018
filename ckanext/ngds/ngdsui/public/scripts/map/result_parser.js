@@ -22,13 +22,21 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 			},
 			'children':[
 				{
-					'tag':'a',
+					'tag':'p',
 					'attributes':{
-						'class':'description',
-						'href':['/dataset',results[i]['name']].join('/'),
-						'target':'_blank',
-						'text':results[i]['title']
-					}
+						'class':'description-wrapper',
+					},
+					'children':[
+						{
+							'tag':'a',
+							'attributes':{
+								'class':'description',
+								'href':['/dataset',results[i]['name']].join('/'),
+								'target':'_blank',
+								'text':results[i]['title']
+							}
+						}
+						]
 					
 				},
 				{

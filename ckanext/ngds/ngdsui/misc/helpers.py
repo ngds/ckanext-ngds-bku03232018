@@ -286,9 +286,31 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
     return facet_dict
 
 def get_formatted_date(datstr):
-    print "type of input 2013-05-28T03:21:29.274541:",datstr
     from datetime import datetime
     return datetime.strptime(datstr[:10], '%Y-%m-%d').strftime('%b %d,%Y')
+
+def to_json(data):
+    #print json.dumps(data)
+    return json.dumps(data)
+
+def is_string_field(field_name):
+    non_string_fields = ('publication_date')
+
+    if field_name in non_string_fields:
+        return False;
+
+    return True;
+
+def get_field_title(field_name):
+    field_dict={'publication_date':'Publication Date','metadata_created':'Created Date'}
+
+    print "Field Name:",field_name
+
+    x = field_dict.get(field_name)
+
+    print "Title:", x
+
+    return x
 
 def is_ogc_publishable(resource_id):
     resource = Resource.get(resource_id)

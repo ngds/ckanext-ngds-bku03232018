@@ -1,5 +1,29 @@
 var ngds = ngds || { };
 
+	Date.prototype.getISOString = function(timeDecider) {
+		hours = this.getUTCHours();
+		mins = this.getUTCMinutes();
+		secs = this.getUTCSeconds();
+
+		if (timeDecider===-1){
+			hours = 0;
+			mins =0;
+			secs=0;
+		}else if(timeDecider===1){
+			hours = 23;
+			mins =59;
+			secs=59;
+		}
+
+        function pad(n) { return n < 10 ? '0' + n : n }
+        return this.getUTCFullYear() + '-'
+            + pad(this.getUTCMonth() + 1) + '-'
+            + pad(this.getUTCDate()) + 'T'
+            + pad(hours) + ':'
+            + pad(mins) + ':'
+            + pad(secs) + 'Z';
+    };
+
 (function() {
 	$(document).ready(function() { 
 
@@ -105,10 +129,90 @@ var ngds = ngds || { };
 		    acccumulator.push('sort='+$('#field-order-by').val());
 		    var finished_string = acccumulator.join('&');
 		    //acccumulator+='&sort='+$('#field-order-by').val();
+		    //console.log(finished_string);
+
+		    window.location.href = window.location.href.split('?')[0]+"?"+finished_string;
+		}); 
+
+		$('#filter-pub-date').click(function() {
+
+			 from_date = $('#from-date').val();
+			 to_date = $('#to-date').val();
+			 console.log("Entered Here...");
+			console.log(from_date);
+			console.log(to_date);
+
+			if(from_date==='' && to_date ===''){
+				return false;
+			}
+
+		    var params = window.location.href.split('?')[1];
+		    console.log(params);
+	    
+		    var acccumulator = [];
+
+		    if(typeof params==='undefined'){
+		    	//$('#hide-button').click();
+		    }else{		    
+			    var split_params = params.split('&');
+			    for(var i=0;i<split_params.length;i++) {		    	
+			       	if(split_params[i].indexOf('publication_date=')===-1) {
+			    		acccumulator.push(split_params[i]);
+			    	}
+			    }
+		    }
+
+		    date_range = "[";
+
+		    if(from_date===''){
+		    	date_range+=" * TO ";
+		    }else{
+		    	from_str = (new Date(from_date)).getISOString(-1);
+		    	date_range+=from_str+" TO ";
+		    }
+
+		    if(to_date===''){
+		    	date_range+=" * ]";
+		    }else{
+		    	to_str = (new Date(to_date)).getISOString(1);
+		    	date_range+=to_str+" ]";
+		    }		    
+
+		    //console.log(date_range);
+
+		    acccumulator.push('publication_date='+date_range);
+		    var finished_string = acccumulator.join('&');
 		    console.log(finished_string);
 
 		    window.location.href = window.location.href.split('?')[0]+"?"+finished_string;
-		});  		    
+		});		
+
+
+
+
+
+    $( "#from-date" ).datepicker({
+      defaultDate: "-1d",
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "c-100:c+50",
+      numberOfMonths: 1,
+      onClose: function( selectedDate ) {
+        $( "#to-date" ).datepicker( "option", "minDate", selectedDate );
+      }
+    });
+
+    $( "#to-date" ).datepicker({
+      defaultDate: "+1d",
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "c-100:c+50",
+      numberOfMonths: 1,
+      onClose: function( selectedDate ) {
+        $( "#from-date" ).datepicker( "option", "maxDate", selectedDate );
+      }
+    });
+
 
 
 	});
