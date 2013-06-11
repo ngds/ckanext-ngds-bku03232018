@@ -1233,9 +1233,10 @@ div.about-ngds p.section-title {
 		padding-right: 10px;
 		padding-top: 5px;
 		margin-top: 20px;
-		height:60px;
+		height:58px;
 		text-align:center;
-		background:url('/assets/lib_search_bar_middle.png') 40px repeat-x;
+		background:url('/assets/lib_search_bar_middle.png');
+		background-size: 100% 64px;
 		
 		border-radius:2px;
 		-webkit-border-radius:2px;
@@ -1270,7 +1271,7 @@ div.about-ngds p.section-title {
 
     .expandIcon
     {
-        background-image: url('/assets/plus_grey.png') !important;
+        background-image: url('/assets/facet_expand.png') !important;
         width: 30px;
         height: 40px;
         left: -0.5em;
@@ -1278,7 +1279,7 @@ div.about-ngds p.section-title {
     }
     .collapseIcon
     {
-        background-image: url('/assets/minus_grey.png') !important;
+        background-image: url('/assets/facet_collapse.png') !important;
         width: 30px;
         height: 40px;
         left: -0.5em;
@@ -1358,6 +1359,7 @@ div.about-ngds p.section-title {
 				display:table;
 				width:97%;
 				border:1px solid #083656;
+				border-top:none;
 				border-bottom:2px solid;
 
 				.ngds-border-custom-radius(0px,0px,5px,5px);
@@ -1475,8 +1477,6 @@ div.about-ngds p.section-title {
 							text-decoration: none;
 							color:#8EAFBF;
 							.previous{
-								width:20px;
-								height:22px;
 								display:inline;
 								vertical-align:bottom;
 							}
@@ -1505,23 +1505,15 @@ div.about-ngds p.section-title {
 
 .search-item-image{
 	display:table-cell;
-
 	margin-left:20px;
 	word-wrap: break-word;
 	width:15%;
-
 	text-align:center;
 	vertical-align:middle;
 
-
-	background:url('/assets/lib-blue-vbar.png') repeat-y;
-	background-size: 30px Auto;
+	background:url('/assets/lib-blue-arrow-vbar.png'),url('/assets/lib-blue-vbar.png');
+	background-repeat:repeat-y,repeat-y;
 	background-position:center; 
-
-	.resultimage{
-	 	width: 40%;
-	 	height: 20%;
-	 }					 
 
 }
 
@@ -1587,12 +1579,14 @@ div.about-ngds p.section-title {
 				}
 				.filtered{
 					color:@extra-light;
+					font-size:12px;
 					border:1px solid #a9a9a9;
 					border-radius: 5px;
 					padding:5px;
 					margin:5px;
+					background:url('/assets/pill_background.png');
 					.close-button{
-						font-size:14px;
+						font-size:12px;
 						color:@light;
 					}
 				}
@@ -1631,9 +1625,6 @@ div.about-ngds p.section-title {
 				display:table-cell;
 				width:10%;
 				text-align:right;
-				.banner{
-					width:40%;
-				}
 			}
 		}
 
@@ -1667,7 +1658,6 @@ div.about-ngds p.section-title {
 			width:110%;
 			padding-top:5px;
 			.action-image{
-				width:3%;
 				padding-right:5px;
 			}
 		}
