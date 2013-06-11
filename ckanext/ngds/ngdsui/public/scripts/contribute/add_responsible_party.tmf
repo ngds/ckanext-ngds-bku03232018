@@ -1,0 +1,9 @@
+{{#responsible_parties}}
+	{{#label}}
+		<label>{{label}}</label>
+		<input name={{name}} type="{{type}}"></input>
+	{{/label}}
+	{{#button}}
+		<button class="{{class}}">{{button}}</button>
+	{{/button}}
+{{/responsible_parties}}

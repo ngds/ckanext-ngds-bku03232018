@@ -248,9 +248,41 @@ $.ajax({
     ngds.structured_form_template = response;
   }
 
-})
+});
+
+$.ajax({
+  'url':'/scripts/contribute/add_responsible_party.tmf',
+  'success':function(response) {
+    ngds.add_responsible_party_template = response;
+  }
+
+});
 
 var create_responsible_party = function() {
   var distributor_anch = $(".distributor>a");
+  var responsible_parties = {
+    'responsible_parties':[
+      {
+        'label':'Name',
+        'name':'responsible_party_name',
+        'type':'text'
+      },
+      {
+        'label':'Email',
+        'name':'responsible_party_email',
+        'type':'text'
+      },
+      {
+        'button':'Create',
+        'class':'create'
+      },
+       {
+        'button':'Cancel',
+        'class':'cancel'
+      }
+    ]
+  };
+
+  console.log(Mustache.render(ngds.add_responsible_party_template,responsible_parties));
 
 };
