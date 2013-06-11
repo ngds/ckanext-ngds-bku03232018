@@ -10,57 +10,30 @@
     </gmd:language>
     <gmd:characterSet>
         <gmd:MD_CharacterSetCode
-                codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode'
+                codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
                 codeListValue='utf8'>UTF-8
         </gmd:MD_CharacterSetCode>
     </gmd:characterSet>
-
-    <!-- >>>>>>>>>>>>>>>>>>>>> Dataset Category <<<<<<<<<<<<<<<<<<<<<<<<< -->
     <gmd:hierarchyLevel>
         <gmd:MD_ScopeCode
-                codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ScopeCode'
-                codeListValue='Dataset'>Dataset
+                codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
+                codeListValue='{{ data_type }}'>{{ data_type }}
         </gmd:MD_ScopeCode>
     </gmd:hierarchyLevel>
     <gmd:hierarchyLevelName>
-        <gco:CharacterString>Dataset</gco:CharacterString>
+        <gco:CharacterString>{{ additional.data_type }}</gco:CharacterString>
     </gmd:hierarchyLevelName>
-    <!-- >>>>>>>>>>>>>>>>>>>>> Dataset Category <<<<<<<<<<<<<<<<<<<<<<<<< -->
-
-    <!-- >>>>>>>>>>>>>>>>>>>>> Maintainer <<<<<<<<<<<<<<<<<<<<<<<<< -->
     <gmd:contact>
         <gmd:CI_ResponsibleParty>
             <gmd:individualName>
-                <gco:CharacterString>No Name Was Given</gco:CharacterString>
+                <gco:CharacterString>{{ additional.maintainer_name }}</gco:CharacterString>
             </gmd:individualName>
-            <gmd:organisationName>
-                <gco:CharacterString>No Organization Name Was Given</gco:CharacterString>
-            </gmd:organisationName>
             <gmd:contactInfo>
                 <gmd:CI_Contact>
-                    <gmd:phone>
-                        <gmd:CI_Telephone>
-                            <gmd:voice>
-                                <gco:CharacterString>No Phone Number Was Given</gco:CharacterString>
-                            </gmd:voice>
-                        </gmd:CI_Telephone>
-                    </gmd:phone>
                     <gmd:address>
                         <gmd:CI_Address>
-                            <gmd:deliveryPoint>
-                                <gco:CharacterString>No Street Address Was Given</gco:CharacterString>
-                            </gmd:deliveryPoint>
-                            <gmd:city>
-                                <gco:CharacterString>No City Was Given</gco:CharacterString>
-                            </gmd:city>
-                            <gmd:administrativeArea>
-                                <gco:CharacterString>No State Was Given</gco:CharacterString>
-                            </gmd:administrativeArea>
-                            <gmd:postalCode>
-                                <gco:CharacterString>No Zip Was Given</gco:CharacterString>
-                            </gmd:postalCode>
                             <gmd:electronicMailAddress>
-                                <gco:CharacterString>No email Was Given</gco:CharacterString>
+                                <gco:CharacterString>{{ maintainer_email }}</gco:CharacterString>
                             </gmd:electronicMailAddress>
                         </gmd:CI_Address>
                     </gmd:address>
@@ -68,15 +41,12 @@
             </gmd:contactInfo>
             <gmd:role>
                 <gmd:CI_RoleCode
-                        codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode'
+                        codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
                         codeListValue='pointOfContact'>pointOfContact
                 </gmd:CI_RoleCode>
             </gmd:role>
         </gmd:CI_ResponsibleParty>
     </gmd:contact>
-    <!-- >>>>>>>>>>>>>>>>>>>>> Maintainer <<<<<<<<<<<<<<<<<<<<<<<<< -->
-
-
     <gmd:dateStamp>
         <gco:DateTime>{{ metadata_modified }}</gco:DateTime>
     </gmd:dateStamp>
@@ -87,71 +57,54 @@
         <gco:CharacterString>1.2</gco:CharacterString>
     </gmd:metadataStandardVersion>
 
-    <!-- >>>>>>>>>>>>>>>>>>>>> Dataset URI <<<<<<<<<<<<<<<<<<<<<<<<< -->
+<!-- <<<<<<<<<<<<<<<<<<<<<<<< datasetUri >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
     <gmd:dataSetURI>
-        <gco:CharacterString>http://repository.usgin.org/uri_gin/usgin/dlio/528</gco:CharacterString>
+        <gco:CharacterString>{{ additional.datasetUri }}</gco:CharacterString>
     </gmd:dataSetURI>
-    <!-- >>>>>>>>>>>>>>>>>>>>> Dataset URI <<<<<<<<<<<<<<<<<<<<<<<<< -->
-
+<!-- <<<<<<<<<<<<<<<<<<<<<<<< datasetUri >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
 
     <gmd:identificationInfo>
         <gmd:MD_DataIdentification>
             <gmd:citation>
                 <gmd:CI_Citation>
+
                     <gmd:title>
                         <gco:CharacterString>{{ title }}</gco:CharacterString>
                     </gmd:title>
-
-                    <!-- >>>>>>>>>>>>>>>>>>>>> Publication Date <<<<<<<<<<<<<<<<<<<<<<<<< -->
                     <gmd:date>
                         <gmd:CI_Date>
                             <gmd:date>
-                                <gco:DateTime>2012-05-02T12:00:00</gco:DateTime>
+                                <gco:DateTime>{{ additional.publication_date }}</gco:DateTime>
                             </gmd:date>
                             <gmd:dateType>
                                 <gmd:CI_DateTypeCode
-                                        codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode'
+                                        codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
                                         codeListValue='publication'>publication
                                 </gmd:CI_DateTypeCode>
                             </gmd:dateType>
                         </gmd:CI_Date>
                     </gmd:date>
-                    <!-- >>>>>>>>>>>>>>>>>>>>> Publication Date <<<<<<<<<<<<<<<<<<<<<<<<< -->
-
-                    <!-- >>>>>>>>>>>>>>>>>>>>> Creators <<<<<<<<<<<<<<<<<<<<<<<<< -->
+                    {% for other in additional.other_id %}
+                    <gmd:identifier>
+                        <gmd:MD_Identifier>
+                            <gmd:code>
+                                <gco:CharacterString>hands</gco:CharacterString>
+                            </gmd:code>
+                        </gmd:MD_Identifier>
+                    </gmd:identifier>
+                    {% endfor %}
+                    {% for creator in additional.authors %}
                     <gmd:citedResponsibleParty>
                         <gmd:CI_ResponsibleParty>
                             <gmd:individualName>
-                                <gco:CharacterString>Ann C. Arnold and Denise Hills</gco:CharacterString>
+                                <gco:CharacterString>{{ creator.author_name }}</gco:CharacterString>
                             </gmd:individualName>
-                            <gmd:organisationName>
-                                <gco:CharacterString>Geological Survey of Alabama</gco:CharacterString>
-                            </gmd:organisationName>
                             <gmd:contactInfo>
                                 <gmd:CI_Contact>
-                                    <gmd:phone>
-                                        <gmd:CI_Telephone>
-                                            <gmd:voice>
-                                                <gco:CharacterString>205-247-3694</gco:CharacterString>
-                                            </gmd:voice>
-                                        </gmd:CI_Telephone>
-                                    </gmd:phone>
                                     <gmd:address>
                                         <gmd:CI_Address>
-                                            <gmd:deliveryPoint>
-                                                <gco:CharacterString>420 Hackberry Lane</gco:CharacterString>
-                                            </gmd:deliveryPoint>
-                                            <gmd:city>
-                                                <gco:CharacterString>Tuscaloosa</gco:CharacterString>
-                                            </gmd:city>
-                                            <gmd:administrativeArea>
-                                                <gco:CharacterString>Alabama</gco:CharacterString>
-                                            </gmd:administrativeArea>
-                                            <gmd:postalCode>
-                                                <gco:CharacterString>35401</gco:CharacterString>
-                                            </gmd:postalCode>
                                             <gmd:electronicMailAddress>
-                                                <gco:CharacterString>dhills@gsa.state.al.us</gco:CharacterString>
+                                                <gco:CharacterString>{{ creator.author_email }}</gco:CharacterString>
                                             </gmd:electronicMailAddress>
                                         </gmd:CI_Address>
                                     </gmd:address>
@@ -159,29 +112,24 @@
                             </gmd:contactInfo>
                             <gmd:role>
                                 <gmd:CI_RoleCode
-                                        codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode'
+                                        codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
                                         codeListValue='originator'>originator
                                 </gmd:CI_RoleCode>
                             </gmd:role>
                         </gmd:CI_ResponsibleParty>
                     </gmd:citedResponsibleParty>
-                    <!-- >>>>>>>>>>>>>>>>>>>>> Creators <<<<<<<<<<<<<<<<<<<<<<<<< -->
-
+                    {% endfor %}
                 </gmd:CI_Citation>
             </gmd:citation>
             <gmd:abstract>
                 <gco:CharacterString>{{ notes }}</gco:CharacterString>
             </gmd:abstract>
-
-            <!-- >>>>>>>>>>>>>>>>>>>>> Status <<<<<<<<<<<<<<<<<<<<<<<<< -->
             <gmd:status>
                 <gmd:MD_ProgressCode
-                        codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ProgressCode'
-                        codeListValue='completed'>completed
+                        codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
+                        codeListValue='{{ additional.status }}'>{{ additional.status }}
                 </gmd:MD_ProgressCode>
             </gmd:status>
-            <!-- >>>>>>>>>>>>>>>>>>>>> Status <<<<<<<<<<<<<<<<<<<<<<<<< -->
-
             <gmd:descriptiveKeywords>
                 <gmd:MD_Keywords>
                     {% for tag in tags %}
@@ -191,8 +139,23 @@
                     {% endfor %}
                     <gmd:type>
                         <gmd:MD_KeywordTypeCode
-                                codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode'
+                                codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
                                 codeListValue='theme'>theme
+                        </gmd:MD_KeywordTypeCode>
+                    </gmd:type>
+                </gmd:MD_Keywords>
+            </gmd:descriptiveKeywords>
+            <gmd:descriptiveKeywords>
+                <gmd:MD_Keywords>
+                    {% for tag in additional.location %}
+                    <gmd:keyword>
+                        <gco:CharacterString>{{ tag }}</gco:CharacterString>
+                    </gmd:keyword>
+                    {% endfor %}
+                    <gmd:type>
+                        <gmd:MD_KeywordTypeCode
+                                codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
+                                codeListValue='theme'>place
                         </gmd:MD_KeywordTypeCode>
                     </gmd:type>
                 </gmd:MD_Keywords>
@@ -216,7 +179,7 @@
                                     </gmd:date>
                                     <gmd:dateType>
                                         <gmd:CI_DateTypeCode
-                                                codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode'
+                                                codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
                                                 codeListValue='publication'></gmd:CI_DateTypeCode>
                                     </gmd:dateType>
                                 </gmd:CI_Date>
@@ -228,7 +191,7 @@
             <!-- >>>>>>>>>>>>>>>>>>>>> Facets <<<<<<<<<<<<<<<<<<<<<<<<< -->
 
             <gmd:language>
-                <gco:CharacterString>eng</gco:CharacterString>
+                <gco:CharacterString>{{ additional.language }}</gco:CharacterString>
             </gmd:language>
             <gmd:topicCategory>
                 <gmd:MD_TopicCategoryCode>geoscientificInformation</gmd:MD_TopicCategoryCode>
@@ -260,43 +223,20 @@
     <gmd:distributionInfo>
         <gmd:MD_Distribution>
 
-            <!-- >>>>>>>>>>>>>>>>>>>>> Distributors <<<<<<<<<<<<<<<<<<<<<<<<< -->
+            {% for distro in online %}
             <gmd:distributor>
                 <gmd:MD_Distributor>
                     <gmd:distributorContact>
                         <gmd:CI_ResponsibleParty>
                             <gmd:individualName>
-                                <gco:CharacterString>No Name Was Given</gco:CharacterString>
+                                <gco:CharacterString>{{ distro.distributor.distributor_name }}</gco:CharacterString>
                             </gmd:individualName>
-                            <gmd:organisationName>
-                                <gco:CharacterString>Arizona Geological Survey</gco:CharacterString>
-                            </gmd:organisationName>
                             <gmd:contactInfo>
                                 <gmd:CI_Contact>
-                                    <gmd:phone>
-                                        <gmd:CI_Telephone>
-                                            <gmd:voice>
-                                                <gco:CharacterString>520-770-3500</gco:CharacterString>
-                                            </gmd:voice>
-                                        </gmd:CI_Telephone>
-                                    </gmd:phone>
                                     <gmd:address>
                                         <gmd:CI_Address>
-                                            <gmd:deliveryPoint>
-                                                <gco:CharacterString>416 W. Congress St., Suite 100
-                                                </gco:CharacterString>
-                                            </gmd:deliveryPoint>
-                                            <gmd:city>
-                                                <gco:CharacterString>Tucson</gco:CharacterString>
-                                            </gmd:city>
-                                            <gmd:administrativeArea>
-                                                <gco:CharacterString>AZ</gco:CharacterString>
-                                            </gmd:administrativeArea>
-                                            <gmd:postalCode>
-                                                <gco:CharacterString>85701</gco:CharacterString>
-                                            </gmd:postalCode>
                                             <gmd:electronicMailAddress>
-                                                <gco:CharacterString>metadata@azgs.az.gov</gco:CharacterString>
+                                                <gco:CharacterString>{{ distro.distributor.distributor_email }}</gco:CharacterString>
                                             </gmd:electronicMailAddress>
                                         </gmd:CI_Address>
                                     </gmd:address>
@@ -304,29 +244,93 @@
                             </gmd:contactInfo>
                             <gmd:role>
                                 <gmd:CI_RoleCode
-                                        codeList='http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode'
+                                        codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
                                         codeListValue='distributor'>distributor
                                 </gmd:CI_RoleCode>
                             </gmd:role>
                         </gmd:CI_ResponsibleParty>
                     </gmd:distributorContact>
+                    {% for res in distro.resources %}
+                    <gmd:distributorTransferOptions xlink:href="#distribution-{{ res.id }}"></gmd:distributorTransferOptions>
+                    {% endfor %}
                 </gmd:MD_Distributor>
             </gmd:distributor>
-            <!-- >>>>>>>>>>>>>>>>>>>>> Distributors <<<<<<<<<<<<<<<<<<<<<<<<< -->
+            {% endfor %}
 
-            {% for resource in resources %}
+            {% for distro in offline %}
+            {% for resource in distro.resources %}
+            <gmd:distributor>
+                <gmd:MD_Distributor>
+                    <gmd:distributorContact>
+                        <gmd:CI_ResponsibleParty>
+                            <gmd:individualName>
+                                <gco:CharacterString>{{ distro.distributor.distributor_name }}</gco:CharacterString>
+                            </gmd:individualName>
+                            <gmd:contactInfo>
+                                <gmd:CI_Contact>
+                                    <gmd:address>
+                                        <gmd:CI_Address>
+                                            <gmd:electronicMailAddress>
+                                                <gco:CharacterString>{{ distro.distributor.distributor_email }}</gco:CharacterString>
+                                            </gmd:electronicMailAddress>
+                                        </gmd:CI_Address>
+                                    </gmd:address>
+                                </gmd:CI_Contact>
+                            </gmd:contactInfo>
+                            <gmd:role>
+                                <gmd:CI_RoleCode
+                                        codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
+                                        codeListValue='distributor'>distributor
+                                </gmd:CI_RoleCode>
+                            </gmd:role>
+                        </gmd:CI_ResponsibleParty>
+                    </gmd:distributorContact>
+                    <gmd:distributionOrderProcess>
+                        <gmd:MD_StandardOrderProcess>
+                            <gmd:orderingInstructions>
+                                <gco:CharacterString>{{ resource.additional.ordering }}</gco:CharacterString>
+                            </gmd:orderingInstructions>
+                        </gmd:MD_StandardOrderProcess>
+                    </gmd:distributionOrderProcess>
+                    <gmd:distributorFormat>
+                        <gmd:MD_Format>
+                            <gmd:name>
+                                <gco:CharacterString>{{ resource.additional.resource_type }}</gco:CharacterString>
+                            </gmd:name>
+                            <gmd:version>
+                                <gco:CharacterString>None</gco:CharacterString>
+                            </gmd:version>
+                        </gmd:MD_Format>
+                    </gmd:distributorFormat>
+                    <gmd:distributorTransferOptions xlink:href="#distribution-{{ res.id }}"></gmd:distributorTransferOptions>
+                </gmd:MD_Distributor>
+            </gmd:distributor>
+            {% endfor %}
+            {% endfor %}
+
+            {% for distro in additional.online %}
+            {% for resource in distro.resources %}
             <gmd:transferOptions>
-                <gmd:MD_DigitalTransferOptions>
+                <gmd:MD_DigitalTransferOptions id="distribution-{{ resource.id }}">
                     <gmd:onLine>
                         <gmd:CI_OnlineResource>
                             <gmd:linkage>
                                 <gmd:URL>{{ resource.url }}</gmd:URL>
                             </gmd:linkage>
-                            <gmd:protocol></gmd:protocol>
+                            <gmd:protocol>
+                                <gco:CharacterString>{{ resource.additional.protocol }}</gco:CharacterString>
+                            </gmd:protocol>
                             <gmd:name>
                                 <gco:CharacterString>{{ resource.name }}</gco:CharacterString>
                             </gmd:name>
-                            <gmd:description>{{ resource.description }}</gmd:description>
+                            <gmd:description>
+                                <gco:CharacterString>
+                                    {{ resource.description }}
+                                    {% if resource.additional.layer_name %}
+                                    Look the following layer within the service: {{ resource.additional.layer_name }}
+                                    {% endif %}
+                                </gco:CharacterString>
+                            </gmd:description>
                             <gmd:function>
                                 <gmd:CI_OnLineFunctionCode codeListValue='375'
                                                            codeList='http://www.fgdc.gov/nap/metadata/register/registerItemClasses.html#IC_88'>
@@ -338,9 +342,24 @@
                 </gmd:MD_DigitalTransferOptions>
             </gmd:transferOptions>
             {% endfor %}
+            {% endfor %}
+
+<!-- <<<<<<<<<<<<<<<<<<<<<<<< transferOptions for Offline Resources >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+            {% for resource in additional.offline %}
+            <gmd:transferOptions>
+                <gmd:MD_DigitalTransferOptions>
+                    <gmd:offLine>
+                        <gmd:MD_Medium>
+                            <gmd:mediumNote>
+                                <gco:CharacterString>WTF is medium</gco:CharacterString>
+                            </gmd:mediumNote>
+                        </gmd:MD_Medium>
+                    </gmd:offLine>
+                </gmd:MD_DigitalTransferOptions>
+            </gmd:transferOptions>
+            {% endfor %}
+<!-- <<<<<<<<<<<<<<<<<<<<<<<< transferOptions for Offline Resources >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
 
         </gmd:MD_Distribution>
-
-
     </gmd:distributionInfo>
 </gmd:MD_Metadata>
