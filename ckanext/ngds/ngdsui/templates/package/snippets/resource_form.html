@@ -101,7 +101,9 @@ var render_forms = function(value) {
 
   if(value==="data-service") {
     $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
-    ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
+    var dist_autocomp = ngds.autocomplete("#distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
+    dist_autocomp.proxy("#distributor_name","name"); 
+    dist_autocomp.proxy("#distributor_email","email"); 
   }
 };
 

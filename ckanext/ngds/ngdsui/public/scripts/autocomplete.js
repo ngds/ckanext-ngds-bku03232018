@@ -25,11 +25,20 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
       response:function(event,ui) {
         $.each(ui.content,function(index,val){ 
           
-          var t1 = (val[display_key]!==null && typeof val[display_key]!=='undefined');
+          // var t1 = (val[display_key]!==null && typeof val[display_key]!=='undefined');
           var t2 = (val[value_key]!==null && typeof val[value_key]!=='undefined');
           
-          if(t1 && t2) {  // scrub out values that are null or undefined since there's no point trying to display them.
-            val.label=val[display_key];
+          if(t2) {  // scrub out values that are null or undefined since there's no point trying to display them.
+            if(display_key instanceof Array) {
+              var collect = []
+              for(var i=0;i<display_key.length;i++) {
+                collect.push(val[display_key[i]]);
+              } 
+              val.label = collect.join(' - ');
+            }
+            else {
+              val.label=val[display_key];
+            }
             val.value=val[value_key];  
           }
           else { // console log it

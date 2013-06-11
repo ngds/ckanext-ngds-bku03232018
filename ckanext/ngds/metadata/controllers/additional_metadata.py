@@ -46,7 +46,7 @@ class Responsible_Parties_UI(base.BaseController):
         responsible_parties = []
         for responsible_party in query.all():
             result_dict = {}
-            for k in ['id', 'name']:
+            for k in ['id', 'name','email']:
                     result_dict[k] = getattr(responsible_party,k)
 
             responsible_parties.append(result_dict)

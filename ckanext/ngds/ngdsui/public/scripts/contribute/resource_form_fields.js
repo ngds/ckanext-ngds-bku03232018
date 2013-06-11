@@ -223,6 +223,20 @@ var link_data_service_form = {
       return 'type=text';
       }
     }
+  ],
+  'custom':[
+    {
+      'tag':'input',
+      'name':'distributor_name',
+      'id':'distributor_name',
+      'type':'hidden'
+    },
+     {
+      'tag':'input',
+      'name':'distributor_email',
+      'id':'distributor_email',
+      'type':'hidden'
+    }
   ]
 };
 
@@ -260,6 +274,7 @@ $.ajax({
 
 var create_responsible_party = function() {
   var distributor_anch = $(".distributor>a");
+  distributor_anch.hide();
   var responsible_parties = {
     'responsible_parties':[
       {
@@ -274,15 +289,41 @@ var create_responsible_party = function() {
       },
       {
         'button':'Create',
-        'class':'create'
+        'class':'create_responsible_party'
       },
        {
         'button':'Cancel',
-        'class':'cancel'
+        'class':'cancel_responsible_party'
       }
     ]
   };
 
-  console.log(Mustache.render(ngds.add_responsible_party_template,responsible_parties));
+  distributor_anch.after(Mustache.render(ngds.add_responsible_party_template,responsible_parties));
+  
+  $('.create_responsible_party').on('click',function(ev) {
+      var name = $("[name=responsible_party_name]").val();
+      var email = $("[name=responsible_party_email]").val();
 
-};
+      $.ajax({
+        'url':'/api/action/additional_metadata',
+        'type':'POST',
+        'data':JSON.stringify({
+          "process":"create",
+          "model":"ResponsibleParty",
+          "data":{
+            "name":name,
+            "email":email
+          }
+        })
+  });
+
+  });
+}
+
+$(".form-body").on('blur',"#distributor-fake",function(ev) {
+  var distributor_name = $("#distributor_name").val();
+  var distributor_email = $("#distributor_email").val();
+  console.log(distributor_name);
+  console.log(distributor_email);
+
+});

@@ -6,3 +6,7 @@
             {{{additional_content}}}
         </div>
 {{/form}}
+
+{{#custom}}
+	<{{tag}} type="{{type}}" name="{{name}}" id="{{id}}"></{{tag}}>
+{{/custom}}
