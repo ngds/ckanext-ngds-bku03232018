@@ -105,9 +105,9 @@
 
           {% snippet 'snippets/search_results.html', packages=c.page.items %}
           <div id="pager">
-          <div class="search-item-image valign-bottom">
-            <div class="show-more">show more results</div>           
-          </div>
+            <div class="search-item-image valign-bottom">
+              <div class="show-more"><span>show more results</span></div>           
+            </div>
             <div class="pagination-container">
                     {{ c.page.pager(q=c.q) }}         
             </div>

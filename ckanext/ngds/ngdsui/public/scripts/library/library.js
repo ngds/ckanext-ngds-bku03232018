@@ -30,7 +30,7 @@ var ngds = ngds || { };
 		$(".accordion").accordion({ // Create and configure the library search page's accordion menu.
 		    	autoHeight:false,
 		    	clearStyle: false,
-		    	header:"h3",
+		    	header:"> li > h3",
 		    	heightStyle:"content",
 		    	active:false,
 		    	collapsible:true,
@@ -135,6 +135,12 @@ var ngds = ngds || { };
 
 		    window.location.href = window.location.href.split('?')[0]+"?"+finished_string;
 		}); 
+
+		$('.facet').change(function(){
+			//console.log($('.facet').val());
+			window.location.href =$(this).val();
+
+		});
 
 		$('#filter-pub-date').click(function() {
 

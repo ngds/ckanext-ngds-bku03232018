@@ -1270,19 +1270,19 @@ div.about-ngds p.section-title {
 
     .expandIcon
     {
-        background-image: url('/assets/expand.png') !important;
+        background-image: url('/assets/plus_grey.png') !important;
         width: 30px;
         height: 40px;
         left: -0.5em;
-		top: 3px;        
+		top: 0em;        
     }
     .collapseIcon
     {
-        background-image: url('/assets/collapse.png') !important;
+        background-image: url('/assets/minus_grey.png') !important;
         width: 30px;
         height: 40px;
         left: -0.5em;
-		top: 3px;
+		top: 0em;
     }
 
 	div#library-search-results {
@@ -1303,10 +1303,53 @@ div.about-ngds p.section-title {
 				border:1px solid #a9a9a9;
 				border-top:none;				
 			}
-			.ui-corner-all{
-				.ngds-border-radius(0px);
+
+
+			.ui-accordion-content{
+				padding:0px;
+				overflow:hidden !important;
 			}
-	
+
+			.ui-accordion-header {
+				padding: 0.1em 0.5em 0.1em 1.5em;
+			}
+
+			.sub{
+				border:none;
+				li{
+					margin-top:5px;
+					margin-bottom:5px;
+				}
+			}
+
+			ul{
+			    list-style-type: none;
+			    padding-left:15px;
+			    //padding-top:5px;
+			    //padding-bottom:5px;
+			    li{
+			    	margin-bottom:5px;
+			    	padding-top:0em;
+			    	padding-bottom:0em;
+
+			    }
+			}
+			.dynamic_keyword{
+				padding-left:15px;
+			}
+
+			.facet-text{
+				font-size:10px;
+				color:@light;
+			}
+			.read-more{
+				padding-left:20px;
+				color:@extra-light;
+			}
+
+			.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br,.ui-corner-top, .ui-corner-right, .ui-corner-tr{
+				.ngds-border-radius(0px);
+			}			
 		}
 
 		#search-result-block{
@@ -1375,13 +1418,17 @@ div.about-ngds p.section-title {
 
 		#pager{
 			display:table-row;
+			height:80px;
 		}	
 
 		.show-more{
 			font-size:12px;
-			height:25px;
+			width:120px;
+			margin-left: 10px;
+			padding-top:10px;
+			padding-bottom:10px;
 			border:1px solid #a9a9a9;
-			.ngds-border-radius(2px);		
+			.ngds-border-radius(6px);		
 			background-color:#ffffff;	
 		}	
 
@@ -1393,7 +1440,8 @@ div.about-ngds p.section-title {
 				vertical-align:bottom;
 				width:100%;
 				height: 36px;
-				margin: 18px 0;
+				padding-left:40px;
+
 				ul{
 					list-style: disc;
 					list-style-type: disc;
@@ -1427,7 +1475,8 @@ div.about-ngds p.section-title {
 							text-decoration: none;
 							color:#8EAFBF;
 							.previous{
-								width:7%;
+								width:20px;
+								height:22px;
 								display:inline;
 								vertical-align:bottom;
 							}
