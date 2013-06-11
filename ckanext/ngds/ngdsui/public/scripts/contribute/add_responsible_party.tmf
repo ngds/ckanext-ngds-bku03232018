@@ -1,11 +1,14 @@
 <div class="add-responsible-party">
 {{#responsible_parties}}
 	{{#label}}
-		<label>{{label}}</label>
-		<input name={{name}} type="{{type}}" class="small"></input>
+		<label class="{{class}}"">{{label}}</label>
+		<input name={{name}} type="{{type}}" class="small {{class}}"></input>
 	{{/label}}
 	{{#button}}
-		<button type="button" class="{{class}}" class="small">{{button}}</button>
+		<button type="button" class="{{class}}" class="small" id="{{id}}"">{{button}}</button>
 	{{/button}}
+	{{#span}}
+		<span id="{{span}}" class="{{class}}" style="{{style}}"></span>
+	{{/span}}
 {{/responsible_parties}}
 </div>

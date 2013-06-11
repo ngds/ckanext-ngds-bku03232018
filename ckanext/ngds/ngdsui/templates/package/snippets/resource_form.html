@@ -103,7 +103,13 @@ var render_forms = function(value) {
     $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
     var dist_autocomp = ngds.autocomplete("#distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
     dist_autocomp.proxy("#distributor_name","name"); 
-    dist_autocomp.proxy("#distributor_email","email"); 
+    dist_autocomp.proxy("#distributor_email","email");
+    dist_autocomp.proxy("#distributor",function(dict) {
+      $("#distributor").val(JSON.stringify({
+        "distributor_name":dict.name,
+        "distributor_email":dict.email
+      }));
+    });  
   }
 };
 

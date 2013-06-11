@@ -192,7 +192,6 @@ var link_data_service_form = {
     },
     {
       'label':'Distributor',
-      'name':'distributor-fake',
       'id':function() {
         return "id=distributor-fake";
       },
@@ -204,7 +203,7 @@ var link_data_service_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<a href="javascript:create_responsible_party();" class="new-responsible-party">Add Distributor</a>';
+        return '<span id="distributor-slug" class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" id="new-distributor">Add Distributor</a>';
       }
     },
     {
@@ -227,13 +226,17 @@ var link_data_service_form = {
   'custom':[
     {
       'tag':'input',
-      'name':'distributor_name',
+      'name':'distributor',
+      'id':'distributor',
+      'type':'hidden'
+    },
+     {
+      'tag':'input',
       'id':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'name':'distributor_email',
       'id':'distributor_email',
       'type':'hidden'
     }
@@ -272,35 +275,47 @@ $.ajax({
 
 });
 
-var create_responsible_party = function() {
+var create_distributor = function() {
   var distributor_anch = $(".distributor>a");
+  $(".create_distributor_form").remove();
+  $("#distributor-fake").val("");
+  $("#new-distributor").hide();
   distributor_anch.hide();
   var responsible_parties = {
     'responsible_parties':[
       {
         'label':'Name',
         'name':'responsible_party_name',
+        'class':'create_distributor_form',
         'type':'text'
       },
       {
         'label':'Email',
         'name':'responsible_party_email',
+        'class':'create_distributor_form',
         'type':'text'
       },
       {
         'button':'Create',
-        'class':'create_responsible_party'
+        'class':'create_distributor_form',
+        'id':'create_distributor'
       },
        {
         'button':'Cancel',
-        'class':'cancel_responsible_party'
+        'class':'create_distributor_form',
+        'id':'cancel_create_distributor'
+      },
+      {
+        'span':'distributor_create_status',
+        'class':'create_distributor_form',
+        'style':'color:green;font-size:13px;'
       }
     ]
   };
 
   distributor_anch.after(Mustache.render(ngds.add_responsible_party_template,responsible_parties));
   
-  $('.create_responsible_party').on('click',function(ev) {
+  $('#create_distributor').on('click',function(ev) {
       var name = $("[name=responsible_party_name]").val();
       var email = $("[name=responsible_party_email]").val();
 
@@ -314,16 +329,54 @@ var create_responsible_party = function() {
             "name":name,
             "email":email
           }
-        })
+        }),
+        'success':function(response) {
+          $("#distributor_name").val(response.result.name);
+          $("#distributor_email").val(response.result.email);
+          $("#distributor_create_status").html("Success");
+          $(".create_distributor_form").fadeOut(1500,function() {
+             $(".create_distributor_form").remove();
+             $("#distributor-fake").val(response.result.name);
+             distributor_blur_handler();
+          });
+        }
+  });
   });
 
+  $("#cancel_create_distributor").on('click',function(ev) {
+    $("#new-distributor").show();
+    $(".create_distributor_form").remove();
   });
+
 }
 
-$(".form-body").on('blur',"#distributor-fake",function(ev) {
+var edit_distributor = function()  {
+  $("#distributor-fake").show();
+  $("#distributor-slug").hide();
+  $("#distributor-edit").remove();
+  $("#new-distributor").show();
+};
+
+var distributor_blur_handler = function() {
+  if($("#distributor-fake").is(":focus")===true) {
+    return;
+  }
   var distributor_name = $("#distributor_name").val();
   var distributor_email = $("#distributor_email").val();
-  console.log(distributor_name);
-  console.log(distributor_email);
+  console.log($("#distributor").val(),distributor_name,distributor_email);
 
-});
+  if(distributor_name!==null && typeof distributor_name !=='undefined' && distributor_name!=='' && distributor_email!==null && distributor_email!=='' && typeof distributor_email !=='undefined') {
+    $("#distributor-fake").hide();
+    $("#new-distributor").hide();
+    $("#distributor-slug").show();
+    $("#distributor-slug").html(distributor_name);
+    $("#distributor-slug").append($("<a/>",{
+        "href":"javascript:edit_distributor()",
+        "id":"distributor-edit",
+        "text":"X",
+        "style":"margin-left:8px;color:black;"
+    }));
+  }
+};
+
+$(document).on('click',distributor_blur_handler);

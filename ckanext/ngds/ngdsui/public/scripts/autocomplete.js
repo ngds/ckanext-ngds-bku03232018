@@ -55,6 +55,10 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
 
   autocomplete.on('autocompleteselect',function(ev,ui) {
             $.each(proxy_list,function(index,proxy){
+              if(typeof proxy['value_key'] === 'function') {
+                proxy['value_key'](ui.item);
+                return;
+              }
               $(proxy["proxy"]).val(ui.item[proxy["value_key"]]);
             });
         });
