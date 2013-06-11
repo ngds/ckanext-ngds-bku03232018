@@ -54,7 +54,7 @@ var populate_content_model_versions = function() {
 		}
 	}]};
 
-	content_model_combo.after(Mustache.render(structured_form_template,content_model_version_struct));
+	content_model_combo.after(Mustache.render(ngds.resource_form_template,content_model_version_struct));
 	
 	var content_model_version_combo = $("#content_model_version");
 	var content_model_selected = content_model_combo.val();

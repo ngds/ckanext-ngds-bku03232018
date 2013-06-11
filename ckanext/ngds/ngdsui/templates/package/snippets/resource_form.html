@@ -55,11 +55,6 @@
   <div class="form-body">
    <!-- Offline Resource End -->
 
-   <!-- <div class="input-group">
-        <div class="sp-label"><label>Distributor</label></div>
-        <input type="text" name="distributor" id="structured_distributor" class="structured-input"></input>
-      </div> -->
-
   </div>
   <div class="form-actions">
         <button type="submit" name="save" value="go-dataset">Previous Page</button>
@@ -89,23 +84,23 @@ var render_forms = function(value) {
 
   if(value==="structured") {
     $("#upload-type-structured").prop("checked",true);
-    $(".form-body").html(Mustache.render(structured_form_template,structured_form));
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,structured_form));
     position_file_uploader("#url");
     populate_content_models();
   }
 
   if(value==="unstructured") {
     $("#upload-type-unstructured").prop("checked",true);
-    $(".form-body").html(Mustache.render(structured_form_template,unstructured_form));
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,unstructured_form));
     position_file_uploader("#url");
   }
 
   if(value==="offline-resource") {
-    $(".form-body").html(Mustache.render(structured_form_template,offline_resource_form));
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,offline_resource_form));
   }
 
   if(value==="data-service") {
-    $(".form-body").html(Mustache.render(structured_form_template,link_data_service_form));
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
     ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
   }
 };

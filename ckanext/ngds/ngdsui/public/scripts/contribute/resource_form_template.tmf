@@ -1,0 +1,8 @@
+{{#form}}
+        <div class="input-group {{top_classes}}">
+            <div class="sp-label {{classes}}"><label>{{label}}</label></div>
+            <{{tag}} {{additional}} name="{{name}}" {{id}} class="structured-input" {{placeholder}}>{{inner}}</{{tag}}>
+            <br/>
+            {{{additional_content}}}
+        </div>
+{{/form}}

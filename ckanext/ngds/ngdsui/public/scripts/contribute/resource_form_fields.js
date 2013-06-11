@@ -196,9 +196,15 @@ var link_data_service_form = {
       'id':function() {
         return "id=distributor-fake";
       },
+      'top_classes':function() {
+        return "distributor";
+      },
       'tag':'input',
       'additional':function() {
         return 'type=text';
+      },
+      'additional_content':function() {
+        return '<a href="javascript:create_responsible_party();" class="new-responsible-party">Add Distributor</a>';
       }
     },
     {
@@ -236,9 +242,15 @@ var position_file_uploader = function(selector) {
   file_upload.show();
 };
 
-var structured_form_template = "{{#form}}\
-        <div class=\"input-group {{top_classes}}\">\
-            <div class=\"sp-label {{classes}}\"><label>{{label}}</label></div>\
-            <{{tag}} {{additional}} name=\"{{name}}\" {{id}} class=\"structured-input\" {{placeholder}}>{{inner}}</{{tag}}>\
-        </div>\
-{{/form}}";
+$.ajax({
+  'url':'/scripts/contribute/resource_form_template.tmf',
+  'success':function(response) {
+    ngds.structured_form_template = response;
+  }
+
+})
+
+var create_responsible_party = function() {
+  var distributor_anch = $(".distributor>a");
+
+};
