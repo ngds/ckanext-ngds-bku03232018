@@ -1,5 +1,5 @@
 var populate_content_models = function() {
-	var content_model_combo = $("#content_model");
+	var content_model_combo = $(".content_model");
 	if(typeof options==='undefined') {
 		options = [];
 		content_models = {
@@ -34,7 +34,7 @@ var populate_content_models = function() {
 
 var populate_content_model_versions = function() {
 	var marker = $(".content_model_marker");
-	var content_model_combo = $("#content_model");
+	var content_model_combo = $(".content_model");
 	if(content_model_combo.val()==='none') { // If the value is 'none', then don't populate any versions.
 		return;
 	}
@@ -49,14 +49,14 @@ var populate_content_model_versions = function() {
 			return 'content_model_version_marker';
 		},
 		'tag':'select',
-		'id':function() {
-			return 'id=content_model_version';
+		'class':function() {
+			return 'content_model_version';
 		}
 	}]};
-
-	content_model_combo.after(Mustache.render(ngds.resource_form_template,content_model_version_struct));
 	
-	var content_model_version_combo = $("#content_model_version");
+	content_model_combo.after(Mustache.render(ngds.structured_form_template,content_model_version_struct));
+	
+	var content_model_version_combo = $(".content_model_version");
 	var content_model_selected = content_model_combo.val();
 
 	for(var i=0;i<content_models[content_model_selected].versions.length;i++) {
@@ -65,7 +65,7 @@ var populate_content_model_versions = function() {
 };
 
 
-$(".form-body").on("change","#content_model",function() { // When the content model combo's value changes, populate the content model versions into the content_model_version combo box.
+$(".form-body").on("change",".content_model",function() { // When the content model combo's value changes, populate the content model versions into the content_model_version combo box.
 	populate_content_model_versions();	
 });
 

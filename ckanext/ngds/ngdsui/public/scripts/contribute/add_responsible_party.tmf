@@ -1,3 +1,5 @@
+{% raw %}
+
 <div class="add-responsible-party">
 {{#responsible_parties}}
 	{{#label}}
@@ -12,3 +14,5 @@
 	{{/span}}
 {{/responsible_parties}}
 </div>
+
+{% endraw %}

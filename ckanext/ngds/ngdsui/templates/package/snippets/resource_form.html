@@ -1,3 +1,5 @@
+{% include 'package/resource_form_template.tmf' %}
+{% include 'package/add_responsible_party.tmf' %}
 <script>
 {% if data %}
     resource_location = window.location.origin+"{{data['resource_location']}}";
@@ -108,11 +110,11 @@ var render_forms = function(value) {
   }
 
   if(value==="data-service" || value==="unstructured" || value==="structured") {
-    var dist_autocomp = ngds.autocomplete("#distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
-    dist_autocomp.proxy("#distributor_name","name"); 
-    dist_autocomp.proxy("#distributor_email","email");
-    dist_autocomp.proxy("#distributor",function(dict) {
-      $("#distributor").val(JSON.stringify({
+    var dist_autocomp = ngds.autocomplete(".distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
+    dist_autocomp.proxy(".distributor_name","name"); 
+    dist_autocomp.proxy(".distributor_email","email");
+    dist_autocomp.proxy(".distributor",function(dict) {
+      $(".distributor").val(JSON.stringify({
         "distributor_name":dict.name,
         "distributor_email":dict.email
       }));

@@ -18,13 +18,13 @@ var structured_form = {
     },
     {
       'label':'Content Model',
-      'name':'content_model',
+      'name':'content_model_uri',
       'top_classes':function() {
         return "content_model_marker";
       },
       'tag':'select',
-      'id':function() {
-        return 'id=content_model';
+      'class':function() {
+        return 'content_model';
       }
     },
     {
@@ -43,18 +43,18 @@ var structured_form = {
     },
     {
       'label':'Distributor',
-      'id':function() {
-        return "id=distributor-fake";
-      },
       'top_classes':function() {
         return "distributor";
+      },
+      'class':function() {
+        return 'distributor-fake';
       },
       'tag':'input',
       'additional':function() {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span id="distributor-slug" class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" id="new-distributor">Add Distributor</a>';
+        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor">Add Distributor</a>';
       }
     },
     {
@@ -70,17 +70,17 @@ var structured_form = {
     {
       'tag':'input',
       'name':'distributor',
-      'id':'distributor',
+      'class':'distributor',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'id':'distributor_name',
+      'class':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'id':'distributor_email',
+      'class':'distributor_email',
       'type':'hidden'
     }
   ]
@@ -120,11 +120,11 @@ var unstructured_form = {
     },
     {
       'label':'Distributor',
-      'id':function() {
-        return "id=distributor-fake";
-      },
       'top_classes':function() {
         return "distributor";
+      },
+      'class':function() {
+        return "distributor-fake";
       },
       'name':'distributor',
       'tag':'input',
@@ -132,7 +132,7 @@ var unstructured_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span id="distributor-slug" class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" id="new-distributor">Add Distributor</a>';
+        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor">Add Distributor</a>';
       }
     },
     {
@@ -148,17 +148,17 @@ var unstructured_form = {
     {
       'tag':'input',
       'name':'distributor',
-      'id':'distributor',
+      'class':'distributor',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'id':'distributor_name',
+      'class':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'id':'distributor_email',
+      'class':'distributor_email',
       'type':'hidden'
     }
   ]
@@ -245,31 +245,65 @@ var link_data_service_form = {
     },
     {
       'label':'Distributor',
-      'id':function() {
-        return "id=distributor-fake";
-      },
       'top_classes':function() {
         return "distributor";
+      },
+      'class':function() {
+        return 'distributor-fake'
       },
       'tag':'input',
       'additional':function() {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span id="distributor-slug" class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" id="new-distributor">Add Distributor</a>';
+        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor">Add Distributor</a>';
       }
     },
     {
     'label':'Protocol',
     'name':'protocol',
-    'tag':'input',
+    'tag':'select',
     'additional':function() {
       return 'type=text';
-      }
+      },
+      'options':[
+        {
+          'label':'WMS',
+          'value':'wms'
+        },
+        {
+          'label':'WFS',
+          'value':'wfs'
+        },
+        {
+          'label':'WCS',
+          'value':'wcs'
+        },
+        {
+          'label':'ESRI Map Service',
+          'value':'esri_map_service'
+        },
+        {
+          'label':'CSW',
+          'value':'csw'
+        },
+        {
+          'label':'SOS',
+          'value':'sos'
+        },
+        {
+          'label':'Open DAP',
+          'value':'opendap'
+        },
+        {
+          'label':'Other',
+          'value':'other'
+        }
+      ]
     },
     {
     'label':'Layer',
-    'name':'layer',
+    'name':'layer_name',
     'tag':'input',
     'additional':function() {
       return 'type=text';
@@ -280,22 +314,24 @@ var link_data_service_form = {
     {
       'tag':'input',
       'name':'distributor',
-      'id':'distributor',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'id':'distributor_name',
+      'class':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'id':'distributor_email',
+      'class':'distributor_email',
       'type':'hidden'
     }
   ]
 };
 
+ $(document).tooltip({
+    'track':true
+  });
 
 var position_file_uploader = function(selector) {
   if(typeof selector==='undefined') {
@@ -312,27 +348,11 @@ var position_file_uploader = function(selector) {
   file_upload.show();
 };
 
-$.ajax({
-  'url':'/scripts/contribute/resource_form_template.tmf',
-  'success':function(response) {
-    ngds.structured_form_template = response;
-  }
-
-});
-
-$.ajax({
-  'url':'/scripts/contribute/add_responsible_party.tmf',
-  'success':function(response) {
-    ngds.add_responsible_party_template = response;
-  }
-
-});
-
 var create_distributor = function() {
   var distributor_anch = $(".distributor>a");
   $(".create_distributor_form").remove();
-  $("#distributor-fake").val("");
-  $("#new-distributor").hide();
+  $(".distributor-fake").val("");
+  $(".new-distributor").hide();
   distributor_anch.hide();
   var responsible_parties = {
     'responsible_parties':[
@@ -350,13 +370,11 @@ var create_distributor = function() {
       },
       {
         'button':'Create',
-        'class':'create_distributor_form',
-        'id':'create_distributor'
+        'class':'create_distributor_form create_distributor'
       },
        {
         'button':'Cancel',
-        'class':'create_distributor_form',
-        'id':'cancel_create_distributor'
+        'class':'create_distributor_form cancel_create_distributor'
       },
       {
         'span':'distributor_create_status',
@@ -368,7 +386,7 @@ var create_distributor = function() {
 
   distributor_anch.after(Mustache.render(ngds.add_responsible_party_template,responsible_parties));
   
-  $('#create_distributor').on('click',function(ev) {
+  $('.create_distributor').on('click',function(ev) {
       var name = $("[name=responsible_party_name]").val();
       var email = $("[name=responsible_party_email]").val();
 
@@ -384,60 +402,63 @@ var create_distributor = function() {
           }
         }),
         'success':function(response) {
-          $("#distributor_name").val(response.result.name);
-          $("#distributor_email").val(response.result.email);
-          $("#distributor_create_status").html("Success");
+          $(".distributor_name").val(response.result.name);
+          $(".distributor_email").val(response.result.email);
+          $(".distributor_create_status").html("Success");
           $(".create_distributor_form").fadeOut(1500,function() {
              $(".create_distributor_form").remove();
-             $("#distributor-fake").val(response.result.name);
+             $(".distributor-fake").val(response.result.name);
              distributor_blur_handler();
           });
         }
   });
   });
 
-  $("#cancel_create_distributor").on('click',function(ev) {
-    $("#new-distributor").show();
+  $(".cancel_create_distributor").on('click',function(ev) {
+    $(".new-distributor").show();
     $(".create_distributor_form").remove();
   });
 
 }
 
 var edit_distributor = function()  {
-  $("#distributor-fake").show();
-  $("#distributor-slug").hide();
-  $("#distributor-edit").remove();
-  $("#new-distributor").show();
+  $(".distributor-fake").show();
+  $(".distributor-slug").hide();
+  $(".distributor-edit").remove();
+  $(".new-distributor").show();
 };
 
-$("#distributor-slug").on('click',edit_distributor);
+$(".distributor-slug").on('click',edit_distributor);
 
 var distributor_blur_handler = function(ev) {
-  if($("#distributor-fake").is(":focus")===true) {
+  if($(".distributor-fake").is(":focus")===true) {
     return;
   }
 
-  if(typeof ev!=='undefined' && ev.target.id==='distributor-slug') {
+  if(typeof ev!=='undefined' && typeof $(ev.target).attr('class') !=='undefined' && $(ev.target).attr('class').indexOf('distributor-slug')!==-1) {
     edit_distributor();
     return;
   }
 
-  var distributor_name = $("#distributor_name").val();
-  var distributor_email = $("#distributor_email").val();
+  var distributor_name = $(".distributor_name").val();
+  var distributor_email = $(".distributor_email").val();
 
   if(distributor_name!==null && typeof distributor_name !=='undefined' && distributor_name!=='' && distributor_email!==null && distributor_email!=='' && typeof distributor_email !=='undefined') {
-    $("#distributor-fake").hide();
-    $("#new-distributor").hide();
-    $("#distributor-slug").show();
-    $("#distributor-slug").html(distributor_name);
-    // $("#distributor-slug").append($("<a/>",{
-    //     "href":"javascript:edit_distributor()",
-    //     "id":"distributor-edit",
-    //     "text":"X",
-    //     "style":"margin-left:8px;color:black;"
-    // }));
+    $(".distributor-fake").hide();
+    $(".new-distributor").hide();
+    $(".distributor-slug").show();
+    $(".distributor-slug").html(distributor_name);
+    $(".distributor-slug").attr("title",distributor_name+", "+distributor_email);
   }
 };
 
+var display_distributor_info = function(ev) {
+  var distributor_name = $(".distributor_name").val();
+  var distributor_email = $(".distributor_email").val();
+  var slug = $(ev.target);
+  var offset = slug.left+slug.width();
+};
+
 $(document).on('click',distributor_blur_handler);
-$(document).on('blur',"#distributor-fake",distributor_blur_handler);
+$(document).on('blur',".distributor-fake",distributor_blur_handler);
+$(document).on('hover','.distributor-slug',display_distributor_info);
