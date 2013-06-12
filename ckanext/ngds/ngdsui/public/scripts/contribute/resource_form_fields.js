@@ -435,6 +435,14 @@ var distributor_blur_handler = function(ev) {
     return;
   }
 
+  if($(".distributor-fake").val()==="") {
+    $(".distributor_name").val("");
+    $(".distributor_email").val("");
+    $(".distributor-slug").html("");
+    $(".distributor-slug").hide();
+    $(".distributor-fake").show();
+  }
+
   if(typeof ev!=='undefined' && typeof $(ev.target).attr('class') !=='undefined' && $(ev.target).attr('class').indexOf('distributor-slug')!==-1) {
     edit_distributor();
     return;
