@@ -67,13 +67,15 @@
 {% raw %}
 
 <script type="text/javascript" src="/scripts/contribute/resource_form_fields.js"></script>
+<script type="text/javascript" src="/scripts/autocomplete.js"></script>
+<script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
 
 <script>
 
 var render_forms = function(value) {
   $(".form-body").empty();
   
-  position_file_uploader();
+  // position_file_uploader("#url");
 
   if(value==='structured' || value==='unstructured') {
       $("[name=upload_type_selection]").prop("checked",true);
@@ -91,6 +93,8 @@ var render_forms = function(value) {
 
   if(value==="unstructured") {
     $("#upload-type-unstructured").prop("checked",true);
+    console.log("Render");
+    console.log(ngds.structured_form_template);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,unstructured_form));
     position_file_uploader("#url");
   }
@@ -101,6 +105,9 @@ var render_forms = function(value) {
 
   if(value==="data-service") {
     $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
+  }
+
+  if(value==="data-service" || value==="unstructured" || value==="structured") {
     var dist_autocomp = ngds.autocomplete("#distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
     dist_autocomp.proxy("#distributor_name","name"); 
     dist_autocomp.proxy("#distributor_email","email");
@@ -147,8 +154,6 @@ if(typeof continuation!=='undefined') {
 
 </script>
 {% endraw %}
-<script type="text/javascript" src="/scripts/autocomplete.js"></script>
-<script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
 
 
 <script>

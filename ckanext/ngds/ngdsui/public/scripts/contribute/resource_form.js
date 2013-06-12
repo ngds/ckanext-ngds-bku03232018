@@ -92,6 +92,7 @@ var populate_form = function(data) {
 };
 
 var activate_populate_form = function(data) {
+	console.log(data);
 	render_forms(data['form_type']);
 	populate_form(data);
 	var name = get_prop($("#url").val(),'name');

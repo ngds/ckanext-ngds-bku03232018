@@ -43,10 +43,18 @@ var structured_form = {
     },
     {
       'label':'Distributor',
-      'name':'distributor',
+      'id':function() {
+        return "id=distributor-fake";
+      },
+      'top_classes':function() {
+        return "distributor";
+      },
       'tag':'input',
       'additional':function() {
         return 'type=text';
+      },
+      'additional_content':function() {
+        return '<span id="distributor-slug" class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" id="new-distributor">Add Distributor</a>';
       }
     },
     {
@@ -56,6 +64,24 @@ var structured_form = {
     'additional':function() {
       return 'type=text';
       }
+    }
+  ],
+  'custom':[
+    {
+      'tag':'input',
+      'name':'distributor',
+      'id':'distributor',
+      'type':'hidden'
+    },
+     {
+      'tag':'input',
+      'id':'distributor_name',
+      'type':'hidden'
+    },
+     {
+      'tag':'input',
+      'id':'distributor_email',
+      'type':'hidden'
     }
   ]
 };
@@ -94,10 +120,19 @@ var unstructured_form = {
     },
     {
       'label':'Distributor',
+      'id':function() {
+        return "id=distributor-fake";
+      },
+      'top_classes':function() {
+        return "distributor";
+      },
       'name':'distributor',
       'tag':'input',
       'additional':function() {
         return 'type=text';
+      },
+      'additional_content':function() {
+        return '<span id="distributor-slug" class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" id="new-distributor">Add Distributor</a>';
       }
     },
     {
@@ -107,6 +142,24 @@ var unstructured_form = {
     'additional':function() {
       return 'type=text';
       }
+    }
+  ],
+  'custom':[
+    {
+      'tag':'input',
+      'name':'distributor',
+      'id':'distributor',
+      'type':'hidden'
+    },
+     {
+      'tag':'input',
+      'id':'distributor_name',
+      'type':'hidden'
+    },
+     {
+      'tag':'input',
+      'id':'distributor_email',
+      'type':'hidden'
     }
   ]
 };
