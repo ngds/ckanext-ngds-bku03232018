@@ -34,6 +34,7 @@ var ngds = ngds || { };
 		    	heightStyle:"content",
 		    	active:false,
 		    	collapsible:true,
+		    	navigation: true,
 		    	icons:{   header: "expandIcon",activeHeader: "collapseIcon"},
 		    	beforeActivate: function(event, ui) {
 						         // The accordion believes a panel is being opened
@@ -61,6 +62,8 @@ var ngds = ngds || { };
 						        return false; // Cancels the default action
 						    }
 		});
+
+		$(".expanded").parents().filter("li").children().filter("h3").click();
 
 
 /*		$(".facet").click(function() {
