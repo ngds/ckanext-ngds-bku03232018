@@ -351,7 +351,7 @@
                     <gmd:offLine>
                         <gmd:MD_Medium>
                             <gmd:mediumNote>
-                                <gco:CharacterString>WTF is medium</gco:CharacterString>
+                                <gco:CharacterString>{{ resource.name }} -- {{ resource.description }}</gco:CharacterString>
                             </gmd:mediumNote>
                         </gmd:MD_Medium>
                     </gmd:offLine>
