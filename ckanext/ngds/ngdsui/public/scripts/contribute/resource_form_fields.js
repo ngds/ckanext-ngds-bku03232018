@@ -357,26 +357,34 @@ var edit_distributor = function()  {
   $("#new-distributor").show();
 };
 
-var distributor_blur_handler = function() {
+$("#distributor-slug").on('click',edit_distributor);
+
+var distributor_blur_handler = function(ev) {
   if($("#distributor-fake").is(":focus")===true) {
     return;
   }
+
+  if(typeof ev!=='undefined' && ev.target.id==='distributor-slug') {
+    edit_distributor();
+    return;
+  }
+
   var distributor_name = $("#distributor_name").val();
   var distributor_email = $("#distributor_email").val();
-  console.log($("#distributor").val(),distributor_name,distributor_email);
 
   if(distributor_name!==null && typeof distributor_name !=='undefined' && distributor_name!=='' && distributor_email!==null && distributor_email!=='' && typeof distributor_email !=='undefined') {
     $("#distributor-fake").hide();
     $("#new-distributor").hide();
     $("#distributor-slug").show();
     $("#distributor-slug").html(distributor_name);
-    $("#distributor-slug").append($("<a/>",{
-        "href":"javascript:edit_distributor()",
-        "id":"distributor-edit",
-        "text":"X",
-        "style":"margin-left:8px;color:black;"
-    }));
+    // $("#distributor-slug").append($("<a/>",{
+    //     "href":"javascript:edit_distributor()",
+    //     "id":"distributor-edit",
+    //     "text":"X",
+    //     "style":"margin-left:8px;color:black;"
+    // }));
   }
 };
 
 $(document).on('click',distributor_blur_handler);
+$(document).on('blur',"#distributor-fake",distributor_blur_handler);
