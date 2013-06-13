@@ -58,7 +58,7 @@ var structured_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
+        return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
       },
       'title':'The distributor for this resource'
     },
@@ -141,7 +141,7 @@ var unstructured_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
+        return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
       },
       'title':'The distributor for this resource'
     },
@@ -274,7 +274,7 @@ var link_data_service_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
+        return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
       },
       'title':'The distributor for this resource'
     },
@@ -447,12 +447,12 @@ var create_distributor = function() {
 
 var edit_distributor = function()  {
   $(".distributor-fake").show();
-  $(".distributor-slug").hide();
+  $(".ngds-slug").hide();
   $(".distributor-edit").remove();
   $(".new-distributor").show();
 };
 
-$(".distributor-slug").on('click',edit_distributor);
+$(".ngds-slug").on('click',edit_distributor);
 
 var distributor_blur_handler = function(ev) {
   if($(".distributor-fake").is(":focus")===true) {
@@ -462,12 +462,12 @@ var distributor_blur_handler = function(ev) {
   if($(".distributor-fake").val()==="") {
     $(".distributor_name").val("");
     $(".distributor_email").val("");
-    $(".distributor-slug").html("");
-    $(".distributor-slug").hide();
+    $(".ngds-slug").html("");
+    $(".ngds-slug").hide();
     $(".distributor-fake").show();
   }
 
-  if(typeof ev!=='undefined' && typeof $(ev.target).attr('class') !=='undefined' && $(ev.target).attr('class').indexOf('distributor-slug')!==-1) {
+  if(typeof ev!=='undefined' && typeof $(ev.target).attr('class') !=='undefined' && $(ev.target).attr('class').indexOf('ngds-slug')!==-1) {
     edit_distributor();
     return;
   }
@@ -478,9 +478,9 @@ var distributor_blur_handler = function(ev) {
   if(distributor_name!==null && typeof distributor_name !=='undefined' && distributor_name!=='' && distributor_email!==null && distributor_email!=='' && typeof distributor_email !=='undefined') {
     $(".distributor-fake").hide();
     $(".new-distributor").hide();
-    $(".distributor-slug").show();
-    $(".distributor-slug").html(distributor_name);
-    $(".distributor-slug").attr("title",distributor_name+", "+distributor_email);
+    $(".ngds-slug").show();
+    $(".ngds-slug").html(distributor_name);
+    $(".ngds-slug").attr("title",distributor_name+", "+distributor_email);
   }
 };
 

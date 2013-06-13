@@ -1,14 +1,24 @@
 {% import 'macros/form.html' as form %}
+{% include 'package/add_responsible_party.tmf' %}
 <div class="form-body">
  
-  <div class="input-group">
+  <!-- <div class="input-group">
     <div class="sp-label"><label>Author Email</label></div>
-      <input type="text" name="author_email" placeholder="joe@example.com"></input>
+      <input type="text" name="author_email" placeholder="joe@example.com" value="{{data.author_email}}"></input>
+  </div> -->
+
+  <div class="input-group">
+    <div class="sp-label"><label>Author</label></div>
+      <input type="text" id="author_fake" /> 
   </div>
+
+  <input type="hidden" name="author" id="author"></input>
+  <input type="hidden" name="author_name" id="author_name" />
+  <input type="hidden" name="author_email" id="author_email" />
 
   <div class="input-group">
     <div class="sp-label"><label>Maintainer Email</label></div>
-      <input type="text" name="maintainer_email" placeholder="joe@example.com"></input>
+      <input type="text" name="maintainer_email" placeholder="joe@example.com" value="{{data.maintainer_email}}"></input>
   </div>
 
   <div class="input-group">
@@ -28,7 +38,20 @@
 <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
 <script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
 <script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
+<script type="text/javascript" src="/scripts/autocomplete.js"></script>
 <script type="application/javascript" src="/scripts/dataset_entry_map.js"></script>
+<script type="application/javascript" src="/scripts/contribute/responsible_party.js"></script>
+
+<script>
+  new ngds.responsible_party().responsibilify({
+    'rs_name':'#author_name',
+    'rs_email':'#author_email',
+    'rs_fake':'#author_fake',
+    'rs':'#author'
+  });
+</script>
+
+
 {% block custom_fields %}
   {% snippet 'snippets/custom_form_fields.html', extras=data.extras,data=data, errors=errors, limit=3 %}
 {% endblock %}

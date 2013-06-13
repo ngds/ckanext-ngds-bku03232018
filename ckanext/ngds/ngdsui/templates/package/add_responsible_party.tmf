@@ -1,10 +1,10 @@
 <script>
 {% raw %}
-ngds.add_responsible_party_template = "<div class='add-responsible-party'>\
+ngds.add_responsible_party_template = "<div class='add-responsible-party{{#class}} {{class}}{{/class}}'>\
 {{#responsible_parties}}\
 {{#label}}\
 <label class='{{class}}'>{{label}}</label>\
-<input name={{name}} type='{{type}}' class='small {{class}}'></input>\
+<input name={{name}} type='{{type}}' class='small {{class}}' {{#id}}id={{id}}{{/id}}></input>\
 {{/label}}\
 {{#button}}\
 <button type='button' class='{{class}}' class='small' id='{{id}}''>{{button}}</button>\
