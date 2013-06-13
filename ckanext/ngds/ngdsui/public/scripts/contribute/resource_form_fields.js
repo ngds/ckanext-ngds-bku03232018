@@ -58,7 +58,7 @@ var structured_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor">Add Distributor</a>';
+        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
       },
       'title':'The distributor for this resource'
     },
@@ -100,7 +100,8 @@ var unstructured_form = {
       'tag':'input',
       'additional':function() {
         return 'type=text id=url';
-      }
+      },
+      'title':'A URL for this resource or upload a file'
     },
     {
       'label':'Name',
@@ -108,7 +109,8 @@ var unstructured_form = {
       'tag':'input',
       'additional':function() {
         return 'type=text';
-      }
+      },
+      'title':'A name for this resource'
     },
     {
       'label':'Description',
@@ -122,7 +124,8 @@ var unstructured_form = {
       },
       'classes':function() {
         return 'description-label-div';
-      }
+      },
+      'title':'Describe this resource'
     },
     {
       'label':'Distributor',
@@ -138,8 +141,9 @@ var unstructured_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor">Add Distributor</a>';
-      }
+        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
+      },
+      'title':'The distributor for this resource'
     },
     {
     'label':'Format',
@@ -147,7 +151,8 @@ var unstructured_form = {
     'tag':'input',
     'additional':function() {
       return 'type=text';
-      }
+      },
+      'title':'The file format of this resource'
     }
   ],
   'custom':[
@@ -179,7 +184,8 @@ var offline_resource_form = {
       'tag':'input',
       'additional':function() {
         return 'type=text id=url';
-      }
+      },
+      'title':'A URL for this resource or upload a file'
     },
     {
       'label':'Name',
@@ -187,7 +193,8 @@ var offline_resource_form = {
       'tag':'input',
       'additional':function() {
         return 'type=text';
-      }
+      },
+      'title':'A name for this resource'
     },
     {
       'label':'Description',
@@ -201,7 +208,8 @@ var offline_resource_form = {
       },
       'classes':function() {
         return 'description-label-div';
-      }
+      },
+      'title':'Describe this resource'
     },
     {
     'label':'Ordering Procedure',
@@ -212,7 +220,8 @@ var offline_resource_form = {
       },
     'classes':function() {
         return 'description-label-div';
-      }
+      },
+      'title':'How this resource can be obtained'
     }
   ]
 };
@@ -225,7 +234,8 @@ var link_data_service_form = {
       'tag':'input',
       'additional':function() {
         return 'type=text id=url';
-      }
+      },
+      'title':'A URL for this resource or upload a file'
     },
     {
       'label':'Name',
@@ -233,7 +243,8 @@ var link_data_service_form = {
       'tag':'input',
       'additional':function() {
         return 'type=text';
-      }
+      },
+      'title':'A name for this resource'
     },
     {
       'label':'Description',
@@ -247,7 +258,8 @@ var link_data_service_form = {
       },
       'classes':function() {
         return 'description-label-div';
-      }
+      },
+      'title':'Describe this resource'
     },
     {
       'label':'Distributor',
@@ -262,8 +274,9 @@ var link_data_service_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor">Add Distributor</a>';
-      }
+        return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
+      },
+      'title':'The distributor for this resource'
     },
     {
     'label':'Protocol',
@@ -272,6 +285,7 @@ var link_data_service_form = {
     'additional':function() {
       return 'type=text';
       },
+      'title':'What protocol is used to access this resource?',
       'options':[
         {
           'label':'WMS',
@@ -313,7 +327,8 @@ var link_data_service_form = {
     'tag':'input',
     'additional':function() {
       return 'type=text';
-      }
+      },
+      'title':'Layer name if any for this resource'
     }
   ],
   'custom':[
