@@ -6,7 +6,8 @@ var structured_form = {
       'tag':'input',
       'additional':function() {
         return 'type=text id=url';
-      }
+      },
+      'title':'A URL for this resource or upload a file'
     },
     {
       'label':'Name',
@@ -14,7 +15,8 @@ var structured_form = {
       'tag':'input',
       'additional':function() {
         return 'type=text';
-      }
+      },
+      'title':'A name for this resource'
     },
     {
       'label':'Content Model',
@@ -25,7 +27,8 @@ var structured_form = {
       'tag':'select',
       'class':function() {
         return 'content_model';
-      }
+      },
+      'title':'A content model that this resource conforms to'
     },
     {
       'label':'Description',
@@ -39,7 +42,8 @@ var structured_form = {
       },
       'classes':function() {
         return 'description-label-div';
-      }
+      },
+      'title':'Describe this resource'
     },
     {
       'label':'Distributor',
@@ -55,7 +59,8 @@ var structured_form = {
       },
       'additional_content':function() {
         return '<span class="distributor-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor">Add Distributor</a>';
-      }
+      },
+      'title':'The distributor for this resource'
     },
     {
     'label':'Format',
@@ -63,7 +68,8 @@ var structured_form = {
     'tag':'input',
     'additional':function() {
       return 'type=text';
-      }
+      },
+      'title':'The file format of this resource'
     }
   ],
   'custom':[
@@ -330,8 +336,11 @@ var link_data_service_form = {
 };
 
  $(document).tooltip({
-    'track':true
-  });
+  position:{
+    at:'right+100 top+5',
+    my:'right'
+  }
+ });
 
 var position_file_uploader = function(selector) {
   if(typeof selector==='undefined') {
@@ -461,12 +470,13 @@ var distributor_blur_handler = function(ev) {
 };
 
 var display_distributor_info = function(ev) {
-  var distributor_name = $(".distributor_name").val();
-  var distributor_email = $(".distributor_email").val();
-  var slug = $(ev.target);
-  var offset = slug.left+slug.width();
+  // console.log(ev);
+  // var distributor_name = $(".distributor_name").val();
+  // var distributor_email = $(".distributor_email").val();
+  // var slug = $(ev.target);
+  // var offset = slug.left+slug.width();
 };
 
 $(document).on('click',distributor_blur_handler);
 $(document).on('blur',".distributor-fake",distributor_blur_handler);
-$(document).on('hover','.distributor-slug',display_distributor_info);
+// $(document).on('hover','.distributor-slug',display_distributor_info);

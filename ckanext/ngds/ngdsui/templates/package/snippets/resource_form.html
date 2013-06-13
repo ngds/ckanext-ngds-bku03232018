@@ -77,7 +77,7 @@
 var render_forms = function(value) {
   $(".form-body").empty();
   
-  // position_file_uploader("#url");
+  position_file_uploader();
 
   if(value==='structured' || value==='unstructured') {
       $("[name=upload_type_selection]").prop("checked",true);
@@ -95,8 +95,6 @@ var render_forms = function(value) {
 
   if(value==="unstructured") {
     $("#upload-type-unstructured").prop("checked",true);
-    console.log("Render");
-    console.log(ngds.structured_form_template);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,unstructured_form));
     position_file_uploader("#url");
   }
@@ -140,7 +138,6 @@ $("#go-metadata").click(function() {
         $(".dataset-form").submit();
       }
       else {
-        console.log(response);
         ngds.publish('Notifications.received',response);
       }
     }
