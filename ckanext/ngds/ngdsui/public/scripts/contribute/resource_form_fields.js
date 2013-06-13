@@ -337,8 +337,8 @@ var link_data_service_form = {
 
  $(document).tooltip({
   position:{
-    at:'right+100 top+5',
-    my:'right'
+    at:'right top+5',
+    collision:'none'
   }
  });
 
@@ -469,14 +469,6 @@ var distributor_blur_handler = function(ev) {
   }
 };
 
-var display_distributor_info = function(ev) {
-  // console.log(ev);
-  // var distributor_name = $(".distributor_name").val();
-  // var distributor_email = $(".distributor_email").val();
-  // var slug = $(ev.target);
-  // var offset = slug.left+slug.width();
-};
 
 $(document).on('click',distributor_blur_handler);
 $(document).on('blur',".distributor-fake",distributor_blur_handler);
-// $(document).on('hover','.distributor-slug',display_distributor_info);
