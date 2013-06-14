@@ -65,7 +65,8 @@ class NgdsuiPlugin(SingletonPlugin):
 		"""
 		home_controller = "ckanext.ngds.ngdsui.controllers.home:HomeController"
 		map_controller = "ckanext.ngds.ngdsui.controllers.map:MapController"
-		map.connect("home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
+		map.connect("home","/",controller=home_controller,action="render_index",conditions={"method":["GET"]})
+		map.connect("ngds_home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
 		map.connect("initiate_search","/ngds/initiate_search",controller=home_controller,action="initiate_search",conditions={"method":["POST"]})
 		map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 

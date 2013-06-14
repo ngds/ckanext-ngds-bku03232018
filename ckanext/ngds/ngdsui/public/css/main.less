@@ -8,14 +8,6 @@
 
 }
 
-.profile {
-	margin-left:10px;
-}
-
-
-.profile-primary-content {
-	width:1024px;
-}
 
 h2 {
  	margin-left:60px;
@@ -53,7 +45,31 @@ h2 {
 @lcontent-margin:40px;
 @lcontent-small-margin:20px;
 
+.pull-right {
+  float: right;
+}
 
+.pull-left {
+  float: left;
+}
+
+.btn {
+  padding: 5px 10px 5px 8px;
+  border-color: #b7b7b7;
+  line-height: 27px; 
+  border-radius:4px;   
+  font-size:14px;
+}
+
+.btn-primary{
+	color: #ffffff;
+	background-color: #085871;
+}
+
+.btn-success{
+	color: #ffffff;
+	background-color: #51a351;
+}
 
 body {
 	margin:@page-margin;
@@ -1224,6 +1240,8 @@ div.about-ngds p.section-title {
 	background-color:#edeef0;
 }
 
+//Library search page Styles - Start
+
 #library-container{
 
 	margin:20px;
@@ -1618,6 +1636,18 @@ div.about-ngds p.section-title {
 						color: @title-color;
 					}					
 				}
+				.label-info, .label-important{
+					color:white;
+					font-size:10px;
+					background-color:@light;
+					padding:2px;
+					margin:3px;
+					border:1px solid #a9a9a9;
+					border-radius: 3px;
+				}
+				.label-important{
+					background-color:red;
+				}
 
 			}
 			#banner {
@@ -1669,3 +1699,222 @@ div.about-ngds p.section-title {
 	}
 
 }
+
+//Library search page Styles - End
+
+
+//User Profile Page - Start
+
+#profile-page{
+
+	display:table;
+	width:96%;
+	margin:20px 0px 20px 30px;
+
+	.toolbar{
+		display:table-row;
+		width:100%;
+
+		#breadcrumb{
+			display:table-cell;
+			text-align:left;
+			padding:10px;
+			padding-left:20px;
+			border:1px solid @extra-light;
+			border-right:none;
+		}
+		#actions{
+			display:table-cell;
+			text-align:right;
+			padding:10px;
+			padding-right:20px;
+			border:1px solid @extra-light;
+			border-left:none;
+		}
+		.breadcrumb {
+			-webkit-box-shadow: none;
+			-moz-box-shadow: none;
+			box-shadow: none;
+			position: relative;
+			float: left;
+			margin: 0;
+			padding: 0;
+			border: none;
+			background: none;
+			list-style:none;
+			font-size: 15px;
+			
+			li {
+			  display: inline-block;
+			  *display: inline;
+			  /* IE7 inline-block hack */
+
+			  *zoom: 1;
+			  text-shadow: 0 1px 0 #ffffff;
+			}
+			.divider {
+			  padding: 0 5px;
+			  color: #999999;
+			}
+			.active a {
+			  color: #333333;
+			}
+			before,after {
+			  display: table;
+			  content: "";
+			}
+			after {
+			  clear: both;
+			}
+			li [class^=icon]:before {
+			  width: auto;
+			}
+			li:after {
+			  content: " / ";
+			}
+			li.active:after {
+			  content: "";
+			}
+			li:last-of-type:after {
+			  content: "";
+			}
+			.home a {
+			  text-decoration: none;
+			}
+			.home span {
+			  display: none;
+			}
+			a {
+			  color: #505050;
+			  line-height: 28px;
+			}
+			.active a {
+			  font-weight: bold;
+			}
+		}
+	}
+
+
+	.actions {
+	  margin: 0;
+	  list-style: none;
+	}
+	.actions li {
+	  display: inline-block;
+	  margin-left:20px;
+	}
+	.actions li {
+	  *display: inline;
+	  /* IE7 inline-block hack */
+	  *zoom: 1;
+	}
+	.actions li:last-of-type {
+	  margin-right: 0;
+	}	
+
+	#profile-content{
+
+		display:table-row;
+
+		.empty {
+		  color: #aeaeae;
+		  font-style: italic;
+		  margin-bottom:20px;
+		}		
+		#secondary-content {
+			display:table-cell;
+			padding-top:10px;
+			width:22%;
+			vertical-align:top;
+			padding-left:10px;
+			border-right:1px solid #d7d7d7;
+
+			.about{
+				font-style:italic;
+				font-size:12px;
+				color:@light;
+			}
+
+			.info {
+			  margin-top: 15px;
+			  padding-top: 10px;
+			  font-size:14px;
+			  border-top: 1px dotted #DDD;
+			  border-bottom:1px solid #d7d7d7;
+			}
+
+			.info dl dd {
+			  margin-top: 3px;
+			  font-weight: normal;
+			  margin-left: 0;
+			  font-size:12px;
+			}			
+			.info dt{
+				font-weight:bold;
+			}
+			.nums {
+			  *zoom: 1;
+			  margin-top: 15px;
+			  padding-top: 10px;
+			  padding-bottom: 0;
+			  border-top: 1px dotted #DDD;
+			}
+			.nums:before,
+			 .nums:after {
+			  display: table;
+			  content: "";
+			}
+			.nums:after {
+			  clear: both;
+			}
+			.nums dl {
+			  float: left;
+			  width: 33%;
+			  margin: 5px 0 0 0;
+			  color: #4d4d4d;
+			}
+			.nums dl dt {
+			  display: block;
+			  font-weight: 300;
+				font-size: 11px;
+			}
+			.nums dl dd {
+			  display: block;
+			  font-size: 30px;
+			  font-weight: 700;
+			  line-height: 1.2;
+			  margin-left: 0;
+			}
+		}
+
+		#profile-primary-content {
+			display:table-cell;
+			width:78%;
+			padding-top:10px;
+			vertical-align:top;
+			padding-left:10px;
+			.empty{
+				margin-top:20px;
+			}
+			.header{
+				display:table;
+				width:97%;
+			 	padding-bottom:5px;
+ 				border-bottom:3px solid #366D96;
+			}
+
+			.dataset-results{
+				display:table;
+				width:96%;
+			}
+		}		
+	}
+
+		
+
+}
+
+
+
+
+
