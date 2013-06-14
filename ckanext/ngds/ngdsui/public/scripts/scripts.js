@@ -53,7 +53,8 @@ var ngds = ngds || { };
 
 				if(isLoginPopupVisible()) { // If the login popup is active, hide it.
 					$(".login-popup").hide();
-				}				
+				}	
+
 			});
 
 		$(document).keyup(function(e){ // On ESC hide the Not Implemented Yet popup, if it's visible.
@@ -138,6 +139,12 @@ var ngds = ngds || { };
 		function isLoginPopupVisible(){
 				return ($(".login-popup").css('display')!=='none');
 			}
+
+
+		$('#field-lang-select').change(function() {
+			$("#change-language").click();
+		});
+
 	
 	    var dataset = ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  
 	    if(dataset!==null && typeof(dataset)!=='undefined') {
