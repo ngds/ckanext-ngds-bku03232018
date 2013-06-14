@@ -36,7 +36,6 @@ ngds.responsible_party = function() {
 	    var rs_email = me.rs_email;
 
 	    rs_ac.proxy(me.rs,function(dict) {
-	    	console.log(dict);
 	      $(me.rs).val(JSON.stringify({
 	        rs_name:dict.name,
 	        rs_email:dict.email
@@ -51,11 +50,9 @@ ngds.responsible_party = function() {
 	};
 
 	var edit_rs = function()  {
-		  console.log("Editing",me.rs_fake,me.rs_slug);
 		  $(me.rs_slug).hide();
 		  $(me.rs_fake).show();
 		  // $(".distributor-edit").remove();
-		  console.log(me.rs_create_anch);
 		  me.rs_create_anch.show();
 		  return false;
 	};
@@ -64,12 +61,10 @@ ngds.responsible_party = function() {
 	
 		me.rs_blur = function(ev) {
 			  if($(me.rs_fake).is(":focus")===true) {
-			  	console.log("focus");
 			    return;
 			  }
 
 			  if($(me.rs_fake).val()==="") {
-			  	console.log("hide show");
 			    $(me.rs_name).val("");
 			    $(me.rs_email).val("");
 			    $(me.rs_slug).html("");
@@ -78,7 +73,6 @@ ngds.responsible_party = function() {
 			  }
 
 			  if(typeof ev!=='undefined' && typeof $(ev.target).attr('class') !=='undefined' && $(ev.target).attr('class').indexOf(me.rs_slug)!==-1) {
-			    console.log("Edit");
 			    edit_rs();
 			    return;
 			  }
@@ -87,7 +81,6 @@ ngds.responsible_party = function() {
 			  var rs_email_v = $(me.rs_email).val();
 
 			  if(rs_name_v !==null && typeof rs_name_v !=='undefined' && rs_name_v !=='' && rs_email_v !==null && rs_email_v !=='' && typeof rs_email_v !=='undefined' && ev.target.className.indexOf(me.rs.replace("#",""))===-1) {
-			    console.log("nulls");
 			    $(me.rs_fake).hide();
 			    me.rs_create_anch.hide();
 			    $(me.rs_slug).show();
