@@ -25,6 +25,7 @@ ngds.responsible_party = function() {
 		me.rs_fake = fields['rs_fake'];
 		me.rs = fields['rs'];
 		me.rs_slug = "#"+me.rs.replace("#","")+'_slug';
+		me.rs_token = me.rs.replace("#","");
 
 		var rs_ac = ngds.autocomplete(me.rs_fake,"/responsible_parties",'q',['name','email'],'name'); 
 
@@ -63,10 +64,12 @@ ngds.responsible_party = function() {
 	
 		me.rs_blur = function(ev) {
 			  if($(me.rs_fake).is(":focus")===true) {
+			  	console.log("focus");
 			    return;
 			  }
 
 			  if($(me.rs_fake).val()==="") {
+			  	console.log("hide show");
 			    $(me.rs_name).val("");
 			    $(me.rs_email).val("");
 			    $(me.rs_slug).html("");
@@ -83,11 +86,13 @@ ngds.responsible_party = function() {
 			  var rs_name_v = $(me.rs_name).val();
 			  var rs_email_v = $(me.rs_email).val();
 
-			  if(rs_name_v !==null && typeof rs_name_v !=='undefined' && rs_name_v !=='' && rs_email_v !==null && rs_email_v !=='' && typeof rs_email_v !=='undefined') {
+			  if(rs_name_v !==null && typeof rs_name_v !=='undefined' && rs_name_v !=='' && rs_email_v !==null && rs_email_v !=='' && typeof rs_email_v !=='undefined' && ev.target.className.indexOf(me.rs.replace("#",""))===-1) {
+			    console.log("nulls");
 			    $(me.rs_fake).hide();
 			    me.rs_create_anch.hide();
 			    $(me.rs_slug).show();
-			    $(me.rs_slug).html(rs_name_v);0
+			    $(me.rs_slug).html(rs_name_v);
+			    $("."+me.rs_token+"_c_form").remove();
 			    $(me.rs_slug).attr("title",rs_name_v+", "+rs_email_v);
 			  }
 			};
@@ -105,8 +110,8 @@ ngds.responsible_party = function() {
 		var rs_fake = $(me.rs_fake);
 		
 		 me.rs_create_anch = $("<a/>",{ 
-				'text':'Add Author',
-				'class':'form-anchor',
+				'text':'Add '+me.rs.replace("#",""),
+				'class':'form-anchor '+me.rs.replace("#",""),
 				'style':'cursor:pointer;'
 			});
 
