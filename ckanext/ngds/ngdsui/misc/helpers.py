@@ -2,6 +2,7 @@ from ckan.lib.base import model,h,g,c,request
 import ckan.lib.navl.dictization_functions as dictization_functions
 import ckan.logic as logic
 import ckan.controllers.storage as storage
+import ckan.rating as rating
 from ckan.model import User
 DataError = dictization_functions.DataError
 from pylons import config
@@ -9,7 +10,7 @@ from datetime import date
 import iso8601
 import inspect
 from ckan.model.resource import Resource
-
+import logging
 import ckan.plugins as p
 _ = p.toolkit._
 
@@ -17,6 +18,8 @@ try:
     from collections import OrderedDict # 2.7
 except ImportError:
     from sqlalchemy.util import OrderedDict
+
+log = logging.getLogger(__name__)
 
 def get_responsible_party_name(id):
 	"""
@@ -61,6 +64,22 @@ def get_default_group():
 
 	return g.default_group
 
+def highlight_rating_star(count,packageId):
+    
+    package = model.Package.get(packageId)
+    log.debug("rating and count: %s %s", rating.get_rating(package)[0], rating.get_rating(package)[1])
+    if rating.get_rating(package)[0] >= count:
+        return 1
+    else:
+        return 0
+
+def count_rating_reviews(packageId):
+    package = model.Package.get(packageId)
+    if (rating.get_rating(package)):
+        return rating.get_rating(package)[1]
+    else:
+        return 0
+    
 def get_language(id):
 	if id:
 		print "got id : "+id

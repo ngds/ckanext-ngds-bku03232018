@@ -4,7 +4,6 @@ from ckan.lib.base import (request,
                            BaseController,
                            model,
                            abort, h, g, c)
-
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 from sqlalchemy import orm, types, Column, Table, ForeignKey, desc, and_
 from ckan.controllers.organization import OrganizationController
@@ -15,7 +14,8 @@ from ckan.model import Session, Package
 import ckan.logic as logic
 import ckan.lib.dictization.model_dictize as model_dictize
 from ckan.lib.base import config
-
+import ckan.rating as rating
+import logging
 
 
 class HomeController(NGDSBaseController):
@@ -68,6 +68,22 @@ class HomeController(NGDSBaseController):
 		Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
 		"""
 		return render('resources/resources.html')
+
+	def rating_submit(self):
+		"""
+		Rates a dataset. Probably should be in its own py file or something... 
+		"""
+		rpackageId = request.POST['rpackageId']
+ 		ratingValue = request.POST['ratingValue']
+		log.debug("in set rating review %s %s %s", rpackageId, ratingValue, c.user)
+		package = model.Package.get(rpackageId)
+		rating.set_rating(c.user, package, ratingValue)
+		'''
+		The following should not use public TODO but should be the default group
+		return redirect('/organization/public'
+		'''
+		return redirect('/organization/public')
+		
 
 	def initiate_search(self):
 		data = clean_dict(unflatten(tuplize_dict(parse_params(

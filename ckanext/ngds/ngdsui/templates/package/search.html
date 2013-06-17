@@ -117,6 +117,13 @@
 
 </div>
 </form>
+<form id="rating-submit" method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='rating_submit') }}"   >
+
+	<div style="display:None">
+		<input id="rpackageId" name="rpackageId" type=text />
+		<input id="ratingValue" name="ratingValue" type=text/>
+	</div>
+</form> 
 
 </div>
 

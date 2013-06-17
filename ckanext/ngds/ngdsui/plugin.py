@@ -89,7 +89,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("bulk_upload_package","/ngds/bulkupload_package",controller=contribute_controller,action="bulkupload_package_list")
 		map.connect("execute_bulkupload","/ngds/execute_bulkupload",controller=contribute_controller,action="execute_bulkupload")
 
-		#map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
+		map.connect("rating_submit","/ngds/rating_submit",controller=home_controller,action="rating_submit",conditions={"method":["POST"]})
 
 		#Map related paths
 		map.connect("map","/ngds/map",controller=home_controller,action="render_map",conditions={"method":["GET"]})
@@ -143,7 +143,9 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_formatted_date':helpers.get_formatted_date,
 			'get_field_title':helpers.get_field_title,
 			'is_string_field':helpers.is_string_field,
-			'is_ogc_publishable':helpers.is_ogc_publishable
+			'is_ogc_publishable':helpers.is_ogc_publishable,
+            'highlight_rating_star':helpers.highlight_rating_star,
+            'count_rating_reviews':helpers.count_rating_reviews
 		}
 
 	implements(IPackageController,inherit=True)
