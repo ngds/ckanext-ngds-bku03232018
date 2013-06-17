@@ -6,3 +6,9 @@ class Data(object):
 
 	def unpublish():
 		pass
+
+	def pre_publish():
+		pass
+
+	def post_publish():
+		pass
