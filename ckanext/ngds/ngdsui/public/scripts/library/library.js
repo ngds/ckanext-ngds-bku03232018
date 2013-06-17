@@ -23,6 +23,17 @@ var ngds = ngds || { };
             + pad(mins) + ':'
             + pad(secs) + 'Z';
     };
+    
+    
+	function callRating(userText, rvalue, rpackId) {
+		var res = confirm(userText);
+	 	var ele = document.getElementById("rating-submit"); 
+		$("#rpackageId").val(rpackId); 
+		$("#ratingValue").val(rvalue); 
+		if (res) {
+		  ele.submit();
+		}
+	}
 
 (function() {
 	$(document).ready(function() { 

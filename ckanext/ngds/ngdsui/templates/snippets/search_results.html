@@ -32,29 +32,29 @@
                     <p>
                     <span>
                       {% if h.highlight_rating_star(1, package.id)  == 1 %}
-                      <img src="/images/u52_normal.png" onclick='var res = confirm("Set rating to very poor?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("1.0"); ele.submit();'/>
+                      <img src="/images/u52_normal.png" onclick='callRating("Set rating to very poor?", "1.0", "{{_(package.id)}}");'/>
                       {% else %}
-                      <img src="/images/u448_normal.png" onclick='var res = confirm("Set rating to very poor?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("1.0"); ele.submit();'/>
+                      <img src="/images/u448_normal.png" onclick='callRating("Set rating to very poor?", "1.0", "{{_(package.id)}}");'/>
                      {% endif %} 
                            {% if h.highlight_rating_star(2, package.id)  == 1 %}
-                      <img src="/images/u52_normal.png" onclick='var res = confirm("Set rating to poor?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("2.0"); ele.submit();'/>
+                      <img src="/images/u52_normal.png" onclick='callRating("Set rating to poor?", "2.0", "{{_(package.id)}}");'/>
                       {% else %}
-                      <img src="/images/u448_normal.png" onclick='var res = confirm("Set rating to poor?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("2.0"); ele.submit();'/>
+                      <img src="/images/u448_normal.png" onclick='callRating("Set rating to poor?", "2.0", "{{_(package.id)}}");'/>
                      {% endif %} 
                       {% if h.highlight_rating_star(3, package.id)  == 1 %}
-                      <img src="/images/u52_normal.png" onclick='var res = confirm("Set rating to fair?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("3.0"); ele.submit();'/>
+                      <img src="/images/u52_normal.png" onclick='callRating("Set rating to fair?", "3.0", "{{_(package.id)}}");'/>
                       {% else %}
-                      <img src="/images/u448_normal.png" onclick='var res = confirm("Set rating to fair?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("3.0"); ele.submit();'/>
+                      <img src="/images/u448_normal.png" onclick='callRating("Set rating to fair?", "3.0", "{{_(package.id)}}");'/>
                      {% endif %} 
                       {% if h.highlight_rating_star(4, package.id)  == 1 %}
-                      <img src="/images/u52_normal.png" onclick='var res = confirm("Set rating to good?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("4.0"); ele.submit();'/>
+                      <img src="/images/u52_normal.png" onclick='callRating("Set rating to good?", "4.0", "{{_(package.id)}}");'/>
                       {% else %}
-                      <img src="/images/u448_normal.png" onclick='var res = confirm("Set rating to good?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("4.0"); ele.submit();'/>
+                      <img src="/images/u448_normal.png" onclick='callRating("Set rating to good?", "4.0", "{{_(package.id)}}");'/>
                      {% endif %} 
                       {% if h.highlight_rating_star(5, package.id)  == 1 %}
-                      <img src="/images/u52_normal.png" onclick='var res = confirm("Set rating to very good?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("5.0"); ele.submit();'/>
+                      <img src="/images/u52_normal.png" onclick='callRating("Set rating to very good?", "5.0", "{{_(package.id)}}");'/>
                       {% else %}
-                      <img src="/images/u448_normal.png" onclick='var res = confirm("Set rating to very good?"); var ele = document.getElementById("rating-submit"); $("#rpackageId").val("{{_(package.id)}}"); $("#ratingValue").val("5.0"); ele.submit();'/>
+                      <img src="/images/u448_normal.png" onclick='callRating("Set rating to very good?", "5.0", "{{_(package.id)}}");'/>
                      {% endif %} 
                                                                           
                     </span>
