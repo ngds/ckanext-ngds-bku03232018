@@ -186,7 +186,6 @@ def datastore_spatialize(context, data_dict):
 	finally:
 		context['connection'].close()
 
-
 def datastore_is_spatialized(context, data_dict):
 	'''Verifies if a table was 'spatialized' or not
 
@@ -290,7 +289,6 @@ def datastore_is_exposed_as_layer(context, data_dict):
 		result = {'is_exposed_as_layer': True}
 
 	return result
-
 
 def datastore_expose_as_layer(context, data_dict):
 	'''Publishes an already 'spatialized' database, in postgress, as a layer in geoserver
@@ -445,7 +443,6 @@ def datastore_remove_exposed_layer(context, data_dict):
 		cat._cache.clear()
 		return {'success':True}
 
-
 def datastore_remove_all_exposed_layers_using_catalog_api(context, data_dict):
 	'''Remove all exposed layers from geoserver
 
@@ -487,7 +484,6 @@ def datastore_remove_all_exposed_layers(context, data_dict):
 
 	_delete_feature_type_layer(context, data_dict)
 
-
 def datastore_list_exposed_layers(context, data_dict):
 	'''List datastore exposed layers in the geoserver
 
@@ -517,7 +513,6 @@ def datastore_list_exposed_layers(context, data_dict):
 	list_of_layers = cat.get_layers()
 
 	return {'success':False, 'list_of_layers':list_of_layers}
-
 
 def geoserver_create_workspace(context, data_dict):
 	'''Create a workspace on the geoserver
@@ -563,7 +558,6 @@ def geoserver_create_workspace(context, data_dict):
 
 	return {'success':True}
 
-
 def geoserver_delete_workspace(context, data_dict):
 	'''Delete a workspace on a geoserver
 
@@ -602,7 +596,6 @@ def geoserver_delete_workspace(context, data_dict):
 		return {'success':True}
 	else:
 		return {'success':False, 'reason':'workspace '+workspace_name+' not found'}
-
 
 def geoserver_create_store(context, data_dict):
 	'''Create a workspace on a geoserver
@@ -696,7 +689,6 @@ def geoserver_create_store(context, data_dict):
 
 	return {'success':True, 'store_name': store_name}
 
-
 def geoserver_delete_store(context, data_dict):
 	'''Delete a store on a geoserver
 
@@ -743,7 +735,6 @@ def geoserver_delete_store(context, data_dict):
 		cat.delete(store)
 		cat._cache.clear()
 		return {'success':True}
-
 
 def _create_feature_type_layer(context, data_dict):
 	'''Create a layer on geoserver through its restful API
@@ -901,9 +892,6 @@ def _delete_feature_type_layer(context, data_dict):
 	assert 200 <= headers.status < 300, "Tried to delete Geoserver layer but encountered a " + str(headers.status) + " error: " + response
 	cat._cache.clear()
 
-
-
-
 def _geoserver_create_layer(context, data_dict):
 	'''Create a layer on a geoserver
 
@@ -976,5 +964,36 @@ def _geoserver_create_layer(context, data_dict):
 
 	return True
 
+def shapefile_expose_as_layer(context, data_dict):
+    """
+    Expose an uploaded shapefile to Geoserver
+
+    @param context: CKAN environment and user info
+    @param data_dict: Dictionary:
+    {
+        "col_geography": "GEOMETRY", # hard-wired in UI
+        "col_latitude": "LATITUDE", # hard-wired in UI
+        "col_longitude": "LONGITUDE", # hard-wired in UI
+        "resource_id": Resource ID
+    @return: modified data objects
+    """
+
+    ofs = storage.get_ofs()
+    BUCKET = config.get('ckan.storage.bucket', 'default')
+    path_to_file = ofs.get_url(BUCKET,url.replace("%3A", ":").split("/storage/f/")[1])
+    filepath = path_to_file[7:]
+
+    zipfile = shapefile.ZipfileHandler(filepath)
+    zipfile.directoryCheck()
+    zipfile.Unzip()
+
+    shape = shapefile.ShapefileToPostGIS(filepath)
+    shape.fields(uri)
+
+    data.update({'id': shape.thisSchema})
+
+    shape.shp2pg()
+
+    action.datastore_expose_as_layer(context, data)
 
 
