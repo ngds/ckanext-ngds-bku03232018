@@ -232,7 +232,7 @@ var ngds = ngds || { };
       }
     });
 
-
+	$( "#search-review[title]" ).tooltip();
 
 	});
 
