@@ -6,7 +6,6 @@
     <div class="sp-label"><label>Author Email</label></div>
       <input type="text" name="author_email" placeholder="joe@example.com" value="{{data.author_email}}"></input>
   </div> -->
-
   <div class="input-group">
     <div class="sp-label"><label>Author</label></div>
       <input type="text" id="author_fake" /> 
@@ -74,4 +73,10 @@
 {% endblock %}
 
 </div>
+
+{% if data %}
+<script>
+  var v_collect = ngds.util.parse_raw_json("{{h.jsonify(data)}}");
+</script>
+{% endif %}
 

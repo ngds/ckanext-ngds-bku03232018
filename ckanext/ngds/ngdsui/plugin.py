@@ -143,7 +143,8 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_formatted_date':helpers.get_formatted_date,
 			'get_field_title':helpers.get_field_title,
 			'is_string_field':helpers.is_string_field,
-			'is_ogc_publishable':helpers.is_ogc_publishable
+			'is_ogc_publishable':helpers.is_ogc_publishable,
+			'jsonify':helpers.jsonify
 		}
 
 	implements(IPackageController,inherit=True)

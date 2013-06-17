@@ -1,10 +1,10 @@
-from ckan.lib.base import model,h,g,c,request
+from ckan.lib.base import model,h,g,c,request,response
 import ckan.lib.navl.dictization_functions as dictization_functions
 import ckan.logic as logic
 import ckan.controllers.storage as storage
 from ckan.model import User
 DataError = dictization_functions.DataError
-from pylons import config
+from pylons import config, jsonify
 from datetime import date
 import iso8601
 import inspect
@@ -318,3 +318,9 @@ def is_ogc_publishable(resource_id):
     if url[len(url)-3:len(url)]=='zip' or url[len(url)-3:len(url)]=='csv':
         return True
     return False
+
+@jsonify
+def jsonify(input):
+    # Trivial as this may seem, it is neccessary.
+    response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    return input
