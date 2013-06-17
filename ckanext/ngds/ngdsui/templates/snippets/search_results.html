@@ -31,6 +31,18 @@
                     </p>
                     <p>
                     <span>
+                    <!-- TODO make this a for loop for simpler maintainance - tried to do it but then the call doesn't go through not sure why yet -->
+                      <!--
+                      {% for count in (1,2,3,4,5) %}
+                      {% if h.highlight_rating_star(count, package.id)  == count %}
+                      <img src="/images/u52_normal.png" onclick='callRating("{{_(h.rating_text(count))}}", "{{_(count)}}", "{{_(package.id)}}");'/>
+                      {% else %}
+                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(count))}}", "{{_(count)}}", "{{_(package.id)}}");'/>
+                     {% endif %} 
+                      {% endfor %}
+                      
+                      -->
+                      
                       {% if h.highlight_rating_star(1, package.id)  == 1 %}
                       <img src="/images/u52_normal.png" onclick='callRating("{{_(h.rating_text(1))}}", "1.0", "{{_(package.id)}}");'/>
                       {% else %}
