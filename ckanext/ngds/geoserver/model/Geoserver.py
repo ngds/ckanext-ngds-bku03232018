@@ -12,7 +12,7 @@ class Geoserver(Catalog):
         @param cls: This class.
         @return: a Geoserver catalog
         """
-        url = ckan_config.get("ckan.geoserver.rest_url", "http://localhost:8080/geoserver/rest")
+        url = ckan_config.get("geoserver.rest_url", "http://localhost:8080/geoserver/rest")
 
         return cls(url)
 
@@ -23,15 +23,15 @@ class Geoserver(Catalog):
         @return: workspace instance
         """
 
-        name = ckan_config.get("ckan.geoserver.workspace_name", "ngds")
-        uri = ckan_config.get("ckan.geoserver.workspace_URL", "http://localhost:5000/ngds")
+        name = ckan_config.get("geoserver.workspace_name", "ngds")
+        uri = ckan_config.get("geoserver.workspace_uri", "http://localhost:5000/ngds")
 
         ngds_workspace = self.get_workspace(name)
         if ngds_workspace is None:
             ngds_workspace = self.create_workspace(name, uri)
         return ngds_workspace
 
-    def default_datastore(self):
+    def postgis_datastore(self):
         """
         Get default datastore, create if it does not exist
 
@@ -54,15 +54,14 @@ class Geoserver(Catalog):
             # Doesn't exist. Create it and update the connection parameters
             ds = self.create_datastore(store_name, default_ws)
             ds.connection_parameters.update(
-                host = details.group("host"),
-                port = "5432",
-                database = details.group("database"),
-                user = details.group("user"),
-                password = details.group("password"),
-                dbtype = "postgis"
+                host=details.group("host"),
+                port="5432",
+                database=details.group("database"),
+                user=details.group("user"),
+                password=details.group("password"),
+                dbtype="postgis"
             )
             self.save(ds)
 
         # Return it
         return ds
-
