@@ -145,7 +145,8 @@ class NgdsuiPlugin(SingletonPlugin):
 			'is_string_field':helpers.is_string_field,
 			'is_ogc_publishable':helpers.is_ogc_publishable,
             'highlight_rating_star':helpers.highlight_rating_star,
-            'count_rating_reviews':helpers.count_rating_reviews
+            'count_rating_reviews':helpers.count_rating_reviews,
+            'rating_text':helpers.rating_text
 		}
 
 	implements(IPackageController,inherit=True)

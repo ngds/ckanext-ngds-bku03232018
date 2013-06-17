@@ -79,6 +79,21 @@ def count_rating_reviews(packageId):
         return rating.get_rating(package)[1]
     else:
         return 0
+       
+def rating_text(count):
+	if count == 1:
+		return "Rate as very poor?"
+	else: 
+		if count == 2:
+			return "Rate as poor?"
+		else:
+			if count == 3:
+				return "Rate as fair?"
+			else:
+				if count == 4:
+					return "Rate as good?"
+				else:
+					return "Rate as very good?"
     
 def get_language(id):
 	if id:
