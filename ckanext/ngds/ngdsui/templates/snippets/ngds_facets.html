@@ -58,7 +58,7 @@ alternative_url
 
             <!-- <a href="{{ href }}" class="facet"><span style="font-size:10px;">{{ label }} {{ count }}</span> </a> -->
 
-            <input type="checkbox" value="{{ href }}" class="facet" {% if item.active %} checked {% endif %} {% if item['count']==0 %} disabled {% endif %}><span class="facet-text">{{ label }} {{ count }}</span>
+            <input type="checkbox" value="{{ href }}" class="facet {% if item.active %}expanded{% endif %}" {% if item.active %} checked {% endif %} {% if item['count']==0 %} disabled {% endif %}><span class="facet-text">{{ label }} {{ count }}</span>
             {% if facet.type == 'dynamic_keywords'%}
               <br>
             {% endif %}

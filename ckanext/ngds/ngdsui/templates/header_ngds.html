@@ -9,8 +9,11 @@
 							<span>{{ g.logo_text }}</span>
 					</a>
 				</div>
+
 				<nav class="span12 row-fluid">
+					{% snippet "snippets/language_selector.html" %}
 					<ul>
+
 						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{ _('Home') }}</a></li>
 						<li><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">{{ _('About') }}</a></li>
 						
@@ -21,7 +24,6 @@
 							<li><a href="/user/login" id="login" class="login">{{ _('Login') }}</a></li> 
 						{% endif %}
 
-						
 						<!-- <li><a href="#" class="not-implemented">FAVORITES</a></li> -->
 					</ul>
 				</nav>

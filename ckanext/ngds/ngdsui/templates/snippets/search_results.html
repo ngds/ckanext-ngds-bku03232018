@@ -12,10 +12,13 @@
                   <div id="title">
                     <a class="title" href="/dataset/{{package.name}}">{{package.title}}
                     {% if package.get('state', '').startswith('draft') %}
-                        <span class="label label-info">{{ _('(Draft)') }}</span>
+                        <span class="label-info">{{ _('(Draft)') }}</span>
                     {% elif package.get('state', '').startswith('deleted') %}
-                        <span class="label label-important">{{ _('(Deleted)') }}</span>
+                        <span class="label-important">{{ _('(Deleted)') }}</span>
                     {% endif %} </a>
+                    {% if package.get('private', false) %}
+                      <span class="label-info">{{ _('Private') }}</span>
+                    {% endif %}
                   </div>
                   <div id="banner">
                     <img src="/assets/bookmark.png" /> 
@@ -77,7 +80,6 @@
 
               </div>
               <div id="search-action-row">
-                  <span><img src="/assets/download.png" class="action-image"/></span>
                   <span><img src="/assets/email.png" class="action-image"/></span>
               </div>              
           </div>
