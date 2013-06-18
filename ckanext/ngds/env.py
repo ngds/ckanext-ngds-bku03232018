@@ -19,6 +19,4 @@ def _setup():
     db_str = ckan_config.get("sqlalchemy.url")
     return sessionmaker(bind=create_engine(db_str, echo=False))
 
-db = {
-    "Session": _setup()
-}
+Session = _setup()
