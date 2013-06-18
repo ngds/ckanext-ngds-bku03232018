@@ -1,5 +1,5 @@
 from geoserver.support import url
-from ckan.lib.base import (model,c) 
+#from ckan.lib.base import (model,c) 
 
 
 class Layer(object):
@@ -89,7 +89,8 @@ class Layer(object):
 
 		"""
 
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+		#context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+		context = {}
 
 		file_resource = get_action('resource_show')(context,{'id':self.resource_id})
 
@@ -120,13 +121,13 @@ class Layer(object):
 		"""
 		
 		#Find the resources to be removed.
+		#context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+		context ={}
 		if not resources_to_remove:
-			context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 			file_resource = get_action('resource_show')(context,{'id':self.resource_id})			
 		
 			package = get_action('package_show')(context,{'id':file_resource.resource_group.package.id)			
 			resources_to_remove = [for resource in pkg.resources if resource.get("parent_resource")==self.resource_id]		
 
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 		for resourceid in resources_to_remove:
 			get_action('resource_delete')(context,{'id':resourceid})
