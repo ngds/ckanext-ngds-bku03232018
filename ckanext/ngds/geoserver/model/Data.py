@@ -1,5 +1,5 @@
 
 class Data(object):
 
-	def publish():
+	def publish(self):
 		pass

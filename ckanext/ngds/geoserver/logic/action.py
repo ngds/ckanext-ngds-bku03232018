@@ -997,3 +997,7 @@ def shapefile_expose_as_layer(context, data_dict):
     action.datastore_expose_as_layer(context, data)
 
 
+def test(context,data_dict):
+	from ckanext.ngds.geoserver.model import Datastored
+	res_datastore=Datastored.Datastored(data_dict['resource_id'],data_dict['lat_field'],data_dict['lng_field'])
+	return res_datastore.publish()

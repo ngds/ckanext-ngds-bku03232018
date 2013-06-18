@@ -6,7 +6,7 @@ import ckan.plugins as p
 from ckan.plugins import ITemplateHelpers, IRoutes
 import ckanext.ngds.geoserver.logic.action as action
 import ckanext.datastore.logic.auth as auth
-import ckanext.datastore.db as db
+import ckanext.ngds.geoserver.logic.action as a
 from ckanext.datastore.plugin import DatastoreException
 import ckan.logic as logic
 import ckan.model as model
@@ -50,7 +50,8 @@ class GeoserverPlugin(p.SingletonPlugin):
                    'geoserver_create_workspace' : action.geoserver_create_workspace,
                    'geoserver_delete_workspace' : action.geoserver_delete_workspace,
                    'geoserver_create_store' : action.geoserver_create_store,
-                   'geoserver_delete_store' : action.geoserver_delete_store }
+                   'geoserver_delete_store' : action.geoserver_delete_store,
+                   'test':a.test }
         
         return actions
 
