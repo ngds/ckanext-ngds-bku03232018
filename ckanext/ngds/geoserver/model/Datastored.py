@@ -45,5 +45,3 @@ class Datastored(object):
 
 			trans.commit()
 			return True
-
-		return True
