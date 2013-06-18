@@ -2,6 +2,8 @@ import pylons
 from pylons import config
 import ckanext.datastore.db as db
 from ckan.logic import get_action
+import logging
+log = logging.getLogger(__name__)
 
 class Datastored(object):
 	resource_id = None
@@ -21,6 +23,7 @@ class Datastored(object):
 
 	def publish(self):
 		if (get_action('datastore_search')(None,{ 'resource_id':self.resource_id,'limit':1 })>0) == False:
+			log.debug("Expected datastore connection url to be configured in development.ini")
 			return False
 
 		conn_params = { 'connection_url':self.connection_url,'resource_id':self.resource_id }
@@ -36,5 +39,7 @@ class Datastored(object):
 							"SELECT AddGeometryColumn('public', '"+self.resource_id+
 							"', '"+ self.geo_col+"', 4326, 'GEOMETRY', 2)")
 			trans.commit()
+			log.info("Created column geometry for table "+self.resource_id)
 			return True
+		log.info("Nothing to do. Returning.")
 		return False

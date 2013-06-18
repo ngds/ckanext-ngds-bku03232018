@@ -31,7 +31,7 @@ class Geoserver(Catalog):
             ngds_workspace = self.create_workspace(name, uri)
         return ngds_workspace
 
-    def postgis_datastore(self):
+    def default_datastore(self):
         """
         Get default datastore, create if it does not exist
 
