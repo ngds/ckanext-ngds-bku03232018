@@ -998,6 +998,12 @@ def shapefile_expose_as_layer(context, data_dict):
 
 
 def test(context,data_dict):
-	from ckanext.ngds.geoserver.model import Datastored
-	res_datastore=Datastored.Datastored(data_dict['resource_id'],data_dict['lat_field'],data_dict['lng_field'])
-	return res_datastore.publish()
+    from ckanext.ngds.geoserver.model.Geoserver import Geoserver
+    from ckan.plugins import toolkit
+
+    #resource_id = data_dict.get("resource_id", "")
+    #resource = toolkit.get_action("resource_show")(None, {"id": "resource_id"})
+
+    geoserver = Geoserver.from_ckan_config()
+    ws = geoserver.default_workspace()
+    ds = geoserver.postgis_datastore()

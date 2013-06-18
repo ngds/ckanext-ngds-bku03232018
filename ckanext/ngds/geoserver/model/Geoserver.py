@@ -48,9 +48,9 @@ class Geoserver(Catalog):
         # Check if the default datastore exists
         store_name = details.group("database")
         default_ws = self.default_workspace()
-
-        ds = self.get_store(store_name, default_ws)
-        if ds is None:
+        try:
+            ds = self.get_store(store_name, default_ws)
+        except Exception as ex:
             # Doesn't exist. Create it and update the connection parameters
             ds = self.create_datastore(store_name, default_ws)
             ds.connection_parameters.update(
@@ -58,7 +58,7 @@ class Geoserver(Catalog):
                 port="5432",
                 database=details.group("database"),
                 user=details.group("user"),
-                password=details.group("password"),
+                password=details.group("pass"),
                 dbtype="postgis"
             )
             self.save(ds)
