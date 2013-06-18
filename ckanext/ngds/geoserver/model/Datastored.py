@@ -20,9 +20,7 @@ class Datastored(object):
 			raise ValueError("Expected datastore write url to be configured in development.ini")
 
 	def publish(self):
-		datastore_exists= get_action('datastore_search')(None,{ 'resource_id':self.resource_id,'limit':1 })>0
-		
-		if not datastore_exists:
+		if (get_action('datastore_search')(None,{ 'resource_id':self.resource_id,'limit':1 })>0) == False:
 			return False
 
 		conn_params = { 'connection_url':self.connection_url,'resource_id':self.resource_id }
@@ -31,19 +29,12 @@ class Datastored(object):
 		context = { 'connection':engine.connect() }
 		fields = db._get_fields(context,conn_params)
 
-		if True in { col['id'] == self.geo_col for col in fields }:
-			return True
-		else:
+		if not True in { col['id'] == self.geo_col for col in fields }:
 			fields.append({'id': self.geo_col, 'type': u'geometry' })
 			trans = context['connection'].begin()
-			try:
-				new_column_res = context['connection'].execute(
+			new_column_res = context['connection'].execute(
 							"SELECT AddGeometryColumn('public', '"+self.resource_id+
 							"', '"+ self.geo_col+"', 4326, 'GEOMETRY', 2)")
-			except RuntimeError:
-				pass
-
 			trans.commit()
 			return True
-
-		return True
+		return False
