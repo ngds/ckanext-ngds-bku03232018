@@ -1,9 +1,17 @@
-from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions,IFacets, ITemplateHelpers, IPackageController
-from ckanext.ngds.ngdsui import authorize
+from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions,IFacets, \
+	ITemplateHelpers, IPackageController,IConfigurable,IActions
+
 from ckan.lib.base import (model,abort, h, g, c)
 from ckan.logic import get_action,check_access
+
 from ckanext.ngds.ngdsui.misc import helpers
 from ckanext.ngds.ngdsui.lib.poly import get_package_ids_in_poly
+from ckanext.ngds.ngdsui import authorize
+
+import ckanext.datastore.logic.auth as datastore_auth
+import ckanext.ngds.contentmodel.model.contentmodels as contentmodels
+import ckanext.ngds.contentmodel.logic.action as contentmodel_action
+
 import sys
 
 try:
@@ -56,9 +64,54 @@ class NgdsuiPlugin(SingletonPlugin):
 		# data_dict['users'] = [{'name': 'admin', 'capacity': 'admin'}]
 		# get_action('group_create')(context, data_dict)
 
-	implements(IRoutes,inherit=True)
-	implements(IConfigurer,inherit=True)
+	def contentmodel_configure(self, config):
+		if "usgin_url" in config: 
+			contentmodels.usgin_url= config["usgin_url"]
+		else:
+			contentmodels.usgin_url= "http://schemas.usgin.org/contentmodels.json"
+		# Access the URL and fill the cache
+		print "Caching Content Models from USGIN: " + contentmodels.usgin_url
+		contentmodel_action.contentmodel_refreshCache(None, None)
 
+		True_List = ["true", "1", "t", "y", "yes", "yeah", "yup", "certainly"]
+
+		if "checkfile_maxerror" in config:
+			try:
+				checkfile_maxerror= config["checkfile_maxerror"]
+				contentmodels.checkfile_maxerror = int(checkfile_maxerror)
+			except:
+				print "DON'T UNDERSTAND the 'checkfile_maxerror' in the development.ini, it is not an Integer"
+		print "checkfile_maxerror", contentmodels.checkfile_maxerror
+
+		if "checkfile_checkheader" in config:
+			try:
+				checkfile_checkheader= config["checkfile_checkheader"]
+				if checkfile_checkheader in True_List:
+					contentmodels.checkfile_checkheader = True
+				else:
+					contentmodels.checkfile_checkheader = False
+			except:
+				print "DON'T UNDERSTAND the 'checkfile_checkheader' in the development.ini, it is not a boolean string"
+		print "checkfile_checkheader", contentmodels.checkfile_checkheader
+
+		if "checkfile_checkoptionalfalse" in config:
+			try:
+				checkfile_checkoptionalfalse= config["checkfile_checkoptionalfalse"]
+				if checkfile_checkoptionalfalse in True_List:
+					contentmodels.checkfile_checkoptionalfalse = True
+				else:
+					contentmodels.checkfile_checkoptionalfalse = False
+			except:
+				print "DON'T UNDERSTAND the 'checkfile_checkoptionalfalse' in the development.ini, it is not a boolean string"
+		print "checkfile_checkoptionalfalse", contentmodels.checkfile_checkoptionalfalse
+
+
+	implements(IConfigurable, inherit=True)
+	def configure(self, config):
+
+		self.contentmodel_configure(config)
+
+	implements(IRoutes,inherit=True)
 	def before_map(self,map):
 		"""
 		For the moment, set up routes under the sub-root /ngds to render the UI.
@@ -107,6 +160,7 @@ class NgdsuiPlugin(SingletonPlugin):
 
 		return map
 
+	implements(IConfigurer,inherit=True)
 	def update_config(self,config):
 		"""
 		Register the templates directory with ckan so that Jinja can find them.
@@ -117,14 +171,29 @@ class NgdsuiPlugin(SingletonPlugin):
 
 		self.customize_ckan_for_ngds()
 
+	implements(IActions,inherit=True)
+	def get_actions(self):
+		return {
+    	'contentmodel_refreshCache' : contentmodel_action.contentmodel_refreshCache, 
+    	'contentmodel_list' : contentmodel_action.contentmodel_list, 
+    	'contentmodel_list_short' : contentmodel_action.contentmodel_list_short, 
+    	'contentmodel_get': contentmodel_action.contentmodel_get, 
+    	'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile
+    	}
+
+
 	implements(IAuthFunctions, inherit=True)
 
 	def get_auth_functions(self):
+
 		return {
 			'manage_users': authorize.manage_users,
 			'publish_dataset': authorize.publish_dataset,
 			'manage_nodes': authorize.manage_nodes,
 			'execute_bulkupload':authorize.execute_bulkupload,
+			'contentmodel_refreshCache' : datastore_auth.datastore_create, 
+			'contentmodel_list' : datastore_auth.datastore_create, 
+			'contentmodel_checkFile' : datastore_auth.datastore_create,
 		}	
 
 	implements(ITemplateHelpers,inherit=True)
