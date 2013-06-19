@@ -92,11 +92,9 @@ def file_path_from_url(url):
     return get_url_for_file(label)
 
 def get_url_for_file(label):
-    # storage_controller = StorageController()
-    BUCKET = config.get('ckan.storage.bucket', 'default')
+    bucket = config.get('ckan.storage.bucket', 'default')
     ofs = storage.get_ofs()
-    print ofs.get_url(BUCKET,label)
-    return ofs.get_url(BUCKET,label)
+    return ofs.get_url(bucket, label).replace("file://", "")
 
 def is_plugin_enabled(plugin):
     plugins = config.get('ckan.plugins').split(' ')

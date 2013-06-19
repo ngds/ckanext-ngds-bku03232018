@@ -8,6 +8,7 @@ from geoserver.catalog import Catalog
 from featuretype import SqlFeatureTypeDef
 from pylons import config
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
+from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 from ckan.plugins import toolkit
 
 log = logging.getLogger(__name__)
@@ -986,17 +987,16 @@ def shapefile_expose_as_layer(context, data_dict):
 
     action.datastore_expose_as_layer(context, data)
 
-
 def test(context,data_dict):
-    from ckanext.ngds.geoserver.model.Geoserver import Geoserver
-    from ckanext.ngds.geoserver.model.Layer import Layer
+    resource_id = data_dict.get("resource_id")
+    if resource_id:
+        sf = Shapefile(resource_id)
+        #sf.default_publish()
 
-    from ckan.plugins import toolkit
+        output_location = sf.get_destination_source()
+        if sf.create_destination_layer(output_location, sf.get_source_layer().GetName()):
+            output_layer = sf.get_destination_layer(output_location, sf.get_source_layer().GetName())
+            sf.publish(output_layer)
+            return True
 
-    resource_id = data_dict.get("resource_id", "")
-    resource = toolkit.get_action("resource_show")({}, {"id": resource_id})
-
-    geoserver = Geoserver.from_ckan_config()
-    layer = Layer(geoserver, resource_id, resource_id)
-
-    return "you win"
+    return False
