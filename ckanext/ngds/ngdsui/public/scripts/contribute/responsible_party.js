@@ -52,8 +52,9 @@ ngds.responsible_party = function() {
 	var multi_responsibilify = function(fields) {
 		me.slugs = [];
 		var mrs = fields['mrs'];
+        var mrs_elem = $("#"+mrs);
 		var mrs_fake = me.rs_fake = fields['mrs_fake'];
-		var me.rs_list = [ ];
+		me.rs_list = [];
 		var mrs_add_anchor = mrs_fake+"-add";
 		var rs_frag = fields['rs_frag'];
 
@@ -85,13 +86,28 @@ ngds.responsible_party = function() {
 				'text':working_name,
 				'style':'display:inline;'
 			});
+
+            var close_anchor = $("<a/>",{
+                'text':'X',
+                'class':'close-button-transform'
+            });
+            slug.append(close_anchor);
+
+            close_anchor.on('click',function(ev){
+                console.log(ev);
+            });
+
 			mrs_anch.after(slug);
 			mrs_fake_elem.val("");
 			me.slugs.push(slug);
-			mr.rs_list.push({
-				rs_frag+'_name':working_name,
-				rs_frag+'_email':working_email
+            var rs_frag_name_label = rs_frag+'_name';
+            var rs_frag_email_label = rs_frag+'_email';
+			me.rs_list.push({
+				rs_frag_name_label:working_name,
+				rs_frag_email_label:working_email
 			});
+
+            mrs_elem.val(escape(JSON.stringify(me.rs_list)));
 		});
 	};
 
