@@ -8,11 +8,10 @@
   </div> -->
   <div class="input-group">
     <div class="sp-label"><label>Author</label></div>
-      <input type="text" id="author_fake" /> 
+      <input type="text" id="authors_fake" /> 
   </div>
 
-  <input type="hidden" name="author" id="author"></input>
-  <input type="hidden" name="author_name" id="author_name" />
+  <input type="hidden" name="authors" id="authors"></input>
   <input type="hidden" name="author_email" id="author_email" />
 
 
@@ -52,12 +51,23 @@
 <script type="application/javascript" src="/scripts/contribute/responsible_party.js"></script>
 
 <script>
-  new ngds.responsible_party().responsibilify({
-    'rs_name':'#author_name',
-    'rs_email':'#author_email',
-    'rs_fake':'#author_fake',
-    'rs':'#author'
+  new ngds.responsible_party().multi_responsibilify({
+    'mrs_fake':'authors_fake',
+    'mrs':'authors',
+    'rs_frag':'author',
+    'mrs_proxy':{
+      'name':'author_email',
+      'value':'email'
+    }
   });
+
+
+  // new ngds.responsible_party().responsibilify({
+  //   'rs_name':'#author_name',
+  //   'rs_email':'#author_email',
+  //   'rs_fake':'#author_fake',
+  //   'rs':'#author'
+  // });
 
   new ngds.responsible_party().responsibilify({
     'rs_name':'#maintainer_name',
@@ -76,7 +86,7 @@
 
 {% if data %}
 <script>
-  var v_collect = ngds.util.parse_raw_json("{{h.jsonify(data)}}");
+  // var v_collect = ngds.util.parse_raw_json("{{h.jsonify(data)}}");
 </script>
 {% endif %}
 

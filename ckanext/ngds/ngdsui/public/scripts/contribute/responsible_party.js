@@ -49,6 +49,52 @@ ngds.responsible_party = function() {
 	   append_create_rs_anchor();
 	};
 
+	var multi_responsibilify = function(fields) {
+		me.slugs = [];
+		var mrs = fields['mrs'];
+		var mrs_fake = me.rs_fake = fields['mrs_fake'];
+		var me.rs_list = [ ];
+		var mrs_add_anchor = mrs_fake+"-add";
+		var rs_frag = fields['rs_frag'];
+
+		var mrs_fake_elem = $("#"+mrs_fake);
+		mrs_fake_elem.after($("<a/>",{
+			'id':mrs_add_anchor,
+			'text':'Add Author',
+			'class':'form-anchor'
+		}));
+
+		var mrs_anch = $("#"+mrs_add_anchor);
+
+		var rs_ac = ngds.autocomplete(mrs_fake_elem,"/responsible_parties",'q',['name','email'],'name'); 
+		
+		working_name = null;
+		var working_email = null;
+
+		rs_ac.proxy(null,function(dict) {
+			working_name = dict.name;
+			working_email = dict.email;
+		});
+		
+		mrs_anch.on('click',function(ev){
+			if(working_email === null && working_name === null) {
+				return;
+			}
+			var slug = $("<span/>",{
+				'class':'ngds-slug',
+				'text':working_name,
+				'style':'display:inline;'
+			});
+			mrs_anch.after(slug);
+			mrs_fake_elem.val("");
+			me.slugs.push(slug);
+			mr.rs_list.push({
+				rs_frag+'_name':working_name,
+				rs_frag+'_email':working_email
+			});
+		});
+	};
+
 	var edit_rs = function()  {
 		  $(me.rs_slug).hide();
 		  $(me.rs_fake).show();
@@ -190,6 +236,7 @@ ngds.responsible_party = function() {
 	};
 
 	return {
-		'responsibilify':responsibilify
+		'responsibilify':responsibilify,
+		'multi_responsibilify':multi_responsibilify
 	}	
 };
