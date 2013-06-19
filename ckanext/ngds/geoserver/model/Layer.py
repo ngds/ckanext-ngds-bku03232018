@@ -92,27 +92,35 @@ class Layer(object):
         #context = {'model':  model, 'session':  model.Session,'user':  c.user or c.author}
         context = {}
 
-        file_resource = toolkit.get_action('resource_show')(context,{'id': self.resource_id})
+        file_resource = toolkit.get_action('resource_show')(context, {'id': self.resource_id})
+
+        #File Resource Update
+        data_dict = {
+        'id': file_resource.id,
+        'layer_name': self.name
+        }
+
+        toolkit.get_action('resource_update')(context, data_dict)
 
         #WMS Resource Creation
         data_dict = {
-        'url': (self.geoserver.service_url.replace("/rest", "/wms")+'?layers=%s: %s') %(self.store.workspace.name,self.name),
+        'url': (self.geoserver.service_url.replace("/rest", "/wms")+'?layers=%s: %s') % (self.store.workspace.name, self.name),
         'package_id': file_resource.resource_group.package.id,
         'description': 'WMS for '+file_resource.name ,
         'parent_resource': file_resource.id
         }
 
-        toolkit.get_action('resource_create')(context,data_dict)
+        toolkit.get_action('resource_create')(context, data_dict)
 
         #WFS Resource Creation
         data_dict = {
         'url': (self.geoserver.service_url.replace("/rest", "/wfs")+'?layers=%s: %s') %(self.store.workspace.name,self.name),
         'package_id': file_resource.resource_group.package.id,
-        'description': 'WFS for '+file_resource.name ,
+        'description': 'WFS for '+file_resource.name,
         'parent_resource': file_resource.id
         }
 
-        toolkit.get_action('resource_create')(context,data_dict)
+        toolkit.get_action('resource_create')(context, data_dict)
 
     def remove_resource(self,resources_to_remove): 
         """
@@ -124,10 +132,18 @@ class Layer(object):
         #context = {'model':  model, 'session':  model.Session,'user':  c.user or c.author}
         context ={}
         if not resources_to_remove: 
-            file_resource = toolkit.get_action('resource_show')(context,{'id': self.resource_id})
+            file_resource = toolkit.get_action('resource_show')(context, {'id': self.resource_id})
 
-            pkg = toolkit.get_action('package_show')(context,{'id':  file_resource.resource_group.package.id})
+            pkg = toolkit.get_action('package_show')(context, {'id':  file_resource.resource_group.package.id})
             resources_to_remove = [resource["id"] for resource in pkg["resources"] if resource.get("parent_resource") == self.resource_id]
 
+        #File Resource Update
+        data_dict = {
+        'id': self.resource_id,
+        'layer_name': None
+        }
+
+        toolkit.get_action('resource_update')(context, data_dict)
+
         for resourceid in resources_to_remove: 
-            toolkit.get_action('resource_delete')(context,{'id': resourceid})
+            toolkit.get_action('resource_delete')(context, {'id': resourceid})

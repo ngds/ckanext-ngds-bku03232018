@@ -57,7 +57,7 @@ class GeoserverPlugin(p.SingletonPlugin):
         actions = {
            'spatialize':action.spatialize,
            'is_layer_exists':action.is_layer_exists,
-
+           'despatialize':action.despatialize,
         }
         
         return actions
