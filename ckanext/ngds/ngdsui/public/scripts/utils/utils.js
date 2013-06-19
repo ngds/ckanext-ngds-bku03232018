@@ -133,11 +133,7 @@ ngds.util.replace_content = function(container,content) {
 };
 
 ngds.util.parse_raw_json = function(raw) {
-	var p_raw = raw.replace(/&#34;/g,"\"").replace(/u\"/g,"");
-	// var p_raw = raw;
-	console.log(p_raw);
-	x=p_raw;
-	console.log($.parseJSON(p_raw));
-	return p;
+	var parsed_json = raw.replace(/&#34;/g,"\"").replace(/&#39;/g,"\"").replace(/u\"/g,"\"");
+	return JSON.parse(parsed_json);
 }
 

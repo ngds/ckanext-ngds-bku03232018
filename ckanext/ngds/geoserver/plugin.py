@@ -55,9 +55,9 @@ class GeoserverPlugin(p.SingletonPlugin):
         '''
 
         actions = {
-           'spatialize':action.spatialize,
-           'is_layer_exists':action.is_layer_exists,
-           'despatialize':action.despatialize,
+           'geoserver_publish_layer':action.publish,
+           'geoserver_layer_exists':action.layer_exists,
+           'geoserver_unpublish_layer':action.unpublish,
         }
         
         return actions
@@ -73,7 +73,7 @@ class GeoserverPlugin(p.SingletonPlugin):
                 'geoserver_create_workspace' : auth.datastore_create,
                 'geoserver_delete_workspace' : auth.datastore_delete,
                 'geoserver_create_store' : auth.datastore_create,
-                'geoserver_delete_store' : auth.datastore_delete}
+                'geoserver_delete_store' : auth.datastore_delete,}
         
         return functions
 

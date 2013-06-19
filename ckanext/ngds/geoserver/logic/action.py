@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
 
-def is_layer_exists(context,data_dict):
+def layer_exists(context,data_dict):
     """
     Checks whether layer exists in the geoserver. If not then returns False.
 
@@ -29,7 +29,7 @@ def is_layer_exists(context,data_dict):
     else:
         return True
 
-def spatialize(context,data_dict):
+def publish(context,data_dict):
     """
 
     """
@@ -65,7 +65,7 @@ def spatialize(context,data_dict):
     return True
 
 
-def despatialize(context,data_dict):
+def unpublish(context,data_dict):
     """
 
     """
