@@ -59,12 +59,12 @@ $(document).ready(function() {
         $.ajax({
           url:'/api/action/spatialize',
           'type':'POST',
-          'data':{
-              'resource_id':id,
-              'col_geography':"geometry",
-              'col_latitude':"LATITUDE",
-              'col_longitude':"LONGITUDE"
-          },
+          'data':JSON.stringify({
+              resource_id:id,
+              col_geography:"geometry",
+              col_latitude:"LATITUDE",
+              col_longitude:"LONGITUDE"
+          }),
           success:function(response){
                 window.alert("This resource has now been published as an OGC service.");
                 window.location.reload();
@@ -80,9 +80,9 @@ $(document).ready(function() {
         $.ajax({
           url:'/api/action/despatialize',
           'type':'POST',
-          'data':{
-           'resource_id':id
-          },
+          'data':JSON.stringify({
+           resource_id:id
+          }),
           success:function(response){
               window.alert("This resource has now been unpublished.");
               window.location.reload();
