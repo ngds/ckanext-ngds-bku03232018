@@ -5,6 +5,8 @@ from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 from ckanext.ngds.geoserver.model.Layer import Layer
 from ckan.plugins import toolkit
 
+from geoserver.catalog import Catalog
+
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
@@ -15,10 +17,16 @@ def is_layer_exists(context,data_dict):
 
     @return:
     """
-    is_exists = False
 
-    return is_exists
+    if 'id' in data_dict:
+        data_dict['resource_id'] = data_dict['id']
+    res_id = _get_or_bust(data_dict, 'resource_id')
 
+    geoserver = Geoserver.from_ckan_config()
+    if geoserver.get_layer(res_id) is None:
+        return False
+    else:
+        return True
 
 def spatialize(context,data_dict):
     """
