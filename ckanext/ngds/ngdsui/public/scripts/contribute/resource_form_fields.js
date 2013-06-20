@@ -226,6 +226,21 @@ var offline_resource_form = {
   ]
 };
 
+
+var position_file_uploader = function(selector) {
+    if(typeof selector==='undefined') {
+        $("#file-upload").hide();
+        return;
+    }
+    var ref = $(selector);
+    var r_width = ref.width();
+    var file_upload = $("#file-upload");
+    file_upload.css("position","absolute");
+    ref.css("width",r_width-60);
+    file_upload.css("left",ref.position().left+ref.width()+5);
+    file_upload.css("top",ref.position().top);
+    file_upload.show();
+};
 var link_data_service_form = {
   'form':[
     {
@@ -349,29 +364,12 @@ var link_data_service_form = {
     }
   ]
 };
-
- $(document).tooltip({
+$(document).tooltip({
   position:{
     at:'right top+5',
     collision:'none'
   }
- });
-
-var position_file_uploader = function(selector) {
-  if(typeof selector==='undefined') {
-    $("#file-upload").hide();
-    return;
-  }
-  var ref = $(selector);
-  var r_width = ref.width();
-  var file_upload = $("#file-upload");
-  file_upload.css("position","absolute");
-  ref.css("width",r_width-60);
-  file_upload.css("left",ref.position().left+ref.width()+5);
-  file_upload.css("top",ref.position().top);
-  file_upload.show();
-};
-
+});
 var create_distributor = function() {
   var distributor_anch = $(".distributor>a");
   $(".create_distributor_form").remove();
@@ -409,7 +407,7 @@ var create_distributor = function() {
   };
 
   distributor_anch.after(Mustache.render(ngds.add_responsible_party_template,responsible_parties));
-  
+
   $('.create_distributor').on('click',function(ev) {
       var name = $("[name=responsible_party_name]").val();
       var email = $("[name=responsible_party_email]").val();
@@ -444,16 +442,13 @@ var create_distributor = function() {
   });
 
 }
-
 var edit_distributor = function()  {
   $(".distributor-fake").show();
   $(".ngds-slug").hide();
   $(".distributor-edit").remove();
   $(".new-distributor").show();
 };
-
 $(".ngds-slug").on('click',edit_distributor);
-
 var distributor_blur_handler = function(ev) {
   if($(".distributor-fake").is(":focus")===true) {
     return;

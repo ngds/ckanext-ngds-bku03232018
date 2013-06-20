@@ -49,7 +49,7 @@
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="offline-resouece" name="upload-type" value="offline-resource" />
+        <input type="radio" id="offline-resource" name="upload-type" value="offline-resource" />
         <label for="offline-resource">Offline resource</label>
       </div>
   </div>
@@ -123,6 +123,8 @@ var render_forms = function(value) {
 $('input[name="upload-type"]').on('change',function(ev){
   
   var value = ev.target.value;
+    console.log(ev);
+    console.log(value);
 
   render_forms(value);
 });
@@ -154,15 +156,12 @@ if(typeof continuation!=='undefined') {
 </script>
 {% endraw %}
 
-
 <script>
 
 (function template_variables_collect(){
   {% if data %}
    data="{{data}}";
-   data=data.replace(/u&#39;/g,'\"');
-   data=data.replace(/&#39;/g,'\"');
-   data=JSON.parse(data);
+   data = ngds.util.parse_raw_json("{{h.jsonify(data)}}")
    activate_populate_form(data);
   {% endif %}
 })();

@@ -1,8 +1,4 @@
 {% set stage = stage or 1 %}
 {% set include_metadata = include_metadata or false %}
-<script>
-    x="{{data}}";
-    var template_variables_collect = ngds.util.parse_raw_json("{{h.jsonify(data)}}");
-
-</script>
+{% set data = data %}
 {% extends 'package/snippets/resource_form.html' %}
