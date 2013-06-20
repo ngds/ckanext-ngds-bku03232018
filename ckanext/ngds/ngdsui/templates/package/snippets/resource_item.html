@@ -57,7 +57,7 @@ $(document).ready(function() {
         $(".spatialize").click(function(ev){
         var id = ev.currentTarget.value;
         $.ajax({
-          url:'/api/action/spatialize',
+          url:'/api/action/geoserver_publish_layer',
           'type':'POST',
           'data':JSON.stringify({
               resource_id:id,
@@ -78,7 +78,7 @@ $(document).ready(function() {
         $(".unspatialize").click(function(ev){
         var id = ev.currentTarget.value;
         $.ajax({
-          url:'/api/action/despatialize',
+          url:'/api/action/geoserver_unpublish_layer',
           'type':'POST',
           'data':JSON.stringify({
            resource_id:id
