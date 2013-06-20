@@ -159,11 +159,11 @@ if(typeof continuation!=='undefined') {
 
 (function template_variables_collect(){
   {% if data %}
-//   data="{{data}}";
-//   data=data.replace(/u&#39;/g,'\"');
-//   data=data.replace(/&#39;/g,'\"');
-//   data=JSON.parse(data);
-//   activate_populate_form(data);
+   data="{{data}}";
+   data=data.replace(/u&#39;/g,'\"');
+   data=data.replace(/&#39;/g,'\"');
+   data=JSON.parse(data);
+   activate_populate_form(data);
   {% endif %}
 })();
 
