@@ -4,3 +4,4 @@ dist/
 build/
 .DS_Store
 *.mo
+ckanext/ngds/geoserver/your-last-test.log
