@@ -281,3 +281,56 @@ def contentmodel_checkBulkFile(context, title, version, resource_url ):
     data_dict = {'cm_uri': content_model['uri'], 'cm_version': version, 'cm_resource_url': resource_url}
     return contentmodel_checkFile(context, data_dict)
 
+
+def create_contentmodel_table(context, data_dict):
+    """
+
+    """
+
+    cm_uri = _get_or_bust(data_dict, 'cm_uri')
+    cm_version = _get_or_bust(data_dict, 'cm_version')
+    cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
+
+    cm_schema = contentmodel_get(context, data_dict)
+
+    table_name = "test"
+
+    field_info_list = cm_schema['field_info']
+
+    from sqlalchemy import types, Column, Table, MetaData
+    from ckanext.ngds.env import DataStoreSession
+
+    session = DataStoreSession()
+    metadata = MetaData(bind=session.bind)
+
+    table = Table(table_name, metadata,
+                  Column('id', types.Integer, primary_key=True),
+                  *(Column(field_info.get('name'), types.UnicodeText) for field_info in field_info_list if field_info.get('name')))
+
+    if not table.exists():
+        table.create()
+
+    with open(cm_resource_url) as f:
+        csv_content = csv.DictReader(f, delimiter=',')
+
+        for row in csv_content:
+            # insert data into the table
+            table.insert().values(**row).execute()
+
+
+def get_sqlalchemy_datatype(cm_datatype):
+    from sqlalchemy import types
+    data_type = {
+        'int':types.Integer,
+        'string':types.String,
+        'text':types.UnicodeText,
+        'double':types.Numeric,
+        'date':types.DateTime
+    }
+
+    sqlalchemyType = types.UnicodeText
+
+    if cm_datatype and cm_datatype in data_type:
+        sqlalchemyType = data_type.get(cm_datatype)
+
+    return sqlalchemyType

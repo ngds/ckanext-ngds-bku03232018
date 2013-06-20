@@ -11,12 +11,14 @@ from ckan import model as ckan_model
 
 
 # Create a CKAN database session without relying on CKAN
-def _setup():
+def _setup(dburl):
     """Define a SQLAlchemy Session from ckan_config"""
     from pylons import config as ckan_config
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
-    db_str = ckan_config.get("sqlalchemy.url")
+    db_str = ckan_config.get(dburl)
     return sessionmaker(bind=create_engine(db_str, echo=False))
 
-Session = _setup()
+Session = _setup("sqlalchemy.url")
+
+DataStoreSession = _setup("ckan.datastore.write_url")
