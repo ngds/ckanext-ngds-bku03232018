@@ -1,9 +1,8 @@
-   
-   {% for package in packages %}
+           {% for package in packages %}
            <div class="search-results-container">
           <div class="search-item-image">
             
-             <img src="/assets/dataset.png" /> 
+             <img src="/assets/search_dataset.png" class="resultimage" /> 
             
             </div>
           <div class="search-results-item">
@@ -12,16 +11,13 @@
                   <div id="title">
                     <a class="title" href="/dataset/{{package.name}}">{{package.title}}
                     {% if package.get('state', '').startswith('draft') %}
-                        <span class="label-info">{{ _('(Draft)') }}</span>
+                        <span class="label label-info">{{ _('(Draft)') }}</span>
                     {% elif package.get('state', '').startswith('deleted') %}
-                        <span class="label-important">{{ _('(Deleted)') }}</span>
+                        <span class="label label-important">{{ _('(Deleted)') }}</span>
                     {% endif %} </a>
-                    {% if package.get('private', false) %}
-                      <span class="label-info">{{ _('Private') }}</span>
-                    {% endif %}
                   </div>
                   <div id="banner">
-                    <img src="/assets/bookmark.png" /> 
+                    <img src="/assets/search_banner.png" class="banner"/> 
                   </div>
               </div>
               <div id="search-meta-row">
@@ -33,44 +29,20 @@
                     <p>
                     </p>
                     <p>
-                    <span title="Select a star to rate this dataset">
-                    <!-- TODO make this a for loop for simpler maintainance - tried to do it but then doesn't work not sure why yet -->
-                     
-                      
-                      {% if h.highlight_rating_star(1, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(1))}}", "1.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(1))}}", "1.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                           {% if h.highlight_rating_star(2, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(2))}}", "2.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(2))}}", "2.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                      {% if h.highlight_rating_star(3, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(3))}}", "3.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(3))}}", "3.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                      {% if h.highlight_rating_star(4, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(4))}}", "4.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(4))}}", "4.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                      {% if h.highlight_rating_star(5, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(5))}}", "5.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(5))}}", "5.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                                                                          
+                    <span>
+                      <img src="/images/u448_normal.png"/>
+                      <img src="/images/u448_normal.png"/>
+                      <img src="/images/u448_normal.png"/>
+                      <img src="/images/u448_normal.png"/>
+                      <img src="/images/u448_normal.png"/>
                     </span>
-                    <span>{{h.count_rating_reviews(package.id)}} reviews  #</span>
-                    <span>{{package.downloads}} downloads</span> </p>
+                    <span>{{package.reviews}} 10 reviews,</span>
+                    <span>{{package.downloads}} 12 downloads</span> </p>
                   </div>
-                  
 
               </div>
               <div id="search-action-row">
+                  <span><img src="/assets/download.png" class="action-image"/></span>
                   <span><img src="/assets/email.png" class="action-image"/></span>
               </div>              
           </div>

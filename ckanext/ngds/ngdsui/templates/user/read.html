@@ -3,6 +3,7 @@
 {% block subtitle %}{{ user.display_name }}{% endblock %}
 
 {% block primary_content_inner %}
+  <h2 class="hide-heading">{{ _('Datasets') }}</h2>
   {% if user.datasets %}
      {% snippet 'snippets/search_results.html', packages=user.datasets %}
   {% else %}

@@ -9,7 +9,7 @@ Example:
 
 #}
 <span>
-  <label for="field-order-by">{{ _('Sort by') }}</label>
+  <label for="field-order-by">{{ _('Order by') }}</label>
   <select id="field-order-by" name="sort">
     <option value="score desc, metadata_modified desc"{% if sort =='score desc, metadata_modified desc' %} selected="selected"{% endif %}>{{ _('Relevance') }}</option>
     <option value="title_string asc"{% if sort=='title_string asc' %} selected="selected"{% endif %}>{{ _('Name Ascending') }}</option>

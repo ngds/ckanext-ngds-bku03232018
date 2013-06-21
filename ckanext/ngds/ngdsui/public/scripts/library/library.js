@@ -23,17 +23,6 @@ var ngds = ngds || { };
             + pad(mins) + ':'
             + pad(secs) + 'Z';
     };
-    
-    
-	function callRating(userText, rvalue, rpackId) {
-		var res = confirm(userText);
-	 	var ele = document.getElementById("rating-submit"); 
-		$("#rpackageId").val(rpackId); 
-		$("#ratingValue").val(rvalue); 
-		if (res) {
-		  ele.submit();
-		}
-	}
 
 (function() {
 	$(document).ready(function() { 
@@ -45,8 +34,6 @@ var ngds = ngds || { };
 		    	heightStyle:"content",
 		    	active:false,
 		    	collapsible:true,
-		    	navigation: true,
-		    	icons:{   header: "expandIcon",activeHeader: "collapseIcon"},
 		    	beforeActivate: function(event, ui) {
 						         // The accordion believes a panel is being opened
 						        if (ui.newHeader[0]) {
@@ -64,7 +51,7 @@ var ngds = ngds || { };
 						        currHeader.toggleClass('ui-corner-all',isPanelSelected).toggleClass('accordion-header-active ui-state-active ui-corner-top',!isPanelSelected).attr('aria-selected',((!isPanelSelected).toString()));
 
 						        // Toggle the panel's icon
-						        currHeader.children('.ui-icon').toggleClass('expandIcon',isPanelSelected).toggleClass('collapseIcon',!isPanelSelected);
+						        currHeader.children('.ui-icon').toggleClass('ui-icon-triangle-1-e',isPanelSelected).toggleClass('ui-icon-triangle-1-s',!isPanelSelected);
 
 						         // Toggle the panel's content
 						        currContent.toggleClass('accordion-content-active',!isPanelSelected)    
@@ -74,13 +61,10 @@ var ngds = ngds || { };
 						    }
 		});
 
-		$(".expanded").parents().filter("li").children().filter("h3").click();
-
-
-/*		$(".facet").click(function() {
+		$(".facet").click(function() {
 	      window.location = $(this).attr('href');
 	      return false;
-   		}); */ 
+   		});  
 
 		$('#expander-image').click(function() {
 
@@ -149,12 +133,6 @@ var ngds = ngds || { };
 
 		    window.location.href = window.location.href.split('?')[0]+"?"+finished_string;
 		}); 
-
-		$('.facet').change(function(){
-			//console.log($('.facet').val());
-			window.location.href =$(this).val();
-
-		});
 
 		$('#filter-pub-date').click(function() {
 
@@ -235,7 +213,7 @@ var ngds = ngds || { };
       }
     });
 
-	$( "#search-review[title]" ).tooltip();
+
 
 	});
 
