@@ -118,7 +118,8 @@ class NgdsuiPlugin(SingletonPlugin):
 		"""
 		home_controller = "ckanext.ngds.ngdsui.controllers.home:HomeController"
 		map_controller = "ckanext.ngds.ngdsui.controllers.map:MapController"
-		map.connect("home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
+		map.connect("home","/",controller=home_controller,action="render_index",conditions={"method":["GET"]})
+		map.connect("ngds_home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
 		map.connect("initiate_search","/ngds/initiate_search",controller=home_controller,action="initiate_search",conditions={"method":["POST"]})
 		map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 
@@ -142,7 +143,7 @@ class NgdsuiPlugin(SingletonPlugin):
 		map.connect("bulk_upload_package","/ngds/bulkupload_package",controller=contribute_controller,action="bulkupload_package_list")
 		map.connect("execute_bulkupload","/ngds/execute_bulkupload",controller=contribute_controller,action="execute_bulkupload")
 
-		#map.connect("harvest","/ngds/harvest/{id}/{action}",controller=contribute_controller)
+		map.connect("rating_submit","/ngds/rating_submit",controller=home_controller,action="rating_submit",conditions={"method":["POST"]})
 
 		#Map related paths
 		map.connect("map","/ngds/map",controller=home_controller,action="render_map",conditions={"method":["GET"]})
@@ -213,7 +214,10 @@ class NgdsuiPlugin(SingletonPlugin):
 			'get_field_title':helpers.get_field_title,
 			'is_string_field':helpers.is_string_field,
 			'is_ogc_publishable':helpers.is_ogc_publishable,
-			'jsonify':helpers.jsonify
+			'jsonify':helpers.jsonify,
+            'highlight_rating_star':helpers.highlight_rating_star,
+            'count_rating_reviews':helpers.count_rating_reviews,
+            'rating_text':helpers.rating_text
 		}
 
 	implements(IPackageController,inherit=True)

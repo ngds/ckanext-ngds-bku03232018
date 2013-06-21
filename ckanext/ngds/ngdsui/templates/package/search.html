@@ -29,9 +29,9 @@
   <div id="library-search-results">
 
     <div class="library-search-accordion">
-      <ul class="accordion">
+      <ul class="accordion" id="search-accoridion">
  
-         <img src="/assets/plus_grey.png" title="Expand All" id="expander-image"/> 
+         <!-- <img src="/assets/plus_grey.png" title="Expand All" id="expander-image"/>  -->
          
         {% set facet_list = h.get_ngdsfacets() %}
      
@@ -48,50 +48,56 @@
 
     </div>      
     <div id="search-result-block">
+      <div id="sort-save-bar">
+          <div id="orderby-block">
+            {{ h.snippet('snippets/sort_by.html', sort=c.sort_by_selected) }}
+          </div>   
+          <div id="date-filter">
+              <label >Date Range:</label>
+              <input type="text"  id="from-date"/>
+              <label >to</label>
+              <input type="text"  id="to-date"/>
+              <input type="button" id="filter-pub-date" value="Go"/>
+          </div>      
+          <div id="save-block">
+             <input type="button"  value="+ Save search"/>
+          </div>             
+
+      </div>
 
       <div class="search-results">
+
+
       <div class="search-results-container">
-          
           <div class="search-item-image">
-            
-           
           </div>
-          <div class="search-results-item">
+          <div class="search-results-item no-border">
               <div id="search-text-block">
                 <div id="search-text">
                     {% snippet 'snippets/search_result_text.html', query=c.q, count=c.page.item_count, type='dataset' %}
                 </div>
-
-                <div id="orderby-block">
-                  {{ h.snippet('snippets/sort_by.html', sort=c.sort_by_selected) }}
-                </div>
               </div>
-
+              {% if c.fields_grouped %}
               <div id="filter-block">
                   <div class="filter-list">
+                    <label for="field-order-by">{{ _('Filtered by:') }}</label>
                     {% for field in c.fields_grouped %}
                       <span class="facet">{{ c.facet_titles.get(field) or h.get_field_title(field) }}:</span>
                       {% for value in c.fields_grouped[field] %}
+                      <a href="{{ c.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}">
                         <span class="filtered pill">
                           {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
                             {{ c.translated_fields[(field,value)] }}
                           {% else %}
                             {{ value }}
-                          {% endif %}
-                           <a href="{{ c.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}"><img src="/images/node_delete.png" /></a> 
-                          
+                          {% endif %} <span class="close-button">X</span>
                         </span>
+                        </a>
                       {% endfor %}
                     {% endfor %}
                   </div>
-                  <div id="date-filter">
-                          <label >Date Range:</label>
-                          <input type="text"  id="from-date"/>
-                          <label >to</label>
-                          <input type="text"  id="to-date"/>
-                          <input type="button" id="filter-pub-date" value="Go"/>
-                  </div>                  
               </div>
+              {% endif %}
 
           </div>
 
@@ -99,10 +105,9 @@
 
           {% snippet 'snippets/search_results.html', packages=c.page.items %}
           <div id="pager">
-          <div class="search-item-image">
-            
-           
-          </div>
+            <div class="search-item-image valign-bottom">
+              <div class="show-more"><span>show more results</span></div>           
+            </div>
             <div class="pagination-container">
                     {{ c.page.pager(q=c.q) }}         
             </div>
@@ -112,6 +117,13 @@
 
 </div>
 </form>
+<form id="rating-submit" method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='rating_submit') }}"   >
+
+	<div style="display:None">
+		<input id="rpackageId" name="rpackageId" type=text />
+		<input id="ratingValue" name="ratingValue" type=text/>
+	</div>
+</form> 
 
 </div>
 
