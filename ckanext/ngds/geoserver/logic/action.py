@@ -60,9 +60,7 @@ def publish(context,data_dict):
 
     layer = Layer(geoserver=geoserver, name=layer_name, resource_id=resource_id)
 
-    layer.create()
-
-    return True
+    return layer.create()
 
 
 def unpublish(context,data_dict):

@@ -14,8 +14,11 @@ class Layer(object):
         Creates the new layer to Geoserver and then creates the resources in Package(CKAN).
 
         """
-        self.create_layer()
-        self.create_geo_resources()
+        if self.create_layer() == None:
+            return False
+        if self.create_geo_resources() == None:
+            return False
+        return True
 
     def remove(self,resources_to_remove=None): 
         """
@@ -34,7 +37,8 @@ class Layer(object):
         """
         #If the layer already exists in Geoserver then raise exception.
         if self.geoserver.get_layer(self.name) : 
-            raise Exception("Layer %s already exists in Geoserver.") % self.name
+            # raise Exception("Layer %s already exists in Geoserver.") % self.name
+            return None
 
         #Construct layer creation request.
         self._construct_layer_request("POST")
