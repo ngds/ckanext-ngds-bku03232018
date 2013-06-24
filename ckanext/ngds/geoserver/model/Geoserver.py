@@ -23,7 +23,7 @@ class Geoserver(Catalog):
         @return: workspace instance
         """
 
-        name = ckan_config.get("geoserver.workspace_name", "ngds")
+        name = ckan_config.get("geoserver.workspace_name", "NGDS")
         uri = ckan_config.get("geoserver.workspace_uri", "http://localhost:5000/ngds")
 
         ngds_workspace = self.get_workspace(name)
