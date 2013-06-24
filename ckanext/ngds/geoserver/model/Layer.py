@@ -100,7 +100,7 @@ class Layer(object):
 
         #File Resource Update
         data_dict = {
-        'id': file_resource.id,
+        'id': file_resource['id'],
         'layer_name': self.name
         }
 
