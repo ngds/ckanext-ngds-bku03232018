@@ -2,6 +2,7 @@ from geoserver.support import url
 #from ckan.lib.base import (model,c) 
 from ckan.plugins import toolkit
 from ckanext.ngds.env import ckan_model
+from ckanext.ngds.env import Session
 
 class Layer(object): 
 
@@ -9,6 +10,7 @@ class Layer(object):
         self.geoserver = geoserver
         self.name = name
         self.resource_id = resource_id
+        self.resource = ckan_model.Resource.get(resource_id)
 
     def create(self): 
         """
@@ -52,8 +54,10 @@ class Layer(object):
         Removes the layer from geoserver.
 
         """
-
-        self._construct_layer_request("DELETE")
+        try:
+            self._construct_layer_request("DELETE")
+        except AssertionError:
+            print "No such layer, probably already deleted. Proceeding."
 
 
     def _construct_layer_request(self,action): 
@@ -65,8 +69,10 @@ class Layer(object):
         store = self.geoserver.default_datastore()
 
         self.store = store
-
-        featureType_url = url(self.geoserver.service_url,["workspaces", store.workspace.name, "datastores", store.name, "featuretypes"])
+        if action == "DELETE":
+            featureType_url = url(self.geoserver.service_url,["layers",self.name+".xml"])
+        else:
+            featureType_url = url(self.geoserver.service_url,["workspaces", store.workspace.name, "datastores", store.name, "featuretypes"])
 
         data =  ("<featureType><name>{name}</name></featureType>").format(name=self.name)
 
@@ -106,7 +112,7 @@ class Layer(object):
         }
 
         # toolkit.get_action('resource_update')(context, data_dict)
-        package_id = ckan_model.Resource.get(file_resource['id']).resource_group.package_id
+        package_id = self.resource.resource_group.package_id
 
         action = toolkit.get_action('resource_create')
 
@@ -115,24 +121,24 @@ class Layer(object):
         'url': (self.geoserver.service_url.replace("/rest", "/wms")+'?layers=%s:%s') % (self.store.workspace.name, self.name),
         'package_id': package_id,
         'description': 'WMS for '+file_resource['name'] ,
-        'parent_resource': file_resource['id']
+        'parent_resource': file_resource['id'],
+        'ogc_type':'WMS',
+        'layer_name':self.name
         }
-        print "Creating WMS Resource"
-        print action(context, data_dict)
-        print "Created WMS Resource"
+
+        action(context, data_dict)
 
         data_dict = {
         'url': (self.geoserver.service_url.replace("/rest", "/wfs")+'?layers=%s:%s') % (self.store.workspace.name, self.name),
         'package_id': package_id,
         'name': 'WFS for '+file_resource['name'] ,
         'description': 'WFS for '+file_resource['name'] ,
-        'parent_resource': file_resource['id']
+        'parent_resource': file_resource['id'],
+        'ogc_type':'WFS',
+        'layer_name':self.name
         }
 
-        print "Creating WFS Resource"
         print action(context, data_dict)
-        print "Created WFS Resource"
-
         return True
 
     def remove_resource(self,resources_to_remove): 
@@ -145,18 +151,14 @@ class Layer(object):
         #context = {'model':  model, 'session':  model.Session,'user':  c.user or c.author}
         context ={}
         if not resources_to_remove: 
-            file_resource = toolkit.get_action('resource_show')(context, {'id': self.resource_id})
+            # file_resource = toolkit.get_action('resource_show')(context, {'id': self.resource_id})
 
-            pkg = toolkit.get_action('package_show')(context, {'id':  file_resource.resource_group.package.id})
-            resources_to_remove = [resource["id"] for resource in pkg["resources"] if resource.get("parent_resource") == self.resource_id]
-
-        #File Resource Update
-        data_dict = {
-        'id': self.resource_id,
-        'layer_name': None
-        }
-
-        toolkit.get_action('resource_update')(context, data_dict)
+            package_id = ckan_model.Resource.get(self.resource_id).resource_group.package_id
+            package = ckan_model.Package.get(package_id)
+            resources_to_remove = []
+            for resource in package.resources:
+                if 'parent_resource' in resource.extras and 'ogc_type' in resource.extras:
+                    resources_to_remove.append(resource.id)
 
         for resourceid in resources_to_remove: 
             toolkit.get_action('resource_delete')(context, {'id': resourceid})

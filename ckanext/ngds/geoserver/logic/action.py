@@ -5,6 +5,7 @@ from ckanext.ngds.geoserver.model.Datastored import Datastored
 from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 from ckanext.ngds.geoserver.model.Layer import Layer
 from ckan.plugins import toolkit
+from ckanext.ngds.env import ckan_model
 
 from geoserver.catalog import Catalog
 
@@ -71,10 +72,20 @@ def unpublish(context,data_dict):
     layer_name = data_dict.get("layer_name")
 
     if not layer_name:
-        resource = toolkit.get_action('resource_show')(context,{'id': resource_id})
-        layer_name = resource.get('layer_name')
+        resource = ckan_model.Resource.get(resource_id)
+        # layer_name = resource.get('layer_name')
 
     geoserver = Geoserver.from_ckan_config()
+
+    package_id = ckan_model.Resource.get(resource_id).resource_group.package_id
+    package = ckan_model.Package.get(package_id)
+
+    for resource in package.resources:
+        if 'parent_resource' in resource.extras and 'ogc_type' in resource.extras:
+            extras = resource.extras
+            if extras['parent_resource'] == resource_id:
+                layer_name = extras['layer_name']
+                break
 
     layer = Layer(geoserver=geoserver, name=layer_name, resource_id=resource_id)
 
