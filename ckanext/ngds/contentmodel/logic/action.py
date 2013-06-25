@@ -291,9 +291,13 @@ def create_contentmodel_table(context, data_dict):
     cm_version = _get_or_bust(data_dict, 'cm_version')
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
 
-    cm_schema = contentmodel_get(context, data_dict)
+    try:
 
-    table_name = "test"
+        cm_schema = contentmodel_get(context, data_dict)
+    except Exception as ex:
+        print ex
+
+    table_name = get_contentmodel_name(cm_schema)
 
     field_info_list = cm_schema['field_info']
 
@@ -305,7 +309,7 @@ def create_contentmodel_table(context, data_dict):
 
     table = Table(table_name, metadata,
                   Column('id', types.Integer, primary_key=True),
-                  *(Column(field_info.get('name'), types.UnicodeText) for field_info in field_info_list if field_info.get('name')))
+                  *(Column(field_info.get('name'), get_sqlalchemy_datatype(field_info.get('type'))) for field_info in field_info_list if field_info.get('name')))
 
     if not table.exists():
         table.create()
@@ -313,9 +317,10 @@ def create_contentmodel_table(context, data_dict):
     with open(cm_resource_url) as f:
         csv_content = csv.DictReader(f, delimiter=',')
 
-        for row in csv_content:
+        for record in csv_content:
             # insert data into the table
-            table.insert().values(**row).execute()
+            record = {k.strip(): v if v else None for k, v in record.items()}
+            table.insert().values(**record).execute()
 
 
 def get_sqlalchemy_datatype(cm_datatype):
@@ -334,3 +339,28 @@ def get_sqlalchemy_datatype(cm_datatype):
         sqlalchemyType = data_type.get(cm_datatype)
 
     return sqlalchemyType
+
+def get_contentmodel_name(cm_schema):
+    cm_name = "test"
+
+    uri = cm_schema['uri']
+
+    def find(str, ch):
+        return [i for i, ltr in enumerate(str) if ltr == ch]
+
+    pos = find(uri, '/')
+
+    model_name_pos = pos[len(pos)-2]
+
+    version_pos = pos[len(pos)-1]
+
+    model_name = uri[model_name_pos+1:]
+
+    chars = [',', '!', '.', '-', '/']
+
+    import re
+    cm_name = re.sub('[%s]' % ''.join(chars), '_', model_name)
+
+    #print "cm_name:", cm_name
+
+    return cm_name
