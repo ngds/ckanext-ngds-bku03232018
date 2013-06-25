@@ -1,6 +1,7 @@
 from geoserver.support import url
 #from ckan.lib.base import (model,c) 
 from ckan.plugins import toolkit
+from ckanext.ngds.env import ckan_model
 
 class Layer(object): 
 
@@ -105,9 +106,8 @@ class Layer(object):
         }
 
         # toolkit.get_action('resource_update')(context, data_dict)
-        resource = toolkit.get_action('resource_show')(context,{ 'id':file_resource['id'] })
+        package_id = ckan_model.Resource.get(file_resource['id']).resource_group.package_id
 
-        package_id = resource['resource_group_id']
         action = toolkit.get_action('resource_create')
 
         #WMS Resource Creation
