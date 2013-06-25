@@ -190,7 +190,7 @@ onload="setUpSlideShow()"
               <p class="main-menu-item menu-align">DATA WATCH</p>
               <p class="menu-caption">Recently shared with NGDS</p>
               <hr />
-              <div>
+             <!-- <div>
                 <a href="#" class="not-implemented">Selected Hydrologic Data, San Pitch River Drainage Basin, Utah</a>
                 <p class="data-watch-feed-caption">By G.B. Robinson. Published February 1, 1968</p>
                 <p class="data-watch-feed-caption">Posted October 18, 2012</p>
@@ -204,7 +204,15 @@ onload="setUpSlideShow()"
                 <a href="#" class="not-implemented">Geothermal Resources Development needs in Arizona</a>
                 <p class="data-watch-feed-caption">By Maryland Dept. of Environment.</p>
                 <p class="data-watch-feed-caption">Posted October 18, 2012</p>
-              </div>
+              </div> -->
+              {% for user in c.recent_activity %}
+                <!-- {{ h.username_for_id(user['user_id']) }} -->
+                <div> 
+                  <a href="/dataset/{{user['data']['package']['name']}}" target="_blank">{{user['data']['package']['title']}}</a>
+                  <p class="data-watch-feed-caption">By <a href="/user/{{h.username_for_id(user['user_id'])}}" target="_blank">{{h.username_for_id(user['user_id'])}}</a>. Published {{ h.get_formatted_date(user['timestamp'])}}</p>
+                  <p class="data-watch-feed-caption">Posted {{h.get_formatted_date(user['timestamp'])}}</p>
+                </div>
+              {% endfor %}
           </div>
         </div> <!-- End of Search Daawatch Container -->
       
