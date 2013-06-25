@@ -104,27 +104,36 @@ class Layer(object):
         'layer_name': self.name
         }
 
-        toolkit.get_action('resource_update')(context, data_dict)
+        # toolkit.get_action('resource_update')(context, data_dict)
+        resource = toolkit.get_action('resource_show')(context,{ 'id':file_resource['id'] })
+
+        package_id = resource['resource_group_id']
+        action = toolkit.get_action('resource_create')
 
         #WMS Resource Creation
         data_dict = {
-        'url': (self.geoserver.service_url.replace("/rest", "/wms")+'?layers=%s: %s') % (self.store.workspace.name, self.name),
-        'package_id': file_resource.resource_group.package.id,
-        'description': 'WMS for '+file_resource.name ,
-        'parent_resource': file_resource.id
+        'url': (self.geoserver.service_url.replace("/rest", "/wms")+'?layers=%s:%s') % (self.store.workspace.name, self.name),
+        'package_id': package_id,
+        'description': 'WMS for '+file_resource['name'] ,
+        'parent_resource': file_resource['id']
         }
+        print "Creating WMS Resource"
+        print action(context, data_dict)
+        print "Created WMS Resource"
 
-        toolkit.get_action('resource_create')(context, data_dict)
-
-        #WFS Resource Creation
         data_dict = {
-        'url': (self.geoserver.service_url.replace("/rest", "/wfs")+'?layers=%s: %s') %(self.store.workspace.name,self.name),
-        'package_id': file_resource.resource_group.package.id,
-        'description': 'WFS for '+file_resource.name,
-        'parent_resource': file_resource.id
+        'url': (self.geoserver.service_url.replace("/rest", "/wfs")+'?layers=%s:%s') % (self.store.workspace.name, self.name),
+        'package_id': package_id,
+        'name': 'WFS for '+file_resource['name'] ,
+        'description': 'WFS for '+file_resource['name'] ,
+        'parent_resource': file_resource['id']
         }
 
-        toolkit.get_action('resource_create')(context, data_dict)
+        print "Creating WFS Resource"
+        print action(context, data_dict)
+        print "Created WFS Resource"
+
+        return True
 
     def remove_resource(self,resources_to_remove): 
         """
