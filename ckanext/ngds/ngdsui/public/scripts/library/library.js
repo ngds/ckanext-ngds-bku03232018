@@ -1,4 +1,5 @@
 var ngds = ngds || { };
+ngds.state = ngds.state || ( ngds.state = { } );
 
 	Date.prototype.getISOString = function(timeDecider) {
 		hours = this.getUTCHours();
@@ -27,12 +28,26 @@ var ngds = ngds || { };
     
 	function callRating(userText, rvalue, rpackId) {
 		var res = confirm(userText);
-	 	var ele = document.getElementById("rating-submit"); 
+/*	 	var ele = document.getElementById("rating-submit");
 		$("#rpackageId").val(rpackId); 
 		$("#ratingValue").val(rvalue); 
 		if (res) {
 		  ele.submit();
-		}
+		}*/
+
+        $.ajax({
+          url:'/ngds/rating_submit',
+          'type':'POST',
+          'data':{
+              rpackageId:rpackId,
+              ratingValue:rvalue
+          },
+          success:function(response){
+                window.alert("Thank you for the review. Rating is updated.");
+                window.location.reload();
+          }
+        });
+
 	}
 
 (function() {
@@ -125,8 +140,63 @@ var ngds = ngds || { };
 		if ($(nextElement).length>0){
 			    var newHTML = $(nextElement).html().replace('»','<img src = "/assets/next.png" class="previous"/>');
       			$(nextElement).html(newHTML);
-		}		
+		}
 
+        $('#save_search').click(function() {
+
+		    var url= window.location.href;
+
+            $( "#dialog-form" ).dialog( "open" );
+		});
+
+        $( "#dialog-form" ).dialog({
+          autoOpen: false,
+          height: 185,
+          width: 300,
+          modal: true,
+          buttons: {
+            "Save Search": function() {
+                var url= window.location.href;
+                ngds.state['search_name'] = $("#search_name").val();
+                $.ajax({
+                  url:'/ngds/save_search',
+                  'type':'POST',
+                  'data':{
+                      url:url,
+                      search_name:$( "#search_name" ).val()
+                  },
+                  success:function(response){
+                        $( "#dialog-form" ).dialog( "close" );
+                        var li = $("<li/>",{});
+                        var a = $("<a/>",{text:ngds.state['search_name'], href:window.location.href });
+                        li.append(a);
+                        $("ul#saved-list").append(li);
+                        $("ul#saved-list").menu("refresh");
+                  }
+                });
+            },
+            Cancel: function() {
+              $( this ).dialog( "close" );
+            }
+          }
+        });
+
+       menu = $("ul#saved-list").menu().hide();
+
+        $("#saved_searches_list_button").click(function() {
+                menu.show().position({
+                my: "left top",
+                at: "left bottom",
+                of: this
+                });
+
+                // Register a click outside the menu to close it
+                $( document ).one( "click", function() {
+                    menu.hide();
+                });
+
+                return false;
+        });
 
 		$('#field-order-by').change(function() {
 		    // $('#hide-button').click();

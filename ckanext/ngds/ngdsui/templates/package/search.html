@@ -60,8 +60,24 @@
               <input type="button" id="filter-pub-date" value="Go"/>
           </div>      
           <div id="save-block">
-             <input type="button"  value="+ Save search"/>
-          </div>             
+             <div id="dialog-form" title="Save Search">
+                <label for="search_name">Name</label>
+                <input type="text" id="search_name" class="text ui-widget-content ui-corner-all" />
+             </div>
+            <div>
+              <div>
+                <input type="button"  id="save_search" value="+ Save search"/>
+                <button type="button" id="saved_searches_list_button">V</button>
+
+              </div>
+                      <ul id="saved-list">
+                        {% for usersearch in h.get_usersearches() %}
+                            <li><a href="{{usersearch.url}}" title="{{usersearch.url}}">{{usersearch.search_name}}</a></li>
+                        {% endfor %}
+                     </ul>
+
+            </div>
+          </div>
 
       </div>
 
@@ -80,7 +96,7 @@
               {% if c.fields_grouped %}
               <div id="filter-block">
                   <div class="filter-list">
-                    <label for="field-order-by">{{ _('Filtered by:') }}</label>
+                    <label>{{ _('Filtered by:') }}</label>
                     {% for field in c.fields_grouped %}
                       <span class="facet">{{ c.facet_titles.get(field) or h.get_field_title(field) }}:</span>
                       {% for value in c.fields_grouped[field] %}
@@ -104,6 +120,7 @@
       </div>
 
           {% snippet 'snippets/search_results.html', packages=c.page.items %}
+          {% if c.page.items %}
           <div id="pager">
             <div class="search-item-image valign-bottom">
               <div class="show-more"><span>show more results</span></div>           
@@ -112,18 +129,13 @@
                     {{ c.page.pager(q=c.q) }}         
             </div>
           </div>
+          {% endif %}
       </div>
     </div>
 
 </div>
 </form>
-<form id="rating-submit" method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='rating_submit') }}"   >
 
-	<div style="display:None">
-		<input id="rpackageId" name="rpackageId" type=text />
-		<input id="ratingValue" name="ratingValue" type=text/>
-	</div>
-</form> 
 
 </div>
 

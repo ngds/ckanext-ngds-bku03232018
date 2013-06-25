@@ -434,14 +434,14 @@ header {
 } // End header
 
 
-#logged-in-popup {
-	width:156px; 
+.ngds-popup(@top,@right,@margin-right) {
+	width:156px;
 	border:1px solid black; 
 	position:absolute; 
-	top:30px; 
-	right:0; 
+	top:@top;
+	right:@right;
 	float:right; 
-	margin-right:45px; 
+	margin-right:@margin-right;
 	z-index:6; 
 	background-color:#fff; 
 	display:block;
@@ -471,28 +471,18 @@ header {
 
 			a {
 				line-height:30px;
+
+                &:visited {
+                    color: #000;
+                }
 			}
 		}
 	}
 }
 
-#login-popup {
-	width:150px; 
-	border:1px solid black; 
-	position:absolute; 
-	top:30px; 
-	right:0; 
-	float:right; 
-	margin-right:45px; 
-	z-index:6; 
-	background-color:#fff; 
-	display:block;
-	font-size:@font-regular;
-	font-family:Arial;
-	display:none;
-	text-align:left;
+#logged-in-popup {
+  .ngds-popup(30px,0px,45px);
 }
-
 
 #main-nav {
 
@@ -1361,7 +1351,7 @@ div.about-ngds p.section-title {
 				width:45px;
 				font-size:14px;
 				border:none;
-			}				
+			}
 
 			label {
 				height:24px;
@@ -1488,7 +1478,12 @@ div.about-ngds p.section-title {
 						border:none;
 						.ngds-border-radius(0px);
 					}
-				}
+                    .ui-menu { position: absolute; width: 100px; }
+
+                    li{
+                      text-align: left;
+                    }
+ 				}
 				#date-filter{
 					display:table-cell;
 					width:36%;
@@ -2004,12 +1999,4 @@ div.about-ngds p.section-title {
 		}		
 	}
 
-		
-
-
 }
-
-
-
-
-

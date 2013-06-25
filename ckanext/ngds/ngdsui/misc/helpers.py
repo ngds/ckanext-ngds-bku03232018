@@ -68,7 +68,7 @@ def get_default_group():
 def highlight_rating_star(count,packageId):
     
     package = model.Package.get(packageId)
-    log.debug("rating and count: %s %s", rating.get_rating(package)[0], rating.get_rating(package)[1])
+    #log.debug("rating and count: %s %s", rating.get_rating(package)[0], rating.get_rating(package)[1])
     if rating.get_rating(package)[0] >= count:
         return 1
     else:
@@ -369,3 +369,9 @@ def jsonify(input):
     # Trivial as this may seem, it is neccessary.
     response.headers['Content-Type'] = 'text/html;charset=utf-8'
     return input
+
+def get_usersearches():
+    user = model.User.by_name(c.user.decode('utf8'))
+    query = model.UserSearch.search(user.id)
+
+    return query.all()
