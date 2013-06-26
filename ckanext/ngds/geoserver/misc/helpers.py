@@ -1,4 +1,6 @@
 from ckanext.ngds.env import ckan_model
+from ckan.plugins import toolkit
+from ckan.logic import NotFound
 def is_spatialized(resource):
     spatialized = False
     resource_id = resource['id']
@@ -7,8 +9,16 @@ def is_spatialized(resource):
     for resource in package.resources:
         if 'ogc_type' in resource.extras and 'parent_resource' in resource.extras:
             extras = resource.extras
+            try:
+                toolkit.get_action('resource_show')(None, { 'id':resource.id,'for-view':True })
+            except (NotFound):
+                return False
+
             if extras['parent_resource'] == resource_id\
-                and resource.state =='active' and ( extras['ogc_type'].lower() == 'wms' or extras['ogc_type'].lower() == 'wfs'):
+                and ( extras['ogc_type'].lower() == 'wms' or extras['ogc_type'].lower() == 'wfs'):
+                print resource.state
+                if resource.state !='active':
+                    return False
                 spatialized = True
                 break
     return spatialized
