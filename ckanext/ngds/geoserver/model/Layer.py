@@ -1,8 +1,7 @@
 from geoserver.support import url
 #from ckan.lib.base import (model,c) 
 from ckan.plugins import toolkit
-from ckanext.ngds.env import ckan_model
-from ckanext.ngds.env import Session
+from ckanext.ngds.env import ckan_model, DataStoreSession
 
 class Layer(object): 
 
@@ -29,7 +28,7 @@ class Layer(object):
         """
 
         self.remove_layer()
-        self.remove_datastore()
+        # self.remove_datastore()
         self.remove_resource(resources_to_remove)
 
     def create_layer(self): 
@@ -60,8 +59,12 @@ class Layer(object):
         """
         try:
             self._construct_layer_request("DELETE")
+            self.geoserver.delete(self.geoserver.get_resource(self.name),purge=True)
+            self.geoserver._cache.clear()
         except AssertionError:
             print "No such layer, probably already deleted. Proceeding."
+        DataStoreSession().execute('delete from public.geometry_columns where f_table_name=:res_id',{'res_id':self.resource_id})
+
 
 
     def _construct_layer_request(self,action): 
@@ -170,6 +173,7 @@ class Layer(object):
 
     def remove_datastore(self):
         toolkit.get_action('datastore_delete')(None,{ "resource_id": self.resource_id })
+        DataStoreSession().execute('delete from public.geometry_columns where f_table_name=:res_id',{'res_id':self.resource_id})
 
     def is_ogc_publishable(self):
         url = self.resource.url
