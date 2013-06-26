@@ -29,6 +29,7 @@ class Layer(object):
         """
 
         self.remove_layer()
+        self.remove_datastore()
         self.remove_resource(resources_to_remove)
 
     def create_layer(self): 
@@ -39,6 +40,9 @@ class Layer(object):
         @returns geoserver layer
         """
         #If the layer already exists in Geoserver then raise exception.
+        if self.is_ogc_publishable()==True:
+            if not toolkit.get_action('datastore_search')(None,{ 'resource_id':self.resource_id,'limit':1 }):
+                toolkit.get_action('datastore_create')(None,{ 'resource_id':self.resource_id })
         if self.geoserver.get_layer(self.name) : 
             # raise Exception("Layer %s already exists in Geoserver.") % self.name
             return None
@@ -162,3 +166,13 @@ class Layer(object):
 
         for resourceid in resources_to_remove: 
             toolkit.get_action('resource_delete')(context, {'id': resourceid})
+
+
+    def remove_datastore(self):
+        toolkit.get_action('datastore_delete')(None,{ "resource_id": self.resource_id })
+
+    def is_ogc_publishable(self):
+        url = self.resource.url
+        if url[len(url)-3:len(url)]=='zip' or url[len(url)-3:len(url)]=='csv':
+            return True
+        return False
