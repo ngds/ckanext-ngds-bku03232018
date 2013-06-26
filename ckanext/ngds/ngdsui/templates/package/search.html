@@ -58,7 +58,8 @@
               <label >to</label>
               <input type="text"  id="to-date"/>
               <input type="button" id="filter-pub-date" value="Go"/>
-          </div>      
+          </div>
+          {% if c.user %}
           <div id="save-block">
              <div id="dialog-form" title="Save Search">
                 <label for="search_name">Name</label>
@@ -67,17 +68,20 @@
             <div>
               <div>
                 <input type="button"  id="save_search" value="+ Save search"/>
+                 {% set user_searches=h.get_usersearches() %}
+                  {% if user_searches %}
                 <button type="button" id="saved_searches_list_button">V</button>
-
-              </div>
                       <ul id="saved-list">
-                        {% for usersearch in h.get_usersearches() %}
+                        {% for usersearch in user_searches %}
                             <li><a href="{{usersearch.url}}" title="{{usersearch.url}}">{{usersearch.search_name}}</a></li>
                         {% endfor %}
                      </ul>
+                  {% endif %}
+              </div>
 
             </div>
           </div>
+          {% endif %}
 
       </div>
 

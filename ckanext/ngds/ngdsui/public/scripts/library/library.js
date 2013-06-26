@@ -166,10 +166,11 @@ ngds.state = ngds.state || ( ngds.state = { } );
                       search_name:$( "#search_name" ).val()
                   },
                   success:function(response){
-                        $( "#dialog-form" ).dialog( "close" );
+                        $( "#dialog-form" ).dialog("close");
                         var li = $("<li/>",{});
                         var a = $("<a/>",{text:ngds.state['search_name'], href:window.location.href });
                         li.append(a);
+                        $( "#search_name" ).val('');
                         $("ul#saved-list").append(li);
                         $("ul#saved-list").menu("refresh");
                   }
