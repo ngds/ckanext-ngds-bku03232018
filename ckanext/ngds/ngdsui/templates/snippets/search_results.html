@@ -74,9 +74,9 @@
 
               </div>
               <div id="search-action-row">
-
+                  <span id="resources">
                   {% if package.resources and not hide_resources %}
-                    <span id="resources">
+
                       <ul class="dataset-resources unstyled">
                         {% for resource in h.dict_list_reduce(package.resources, 'format') %}
                           <li>
@@ -84,8 +84,8 @@
                           </li>
                         {% endfor %}
                       </ul>
-                    </span>
                   {% endif %}
+                   </span>
 
                   <span id="actions"><img src="/assets/email.png" class="action-image"/></span>
               </div>              
