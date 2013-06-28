@@ -64,8 +64,7 @@ class NgdsTestCase(TestCase):
             state="active",
             resources=[]
         )
-
-        package.update(package_dict)
+        
         return toolkit.get_action("package_create")({"user": self.admin_user().name}, package)
 
     def add_resource(self, resource_dict):
