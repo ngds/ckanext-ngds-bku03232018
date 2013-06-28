@@ -1781,9 +1781,30 @@ div.about-ngds p.section-title {
 			text-align:right;
 			width:110%;
 			padding-top:5px;
-			.action-image{
-				padding-right:5px;
-			}
+
+            #resources{
+              display: table-cell;
+              text-align: left;
+              width:95%;
+              @import "file_formats.less";
+            }
+            #actions{
+                display: table-cell;
+
+                .action-image{
+                  padding-right:5px;
+                }
+            }
+
+            ul.unstyled, ol.unstyled {
+              margin-left: 0;
+              padding:0px;
+              list-style: none;
+              li {
+                display: inline;
+              }
+            }
+
 		}
 
 	}

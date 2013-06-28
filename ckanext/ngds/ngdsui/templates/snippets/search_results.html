@@ -1,9 +1,13 @@
    
    {% for package in packages %}
+
            <div class="search-results-container">
           <div class="search-item-image">
-            
-             <img src="/assets/dataset.png" /> 
+
+              {% set category_image_path= h.get_dataset_category_image_path(package) %}
+
+
+             <img src="{{category_image_path}}" />
             
             </div>
           <div class="search-results-item">
@@ -64,14 +68,26 @@
                      {% endif %} 
                                                                           
                     </span>
-                    <span>{{h.count_rating_reviews(package.id)}} reviews  #</span>
-                    <span>{{package.downloads}} downloads</span> </p>
+                    <span>{{h.count_rating_reviews(package.id)}} reviews </span></p>
                   </div>
                   
 
               </div>
               <div id="search-action-row">
-                  <span><img src="/assets/email.png" class="action-image"/></span>
+
+                  {% if package.resources and not hide_resources %}
+                    <span id="resources">
+                      <ul class="dataset-resources unstyled">
+                        {% for resource in h.dict_list_reduce(package.resources, 'format') %}
+                          <li>
+                            <a href="{{ h.url_for(controller='package', action='read', id=package.name) }}" class="label" data-format="{{ resource.lower() }}">{{ resource }}</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </span>
+                  {% endif %}
+
+                  <span id="actions"><img src="/assets/email.png" class="action-image"/></span>
               </div>              
           </div>
             </div>

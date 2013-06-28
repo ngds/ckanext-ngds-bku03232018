@@ -222,7 +222,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'highlight_rating_star':helpers.highlight_rating_star,
             'count_rating_reviews':helpers.count_rating_reviews,
             'rating_text':helpers.rating_text,
-            'get_usersearches':helpers.get_usersearches
+            'get_usersearches':helpers.get_usersearches,
+            'get_dataset_category_image_path':helpers.get_dataset_category_image_path
         }
 
     implements(IPackageController,inherit=True)

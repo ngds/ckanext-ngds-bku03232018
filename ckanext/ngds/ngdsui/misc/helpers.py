@@ -375,3 +375,35 @@ def get_usersearches():
     query = model.UserSearch.search(user.id)
 
     return query.all()
+
+def get_dataset_category_image_path(package):
+
+    image_path = '/assets/dataset.png'
+
+    dataset_category = None
+
+    for extra in package.get('extras'):
+        key = extra.get('key')
+        if key and key=='dataset_category':
+            dataset_category = extra.get('value')
+            break
+
+    category_image_link = {
+        'Dataset' :'/assets/dataset.png',
+        'Physical Collection' :'/assets/dataset.png',
+        'Catalog' :'/assets/dataset.png',
+        'Movie or Video' :'/assets/dataset.png',
+        'Drawing' :'/assets/dataset.png',
+        'Photograph' :'/assets/dataset.png',
+        'Remotely-Sensed Image' :'/assets/dataset.png',
+        'Map' :'/assets/dataset.png',
+        'Text Document' :'/assets/document.png',
+        'Physical Artifact' :'/assets/dataset.png',
+        'Desktop Application' :'/assets/dataset.png',
+        'Web Application' :'/assets/dataset.png'
+    }
+
+    if dataset_category and  dataset_category in category_image_link:
+        image_path = category_image_link.get(dataset_category)
+
+    return image_path
