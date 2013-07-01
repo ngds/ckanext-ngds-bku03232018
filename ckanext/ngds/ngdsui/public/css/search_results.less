@@ -21,18 +21,16 @@
 			margin-top:10px;
 
 			input[type="text"] {
-				height:30px;
-				font-weight: bold;
-				margin-right:50px;
-				font-size:18px;
-				border:none;
+				height:35px;
+                font-weight:bold;
+                padding-top:10px;
+                width:710px;
+                margin-left:90px;
+
 			}
 
-			input[type="submit"] {
-				height:32px;
-				width:45px;
-				font-size:14px;
-				border:none;
+			button {
+                height:35px;
 			}
 
 			label {
@@ -149,10 +147,13 @@
 					margin-left:20px;
 					width:34%;
 					text-align:left;
+                    select{
+                      margin-bottom:0px;
+                    }
 				}
 				#save-block{
 					display:table-cell;
-					width:30%;
+					width:20%;
 					text-align:right;
 					input[type="button"] {
 						.ngds-button(25px);
@@ -176,14 +177,17 @@
 					padding-left:0px;
 					padding-right:0px;
 					text-align:right;
+
 					input[type="text"] {
 						width:65px;
+                        margin-bottom:0px;
 					}
 					input[type="button"] {
 						.ngds-button(25px);
-						width:30px;
-						border:none;
+						//width:30px;
+						//border:none;
 						.ngds-border-radius(0px);
+
 					}
 				}
 			}
@@ -284,7 +288,7 @@
 }
 
 .js-hide{
-	display:none;
+	display:none !important;
 }
 
 .search-item-image{

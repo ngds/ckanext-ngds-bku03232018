@@ -49,7 +49,7 @@ span.ui-dialog-title {
   float: left;
 }
 
-.btn {
+/*.btn {
   padding: 5px 10px 5px 8px;
   border-color: #b7b7b7;
   line-height: 27px;
@@ -60,7 +60,7 @@ span.ui-dialog-title {
 .btn-primary{
 	color: #ffffff;
 	background-color: #085871;
-}
+}*/
 
 .btn-success{
 	color: #ffffff;
@@ -71,6 +71,7 @@ span.ui-dialog-title {
 body {
 	margin:@page-margin;
 	text-align:center;
+    background:none;
 	background:#f2f2f2;
 	font-family:arial;
 	font-style:normal;
@@ -104,8 +105,6 @@ p {
 	margin: 0 0 10px;
 	word-wrap: break-word;
 }
-
-
 
 .lrb-border {
 	border-right:2px solid #f0f0f0;
@@ -213,16 +212,20 @@ p {
 }
 
 .ngds-button(@height) {
-	.ngds-button-common;
+/*	.ngds-button-common;
 	padding-bottom:2px;
-	height:@height;
+	height:@height;*/
+    .btn;
+  .btn-primary;
 }
 
 .ngds-button(@width,@height) {
-	.ngds-button-common;
+/*	.ngds-button-common;
 	width:@width;
 	padding-bottom:2px;
-	height:@height;
+	height:@height;*/
+  .btn;
+  .btn-primary;
 }
 
 .ngds-border-radius(@radius){
@@ -245,17 +248,11 @@ input[type="submit"] {
 	.ngds-button(23px);
 }
 
-button {
-	.ngds-button(23px);
-}
 
 input[value="Go"] {
 	.ngds-button(40px,23px);
 }
 
-button[type="submit"] {
-	.ngds-button(23px);
-}
 
 input[type="reset"] {
 	.ngds-button(23px);
@@ -263,4 +260,34 @@ input[type="reset"] {
 
 .no-padding {
 	padding:0px;
+}
+
+
+label{
+  display: inline;
+}
+
+.wrapper{
+  text-align: left;
+  background-position: 71px top;
+}
+
+[role="main"] {
+  background: none;
+
+  .primary {
+    width: 945px;
+  }
+  .secondary{
+    width:290px;
+  }
+
+}
+
+.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+width: 1240px;
+}
+
+input[type="text"] {
+  margin-bottom:0px;
 }

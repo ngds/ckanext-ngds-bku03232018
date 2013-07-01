@@ -5,7 +5,7 @@
 div#login-popup p:first-child {
 	margin-left:15px;
 	margin-top:20px;
-	
+
 }
 
 div#login-popup p {
@@ -81,7 +81,7 @@ div#library-search-container div.library-search-pre, div.library-search-bar {
 	border-radius:5px;
 	-webkit-border-radius:5px;
 	position:absolute;
-}	
+}
 
 div#library-search-container div.library-search-pre {
 	left:180px;
@@ -164,7 +164,7 @@ div#library-search-container div.library-search-accordion-header h4 {
 	padding-bottom:3px;
 }
 
-div.library-search-browse-header { 
+div.library-search-browse-header {
 	margin-bottom:20px;
 }
 
@@ -220,7 +220,7 @@ div.search-browse-inverted-dome { /* Tres cool. */
 	border-top: 25px solid #dadada;
 	border-left: 120px solid transparent;
 	border-right: 120px solid transparent;
-} 
+}
 
 div#content-container {
 	padding-bottom:20px;
@@ -246,7 +246,7 @@ div.map-search span.left {
 div.map-search p.map-search-desc {
 	margin-left:15px;
 	font-family:Arial;
-	font-size:12px; 
+	font-size:12px;
 	margin-bottom:5px;
 }
 
@@ -290,7 +290,7 @@ div.contribute-central p.sub-section-title {
 	font-weight:bold;
 	border-bottom: 1px solid #444444;
 	margin-right: 40px;
-	margin-bottom: 10px;	
+	margin-bottom: 10px;
 }
 
 
@@ -302,7 +302,7 @@ div#contribute-central div.existing-nodes {
 }
 
 div#contribute-central div.create-node {
-	float:right;	
+	float:right;
 	margin:10px;
 	margin-right:20px;
 	width:320px;
@@ -312,7 +312,7 @@ div#nodes-display table{
 	font-size:13px;
 	text-align:justify;
 	font-family:Arial;
-	width: 600px;	
+	width: 600px;
 	border-collapse: collapse;
 }
 
@@ -327,7 +327,7 @@ div#nodes-display td{
 }
 
 
-div#nodes-display a:hover, div#nodes-display a:visited, div#nodes-display a:link, div#nodes-display a:active    
+div#nodes-display a:hover, div#nodes-display a:visited, div#nodes-display a:link, div#nodes-display a:active
 {
     text-decoration: none;
 }
@@ -342,17 +342,17 @@ div#contribute-central div.existing-nodes-admin {
 }
 
 div#contribute-central div.create-node-admin {
-	float:right;	
+	float:right;
 	padding-top:70px;
 	padding-right:10px;
 	width:220px;
-	min-height: 200px;	
+	min-height: 200px;
 }
 
 div#manage-nodes table{
 	font-size:13px;
 	font-family:Arial;
-	width: 750px;		
+	width: 750px;
 	border:1px solid #a8a8a8;
 	border-collapse: collapse;
 }
@@ -395,12 +395,12 @@ fieldset {
 Map widget
 */
 #map-widget-control-menu {
-	width:95%; 
-	height:50px; 
-	z-index:5; 
-	position:absolute; 
-	top:15px; 
-	left:15px; 
+	width:95%;
+	height:50px;
+	z-index:5;
+	position:absolute;
+	top:15px;
+	left:15px;
 	background-color:#fff;
 	border-radius:5px;
 	-webkit-border-radius:5px;
@@ -533,7 +533,7 @@ div#basemap-combo {
 /* Upload page */
 
 #info-tip-container {
-	display:table;	
+	display:table;
 	float:left;
 	margin-right:20px;
 }
@@ -651,7 +651,7 @@ div.module-content form.dataset-form {
 
 div.controls select {
 	width:200px;
-	
+
 	margin-top:5px;
 	margin-left:40px;
 	height:25px;
@@ -666,8 +666,8 @@ div.controls div#bbox-map {
 	padding-left: 0px;
 }*/
 
-/*label[for="field-extras-0-remove"], label[for="field-extras-0-key"], 
-label[for="field-extras-0-key"], label[for="field-extras-0-value"], 
+/*label[for="field-extras-0-remove"], label[for="field-extras-0-key"],
+label[for="field-extras-0-key"], label[for="field-extras-0-value"],
 input#field-extras-0-key, input#field-extras-0-value {
 	display:none;
 }*/
@@ -712,7 +712,7 @@ input#field-extras-0-key, input#field-extras-0-value {
 	border-radius: 0 0 4px 4px;
 }
 
-.slug-preview { 
+.slug-preview {
 	margin-top:30px;
 	text-align:left;
 }
@@ -796,12 +796,12 @@ li.select2-search-field input{
 /* CKAN styles that need to be overriden for the autocomplete to look nice */
 
 .select2-drop {
-	
+
 }
 
 
 
-/* END CKAN STYLES THAT NEED TO BE OVERRIDEN*/ 
+/* END CKAN STYLES THAT NEED TO BE OVERRIDEN*/
 
 
 .ui-menu-item a {
@@ -884,7 +884,7 @@ div#manage-users td,div#manage-users th{
   -moz-box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
   position: relative;
-  
+
   margin-bottom: 10px;
 }
 .wrapper:before,
@@ -972,7 +972,7 @@ div#manage-users td,div#manage-users th{
   float: right;
 }
 
-.preamble { 
+.preamble {
 	font-family: Arial;
 	font-size: 16px;
 	margin-top:20px;

@@ -19,9 +19,10 @@
         
         
             <fieldset>
-              <label >Search</label>
-              <input type="text" class="search-browse-big-bar" name="q" value="{{ c.q }}" />
-              <input type="submit" value="Go"/>
+                <span class=" search-giant">
+                  <input type="text" class="search" name="q" value="{{ c.q }}" autocomplete="off" placeholder="Search...">
+                  <button type="submit" value="Search">Submit</button>
+                </span>
             </fieldset>
         
   </div>
@@ -53,11 +54,12 @@
             {{ h.snippet('snippets/sort_by.html', sort=c.sort_by_selected) }}
           </div>   
           <div id="date-filter">
-              <label >Date Range:</label>
+              <label >Date Range</label>
               <input type="text"  id="from-date"/>
               <label >to</label>
               <input type="text"  id="to-date"/>
-              <input type="button" id="filter-pub-date" value="Go"/>
+              <a class="btn-primary" id ="filter-pub-date" href="#"><i class="icon-check"></i></a>
+              <!-- <input type="button" id="filter-pub-date" value=""><i class="icon-check-sign"></i></input> -->
           </div>
           {% if c.user %}
           <div id="save-block">

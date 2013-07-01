@@ -16,6 +16,7 @@
 		width:310px;
 		background-color:#fff;
 		opacity:0.8;
+        margin-bottom:0px;
 		//box-sizing:border-box;
 		//-moz-box-sizing:border-box;
 		//-webkit-box-sizing:border-box;
@@ -165,6 +166,15 @@
 	height:700px;
 	position:relative;
 	z-index:3000;
+
+    label {
+       font-weight:normal;
+      font-size:12px;
+    }
+
+    label::after  {
+      content:"";
+    }
 }
 
 .leaflet-map-pane {
@@ -193,7 +203,8 @@
 		}
 
 		input[type="button"]{
-			width:40px;
+			width: 33px;
+            padding-left: 5px;
 		}
 	}
 }

@@ -1,7 +1,7 @@
 #data-watch-container {
 	.dialog-common('/assets/border_box_2.png');
 	margin-top:20px;
-	height:525px;
+	height:480px;
 	.lrb-border;
 
 	p+div {
@@ -54,7 +54,7 @@ div#showcase-find-map-container { // Showcase map find container begin
 
 	.map-find-content-common(@left) {
 		display:inline;
-		width:326px;
+		width:405px;
 		position:absolute;
 		top:10px;
 		left:@left;
@@ -123,7 +123,7 @@ div#showcase-find-map-container { // Showcase map find container begin
 		color:#515151;
 	}
 
-	@input-elem-margin-top:12px;
+	@input-elem-margin-top:0px;
 	@input-elem-height:25px;
 
 	#search-container {
@@ -139,9 +139,27 @@ div#showcase-find-map-container { // Showcase map find container begin
 			border:1px solid #cacaca;
 		}
 
-		input[type="submit"] {
-			margin-top:@input-elem-margin-top;
+        input[type="text"], input[type="select"], input[type="submit"] {
+			margin:@input-elem-margin-top;
+            height: 25px;
+            padding-top: 2px;
 		}
+
+        input[type="text"] {
+            margin-left:20px;
+        }
+
+        input[type="submit"] {
+          width: 35px;
+          padding-left: 6px;
+        }
+
+
+      select {
+          width:80px;
+          margin-bottom:0px;
+          padding:0px;
+      }
 	}
 }
 
