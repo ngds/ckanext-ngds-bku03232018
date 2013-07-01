@@ -51,29 +51,39 @@
 <script type="application/javascript" src="/scripts/contribute/responsible_party.js"></script>
 
 <script>
-  new ngds.responsible_party().multi_responsibilify({
-    'mrs_fake':'authors_fake',
-    'mrs':'authors',
-    'rs_frag':'author',
-    'mrs_proxy':{
-      'name':'author_email',
-      'value':'email'
-    }
-  });
-
-
   // new ngds.responsible_party().responsibilify({
-  //   'rs_name':'#author_name',
-  //   'rs_email':'#author_email',
-  //   'rs_fake':'#author_fake',
-  //   'rs':'#author'
+  //   'mrs_fake':'authors_fake',
+  //   'mrs':'authors',
+  //   'rs_frag':'author',
+  //   'mrs_proxy':{
+  //     'name':'author_email',
+  //     'value':'email'
+  //   },
+
   // });
 
-  new ngds.responsible_party().responsibilify({
-    'rs_name':'#maintainer_name',
-    'rs_email':'#maintainer_email',
-    'rs_fake':'#maintainer_fake',
-    'rs':'#maintainer'
+var authors_ac = ngds.autocomplete("#authors_fake","/responsible_parties",'q',['name','email'],'name',true); 
+$("#authors_fake").on('autocompletechange',function(){
+  $("#authors_fake").val('');
+});
+
+authors_ac.proxy("#authors",function(dict) {
+  console.log(dict);
+    var state = ngds.util.state;
+    state['auth_autocomp'] = state['auth_autocomp'] || (state['auth_autocomp'] = [ ]);
+    var slug = ngds.util.get_slug(dict['name']);
+    slug.show();
+    $("#authors").after(slug);
+    console.log($("#authors_fake"));
+    $("#authors_fake").val(" ");
+    // $("#authors").val(JSON.stringify(state['auth_autocomp']));
+});  
+
+new ngds.responsible_party().responsibilify({
+  'rs_name':'#maintainer_name',
+  'rs_email':'#maintainer_email',
+  'rs_fake':'#maintainer_fake',
+  'rs':'#maintainer'
   });
 </script>
 

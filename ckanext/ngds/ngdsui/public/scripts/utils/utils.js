@@ -137,5 +137,12 @@ ngds.util.parse_raw_json = function(raw) {
     console.log(parsed_json);
 	x= JSON.parse(parsed_json);
     return x;
-}
+};
 
+ngds.util.get_slug = function(value) {
+	return $("<span/>",{"class":"ngds-slug","text":value});
+};
+
+ngds.util.state = {
+
+};
