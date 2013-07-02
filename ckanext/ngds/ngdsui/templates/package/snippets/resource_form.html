@@ -67,7 +67,7 @@
 </form>
 
 {% raw %}
-
+<script type="text/javascript" src="/scripts/contribute/responsible_party.js"></script>
 <script type="text/javascript" src="/scripts/contribute/resource_form_fields.js"></script>
 <script type="text/javascript" src="/scripts/autocomplete.js"></script>
 <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
@@ -108,15 +108,24 @@ var render_forms = function(value) {
   }
 
   if(value==="data-service" || value==="unstructured" || value==="structured") {
-    var dist_autocomp = ngds.autocomplete(".distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
-    dist_autocomp.proxy(".distributor_name","name"); 
-    dist_autocomp.proxy(".distributor_email","email");
-    dist_autocomp.proxy(".distributor",function(dict) {
-      $(".distributor").val(JSON.stringify({
-        "distributor_name":dict.name,
-        "distributor_email":dict.email
-      }));
-    });  
+    // var dist_autocomp = ngds.autocomplete(".distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
+    // dist_autocomp.proxy(".distributor_name","name"); 
+    // dist_autocomp.proxy(".distributor_email","email");
+    // dist_autocomp.proxy(".distributor",function(dict) {
+    //   $(".distributor").val(JSON.stringify({
+    //     "distributor_name":dict.name,
+    //     "distributor_email":dict.email
+    //   }));
+    // });  
+console.log($("#distributor_name"));
+console.log($("#distributor_email"));
+    console.log("here");
+    new ngds.responsible_party().responsibilify({
+      'rs_name':'#distributor_name',
+      'rs_email':'#distributor_email',
+      'rs_fake':'#distributor_fake',
+      'rs':'#distributor'
+    });
   }
 };
 

@@ -36,10 +36,13 @@ ngds.responsible_party = function() {
 	    var rs_email = me.rs_email;
 
 	    rs_ac.proxy(me.rs,function(dict) {
-	      $(me.rs).val(JSON.stringify({
+	      var rs_map = ngds.util.state[me.rs_token] || ( ngds.util.state[me.rs_token] = { });
+	      var vdict = escape(JSON.stringify({
 	        rs_name:dict.name,
 	        rs_email:dict.email
 	      }));
+	      $(me.rs).val(vdict);
+	      ngds.util.state[me.rs_token] = vdict;
 	    });  
 
 	    $(me.rs_fake).after($("<span/>",{ 'id':me.rs.replace("#","")+'_slug',class:'ngds-slug' }));
@@ -72,10 +75,10 @@ ngds.responsible_party = function() {
 		working_name = null;
 		var working_email = null;
 
-		rs_ac.proxy(null,function(dict) {
-			working_name = dict.name;
-			working_email = dict.email;
-		});
+		// rs_ac.proxy(null,function(dict) {
+		// 	working_name = dict.name;
+		// 	working_email = dict.email;
+		// });
 		
 		mrs_anch.on('click',function(ev){
 			if(working_email === null && working_name === null) {
@@ -120,9 +123,8 @@ ngds.responsible_party = function() {
 	};
 
 	var setup_blur = function() {
-	
 		me.rs_blur = function(ev) {
-			  if($(me.rs_fake).is(":focus")===true) {
+			 if($(me.rs_fake).is(":focus")===true) {
 			    return;
 			  }
 
@@ -131,6 +133,8 @@ ngds.responsible_party = function() {
 			    $(me.rs_email).val("");
 			    $(me.rs_slug).html("");
 			    $(me.rs_slug).hide();
+			    ngds.util.state[me.rs_token] = '';	
+			    $(me.rs).val('');		    
 			    $(me.rs_fake).show();
 			  }
 

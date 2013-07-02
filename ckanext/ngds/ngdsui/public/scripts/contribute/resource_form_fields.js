@@ -58,7 +58,7 @@ var structured_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
+        // return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
       },
       'title':'The distributor for this resource'
     },
@@ -141,7 +141,7 @@ var unstructured_form = {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
+        // return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
       },
       'title':'The distributor for this resource'
     },
@@ -281,15 +281,13 @@ var link_data_service_form = {
       'top_classes':function() {
         return "distributor";
       },
-      'class':function() {
-        return 'distributor-fake'
-      },
+      'id':'distributor_fake',
       'tag':'input',
       'additional':function() {
         return 'type=text';
       },
       'additional_content':function() {
-        return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
+        // return '<span class="ngds-slug" style="display:none;"></span><br/><a href="javascript:create_distributor();" class="new-distributor form-anchor">Add Distributor</a>';
       },
       'title':'The distributor for this resource'
     },
@@ -349,17 +347,17 @@ var link_data_service_form = {
   'custom':[
     {
       'tag':'input',
-      'name':'distributor',
+      'id':'distributor',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'class':'distributor_name',
+      'id':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'class':'distributor_email',
+      'id':'distributor_email',
       'type':'hidden'
     }
   ]
@@ -370,115 +368,117 @@ $(document).tooltip({
     collision:'none'
   }
 });
-var create_distributor = function() {
-  var distributor_anch = $(".distributor>a");
-  $(".create_distributor_form").remove();
-  $(".distributor-fake").val("");
-  $(".new-distributor").hide();
-  distributor_anch.hide();
-  var responsible_parties = {
-    'responsible_parties':[
-      {
-        'label':'Name',
-        'name':'responsible_party_name',
-        'class':'create_distributor_form',
-        'type':'text'
-      },
-      {
-        'label':'Email',
-        'name':'responsible_party_email',
-        'class':'create_distributor_form',
-        'type':'text'
-      },
-      {
-        'button':'Create',
-        'class':'create_distributor_form create_distributor'
-      },
-       {
-        'button':'Cancel',
-        'class':'create_distributor_form cancel_create_distributor'
-      },
-      {
-        'span':'distributor_create_status',
-        'class':'create_distributor_form',
-        'style':'color:green;font-size:13px;'
-      }
-    ]
-  };
-
-  distributor_anch.after(Mustache.render(ngds.add_responsible_party_template,responsible_parties));
-
-  $('.create_distributor').on('click',function(ev) {
-      var name = $("[name=responsible_party_name]").val();
-      var email = $("[name=responsible_party_email]").val();
-
-      $.ajax({
-        'url':'/api/action/additional_metadata',
-        'type':'POST',
-        'data':JSON.stringify({
-          "process":"create",
-          "model":"ResponsibleParty",
-          "data":{
-            "name":name,
-            "email":email
-          }
-        }),
-        'success':function(response) {
-          $(".distributor_name").val(response.result.name);
-          $(".distributor_email").val(response.result.email);
-          $(".distributor_create_status").html("Success");
-          $(".create_distributor_form").fadeOut(1500,function() {
-             $(".create_distributor_form").remove();
-             $(".distributor-fake").val(response.result.name);
-             distributor_blur_handler();
-          });
-        }
-  });
-  });
-
-  $(".cancel_create_distributor").on('click',function(ev) {
-    $(".new-distributor").show();
-    $(".create_distributor_form").remove();
-  });
-
-}
-var edit_distributor = function()  {
-  $(".distributor-fake").show();
-  $(".ngds-slug").hide();
-  $(".distributor-edit").remove();
-  $(".new-distributor").show();
-};
-$(".ngds-slug").on('click',edit_distributor);
-var distributor_blur_handler = function(ev) {
-  if($(".distributor-fake").is(":focus")===true) {
-    return;
-  }
-
-  if($(".distributor-fake").val()==="") {
-    $(".distributor_name").val("");
-    $(".distributor_email").val("");
-    $(".ngds-slug").html("");
-    $(".ngds-slug").hide();
-    $(".distributor-fake").show();
-  }
-
-  if(typeof ev!=='undefined' && typeof $(ev.target).attr('class') !=='undefined' && $(ev.target).attr('class').indexOf('ngds-slug')!==-1) {
-    edit_distributor();
-    return;
-  }
-
-  var distributor_name = $(".distributor_name").val();
-  var distributor_email = $(".distributor_email").val();
-
-  if(distributor_name!==null && typeof distributor_name !=='undefined' && distributor_name!=='' && distributor_email!==null && distributor_email!=='' && typeof distributor_email !=='undefined') {
-    $(".distributor-fake").hide();
-    $(".new-distributor").hide();
-    $(".ngds-slug").show();
-    $(".ngds-slug").html(distributor_name);
-    $(".ngds-slug").attr("title",distributor_name+", "+distributor_email);
-  }
-};
 
 
-$(document).on('click',distributor_blur_handler);
-$(document).on('blur',".distributor-fake",distributor_blur_handler);
+// var create_distributor = function() {
+//   var distributor_anch = $(".distributor>a");
+//   $(".create_distributor_form").remove();
+//   $(".distributor-fake").val("");
+//   $(".new-distributor").hide();
+//   distributor_anch.hide();
+//   var responsible_parties = {
+//     'responsible_parties':[
+//       {
+//         'label':'Name',
+//         'name':'responsible_party_name',
+//         'class':'create_distributor_form',
+//         'type':'text'
+//       },
+//       {
+//         'label':'Email',
+//         'name':'responsible_party_email',
+//         'class':'create_distributor_form',
+//         'type':'text'
+//       },
+//       {
+//         'button':'Create',
+//         'class':'create_distributor_form create_distributor'
+//       },
+//        {
+//         'button':'Cancel',
+//         'class':'create_distributor_form cancel_create_distributor'
+//       },
+//       {
+//         'span':'distributor_create_status',
+//         'class':'create_distributor_form',
+//         'style':'color:green;font-size:13px;'
+//       }
+//     ]
+//   };
+
+//   distributor_anch.after(Mustache.render(ngds.add_responsible_party_template,responsible_parties));
+
+//   $('.create_distributor').on('click',function(ev) {
+//       var name = $("[name=responsible_party_name]").val();
+//       var email = $("[name=responsible_party_email]").val();
+
+//       $.ajax({
+//         'url':'/api/action/additional_metadata',
+//         'type':'POST',
+//         'data':JSON.stringify({
+//           "process":"create",
+//           "model":"ResponsibleParty",
+//           "data":{
+//             "name":name,
+//             "email":email
+//           }
+//         }),
+//         'success':function(response) {
+//           $(".distributor_name").val(response.result.name);
+//           $(".distributor_email").val(response.result.email);
+//           $(".distributor_create_status").html("Success");
+//           $(".create_distributor_form").fadeOut(1500,function() {
+//              $(".create_distributor_form").remove();
+//              $(".distributor-fake").val(response.result.name);
+//              distributor_blur_handler();
+//           });
+//         }
+//   });
+//   });
+
+//   $(".cancel_create_distributor").on('click',function(ev) {
+//     $(".new-distributor").show();
+//     $(".create_distributor_form").remove();
+//   });
+
+// }
+// var edit_distributor = function()  {
+//   $(".distributor-fake").show();
+//   $(".ngds-slug").hide();
+//   $(".distributor-edit").remove();
+//   $(".new-distributor").show();
+// };
+// $(".ngds-slug").on('click',edit_distributor);
+// var distributor_blur_handler = function(ev) {
+//   if($(".distributor-fake").is(":focus")===true) {
+//     return;
+//   }
+
+//   if($(".distributor-fake").val()==="") {
+//     $(".distributor_name").val("");
+//     $(".distributor_email").val("");
+//     $(".ngds-slug").html("");
+//     $(".ngds-slug").hide();
+//     $(".distributor-fake").show();
+//   }
+
+//   if(typeof ev!=='undefined' && typeof $(ev.target).attr('class') !=='undefined' && $(ev.target).attr('class').indexOf('ngds-slug')!==-1) {
+//     edit_distributor();
+//     return;
+//   }
+
+//   var distributor_name = $(".distributor_name").val();
+//   var distributor_email = $(".distributor_email").val();
+
+//   if(distributor_name!==null && typeof distributor_name !=='undefined' && distributor_name!=='' && distributor_email!==null && distributor_email!=='' && typeof distributor_email !=='undefined') {
+//     $(".distributor-fake").hide();
+//     $(".new-distributor").hide();
+//     $(".ngds-slug").show();
+//     $(".ngds-slug").html(distributor_name);
+//     $(".ngds-slug").attr("title",distributor_name+", "+distributor_email);
+//   }
+// };
+
+
+// $(document).on('click',distributor_blur_handler);
+// $(document).on('blur',".distributor-fake",distributor_blur_handler);
