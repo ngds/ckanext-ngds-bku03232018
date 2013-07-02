@@ -182,6 +182,7 @@
             </gmd:status>
             <!-- >>>>>>>>>>>>>>>>>>>>> Status <<<<<<<<<<<<<<<<<<<<<<<<< -->
 
+            {% if tags != [] %}
             <gmd:descriptiveKeywords>
                 <gmd:MD_Keywords>
                     {% for tag in tags %}
@@ -197,6 +198,7 @@
                     </gmd:type>
                 </gmd:MD_Keywords>
             </gmd:descriptiveKeywords>
+            {% endif %}
 
             <!-- >>>>>>>>>>>>>>>>>>>>> Facets <<<<<<<<<<<<<<<<<<<<<<<<< -->
             <gmd:descriptiveKeywords>

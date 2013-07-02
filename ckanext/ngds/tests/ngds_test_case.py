@@ -1,14 +1,20 @@
 from unittest import TestCase
 from postgis_sql import POSTGIS, SPATIAL_REF_SYS
 from ckanext.ngds.env import ckan_model as model
+from ckanext.ngds.env import ckan_logic
 from ckan.plugins import toolkit
 
 class NgdsTestCase(TestCase):
     _sys_admin = None
     _public_org = None
 
+    class ObjectSpoofer():
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+
     @classmethod
     def setUpClass(cls):
+        # Do stuff you want to happen once for each TestCase class
         from sqlalchemy.orm import sessionmaker
         from sqlalchemy import create_engine
         from sqlalchemy.exc import ProgrammingError
@@ -25,13 +31,16 @@ class NgdsTestCase(TestCase):
             session.execute(SPATIAL_REF_SYS)
             session.commit()
         except ProgrammingError as ex:
-            print "TABLE GENERATION FAILED: %s" % ex.orig
+            print "POSTGIS TABLE GENERATION FAILED: %s" % ex.orig
 
         session.close()
 
         # Build plugin tables
         from ckanext.harvest.model import setup as harvest_tables
-        harvest_tables()
+        try:
+            harvest_tables()
+        except Exception as ex:
+            print "HARVEST TABLE GENERATION FAILED: %s" % ex.message
 
     def admin_user(self):
         """Find/Create an admin user"""
@@ -47,11 +56,15 @@ class NgdsTestCase(TestCase):
 
     def public_org(self):
         if not self._public_org:
-            org = dict(
-                name="public",
-                users=[{"name": self.admin_user().name}]
-            )
-            self._public_org = toolkit.get_action("organization_create")({"user": self.admin_user().name}, org)
+            try:
+                public_org = toolkit.get_action("organization_show")(None, {"id": "public"})
+            except ckan_logic.NotFound:
+                org = dict(
+                    name="public",
+                    users=[{"name": self.admin_user().name}]
+                )
+                public_org = toolkit.get_action("organization_create")({"user": self.admin_user().name}, org)
+            self._public_org = public_org
         return self._public_org
 
     def add_package(self, package_name, package_dict={}):
@@ -64,8 +77,14 @@ class NgdsTestCase(TestCase):
             state="active",
             resources=[]
         )
+
+        package.update(package_dict)
         
         return toolkit.get_action("package_create")({"user": self.admin_user().name}, package)
+
+    def add_tags(self, package_id, tags=[]):
+        tag_dicts = [{"name": tag} for tag in tags]
+        return toolkit.get_action("package_update")({"user": self.admin_user().name}, { "id": package_id, "tags": tag_dicts})
 
     def add_resource(self, resource_dict):
         pass

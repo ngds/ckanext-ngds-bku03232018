@@ -8,6 +8,8 @@ This also allows us to "spoof" CKAN objects we need, without relying directly on
 
 # If you have to use ckan.model...
 from ckan import model as ckan_model
+from ckan import logic as ckan_logic
+from ckan import lib as ckan_lib
 
 
 # Create a CKAN database session without relying on CKAN
