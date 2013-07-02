@@ -58,7 +58,7 @@
               <input type="text"  id="from-date"/>
               <label >to</label>
               <input type="text"  id="to-date"/>
-              <a class="btn-primary" id ="filter-pub-date" href="#"><i class="icon-check"></i></a>
+              <a class="btn-primary" id ="filter-pub-date" href="#"><i class="icon-hand-right"></i></a>
               <!-- <input type="button" id="filter-pub-date" value=""><i class="icon-check-sign"></i></input> -->
           </div>
           {% if c.user %}
@@ -68,11 +68,13 @@
                 <input type="text" id="search_name" class="text ui-widget-content ui-corner-all" />
              </div>
             <div>
-              <div>
-                <input type="button"  id="save_search" value="+ Save search"/>
+              <div >
+                <!-- <input type="button"  id="save_search" value="+ Save search"/> -->
+                <i class="icon-save btn-primary" id="save_search" title="Save Search"></i>
                  {% set user_searches=h.get_usersearches() %}
                   {% if user_searches %}
-                <button type="button" id="saved_searches_list_button">V</button>
+                <!-- <button type="button" class="btn" id="saved_searches_list_button">V</button> -->
+                <i id ="saved_searches_list_button" class="icon-th-list btn-primary" title="Saved List"></i> 
                       <ul id="saved-list">
                         {% for usersearch in user_searches %}
                             <li><a href="{{usersearch.url}}" title="{{usersearch.url}}">{{usersearch.search_name}}</a></li>

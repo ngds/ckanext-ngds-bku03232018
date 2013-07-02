@@ -56,7 +56,7 @@
         width: 30px;
         height: 40px;
         left: -0.5em;
-		top: 0em;
+		top: -0.2em;
     }
 
 	div#library-search-results {
@@ -77,6 +77,11 @@
 				border:1px solid #a9a9a9;
 				border-top:none;
 			}
+
+            input[type=checkbox] {
+              top: 0px;
+              margin-right: 5px;
+            }
 
 
 			.ui-accordion-content{
@@ -145,22 +150,39 @@
 					display:table-cell;
 					padding-left: 20px;
 					margin-left:20px;
-					width:34%;
+					width:30%;
 					text-align:left;
+                    label{
+                      font-size:12px;
+                    }
                     select{
                       margin-bottom:0px;
+                      font-size:12px;
+                      width: 140px;
                     }
 				}
 				#save-block{
 					display:table-cell;
 					width:20%;
-					text-align:right;
+					text-align:center;
+                    padding-right:20px;
 					input[type="button"] {
 						.ngds-button(25px);
-						width:110px;
+
 						border:none;
 						.ngds-border-radius(0px);
 					}
+                    i{
+                      font-size:20px;
+                      vertical-align:middle;
+                      border: 1px solid;
+                      padding:3px;
+                      padding-right:5px;
+                    }
+                    #saved_searches_list_button{
+                      padding-right:10px;
+                    }
+
 
                   li {
                     text-align: left;
@@ -173,22 +195,24 @@
 				}
 				#date-filter{
 					display:table-cell;
-					width:36%;
+					width:40%;
 					padding-left:0px;
 					padding-right:0px;
-					text-align:right;
+
+                    label{
+                      font-size:12px;
+                    }
+                    i{
+                      width:20px;
+                      padding-right:4px;
+                    }
 
 					input[type="text"] {
 						width:65px;
                         margin-bottom:0px;
+                        font-size:12px;
 					}
-					input[type="button"] {
-						.ngds-button(25px);
-						//width:30px;
-						//border:none;
-						.ngds-border-radius(0px);
 
-					}
 				}
 			}
 		}
