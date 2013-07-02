@@ -407,3 +407,30 @@ def get_dataset_category_image_path(package):
         image_path = category_image_link.get(dataset_category)
 
     return image_path
+
+
+def is_following(obj_type, obj_id):
+    '''Return a true/False based on follow for the given object type and id.
+
+    If the user is not logged in return an empty string instead.
+
+    :param obj_type: the type of the object to be followed when the follow
+        button is clicked, e.g. 'user' or 'dataset'
+    :type obj_type: string
+    :param obj_id: the id of the object to be followed when the follow button
+        is clicked
+    :type obj_id: string
+
+    :returns: a follow button as an HTML snippet
+    :rtype: string
+
+    '''
+    import ckan.logic as logic
+    obj_type = obj_type.lower()
+    # If the user is logged in show the follow/unfollow button
+    following = False
+    if c.user:
+        context = {'model': model, 'session': model.Session, 'user': c.user}
+        action = 'am_following_%s' % obj_type
+        following = logic.get_action(action)(context, {'id': obj_id})
+    return following

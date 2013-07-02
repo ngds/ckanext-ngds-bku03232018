@@ -33,17 +33,24 @@ header-ngds {
 
 	}
 
-	.lang-select{
+	.lang-selecter{
 		float:left;
 		margin-left:30px;
-		margin-top:0.25em;
-		margin-bottom:0.25em;
-		#language-display{
+		//margin-top:0.25em;
+		//margin-bottom:0.25em;
+        label{
+          margin-top:3px;
+        }
+		#field-lang-select{
 			display:table-cell;
 			//border:1px solid #083656;
-			padding-left:10px;
-			padding-right:10px;
-			color:white;
+            border:none;
+            height:24px !important;
+            padding-top: 3px;
+            margin-top:3px;
+            font-size: 13px;
+            text-align: left !important;
+
 			span{
 				border:none;
 				padding:0;
@@ -51,13 +58,11 @@ header-ngds {
 				font-weight:normal;
 				font-size:12px;
 
-				select{
-					border:none;
-					height:20px;
-				}
+
 
 				img{
-					vertical-align:top;
+                    margin-top:0.25em;
+					//vertical-align:middle !important;
 				}
 			}
 

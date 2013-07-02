@@ -76,6 +76,9 @@
 				padding-bottom:20px;
 				border:1px solid #a9a9a9;
 				border-top:none;
+                ul{
+                  margin-bottom: 0px;
+                }
 			}
 
             input[type=checkbox] {
@@ -164,8 +167,22 @@
 				#save-block{
 					display:table-cell;
 					width:20%;
-					text-align:center;
+					text-align:right;
                     padding-right:20px;
+
+                    #save-list{
+                      display:table;
+                      text-align: center;
+                      width:40%;
+                      div{
+                        display:table-cell;
+                        border:1px solid;
+                        padding-top: 2px;
+                        padding-bottom: 2px;
+                      }
+                    }
+
+
 					input[type="button"] {
 						.ngds-button(25px);
 
@@ -173,16 +190,12 @@
 						.ngds-border-radius(0px);
 					}
                     i{
-                      font-size:20px;
+                      font-size:15px;
                       vertical-align:middle;
                       border: 1px solid;
                       padding:3px;
                       padding-right:5px;
                     }
-                    #saved_searches_list_button{
-                      padding-right:10px;
-                    }
-
 
                   li {
                     text-align: left;
@@ -385,7 +398,9 @@
 				padding-top:10px;
 				width:100%;
 				word-wrap:break-word;
-
+                a{
+                  text-decoration:none;
+                }
 				.facet{
 					color:@extra-light;
 				}

@@ -13,8 +13,9 @@
           <div class="search-results-item">
 
               <div id="search-title-row">
+                {% set controller = 'package' %}
                   <div id="title">
-                    <a class="title" href="/dataset/{{package.name}}">{{package.title}}
+                    <a class="title" href="{{ h.url_for(controller=controller, action='read', id=package.name) }}">{{package.title}}
                     {% if package.get('state', '').startswith('draft') %}
                         <span class="label-info">{{ _('(Draft)') }}</span>
                     {% elif package.get('state', '').startswith('deleted') %}
@@ -25,7 +26,20 @@
                     {% endif %}
                   </div>
                   <div id="banner">
-                    <img src="/assets/bookmark.png" /> 
+
+                    {% if user %}
+                      {% set following = h.is_following('dataset',package.id) %}
+                      
+                      {% if following %}
+                      <a href="{{ h.url_for(controller=controller, action='unfollow', id=package.name) }}" target="_blank">
+                        <img src="/assets/bookmark.png" />
+                      </a>
+                      {% else %}
+                      <a href="{{ h.url_for(controller=controller, action='follow', id=package.name) }}" target="_blank">
+                        <img src="/assets/bookmark.png" />
+                      </a>
+                      {% endif %}
+                    {% endif %}
                   </div>
               </div>
               <div id="search-meta-row">
