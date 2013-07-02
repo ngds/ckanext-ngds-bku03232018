@@ -27,14 +27,20 @@ ngds.util.sequence_generator = function() {
 	}
 };
 
-ngds.util.tick = {
-	'hand':0,
-	'next':function() {
-		return ++this['hand'];
-	},
-	'current':function() {
-		return this['hand'];
-	}
+ngds.util.tick = function(){
+	var hand=0;
+
+    var next = function() {
+		return ++hand;
+	};
+
+	var current = function() {
+		return hand;
+	};
+    return {
+        'next':next,
+        'current':current
+    };
 };
 
 ngds.util.node_matcher = function(node,match_exp) { 
@@ -139,8 +145,17 @@ ngds.util.parse_raw_json = function(raw) {
     return x;
 };
 
-ngds.util.get_slug = function(value) {
-	return $("<span/>",{"class":"ngds-slug","text":value});
+ngds.util.get_slug = function(value,ticker) {
+	var sp = $("<span/>",{"class":"ngds-slug","text":value,id:"ngds-slug-"+ticker.next()});
+    var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
+    sp.append(anch);
+    anch.on('click',function(ev) {
+        $(ev.currentTarget.parentElement).fadeOut(1000,function(){
+            ev.currentTarget.parentElement.remove();
+        });
+    });
+
+    return sp;
 };
 
 ngds.util.state = {
