@@ -142,7 +142,10 @@ ngds.responsible_party = function() {
 			  var rs_name_v = $(me.rs_name).val();
 			  var rs_email_v = $(me.rs_email).val();
 
-			  if(rs_name_v !==null && typeof rs_name_v !=='undefined' && rs_name_v !=='' && rs_email_v !==null && rs_email_v !=='' && typeof rs_email_v !=='undefined' && ev.target.className.indexOf(me.rs.replace("#",""))===-1) {
+			  if(rs_name_v !==null && typeof rs_name_v !=='undefined' && rs_name_v !=='' && rs_email_v !==null && rs_email_v !=='' && typeof rs_email_v !=='undefined') {
+			  	if(ev!==null && typeof ev!=='undefined') {
+			  		ev.target.className.indexOf(me.rs.replace("#",""))===-1
+			  	}
 			    $(me.rs_fake).hide();
 			    me.rs_create_anch.hide();
 			    $(me.rs_slug).show();
@@ -243,6 +246,11 @@ ngds.responsible_party = function() {
 			          });
 			        }
 			  });
+			});
+
+			rs_c_cancel_button_jq.on('click',function(ev){
+				rs_c_form_jq.remove();
+				me.rs_create_anch.show();
 			});
 			
 
