@@ -142,18 +142,19 @@ def username_for_id(id):
 def get_formatted_date(timestamp):
     return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
 
-'''
-This method loads the ngds facet configuration file and finds the facets to be during the search.
 
-    **Parameters:**
-    None.
-
-    **Results:**
-    :returns: The facets dict to be used for search.
-    :rtype: OrderedDict    
-'''
 
 def load_ngds_facets():
+    """
+    This method loads the ngds facet configuration file and finds the facets to be during the search.
+
+        **Parameters:**
+        None.
+
+        **Results:**
+        :returns: The facets dict to be used for search.
+        :rtype: OrderedDict
+    """
 
     # Return the loaded facets from global context if available. This will avoid unnecssary reading of config file everytime during search.
     try:
@@ -178,17 +179,16 @@ def load_ngds_facets():
     return  facets_dict
 
 
-'''
-This Method loads the given facets config file and constructs the facets structure to be used.
-    **Parameters:**
-    facets_config_path - Facets Configuration file (json file) path.
-
-    **Results:**
-    :returns: The facets dict to be used for search.
-    :rtype: OrderedDict    
-'''
 def read_facets_json(facets_config_path=None):
+    """
+    This Method loads the given facets config file and constructs the facets structure to be used.
+        **Parameters:**
+        facets_config_path - Facets Configuration file (json file) path.
 
+        **Results:**
+        :returns: The facets dict to be used for search.
+        :rtype: OrderedDict
+    """
     #Open the json config file and load it as dict.
     with open(facets_config_path, 'r') as json_file:
         import json
@@ -208,17 +208,18 @@ def read_facets_json(facets_config_path=None):
     else:
         return None
 
-'''
-Reads the input facet_config and its subfacets to find the metadatafields which will be used to used as facets. 
-    **Parameters:**
-    facet_struc - Particular facet structure to be iterated.
-    facets_list - list of found facets to which new facets needs to be added into.
 
-    **Results:**
-    :returns: The facets list 
-    :rtype: list
-'''
 def read_facet(facet_struc,facet_list):
+    """
+    Reads the input facet_config and its subfacets to find the metadatafields which will be used to used as facets.
+        **Parameters:**
+        facet_struc - Particular facet structure to be iterated.
+        facets_list - list of found facets to which new facets needs to be added into.
+
+        **Results:**
+        :returns: The facets list
+        :rtype: list
+    """
 
     #If the metadatafield exists in the facet then add it to the list.
     if facet_struc.get("metadatafield") :
@@ -231,17 +232,17 @@ def read_facet(facet_struc,facet_list):
 
     return facet_list
 
-'''
-This method gets the facets from search results and construct them into NGDS specific structure based on the facet json config file.
-
-    **Parameters:**
-    None.
-
-    **Results:**
-    :returns: Faceted results dict found from the results.
-    :rtype: Dict    
-'''
 def get_ngdsfacets():
+    """
+    This method gets the facets from search results and construct them into NGDS specific structure based on the facet json config file.
+
+        **Parameters:**
+        None.
+
+        **Results:**
+        :returns: Faceted results dict found from the results.
+        :rtype: Dict
+    """
 
     facet_config = g.facet_json_data
 
@@ -252,23 +253,22 @@ def get_ngdsfacets():
 
     return facets
 
-'''
-This method constructs the facet results for each Facet structure (from json file) 
-
-    **Parameters:**
-    facet_group - Facet Structure to be filled based on results.
-    facet_dict - newly constrcuted facets dict which needs to be appended with new values.
-    metadatafield - Metadata field of the facet.
-    facet_level - 1 - Top level facet 2 - Other sub level facets.
-    facet_values - Values of the facets returned from search.
-
-
-    **Results:**
-    :returns: Constructed faceted dict from the input facet structure and the results.
-    :rtype: Dict    
-'''
 def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,facet_values=None):
+    """
+    This method constructs the facet results for each Facet structure (from json file)
 
+        **Parameters:**
+        facet_group - Facet Structure to be filled based on results.
+        facet_dict - newly constrcuted facets dict which needs to be appended with new values.
+        metadatafield - Metadata field of the facet.
+        facet_level - 1 - Top level facet 2 - Other sub level facets.
+        facet_values - Values of the facets returned from search.
+
+
+        **Results:**
+        :returns: Constructed faceted dict from the input facet structure and the results.
+        :rtype: Dict
+    """
 
     #If metadatafield exists, then get the faceted values from the search results.
     if facet_group.get("metadatafield") :
@@ -331,8 +331,11 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
     return facet_dict
 
 def get_formatted_date(datstr):
-    from datetime import datetime
-    return datetime.strptime(datstr[:10], '%Y-%m-%d').strftime('%b %d,%Y')
+    formated_string = ""
+    if datstr:
+        from datetime import datetime
+        formated_string = datetime.strptime(datstr[:10], '%Y-%m-%d').strftime('%b %d,%Y')
+    return formated_string
 
 def to_json(data):
     #print json.dumps(data)
