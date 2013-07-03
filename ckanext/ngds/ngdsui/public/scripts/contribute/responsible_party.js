@@ -45,7 +45,7 @@ ngds.responsible_party = function() {
 	      ngds.util.state[me.rs_token] = vdict;
 	    });  
 
-	    $(me.rs_fake).after($("<span/>",{ 'id':me.rs.replace("#","")+'_slug',class:'ngds-slug' }));
+	    $(me.rs_fake).after($("<span/>",{ 'id':me.rs.replace("#","")+'_slug',class:'ngds-tag' }));
 
 	   setup_blur();
 	   setup_edit_rs();

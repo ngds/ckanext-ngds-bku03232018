@@ -147,7 +147,7 @@ ngds.util.parse_raw_json = function(raw) {
 
 ngds.util.get_author_slug = function(author,ticker,sync) {
 	var cur_key = "ngds-slug-"+ticker.next();
-	var sp = $("<span/>",{"class":"ngds-slug","text":author['name'],id:cur_key});
+	var sp = $("<span/>",{"class":"ngds-tag","text":author['name'],id:cur_key,"style":"display:inline-block;"});
     var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
    	var authors_map = ngds.util.state['authors'] = ngds.util.state['authors'] || (ngds.util.state['authors'] = { });
    	authors_map[cur_key] = author;

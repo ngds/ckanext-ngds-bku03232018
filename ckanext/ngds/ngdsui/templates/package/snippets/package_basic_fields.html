@@ -14,28 +14,28 @@
 {{license_desc}}
 <div class="input-group">
   <div class="sp-label">
-    <label for="title">Title : </label>
+    <label for="title">Title</label>
   </div>
   <input type="text" name="title" id="title" placeholder="A descriptive title" value="{{data['title']}}"></input>
 </div>
 
 <div class="input-group">
   <div class="sp-label">
-    <label for="name">URL : </label>
+    <label for="name">URL</label>
   </div>
   <input type="text" name="name" id="name" placeholder="my-dataset" value="{{data['name']}}"></input>
 </div>
 
 <div class="input-group">
   <div class="sp-label description-label-div">
-    <label for="description">Description : </label>
+    <label for="notes">Description</label>
   </div>
   <textarea rows="4" cols="1" name="notes" id="notes" class="structured-input" placeholder="Some useful notes about this dataset">{{data['notes']}}</textarea>
 </div>
 
 <div class="input-group">
   <div class="sp-label">
-    <label for="tags">Tags : </label>
+    <label for="tags">Tags</label>
   </div>
   <input type="text" name="tag_string" id="tags" placeholder="geothermal, temperature" value="{{data['tag_string']}}"></input>
 </div>
@@ -43,7 +43,7 @@
 <div class="input-group">
   {% set error = errors.license_id %}
   <div class="sp-label">
-  <label for="field-license">{{ _("License") }} : </label>
+  <label for="field-license">{{ _("License") }}</label>
   </div>
     <select id="field-license" name="license_id" data-module="autocomplete">
       {% for licence_desc, licence_id in licences|sort if licence_desc  %}

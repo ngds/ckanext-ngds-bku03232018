@@ -7,8 +7,9 @@
       <input type="text" name="author_email" placeholder="joe@example.com" value="{{data.author_email}}"></input>
   </div> -->
   <div class="input-group">
-    <div class="sp-label"><label>Author</label></div>
-      <input type="text" id="authors_fake" /> 
+    <div class="sp-label"><label>Authors</label></div>
+      <input type="text" id="authors_fake" />
+      <div class="author-tags"></div>
   </div>
 
   <input type="hidden" name="authors" id="authors" />
@@ -69,7 +70,7 @@ authors_ac.proxy("#authors",function(dict) {
       $("#authors").val(escape(JSON.stringify(list_authors)));
     });
     slug.show();
-    $("#authors").after(slug);
+    $(".author-tags").append(slug);
     setTimeout(function() {
         $("#authors_fake").val("");
     });
