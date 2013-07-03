@@ -1,21 +1,7 @@
-{% extends "page_ngds.html" %}
-
-{% set user = c.userobj %}
-
-{% block content %}
-<div id="login-page">
-<div class="secondary-content">
-{% block secondary_content %} {% endblock %}
-</div>
-
-<div class="primary-content">
-
-    <div class="module-content">
-      {% block primary_content_inner %}{% endblock %}
-    </div>
-
-</div>
+{% ckan_extends %}
 
 
-</div>
+<!-- Need to remove this block. If required to comment news feed then change the block name as page_header_tabs -->
+{% block page_header_tabs1 %}
+	{{ h.build_nav_icon('user_edit', _('Settings'), id=user.name) }}
 {% endblock %}

@@ -124,8 +124,8 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("initiate_search","/ngds/initiate_search",controller=home_controller,action="initiate_search",conditions={"method":["POST"]})
         map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 
-        map.connect("dashboard","/dashboard",controller=home_controller,action="render_index",conditions={"method":["GET"]})
-        map.connect("dashboard_user","/dashboard/{offset}",controller=home_controller,action="render_index",conditions={"method":["GET"]})
+        #map.connect("dashboard","/dashboard",controller=home_controller,action="render_index",conditions={"method":["GET"]})
+        #map.connect("dashboard_user","/dashboard/{offset}",controller=home_controller,action="render_index",conditions={"method":["GET"]})
 
         contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
         map.connect("contribute","/ngds/contribute",controller=contribute_controller,action="index")
@@ -222,7 +222,9 @@ class NgdsuiPlugin(SingletonPlugin):
             'highlight_rating_star':helpers.highlight_rating_star,
             'count_rating_reviews':helpers.count_rating_reviews,
             'rating_text':helpers.rating_text,
-            'get_usersearches':helpers.get_usersearches
+            'get_usersearches':helpers.get_usersearches,
+            'get_dataset_category_image_path':helpers.get_dataset_category_image_path,
+            'is_following':helpers.is_following
         }
 
     implements(IPackageController,inherit=True)

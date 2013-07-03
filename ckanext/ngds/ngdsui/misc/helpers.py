@@ -375,3 +375,62 @@ def get_usersearches():
     query = model.UserSearch.search(user.id)
 
     return query.all()
+
+def get_dataset_category_image_path(package):
+
+    image_path = '/assets/dataset.png'
+
+    dataset_category = None
+
+    for extra in package.get('extras'):
+        key = extra.get('key')
+        if key and key=='dataset_category':
+            dataset_category = extra.get('value')
+            break
+
+    category_image_link = {
+        'Dataset' :'/assets/dataset.png',
+        'Physical Collection' :'/assets/dataset.png',
+        'Catalog' :'/assets/dataset.png',
+        'Movie or Video' :'/assets/dataset.png',
+        'Drawing' :'/assets/dataset.png',
+        'Photograph' :'/assets/dataset.png',
+        'Remotely-Sensed Image' :'/assets/dataset.png',
+        'Map' :'/assets/dataset.png',
+        'Text Document' :'/assets/document.png',
+        'Physical Artifact' :'/assets/dataset.png',
+        'Desktop Application' :'/assets/dataset.png',
+        'Web Application' :'/assets/dataset.png'
+    }
+
+    if dataset_category and  dataset_category in category_image_link:
+        image_path = category_image_link.get(dataset_category)
+
+    return image_path
+
+
+def is_following(obj_type, obj_id):
+    '''Return a true/False based on follow for the given object type and id.
+
+    If the user is not logged in return an empty string instead.
+
+    :param obj_type: the type of the object to be followed when the follow
+        button is clicked, e.g. 'user' or 'dataset'
+    :type obj_type: string
+    :param obj_id: the id of the object to be followed when the follow button
+        is clicked
+    :type obj_id: string
+
+    :returns: a follow button as an HTML snippet
+    :rtype: string
+
+    '''
+    import ckan.logic as logic
+    obj_type = obj_type.lower()
+    # If the user is logged in show the follow/unfollow button
+    following = False
+    if c.user:
+        context = {'model': model, 'session': model.Session, 'user': c.user}
+        action = 'am_following_%s' % obj_type
+        following = logic.get_action(action)(context, {'id': obj_id})
+    return following
