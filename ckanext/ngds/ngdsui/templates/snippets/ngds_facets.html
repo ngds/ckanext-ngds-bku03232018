@@ -42,7 +42,13 @@ alternative_url
       <h3><span style="font-size:11px;">{{ facet.display_name }}</span></h3>
     {% endif %}
     {% if facet.fvalues %}
-        <div>
+
+        {% if facet.type == 'dynamic_keywords'%}
+          <div class="dynamic_keyword">
+        {% else %}
+          <div>
+        {% endif %}
+        
           {% for item in facet.fvalues %}
             {% set href = h.remove_url_param(facet.facet_field, item.name, extras=extras, alternative_url=alternative_url) if item.active else h.add_url_param(new_params={facet.facet_field: item.name}, extras=extras, alternative_url=alternative_url) %}
             
@@ -50,7 +56,9 @@ alternative_url
             
             {% set count = count_label(item['count']) if count_label else ('(%d)' % item['count']) %}
 
-            <a href="{{ href }}" class="facet"><span style="font-size:10px;">{{ label }} {{ count }}</span> </a>
+            <!-- <a href="{{ href }}" class="facet"><span style="font-size:10px;">{{ label }} {{ count }}</span> </a> -->
+
+            <input type="checkbox" value="{{ href }}" class="facet {% if item.active %}expanded{% endif %}" {% if item.active %} checked {% endif %} {% if item['count']==0 %} disabled {% endif %}><span class="facet-text">{{ label }} {{ count }}</span>
             {% if facet.type == 'dynamic_keywords'%}
               <br>
             {% endif %}
@@ -78,8 +86,9 @@ alternative_url
 
         </div>
     {% else %}
-      <div>
+      
           {% if facet.subfacet %}
+          <div>
             <ul class="sub accordion">
               {% for subfacet in facet.subfacet %}
                 <li>
@@ -87,9 +96,12 @@ alternative_url
                 </li>
               {% endfor %}
             </ul>
+          </div>
           {% else %}
-            <span style="padding-left:5px;font-size:10px;font-weight:normal;">{{ _('No Results') }}</span>
+          <div class="dynamic_keyword">
+            <span  style="padding-left:5px;font-size:10px;font-weight:normal;">{{ _('No Results') }}</span>
+          </div>
           {% endif%}        
-      </div>
+      
     {% endif %}
 

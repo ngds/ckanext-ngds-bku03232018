@@ -1,5 +1,6 @@
 #from nose.tools import ok_, eq_
 
+import unittest
 import httplib
 import ckan.model as model
 import pylons
@@ -14,19 +15,19 @@ from pylons import config
 from ckanclient import CkanClient
 import ckanext.datastore.db as db
 
-from unittest import TestCase
+
 
 '''
 Note that this test requires Celery deamon to be executing as well as ckan.
 Ckan with NGDS extensions is expected on port 5000 of localhost
 '''
 
-class TestGeoserverIntegration (TestCase):
+class TestGeoserverIntegration (unittest.TestCase):
     
     millis = int(round(time.time() * 1000))
     package_name = 'spatialize_test_resource_' + str(millis)
     id = ""  # id of the resource used during testing
-    
+    engine = None
 
 # ============================== Fixtures ===============================
     
@@ -478,22 +479,36 @@ class TestGeoserverIntegration (TestCase):
 # ================================ Utility functions ===============================
     
     # TODO: get this information from the real user, instead of hardcode it    
+    def _get_local_engine(self):
+        if (self.engine is None):
+            data_dict = {}
+            data_dict['connection_url'] = pylons.config.get('sqlalchemy.url', 'postgresql://testuser:pass@localhost/testdb')  
+            self.engine = db._get_engine(None, data_dict)
+            return self.engine
+                
+    def _execute_sql(self, cls, rscript):
+        self._get_local_engine()
+        connection = self.engine.connect();
+        try:
+            print '>>>>>>>>>>>>> Executing command: ', rscript
+            trans = connection.begin()
+            results = connection.execute(rscript)
+            trans.commit() 
+        except Exception, e:
+            print "exception", e
+            assert False
+        finally:
+            connection.close()
+            return results
+    
     def _get_user_api_key(self):
-        '''
-        sys_user = model.User.get('admin')
         
-        print "sys_user: ",sys_user
+        script = "select apikey from public.user where name = 'admin';"
+        myres = self._execute_sql(self, script)
+        for row in myres:
+            apikey = row['apikey']
         
-        sysadmin_user = {
-           'id': sys_user.id,
-           'apikey': sys_user.apikey,
-           'name': sys_user.name,
-        }
-        
-        print sysadmin_user
-        '''
-        # this is hardcoded now.
-        return  "6397972f-fd52-456b-a6ee-cc4c6a4d7fdb"
+        return  apikey
     
     def _get_ckan_base_api_url(self):
         # TODO: read this from the configuration file
@@ -531,7 +546,7 @@ class TestGeoserverIntegration (TestCase):
          
          # also remove table from database using id
         data_dict = {}
-        data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:pass@localhost/datastore')  
+        data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://testuser:pass@localhost/test_datastore')  
         engine = db._get_engine(None, data_dict)
         connection = engine.connect()
         resources_sql = "SELECT * FROM pg_tables;"
@@ -576,7 +591,7 @@ class TestGeoserverIntegration (TestCase):
          
         # also remove table from database using id
         data_dict = {}
-        data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:pass@localhost/datastore')  
+        data_dict['connection_url'] = pylons.config.get('ckan.datastore.write_url', 'postgresql://testuser:pass@localhost/test_datastore')  
         engine = db._get_engine(None, data_dict)
         connection = engine.connect()
         resources_sql = 'DROP TABLE IF EXISTS "' + id + '";'

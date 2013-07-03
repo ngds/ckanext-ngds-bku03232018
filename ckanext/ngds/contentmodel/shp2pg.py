@@ -1,158 +1,140 @@
-__author__ = 'asonnenschein'
+__author__ = 'adriansonnenschein'
 
-import ogr, zipfile, os, json, urllib2, sys
+import sys
+import ogr
+import zipfile
+import os
+import json
+import urllib2
+import pylons
+import re
+import glob
+from ckan.model.resource import Resource
+from ckan.logic import (tuplize_dict, clean_dict, parse_params, flatten_to_string_key, get_action, check_access, NotAuthorized)
+from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
+from ckan.lib.base import (request, render, BaseController, model, abort, h, g, c)
 
-# zip file, which on my machine is in the same directory as this code.
-# In the production code, this 'input' variable will point to wherever
-# the zip file is uploaded to on the server.
-input = r"azactivefaults.zip"
+class ZipfileHandler:
+	"""Handles zipfiles."""
 
-# uri, used to map out truncated field names.  Right now I've just
-# explicitly set the uri to match the shapefile; in the production code
-# this variable will be assigned based on a user-selectable DOM elemtent.
-uri = "http://schemas.usgin.org/uri-gin/ngds/dataschema/activefault/1.2"
+	zipfile = 'zipfile'
 
-# Function for unzipping the zip file.  If the inputZip is a .zip file,
-# extract all of the contents from the .zip to 'unZippedDir'.
-# 'UnzippedDir' right now just points to the current directory this code
-# is in and makes a new directory with a name derived from the 'inputZip'
-# (minus the .zip) with the addition of '_UNZIPPED'.  In the production
-# code I suppose we'll point the current directory relative path to an
-# absolute path on the server?  If the user does not supply a .zip
-# directory, return an error message and exit.
-def zippy(inputZip):
-    if (zipfile.is_zipfile(inputZip)):
-        unZippedDir = os.path.abspath(os.getcwd())+"/"+inputZip[:-4]+"_UNZIPPED"
-        with zipfile.ZipFile(inputZip) as zf:
-            zf.extractall(unZippedDir)
-    else:
-        print "ERROR: Not a .zip file"
-        sys.exit(1)
+	def __init__(self, inputZip):
+		if (zipfile.is_zipfile(inputZip)):
+			self.zipfile = inputZip
+			print "Path is a .zip directory."
+		else:
+			print "ERROR: Not a .zip file"
+			sys.exit(1)
 
-# Function for traversing the appropriate content model in the 'url'
-# variable and consuming desired information.  The 'url' variable should
-# always point to .../contentmodels.json; when this address is accessed
-# the contents of the page is read and queried based on the 'uri'
-# variable.  Heavy logic is contained within two list comprehensions.
-def fields(uri):
-    global allFields
-    url = "http://schemas.usgin.org/contentmodels.json"
-    reader = urllib2.urlopen(url).read()
-    data=json.loads(str(reader))
-    fieldInfo = [version["field_info"] for version in data for version in version["versions"] if version["uri"] == uri]
-    allFields = [rec["name"] for rec in fieldInfo for rec in rec if rec["name"] != "OBJECTID"]
-    reqFields = [rec["name"] for rec in fieldInfo for rec in rec if rec["optional"] == False]
+	def Unzip(self):
+		unZippedDir = self.zipfile[:-4]+"_UNZIPPED"
+		with zipfile.ZipFile(self.zipfile) as zf:
+			print "Extracting .zip directory"
+			zf.extractall(unZippedDir)
+			print "Completed extracting .zip directory"
 
-# Function for converting the shapefile to a postgreSQL table
-def shp2pg(shapeFile):
+	def directoryCheck(self):
+		valid = []
+		invalid = []
+		validMandatory = [".shp",".shx",".dbf"]
+		validOptional = [".prj",".sbn",".sbx",".fbn",".fbx",".ain",".aih",".ixs",".mxs",".atx",".cpg"]
+		with zipfile.ZipFile(self.zipfile) as zf:
+			for info in zf.infolist():
+				f = info.filename
+				if os.path.splitext(f)[1] in validMandatory:
+					valid.append(f)
+					pass
+				elif os.path.splitext(f)[1] in validOptional:
+					pass
+				elif f.endswith(".shp.xml"):
+					pass
+				else:
+					invalid.append(f)
+			if len(valid) != 3:
+				print "ERROR: Missing a required filetype ('.shp', '.shx', '.dbf')-- ABORTING"
+				sys.exit(1)
+			if len(invalid) != 0:
+				print "ERROR: One or more invalid filetype(s) were found in .zip directory-- ABORTING"
+				sys.exit(1)
+			else:
+				print "Shapefile is a valid dataset."
 
-    # Tell python what sort of file it is looking at.  In this case it is
-    # an ESRI shapefile.
-    inputDriver = ogr.GetDriverByName("ESRI Shapefile")
 
-    # Specify our shapefile as the input data, with an index of '0'
-    dataSource = inputDriver.Open(shapeFile, 0)
+class ShapefileToPostGIS:
+	"""Handles the process of converting a shapefile to a PostGIS table."""
 
-    # Get layer '0' from the data source.  This is a shapefile, so the data
-    # that we want will always be in index '0'.  I'm not familiar with any
-    # shapefiles which can have more than one index of data.
-    sourceLayer = dataSource.GetLayerByIndex(0)
+	allFields = []
 
-    # Assign records to a variable which can be iterated.
-    sourceRecord = sourceLayer.GetNextFeature()
+	host = 'host'
+	dbname = 'dbname'
+	user = 'user'
+	password = 'password'
 
-   # The following print functions return metadata which can be automatically
-   # generated by reading properties of the shapefile.
+	shapefile = 'shapefile'
+	thisSchema = 'thisSchema'
 
-    # Get the total number of features in the layer, for fun.
-    numFeatures = sourceLayer.GetFeatureCount()
-    print "Feature count: ", numFeatures
-    # Print the spatial reference info
-    print sourceLayer.GetSpatialRef()
-    # Print the bounding box
-    print sourceLayer.GetExtent()
-    # Print the type of geometry, as a string reference
-    print sourceRecord.GetGeometryRef()
+	def __init__(self, path):
+		writeurl = pylons.config.get('ckan.datastore.write_url', 'postgresql://ckanuser:password@localhost/datastore_db')
+		self.host = re.search('@(.*)/', writeurl).group(1)
+		self.dbname = re.search('(?=/[^/]*$).*', writeurl).group(0)[1:]
+		self.user = re.search('://(.*):', writeurl).group(1)
+		self.password = re.search('(?=:[^:]*$)(.*)@', writeurl).group(1)[1:]
 
-    # Here we first actually read the attribute information from the layer
-    # with the 'GetLayerDefn()' function.
-    layerDefn = sourceLayer.GetLayerDefn()
+		searchDir = path[:-4]+"_UNZIPPED"
+		os.chdir(searchDir)
+		for shp in glob.glob("*.shp"):
+			self.shapefile = shp
+		print self.shapefile
 
-    # Now we're switching data types, so we have to tell python that we are
-    # also looking at PostgreSQL.
-    outputDriver = ogr.GetDriverByName("PostgreSQL")
+	def fields(self, uri):
+		url = "http://schemas.usgin.org/contentmodels.json"
+		reader = urllib2.urlopen(url).read()
+		data=json.loads(str(reader))
+		fieldInfo = [version["field_info"] for version in data for version in version["versions"] if version["uri"] == uri]
+		self.allFields = [rec["name"] for rec in fieldInfo for rec in rec if rec["name"] != "OBJECTID"]
 
-    # Make a connection to the PostgreSQL database and leave it open.
-    outputDB = outputDriver.Open("PG: host=127.0.0.1 port=5432 dbname=CKANshpfile user=postgres password=password")
-    if outputDB is None:
-        print "Could not open the database or GDAL is not correctly installed."
-        sys.exit(1)
-    else:
-        print "Successfully connected to the database!"
+		whichSchema = re.search('(?=[^/]*.\d).*$', uri).group(0)
+		self.thisSchema = re.sub(r'([.//])', r'_', whichSchema)
 
-    # Allow the upload process to overwrite any tables in PostgreSQL which have
-    # the same name as our shapefile.
-    options = ["OVERWRITE=YES"]
 
-    # The original code I wrote would crash after writing 128 records from
-    # the shapefile to PostgreSQL.  This is because the shapefile has an FID field
-    # and OGR generates an FID field through a call to the server, which in our
-    # application is calling PostgreSQL.  There can only be one FID field.  The
-    # number '128' also pops up a lot in byte encodings.  I dunno if this problem
-    # has anything to do with that.  Anyways, to avoid this, we make a separate
-    # template table in PostgreSQL before writing any data over so that we can
-    # better watch what is happening with these FIDs.
-    newLayer = outputDB.CreateLayer(layerDefn.GetName(),sourceLayer.GetSpatialRef(),ogr.wkbUnknown,options)
+	def shp2pg(self):
+		inputDriver = ogr.GetDriverByName("ESRI Shapefile")
+		dataSource = inputDriver.Open(self.shapefile, 0)
+		sourceLayer = dataSource.GetLayerByIndex(0)
+		sourceRecord = sourceLayer.GetNextFeature()
+		layerDefn = sourceLayer.GetLayerDefn()
+		outputDriver = ogr.GetDriverByName("PostgreSQL")
+		outputDB = outputDriver.Open("PG: host=" + self.host + " port=5432 dbname=" + self.dbname +" user=" + self.user +" password=" + self.password)
 
-    # Map out the fields!  What we're really doing here is matching truncated
-    # field names to long ones and then only writing the long field names to the
-    # 'newLayer' variable.  Data types are very important- so read data types from
-    # the shapefile and carry them over to postgreSQL.  This scheme only looks to
-    # see if the first 10 characters in any given field name match.  The assumption
-    # here is that any truncated field names in the shapefile were truncated to the
-    # first 10 characters.
-    for i in range(layerDefn.GetFieldCount()):
-        fieldName = sourceLayer.GetLayerDefn().GetFieldDefn(i).GetNameRef()
-        fieldTypeInt = sourceLayer.GetLayerDefn().GetFieldDefn(i).GetType()
+		if outputDB is None:
+			print "Could not open the database or GDAL is not correctly installed."
+			sys.exit(1)
+		else:
+			print "Successfully connected to the database!"
 
-        for newField in allFields:
-            if fieldName[:10] == newField[:10].lower():
-                newLayer.CreateField(ogr.FieldDefn(str(newField), fieldTypeInt))
+		options = ["OVERWRITE=YES"]
 
-    # Make a layer definition for our PostgreSQL table so that we can edit it.
-    newLayerDefn = newLayer.GetLayerDefn()
+		tableName = self.thisSchema.encode('utf-8')
 
-    # 'x' will represent our FID check.  Start the FID check at '0'
-    x = 0
+		newLayer = outputDB.CreateLayer(tableName,sourceLayer.GetSpatialRef(),ogr.wkbUnknown,options)
 
-    # As long as there are records which exist in the shapefile, write those
-    # records over into the PostgreSQL table.  If the 128th record defaults to '0'
-    # again, commit those changes and then start a new exchange process, from
-    # wherever the last transaction stopped.
-    while sourceRecord is not None:
-        newFeature = ogr.Feature(newLayerDefn)
-        newFeature.SetFrom(sourceRecord)
-        newLayer.CreateFeature(newFeature)
-        if x % 128 == 0:
-            newLayer.CommitTransaction()
-            newLayer.StartTransaction()
-        sourceRecord = sourceLayer.GetNextFeature()
-        x = x + 1
-    newLayer.CommitTransaction()
-
-    # Close the database connection.
-    outputDB.Destroy()
-
-# And put it all together...
-zippy(input)
-fields(uri)
-
-# This part just tries to deal with relative paths in finding
-# the location of the shapefile on the system and feeding it
-# into the 'shp2pg' function.
-path = os.path.abspath(os.getcwd())+"/"+input[:-4]+"_UNZIPPED"
-listdir = os.listdir(path)
-for file in listdir:
-    if file.endswith(".shp"):
-        shpfile = os.path.abspath(input[:-4]+"_UNZIPPED/"+file)
-        shp2pg(shpfile)
+		for i in range(layerDefn.GetFieldCount()):
+			fieldName = sourceLayer.GetLayerDefn().GetFieldDefn(i).GetNameRef()
+			fieldTypeInt = sourceLayer.GetLayerDefn().GetFieldDefn(i).GetType()
+			for newField in self.allFields:
+				if fieldName[:10] == newField[:10].lower():
+					newLayer.CreateField(ogr.FieldDefn(str(newField), fieldTypeInt))
+		newLayerDefn = newLayer.GetLayerDefn()
+		x = 0
+		while sourceRecord is not None:
+			newFeature = ogr.Feature(newLayerDefn)
+			newFeature.SetFrom(sourceRecord)
+			newLayer.CreateFeature(newFeature)
+			if x % 128 == 0:
+				newLayer.CommitTransaction()
+				newLayer.StartTransaction()
+			sourceRecord = sourceLayer.GetNextFeature()
+			x = x + 1
+		newLayer.CommitTransaction()
+		outputDB.Destroy()

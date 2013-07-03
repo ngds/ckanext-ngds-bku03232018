@@ -1,4 +1,5 @@
 var ngds = ngds || { };
+ngds.state = ngds.state || ( ngds.state = { } );
 
 	Date.prototype.getISOString = function(timeDecider) {
 		hours = this.getUTCHours();
@@ -23,6 +24,31 @@ var ngds = ngds || { };
             + pad(mins) + ':'
             + pad(secs) + 'Z';
     };
+    
+    
+	function callRating(userText, rvalue, rpackId) {
+		var res = confirm(userText);
+/*	 	var ele = document.getElementById("rating-submit");
+		$("#rpackageId").val(rpackId); 
+		$("#ratingValue").val(rvalue); 
+		if (res) {
+		  ele.submit();
+		}*/
+
+        $.ajax({
+          url:'/ngds/rating_submit',
+          'type':'POST',
+          'data':{
+              rpackageId:rpackId,
+              ratingValue:rvalue
+          },
+          success:function(response){
+                window.alert("Thank you for the review. Rating is updated.");
+                window.location.reload();
+          }
+        });
+
+	}
 
 (function() {
 	$(document).ready(function() { 
@@ -34,6 +60,8 @@ var ngds = ngds || { };
 		    	heightStyle:"content",
 		    	active:false,
 		    	collapsible:true,
+		    	navigation: true,
+		    	icons:{   header: "expandIcon",activeHeader: "collapseIcon"},
 		    	beforeActivate: function(event, ui) {
 						         // The accordion believes a panel is being opened
 						        if (ui.newHeader[0]) {
@@ -51,7 +79,7 @@ var ngds = ngds || { };
 						        currHeader.toggleClass('ui-corner-all',isPanelSelected).toggleClass('accordion-header-active ui-state-active ui-corner-top',!isPanelSelected).attr('aria-selected',((!isPanelSelected).toString()));
 
 						        // Toggle the panel's icon
-						        currHeader.children('.ui-icon').toggleClass('ui-icon-triangle-1-e',isPanelSelected).toggleClass('ui-icon-triangle-1-s',!isPanelSelected);
+						        currHeader.children('.ui-icon').toggleClass('expandIcon',isPanelSelected).toggleClass('collapseIcon',!isPanelSelected);
 
 						         // Toggle the panel's content
 						        currContent.toggleClass('accordion-content-active',!isPanelSelected)    
@@ -61,10 +89,13 @@ var ngds = ngds || { };
 						    }
 		});
 
-		$(".facet").click(function() {
+		$(".expanded").parents().filter("li").children().filter("h3").click();
+
+
+/*		$(".facet").click(function() {
 	      window.location = $(this).attr('href');
 	      return false;
-   		});  
+   		}); */ 
 
 		$('#expander-image').click(function() {
 
@@ -109,8 +140,64 @@ var ngds = ngds || { };
 		if ($(nextElement).length>0){
 			    var newHTML = $(nextElement).html().replace('»','<img src = "/assets/next.png" class="previous"/>');
       			$(nextElement).html(newHTML);
-		}		
+		}
 
+        $('#save_search').click(function() {
+
+		    var url= window.location.href;
+
+            $( "#dialog-form" ).dialog( "open" );
+		});
+
+        $( "#dialog-form" ).dialog({
+          autoOpen: false,
+          height: 185,
+          width: 300,
+          modal: true,
+          buttons: {
+            "Save Search": function() {
+                var url= window.location.href;
+                ngds.state['search_name'] = $("#search_name").val();
+                $.ajax({
+                  url:'/ngds/save_search',
+                  'type':'POST',
+                  'data':{
+                      url:url,
+                      search_name:$( "#search_name" ).val()
+                  },
+                  success:function(response){
+                        $( "#dialog-form" ).dialog("close");
+                        var li = $("<li/>",{});
+                        var a = $("<a/>",{text:ngds.state['search_name'], href:window.location.href });
+                        li.append(a);
+                        $( "#search_name" ).val('');
+                        $("ul#saved-list").append(li);
+                        $("ul#saved-list").menu("refresh");
+                  }
+                });
+            },
+            Cancel: function() {
+              $( this ).dialog( "close" );
+            }
+          }
+        });
+
+       menu = $("ul#saved-list").menu().hide();
+
+        $("#saved_searches_list_button").click(function() {
+                menu.show().position({
+                my: "left top",
+                at: "left bottom",
+                of: this
+                });
+
+                // Register a click outside the menu to close it
+                $( document ).one( "click", function() {
+                    menu.hide();
+                });
+
+                return false;
+        });
 
 		$('#field-order-by').change(function() {
 		    // $('#hide-button').click();
@@ -133,6 +220,12 @@ var ngds = ngds || { };
 
 		    window.location.href = window.location.href.split('?')[0]+"?"+finished_string;
 		}); 
+
+		$('.facet').change(function(){
+			//console.log($('.facet').val());
+			window.location.href =$(this).val();
+
+		});
 
 		$('#filter-pub-date').click(function() {
 
@@ -213,7 +306,7 @@ var ngds = ngds || { };
       }
     });
 
-
+	$( "#search-review[title]" ).tooltip();
 
 	});
 

@@ -1,15 +1,24 @@
-from ckan.lib.base import model,h,g,c,request
-import ckanext.ngds.geoserver.logic.action as geoserver_actions
-import ckan.logic as logic
-NotFound = logic.NotFound
-from pylons import config
+from ckanext.ngds.env import ckan_model
+from ckan.plugins import toolkit
+from ckan.logic import NotFound
+def is_spatialized(resource):
+    spatialized = False
+    resource_id = resource['id']
+    package_id=ckan_model.Resource.get(resource_id).resource_group.package_id
+    package = ckan_model.Package.get(package_id)
+    for resource in package.resources:
+        if 'ogc_type' in resource.extras and 'parent_resource' in resource.extras:
+            extras = resource.extras
+            try:
+                toolkit.get_action('resource_show')(None, { 'id':resource.id,'for-view':True })
+            except (NotFound):
+                return False
 
-def is_spatialized(res_id,col_geo):
-	context = {'model': model, 'session': model.Session,\
-                   'user': c.user or c.author, 'for_view': True}
-	try:
-		is_spatialized = geoserver_actions.datastore_is_exposed_as_layer(context,{'id':res_id})['is_exposed_as_layer']
-		print is_spatialized
-	except(NotFound):
-		is_spatialized = False
-	return is_spatialized
+            if extras['parent_resource'] == resource_id\
+                and ( extras['ogc_type'].lower() == 'wms' or extras['ogc_type'].lower() == 'wfs'):
+                print resource.state
+                if resource.state !='active':
+                    return False
+                spatialized = True
+                break
+    return spatialized

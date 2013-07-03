@@ -1,3 +1,5 @@
+{% include 'package/resource_form_template.tmf' %}
+{% include 'package/add_responsible_party.tmf' %}
 <script>
 {% if data %}
     resource_location = window.location.origin+"{{data['resource_location']}}";
@@ -47,18 +49,13 @@
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="offline-resouece" name="upload-type" value="offline-resource" />
+        <input type="radio" id="offline-resource" name="upload-type" value="offline-resource" />
         <label for="offline-resource">Offline resource</label>
       </div>
   </div>
 
   <div class="form-body">
    <!-- Offline Resource End -->
-
-   <!-- <div class="input-group">
-        <div class="sp-label"><label>Distributor</label></div>
-        <input type="text" name="distributor" id="structured_distributor" class="structured-input"></input>
-      </div> -->
 
   </div>
   <div class="form-actions">
@@ -70,249 +67,12 @@
 </form>
 
 {% raw %}
+
+<script type="text/javascript" src="/scripts/contribute/resource_form_fields.js"></script>
+<script type="text/javascript" src="/scripts/autocomplete.js"></script>
+<script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
+
 <script>
-var structured_form = {
-  'form':[
-    {
-      'label':'Resource URL',
-      'name':'url',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text id=url';
-      }
-    },
-    {
-      'label':'Name',
-      'name':'name',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text';
-      }
-    },
-    {
-      'label':'Content Model',
-      'name':'content_model',
-      'top_classes':function() {
-        return "content_model_marker";
-      },
-      'tag':'select',
-      'id':function() {
-        return 'id=content_model';
-      }
-    },
-    {
-      'label':'Description',
-      'name':'description',
-      'tag':'textarea',
-      'id':function() {
-        return 'id=description';
-      },
-      'additional':function() {
-        return 'rows=4 cols=1'
-      },
-      'classes':function() {
-        return 'description-label-div';
-      }
-    },
-    {
-      'label':'Distributor',
-      'name':'distributor',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text';
-      }
-    },
-    {
-    'label':'Format',
-    'name':'format',
-    'tag':'input',
-    'additional':function() {
-      return 'type=text';
-      }
-    }
-  ]
-};
-
-var unstructured_form = {
-  'form':[
-    {
-      'label':'Resource URL',
-      'name':'url',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text id=url';
-      }
-    },
-    {
-      'label':'Name',
-      'name':'name',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text';
-      }
-    },
-    {
-      'label':'Description',
-      'name':'description',
-      'tag':'textarea',
-      'id':function() {
-        return 'id=description';
-      },
-      'additional':function() {
-        return 'rows=4 cols=1'
-      },
-      'classes':function() {
-        return 'description-label-div';
-      }
-    },
-    {
-      'label':'Distributor',
-      'name':'distributor',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text';
-      }
-    },
-    {
-    'label':'Format',
-    'name':'format',
-    'tag':'input',
-    'additional':function() {
-      return 'type=text';
-      }
-    }
-  ]
-};
-
-
-var offline_resource_form = {
-  'form':[
-    {
-      'label':'Resource URL',
-      'name':'url',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text id=url';
-      }
-    },
-    {
-      'label':'Name',
-      'name':'name',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text';
-      }
-    },
-    {
-      'label':'Description',
-      'name':'description',
-      'tag':'textarea',
-      'id':function() {
-        return 'id=description';
-      },
-      'additional':function() {
-        return 'rows=4 cols=1'
-      },
-      'classes':function() {
-        return 'description-label-div';
-      }
-    },
-    {
-    'label':'Ordering Procedure',
-    'name':'ordering_procedure',
-    'tag':'textarea',
-    'additional':function() {
-        return 'rows=4 cols=1'
-      },
-    'classes':function() {
-        return 'description-label-div';
-      }
-    }
-  ]
-};
-
-var link_data_service_form = {
-  'form':[
-    {
-      'label':'Resource URL',
-      'name':'url',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text id=url';
-      }
-    },
-    {
-      'label':'Name',
-      'name':'name',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text';
-      }
-    },
-    {
-      'label':'Description',
-      'name':'description',
-      'tag':'textarea',
-      'id':function() {
-        return 'id=description';
-      },
-      'additional':function() {
-        return 'rows=4 cols=1'
-      },
-      'classes':function() {
-        return 'description-label-div';
-      }
-    },
-    {
-      'label':'Distributor',
-      'name':'distributor',
-      'tag':'input',
-      'additional':function() {
-        return 'type=text';
-      }
-    },
-    {
-    'label':'Protocol',
-    'name':'protocol',
-    'tag':'input',
-    'additional':function() {
-      return 'type=text';
-      }
-    },
-    {
-    'label':'Layer',
-    'name':'layer',
-    'tag':'input',
-    'additional':function() {
-      return 'type=text';
-      }
-    }
-  ]
-};
-
-
-var position_file_uploader = function(selector) {
-  if(typeof selector==='undefined') {
-    $("#file-upload").hide();
-    return;
-  }
-  var ref = $(selector);
-  var r_width = ref.width();
-  var file_upload = $("#file-upload");
-  file_upload.css("position","absolute");
-  ref.css("width",r_width-60);
-  file_upload.css("left",ref.position().left+ref.width()+5);
-  file_upload.css("top",ref.position().top);
-  file_upload.show();
-};
-
-var structured_form_template = "{{#form}}\
-        <div class=\"input-group {{top_classes}}\">\
-            <div class=\"sp-label {{classes}}\"><label>{{label}}</label></div>\
-            <{{tag}} {{additional}} name=\"{{name}}\" {{id}} class=\"structured-input\" {{placeholder}}>{{inner}}</{{tag}}>\
-        </div>\
-{{/form}}";
-
 
 var render_forms = function(value) {
   $(".form-body").empty();
@@ -328,29 +88,43 @@ var render_forms = function(value) {
 
   if(value==="structured") {
     $("#upload-type-structured").prop("checked",true);
-    $(".form-body").html(Mustache.render(structured_form_template,structured_form));
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,structured_form));
     position_file_uploader("#url");
     populate_content_models();
   }
 
   if(value==="unstructured") {
     $("#upload-type-unstructured").prop("checked",true);
-    $(".form-body").html(Mustache.render(structured_form_template,unstructured_form));
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,unstructured_form));
     position_file_uploader("#url");
   }
 
   if(value==="offline-resource") {
-    $(".form-body").html(Mustache.render(structured_form_template,offline_resource_form));
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,offline_resource_form));
   }
 
   if(value==="data-service") {
-    $(".form-body").html(Mustache.render(structured_form_template,link_data_service_form));
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
+  }
+
+  if(value==="data-service" || value==="unstructured" || value==="structured") {
+    var dist_autocomp = ngds.autocomplete(".distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
+    dist_autocomp.proxy(".distributor_name","name"); 
+    dist_autocomp.proxy(".distributor_email","email");
+    dist_autocomp.proxy(".distributor",function(dict) {
+      $(".distributor").val(JSON.stringify({
+        "distributor_name":dict.name,
+        "distributor_email":dict.email
+      }));
+    });  
   }
 };
 
 $('input[name="upload-type"]').on('change',function(ev){
   
   var value = ev.target.value;
+    console.log(ev);
+    console.log(value);
 
   render_forms(value);
 });
@@ -366,12 +140,7 @@ $("#go-metadata").click(function() {
         $(".dataset-form").submit();
       }
       else {
-        var payload = {
-            'type':'content_model_validation_error',
-            'display':'Validation errors',
-            'data':response.validation_errors
-        };
-        ngds.publish('Notifications.received',payload);
+        ngds.publish('Notifications.received',response);
       }
     }
   });
@@ -386,17 +155,13 @@ if(typeof continuation!=='undefined') {
 
 </script>
 {% endraw %}
-<script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
-
 
 <script>
 
 (function template_variables_collect(){
   {% if data %}
    data="{{data}}";
-   data=data.replace(/u&#39;/g,'\"');
-   data=data.replace(/&#39;/g,'\"');
-   data=JSON.parse(data);
+   data = ngds.util.parse_raw_json("{{h.jsonify(data)}}")
    activate_populate_form(data);
   {% endif %}
 })();

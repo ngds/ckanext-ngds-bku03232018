@@ -553,13 +553,15 @@ class ContributeController(NGDSBaseController):
 		if not data['url'] or len(data['url'])<3:
 			errors.append({
 				'field':'url',
-				'message':'Resource URL is a mandatory parameter'
+				'message':'Resource URL is a mandatory parameter',
+				'ref':'form_validation'
 			})
 
 		if 'name' not in data or len(data['name'])==0:
 			errors.append({
 					'field':'name',
-					'message':'Name must be non-empty'
+					'message':'Name must be non-empty',
+					'ref':'form_validation'
 			})
 		url = data['url']
 		
@@ -579,11 +581,17 @@ class ContributeController(NGDSBaseController):
 		if cm_validation_results['valid']==False:
 			return {
 			'success':False,
-			'validation_errors':cm_validation_results['messages']
+			'validation_errors':cm_validation_results['messages'],
+			'ref':'content_model_validation_error'
 			}
 
 		if len(errors)>0:
-			return errors
+			return {
+				'success':False,
+				'display':'Validation Errors',
+				'type':'resource_form_validation_error',
+				'messages':errors
+			}
 		else:
 			return {
 				'success':True
@@ -606,7 +614,12 @@ class ContributeController(NGDSBaseController):
 			})
 
 		if len(errors)>0:
-			return errors
+			return {
+				'success':False,
+				'display':'Validation Errors',
+				'type':'resource_form_validation_error',
+				'messages':errors
+			}
 		else:
 			return {
 				'success':True

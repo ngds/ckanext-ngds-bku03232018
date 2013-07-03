@@ -105,6 +105,23 @@ class StandingData(NgdsDataObject):
             else: 
                 return member.description
 
+class UserSearch(NgdsDataObject):
+
+    def __init__(self, **kwargs):
+        self.user_id = kwargs.get('user_id', None)
+        self.search_name = kwargs.get('search_name', None)
+        self.url = kwargs.get('url', None)
+
+    @classmethod
+    def search(cls, user_id, sqlalchemy_query=None):
+
+        if sqlalchemy_query is None:
+            query = meta.Session.query(cls)
+        else:
+            query = sqlalchemy_query
+        query = query.filter(cls.user_id == user_id)
+        return query
+
 
 def define_tables():
     """Create the in-memory represenatation of tables, and map those tables to classes defined above"""
@@ -143,6 +160,14 @@ def define_tables():
         Column("data_type", types.UnicodeText),
     )    
 
+    user_saved_search = Table(
+        "user_saved_search",
+        meta.metadata,
+        Column("id", types.Integer, primary_key=True),
+        Column("user_id", types.UnicodeText),
+        Column("search_name", types.UnicodeText),
+        Column("url", types.UnicodeText),
+    )
 
     # Map those tables to classes, define the additional properties for related people
     meta.mapper(BulkUpload, bulkupload,
@@ -151,14 +176,16 @@ def define_tables():
         }
     )
     meta.mapper(StandingData, standingdata)
-    meta.mapper(BulkUpload_Package,bulkupload_package)
+    meta.mapper(BulkUpload_Package, bulkupload_package)
+    meta.mapper(UserSearch, user_saved_search)
     
     # Stick these classes into the CKAN.model, for ease of access later
     model.BulkUpload = BulkUpload
     model.StandingData = StandingData
     model.BulkUpload_Package = BulkUpload_Package
+    model.UserSearch = UserSearch
     
-    return bulkupload,bulkupload_package,standingdata
+    return bulkupload, bulkupload_package, standingdata, user_saved_search
 
 def db_setup():
     """Create tables in the database"""
@@ -169,6 +196,7 @@ def db_setup():
     bulkupload = meta.metadata.tables.get("bulk_upload", None)
     bulkupload_package = meta.metadata.tables.get("bulk_upload_package", None)
     standingdata = meta.metadata.tables.get("standing_data", None)
+    user_saved_search = meta.metadata.tables.get("user_saved_search", None)
     
     #print "bulkupload: ",bulkupload
     
@@ -180,4 +208,4 @@ def db_setup():
         
         # Alright. Create the tables.
         from ckanext.ngds.base.commands.ngds_tables import create_tables
-        create_tables([bulkupload,bulkupload_package,standingdata], log)
+        create_tables([bulkupload,bulkupload_package,standingdata,user_saved_search], log)

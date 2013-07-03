@@ -16,11 +16,6 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
   var display_key = display_key;
   var value_key = value_key;
   
-  if(textbox_component.length===0) {
-    console.log("No such id "+hash_id_elem+" in the DOM. Make sure you're invoking the function with something like '#an_id' (one that is valid)");
-    return;
-  }
-
   var autocomplete = $(textbox_component).autocomplete({
       source: function(request, response) {
           var dict = { };
@@ -30,11 +25,20 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
       response:function(event,ui) {
         $.each(ui.content,function(index,val){ 
           
-          var t1 = (val[display_key]!==null && typeof val[display_key]!=='undefined');
+          // var t1 = (val[display_key]!==null && typeof val[display_key]!=='undefined');
           var t2 = (val[value_key]!==null && typeof val[value_key]!=='undefined');
           
-          if(t1 && t2) {  // scrub out values that are null or undefined since there's no point trying to display them.
-            val.label=val[display_key];
+          if(t2) {  // scrub out values that are null or undefined since there's no point trying to display them.
+            if(display_key instanceof Array) {
+              var collect = []
+              for(var i=0;i<display_key.length;i++) {
+                collect.push(val[display_key[i]]);
+              } 
+              val.label = collect.join(' - ');
+            }
+            else {
+              val.label=val[display_key];
+            }
             val.value=val[value_key];  
           }
           else { // console log it
@@ -51,6 +55,10 @@ ngds.autocomplete = function(hash_id_elem,source_url,query_param_key,display_key
 
   autocomplete.on('autocompleteselect',function(ev,ui) {
             $.each(proxy_list,function(index,proxy){
+              if(typeof proxy['value_key'] === 'function') {
+                proxy['value_key'](ui.item);
+                return;
+              }
               $(proxy["proxy"]).val(ui.item[proxy["value_key"]]);
             });
         });

@@ -6,7 +6,6 @@ import ckan.plugins as p
 from ckan.plugins import ITemplateHelpers, IRoutes
 import ckanext.ngds.geoserver.logic.action as action
 import ckanext.datastore.logic.auth as auth
-import ckanext.datastore.db as db
 from ckanext.datastore.plugin import DatastoreException
 import ckan.logic as logic
 import ckan.model as model
@@ -40,6 +39,7 @@ class GeoserverPlugin(p.SingletonPlugin):
     p.implements(p.IAuthFunctions)
 
     def get_actions(self):
+        '''
         actions = {'datastore_spatialize' : action.datastore_spatialize,
                    'datastore_expose_as_layer': action.datastore_expose_as_layer,
                    'datastore_is_spatialized' : action.datastore_is_spatialized,
@@ -50,7 +50,15 @@ class GeoserverPlugin(p.SingletonPlugin):
                    'geoserver_create_workspace' : action.geoserver_create_workspace,
                    'geoserver_delete_workspace' : action.geoserver_delete_workspace,
                    'geoserver_create_store' : action.geoserver_create_store,
-                   'geoserver_delete_store' : action.geoserver_delete_store }
+                   'geoserver_delete_store' : action.geoserver_delete_store,
+                   'test':a.test }
+        '''
+
+        actions = {
+           'geoserver_publish_layer':action.publish,
+           'geoserver_layer_exists':action.layer_exists,
+           'geoserver_unpublish_layer':action.unpublish,
+        }
         
         return actions
 
@@ -65,7 +73,7 @@ class GeoserverPlugin(p.SingletonPlugin):
                 'geoserver_create_workspace' : auth.datastore_create,
                 'geoserver_delete_workspace' : auth.datastore_delete,
                 'geoserver_create_store' : auth.datastore_create,
-                'geoserver_delete_store' : auth.datastore_delete}
+                'geoserver_delete_store' : auth.datastore_delete,}
         
         return functions
 
@@ -78,4 +86,6 @@ class GeoserverPlugin(p.SingletonPlugin):
     p.implements(IRoutes,inherit=True)
     def before_map(self,map):
       map.connect('spatialize','/ngds/publish_ogc',controller="ckanext.ngds.geoserver.controllers.ogc:OGCController",action="publish_ogc",conditions={"method":["POST"]})
+      map.connect('publish_layer','/ngds/publish_layer',controller="ckanext.ngds.geoserver.controllers.ogc:OGCController",action="publish_layer",conditions={"method":["POST"]})
+
       return map

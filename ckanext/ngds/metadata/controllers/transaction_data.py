@@ -25,7 +25,9 @@ def dispatch(context, data_dict):
     elif request_model == "BulkUpload_Package":
         controller = BulkUpload_PackageController(context)
     elif request_model == "StandingData":
-        controller = StandingDataController(context)        
+        controller = StandingDataController(context)
+    elif request_model == "UserSearch":
+        controller = UserSearchController(context)
     else:
         raise toolkit.ValidationError({}, "Please supply a 'model' attribute in the POST body. Value can be one of: BulkUpload")
     
@@ -49,3 +51,9 @@ class StandingDataController(NgdsCrudController):
     def __init__(self, context):
         """Find the right model for this class"""
         self.model = context['model'].StandingData
+
+class UserSearchController(NgdsCrudController):
+    """Controls CRUD API for UserSearchController"""
+    def __init__(self, context):
+        """Find the right model for this class"""
+        self.model = context['model'].UserSearch

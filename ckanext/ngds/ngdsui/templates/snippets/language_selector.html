@@ -1,0 +1,18 @@
+{% set current_url = request.environ.CKAN_CURRENT_URL %}
+{% set current_lang = request.environ.CKAN_LANG %}
+{% set selected_lang = '' %}
+<form class="form-inline form-select lang-select" action="{% url_for controller='util', action='redirect' %}" data-module="select-switch" method="POST">
+  <div id="language-display">
+  	<span><img src="/assets/language_selector.png"/>
+	  <select id="field-lang-select" name="url" >
+	    {% for locale in h.get_available_locales() %}
+	    {% if locale == current_lang %}{% set selected_lang = locale.display_name or locale.english_name %}{% endif %}afdasdfs
+	      <option value="{% url_for current_url, locale=locale %}" {% if locale == current_lang %}selected="selected" class="selected" {% endif %}>
+	        {{ locale.display_name or locale.english_name }}
+	      </option>
+	    {% endfor %}
+	  </select>
+	</span>
+	  <button id="change-language" class="btn js-hide" type="submit">{{ _('Go') }}</button>  	
+  </div>
+</form>

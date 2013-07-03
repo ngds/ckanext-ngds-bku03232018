@@ -3,50 +3,11 @@
 *	This is the top-level control module for the NGDS map.
 */
 
-var ngds = ngds || ( ngds= { } );
+
 
 ngds.config = { 
 	'number_of_rows':10
 };
-
-(function setup_debugging(){
-	if(window.document.location.hash==="#!debug") {
-		
-		ngds.log = function(msg,last_log) {
-			ngds.last_log = last_log;
-			console.log(msg);
-		};
-
-		ngds.error = function(msg,last_error) {
-			ngds.last_error = last_error;
-			console.error(msg);
-		};
-
-	}
-	else {
-		
-		ngds.log = function(msg,last_log) {
-			ngds.last_log = last_log;
-			// swallow it.
-		};
-
-		ngds.error = function(msg,last_error) {
-			ngds.last_error = last_error;
-			// swallow it.
-		}
-
-	}
-})();
-
-ngds.publish = function(topic,msg) {
-	ngds.log("Published message : "+msg+" to topic : "+topic,msg);
-	PubSub.publish(topic,msg);
-};
-
-ngds.subscribe = function(topic,handler) {
-	ngds.log("Subscribed to topic : "+topic+" with handler : "+handler,handler);
-	PubSub.subscribe(topic,handler);
-}
 
 if(typeof ngds.Search!=='undefined') {
 	ngds.pager = new ngds.Search();
@@ -370,16 +331,6 @@ if(typeof ngds.Map!=='undefined') {
 		}
 	});
 })();
-
-(function subscribe_notifications_received() {
-	ngds.subscribe('Notifications.received',function(topic,data){
-		var handler = ngds.notifications.handlers[data['type']]; // Find a display handler for this type of error message.
-		handler(data);
-	});
-})();
-
-
-
 
 ngds.publish('Map.expander.toggle',{
 	// Empty payload		

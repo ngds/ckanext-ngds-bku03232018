@@ -1,15 +1,17 @@
-from ckan.lib.base import model,h,g,c,request
+from ckan.lib.base import model,h,g,c,request,response
 import ckan.lib.navl.dictization_functions as dictization_functions
 import ckan.logic as logic
 import ckan.controllers.storage as storage
+import ckan.rating as rating
 from ckan.model import User
 DataError = dictization_functions.DataError
-from pylons import config
+from pylons import config, jsonify
 from datetime import date
 import iso8601
 import inspect
+import re
 from ckan.model.resource import Resource
-
+import logging
 import ckan.plugins as p
 _ = p.toolkit._
 
@@ -18,34 +20,36 @@ try:
 except ImportError:
     from sqlalchemy.util import OrderedDict
 
+log = logging.getLogger(__name__)
+
 def get_responsible_party_name(id):
-	"""
-	Get the name of a responsible party for an id.
-	"""
-	print "get_responsible_party_name  " 
-	print id
-	#print inspect.stack()
-	# frm = inspect.stack()[0]
-	# mod = inspect.getmodule(frm[0])
-	# print '[%s] %s' % (mod.__name__, id)
-	# If we don't get an int id, return an empty string.
-	if id  and isinstance(id,basestring)==True:
-		try:
-			id_int = int(id)
-		except(ValueError):
-			return ""
-		responsible_party = model.ResponsibleParty.get(id)
-		if responsible_party:
-			return responsible_party.name
-		else:
-			return ""
-	else:
-		return ""
+    """
+    Get the name of a responsible party for an id.
+    """
+    print "get_responsible_party_name  "
+    print id
+    #print inspect.stack()
+    # frm = inspect.stack()[0]
+    # mod = inspect.getmodule(frm[0])
+    # print '[%s] %s' % (mod.__name__, id)
+    # If we don't get an int id, return an empty string.
+    if id  and isinstance(id,basestring)==True:
+        try:
+            id_int = int(id)
+        except(ValueError):
+            return ""
+        responsible_party = model.ResponsibleParty.get(id)
+        if responsible_party:
+            return responsible_party.name
+        else:
+            return ""
+    else:
+        return ""
 
 def get_login_url():
-	x = request.url
-	print x
-	return h.url_for(_get_repoze_handler('login_handler_path'),came_from=x)
+    x = request.url
+    print x
+    return h.url_for(_get_repoze_handler('login_handler_path'),came_from=x)
 
 def _get_repoze_handler(handler_name):
     '''Returns the URL that repoze.who will respond to and perform a
@@ -54,52 +58,93 @@ def _get_repoze_handler(handler_name):
 
 def get_default_group():
 
-	try:
-		print g.default_group
-	except AttributeError:
-		g.default_group = config.get('ngds.default_group_name', 'public')
+    try:
+        print g.default_group
+    except AttributeError:
+        g.default_group = config.get('ngds.default_group_name', 'public')
 
-	return g.default_group
+    return g.default_group
 
-def get_language(id):
-	if id:
-		print "got id : "+id
-		try:
-			id_int = int(id)
-		except(ValueError):
-			return ""
-		language = model.Language.get(id)
-		print "Got language ",language
-		print language.name
-		if language:
-			return language.name
+def highlight_rating_star(count,packageId):
+    
+    package = model.Package.get(packageId)
+    #log.debug("rating and count: %s %s", rating.get_rating(package)[0], rating.get_rating(package)[1])
+    if rating.get_rating(package)[0] >= count:
+        return 1
+    else:
+        return 0
+
+def count_rating_reviews(packageId):
+    package = model.Package.get(packageId)
+    if (rating.get_rating(package)):
+        return rating.get_rating(package)[1]
+    else:
+        return 0
+       
+def rating_text(count):
+	if count == 1:
+		return "Rate as very poor?"
+	else: 
+		if count == 2:
+			return "Rate as poor?"
 		else:
-			return ""
-	else:
-		return ""
+			if count == 3:
+				return "Rate as fair?"
+			else:
+				if count == 4:
+					return "Rate as good?"
+				else:
+					return "Rate as very good?"
+    
+def get_language(id):
+    if id:
+        print "got id : "+id
+        try:
+            id_int = int(id)
+        except(ValueError):
+            return ""
+        language = model.Language.get(id)
+        print "Got language ",language
+        print language.name
+        if language:
+            return language.name
+        else:
+            return ""
+    else:
+        return ""
+
+def file_path_from_url(url):
+    """
+    Given a file's URL, find the file itself on this system
+
+    @param url: The URL for a file that lives on this server
+    @return: the file path to the file itself
+    """
+
+    pattern = "^(?P<protocol>.+?)://(?P<host>.+?)/.+/(?P<label>\d{4}-.+)$"
+    label = re.match(pattern, url).group("label")
+    return get_url_for_file(label)
 
 def get_url_for_file(label):
-	# storage_controller = StorageController()
-	BUCKET = config.get('ckan.storage.bucket', 'default')
-	ofs = storage.get_ofs()
-	print ofs.get_url(BUCKET,label)
-	return ofs.get_url(BUCKET,label)
+    bucket = config.get('ckan.storage.bucket', 'default')
+    ofs = storage.get_ofs()
+    return ofs.get_url(bucket, label).replace("file://", "")
 
 def is_plugin_enabled(plugin):
-	plugins = config.get('ckan.plugins').split(' ')
-	if plugin in plugins:
-		return True
-	return False
+    plugins = config.get('ckan.plugins').split(' ')
+    if plugin in plugins:
+        return True
+    return False
 
 def username_for_id(id):
-	return model.User.get(id).name
+    return model.User.get(id).name
 
 def get_formatted_date(timestamp):
-	return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
+    return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
 
 '''
 This method loads the ngds facet configuration file and finds the facets to be during the search.
-   
+
     **Parameters:**
     None.
 
@@ -124,7 +169,7 @@ def load_ngds_facets():
 
     if facets_config_path:
         loaded_facets = read_facets_json(facets_config_path=facets_config_path)
-    
+
     # If facets are loaded and available then set them in global context and return.
     if loaded_facets:
         g.loaded_facets = loaded_facets
@@ -188,7 +233,7 @@ def read_facet(facet_struc,facet_list):
 
 '''
 This method gets the facets from search results and construct them into NGDS specific structure based on the facet json config file.
-   
+
     **Parameters:**
     None.
 
@@ -199,7 +244,7 @@ This method gets the facets from search results and construct them into NGDS spe
 def get_ngdsfacets():
 
     facet_config = g.facet_json_data
-    
+
     facets = []
     for facet_group in facet_config:
         facet_dict = {}
@@ -209,7 +254,7 @@ def get_ngdsfacets():
 
 '''
 This method constructs the facet results for each Facet structure (from json file) 
-   
+
     **Parameters:**
     facet_group - Facet Structure to be filled based on results.
     facet_dict - newly constrcuted facets dict which needs to be appended with new values.
@@ -318,3 +363,15 @@ def is_ogc_publishable(resource_id):
     if url[len(url)-3:len(url)]=='zip' or url[len(url)-3:len(url)]=='csv':
         return True
     return False
+
+@jsonify
+def jsonify(input):
+    # Trivial as this may seem, it is neccessary.
+    response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    return input
+
+def get_usersearches():
+    user = model.User.by_name(c.user.decode('utf8'))
+    query = model.UserSearch.search(user.id)
+
+    return query.all()

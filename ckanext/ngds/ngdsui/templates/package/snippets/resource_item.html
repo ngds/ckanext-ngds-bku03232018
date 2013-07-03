@@ -22,7 +22,7 @@
     </a>
     {% if h.is_plugin_enabled('geoserver') %}
       {% if h.is_ogc_publishable(res.id) %}
-        {% if h.is_spatialized(res.id,"geometry")==True %}
+        {% if h.is_spatialized(res)==True %}
          <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
         {% else %}
            <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Publish as OGC</button>
@@ -57,31 +57,17 @@ $(document).ready(function() {
         $(".spatialize").click(function(ev){
         var id = ev.currentTarget.value;
         $.ajax({
-          // url:'/api/action/datastore_spatialize',
-          'url':'/ngds/publish_ogc',
+          url:'/api/action/geoserver_publish_layer',
           'type':'POST',
-          'data':{
-              'id':id,
-              'col_geography':"geometry",
-              'col_latitude':"LATITUDE",
-              'col_longitude':"LONGITUDE"
-          },
+          'data':JSON.stringify({
+              resource_id:id,
+              col_geography:"geometry",
+              col_latitude:"LATITUDE",
+              col_longitude:"LONGITUDE"
+          }),
           success:function(response){
-            // Now expose it as a layer.
-            $.ajax({
-              url:'/api/action/datastore_expose_as_layer',
-              type:'POST',
-              data:JSON.stringify({
-                  id:id,
-                  col_geography:"geometry",
-                  col_latitude:"LATITUDE",
-                  col_longitude:"LONGITUDE"
-              }),
-              success:function(response) {
                 window.alert("This resource has now been published as an OGC service.");
                 window.location.reload();
-              }
-            })
           }
         });
       });
@@ -92,16 +78,14 @@ $(document).ready(function() {
         $(".unspatialize").click(function(ev){
         var id = ev.currentTarget.value;
         $.ajax({
-          url:'/api/action/datastore_remove_exposed_layer',
-          type:'POST',
-          data:JSON.stringify({
-           layer_name:id
+          url:'/api/action/geoserver_unpublish_layer',
+          'type':'POST',
+          'data':JSON.stringify({
+           resource_id:id
           }),
           success:function(response){
-            if(response.result.success===true) {
               window.alert("This resource has now been unpublished.");
               window.location.reload();
-            }
           }
         });
       });

@@ -129,6 +129,7 @@
                         codeListValue='{{ additional.status }}'>{{ additional.status }}
                 </gmd:MD_ProgressCode>
             </gmd:status>
+            {% if tags != [] %}
             <gmd:descriptiveKeywords>
                 <gmd:MD_Keywords>
                     {% for tag in tags %}
@@ -144,6 +145,8 @@
                     </gmd:type>
                 </gmd:MD_Keywords>
             </gmd:descriptiveKeywords>
+            {% endif %}
+            {% if additional.get("location", []) != [] %}
             <gmd:descriptiveKeywords>
                 <gmd:MD_Keywords>
                     {% for tag in additional.location %}
@@ -159,6 +162,7 @@
                     </gmd:type>
                 </gmd:MD_Keywords>
             </gmd:descriptiveKeywords>
+            {% endif %}
 
             <!-- >>>>>>>>>>>>>>>>>>>>> Facets <<<<<<<<<<<<<<<<<<<<<<<<< -->
             <gmd:descriptiveKeywords>

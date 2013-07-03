@@ -130,5 +130,12 @@ ngds.util.deep_joiner = function(data,property,separator) {
 ngds.util.replace_content = function(container,content) {
 	$(container).empty();
 	container.append(content);
+};
+
+ngds.util.parse_raw_json = function(raw) {
+	var parsed_json = raw.replace(/&#34;/g,"\"").replace(/&#39;/g,"\"").replace(/u\"/g,"\"").replace(/null/g,"\"\"");
+    console.log(parsed_json);
+	x= JSON.parse(parsed_json);
+    return x;
 }
 
