@@ -1,29 +1,27 @@
 {% import 'macros/form.html' as form %}
+{% macro is_selected(value,key,extra) %}
+  {% for extra in extras %}
+    {% if extra.key == key %}
+      {% if extra.value == value %}
+        selected
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
 {% include 'package/add_responsible_party.tmf' %}
+        {% macro get_value(key,extra) -%}
+  {% for extra in extras -%}
+    {% if extra.key == key -%}
+      {{ extra.value }}
+    {%- endif %}
+  {%- endfor %}
+{%- endmacro %}
 <div class="form-body">
  
   <!-- <div class="input-group">
     <div class="sp-label"><label>Author Email</label></div>
       <input type="text" name="author_email" placeholder="joe@example.com" value="{{data.author_email}}"></input>
   </div> -->
-  <div class="input-group">
-    <div class="sp-label"><label>Authors</label></div>
-      <input type="text" id="authors_fake" />
-      <div class="author-tags"></div>
-  </div>
-
-  <input type="hidden" name="authors" id="authors" />
-  <input type="hidden" name="author_email" id="author_email" />
-
-
-  <div class="input-group">
-    <div class="sp-label"><label>Maintainer</label></div>
-      <input type="text" id="maintainer_fake" />
-  </div>
-
-  <input type="hidden" name="maintainer" id="maintainer" />
-  <input type="hidden" name="maintainer_name" id="maintainer_name" />
-  <input type="hidden" name="maintainer_email" id="maintainer_email" />
 
   <!-- <div class="input-group">
     <div class="sp-label"><label>Maintainer Email</label></div>
@@ -53,36 +51,6 @@
 
 <script>
 
-var authors_ac = ngds.autocomplete("#authors_fake","/responsible_parties",'q',['name','email'],'name',true);
-var ticker = new ngds.util.tick();
-$("#authors_fake").on('autocompletechange',function(){
-  $("#authors_fake").val('');
-});
-
-authors_ac.proxy("#authors",function(dict) {
-    var state = ngds.util.state;
-    state['auth_autocomp'] = state['auth_autocomp'] || (state['auth_autocomp'] = [ ]);
-    var slug = ngds.util.get_author_slug({ 'name':dict['name'],'email':dict['email'] },ticker,function(authors_map){
-      var list_authors = [ ];
-      for(key in authors_map) {
-        list_authors.push(authors_map[key]);
-      }
-      $("#authors").val(escape(JSON.stringify(list_authors)));
-    });
-    slug.show();
-    $(".author-tags").append(slug);
-    setTimeout(function() {
-        $("#authors_fake").val("");
-    });
-//    $("#authors").val(JSON.stringify(state['auth_autocomp']));
-});  
-
-new ngds.responsible_party().responsibilify({
-  'rs_name':'#maintainer_name',
-  'rs_email':'#maintainer_email',
-  'rs_fake':'#maintainer_fake',
-  'rs':'#maintainer'
-  });
 </script>
 
 

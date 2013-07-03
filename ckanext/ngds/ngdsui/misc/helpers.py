@@ -13,6 +13,7 @@ import re
 from ckan.model.resource import Resource
 import logging
 import ckan.plugins as p
+import json
 _ = p.toolkit._
 
 try:
@@ -378,6 +379,15 @@ def get_usersearches():
     query = model.UserSearch.search(user.id)
 
     return query.all()
+
+def parseJSON(input):
+    return json.loads(input)
+
+def json_extract(input,key):
+    if(input==''):
+        return ''
+    input = input.decode('ascii').replace("&#34;",'"')
+    return json.loads(input)[key]
 
 def get_dataset_category_image_path(package):
 
