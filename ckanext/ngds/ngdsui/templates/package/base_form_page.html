@@ -14,21 +14,26 @@
   <div class="title">2. Add data</div>
   <div class="title">3. Additional data</div>
 </div> -->
+<div role="main" class="container">
+<div class="wrapper">
+<div class="primary">
   <section class="module">
     <div class="ngds-module-content">
       {% block form %}{{ c.form | safe }}{% endblock %}
     </div>
   </section>
+  </div>
 
-
-
+<aside class="secondary">
 {% block secondary_content %}
 
   {% block resources_module %}
     {# TODO: Pass in a list of previously created resources and the current package dict #}
     {% snippet "package/snippets/resources.html", pkg={}, action='new_resource' %}
   {% endblock %}
-
+</aside>
+</div>
+</div>
 {% endblock %}
 
 {% endblock %}
