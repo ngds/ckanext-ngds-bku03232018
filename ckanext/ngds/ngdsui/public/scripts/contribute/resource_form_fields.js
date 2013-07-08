@@ -298,6 +298,7 @@ var link_data_service_form = {
       return 'type=text';
       },
       'title':'What protocol is used to access this resource?',
+      'dnt':"someval",
       'options':[
         {
           'label':'WMS',
