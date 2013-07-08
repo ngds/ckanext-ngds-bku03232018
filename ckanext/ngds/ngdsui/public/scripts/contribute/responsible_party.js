@@ -29,19 +29,24 @@ ngds.responsible_party = function() {
 
 		var rs_ac = ngds.autocomplete(me.rs_fake,"/responsible_parties",'q',['name','email'],'name'); 
 
-	    rs_ac.proxy(me.rs_name,"name"); 
-	    rs_ac.proxy(me.rs_email,"email");
+	    // rs_ac.proxy(me.rs_name,me.rs_token+"_name"); 
+	    // rs_ac.proxy(me.rs_email,me.rs_token+"_email");
 
 	    var rs_name = me.rs_name;
 	    var rs_email = me.rs_email;
 
-        var slugify = function(dict){
-            console.log("once");
+        me.slugify = function(dict){
+        	console.log("slugifying");
+            console.log(dict);
             var rs_map = ngds.util.state[me.rs_token] || ( ngds.util.state[me.rs_token] = { });
             var payload = { };
-            console.log(dict);
-            payload["name"] = dict.name;
-            payload["email"] = dict.email;
+            console.log(dict["name"] || dict[me.rs_token+"_name"]);
+            payload[me.rs_token+"_name"] = dict["name"] || dict[me.rs_token+"_name"];
+            payload[me.rs_token+"_email"] = dict["name"] || dict[me.rs_token+"_email"];
+
+            var i_name = payload[me.rs_token+"_name"];
+            var i_email = payload[me.rs_token+"_email"];
+
             var vdict = JSON.stringify(payload);
 	        $(me.rs).val(vdict);
 
@@ -51,7 +56,7 @@ ngds.responsible_party = function() {
 
 	        ngds.util.state[me.rs_token] = vdict;
             $(fields['slug_container']).empty();
-            var slug = $("<span/>",{ "class":"ngds-tag","text":dict.name });
+            var slug = $("<span/>",{ "class":"ngds-tag","text":payload[me.rs_token+"_name"],"title":"Name : "+i_name+", Email : "+i_email });
             $(fields['slug_container']).append(slug);
             var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
             slug.append(anch);
@@ -64,14 +69,14 @@ ngds.responsible_party = function() {
              });
         }
 
-	    rs_ac.proxy(me.rs,slugify);
+	    rs_ac.proxy(me.rs,me.slugify);
 
         if($(me.rs_fake).val()!=="") {
            var parsed_dict = '';
            try {
                  var parsed_dict = JSON.parse($(me.rs_fake).val());
                  $(me.rs_fake).val("");
-                 slugify(parsed_dict);
+                 me.slugify(parsed_dict);
            }
            catch(SyntaxError) {
                    //swallow
@@ -151,15 +156,11 @@ ngds.responsible_party = function() {
 			          }
 			        }),
 			        'success':function(response) {
-			          $(me.rs_name).val(response.result.name);
-			          $(me.rs_email).val(response.result.email);
-			          // $(rs_cre).html("Success");
-			          rs_c_form_jq.fadeOut(1500,function() {
+			        	console.log("Creating rs party");
+			             console.log("ajax call");
+			             me.slugify(response.result);			                        
+			             me.rs_create_anch.show();
 			             rs_c_form_jq.remove();
-
-			             $(me.rs_fake).val(response.result.name);
-			             rs_blur();
-			          });
 			        }
 			  });
 			});
