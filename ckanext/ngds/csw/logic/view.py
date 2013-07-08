@@ -5,11 +5,13 @@ from pylons import config
 import json
 from dateutil import parser as date_parser
 
+
 def render_jinja2(template_name, extra_vars):
     """Render a Jinja2 template without all the CKAN mumbo-jumbo in toolkit.render"""
     env = config['pylons.app_globals'].jinja_env
     template = env.get_template(template_name)
     return template.render(**extra_vars)
+
 
 def get_harvested_content(package_id, context):
     """Check if a pacakge was harvested"""
@@ -59,12 +61,46 @@ def iso_metadata(context, data_dict):
         p["metadata_modified"] = date_parser.parse(p.get("metadata_modified", "")).replace(microsecond=0).isoformat()
         p["metadata_created"] = date_parser.parse(p.get("metadata_created", "")).replace(microsecond=0).isoformat()
 
+        # ---- Make sure that there is a publication date (otherwise you'll get invalid metadata)
+        if not p["additional"].get("publication_date", False):
+            p["additional"]["publication_date"] = p["metadata_created"]
+
         # ---- Figure out URIs
-        other_ids = p["additional"].get("other_id", [])
-        if len(other_ids) > 0:
-            p["additional"]["datasetUri"] = other_ids[0]
+        other_ids = p["additional"].get("other_id", "[]")
+        if len(json.loads(other_ids)) > 0:
+            p["additional"]["datasetUri"] = json.loads(other_ids)[0]
         else:
-            p["additional"]["datasetUri"] = "this should be the CKAN URL"
+            p["additional"]["datasetUri"] = config.get("ckan.site_url", "http://default.ngds.com").rstrip("/") + \
+                "/dataset/%s" % p["name"]
+
+        # ---- Load the authors
+        authors = p["additional"].get("authors", None)
+        try:
+            p["additional"]["authors"] = json.loads(authors)
+        except:
+            p["additional"]["authors"] = [{"author_name": p["author"], "author_email": p["author_email"]}]
+
+        # ---- Load Location keywords
+        location = p["additional"].get("location", "[]")
+        try:
+            loc = json.loads(location)
+            if not isinstance(loc, list):
+                p["additional"]["location"] = [loc]
+            else:
+                p["additional"]["location"] = loc
+        except:
+            p["additional"]["location"] = []
+
+        # ---- Reformat facets
+        faceted_ones = [t for t in p.get("tags", []) if t.get("vocabulary_id") is not None]
+        p["additional"]["facets"] = {}
+        for faceted_tag in faceted_ones:
+            vocab = toolkit.get_action("vocabulary_show")(None, {"id": faceted_tag.get("vocabulary_id", "")})
+            vocab_name = vocab.get("name", None)
+            if vocab_name is not None and vocab_name in p["additional"]["facets"]:
+                p["additional"]["facets"][vocab_name].append(faceted_tag.get("display_name"))
+            elif vocab_name is not None:
+                p["additional"]["facets"][vocab_name] = [faceted_tag.get("display_name")]
 
         # ---- Extract BBOX coords from extras
         p["extent"] = {}
@@ -84,24 +120,18 @@ def iso_metadata(context, data_dict):
                 # Couldn't parse spatial extra into bounding coordinates
                 pass
 
-        # ---- Reformat resource extras
-        for resource in p.get("resources", []):
-            resource["additional"] = {}
-            for e in resource.get("extras", []):
-                resource["additional"][e["key"]] = e["value"]
-
         # ---- Reorganize resources by distributor, on/offline
         online = {}
         offline = {}
         for resource in p.get("resources", []):
-            distributor = resource["additional"].get("distributor", None)
+            distributor = json.loads(resource.get("distributor", "{}"))
 
-            if resource["additional"].get("is_online", True):
+            if json.loads(resource.get("is_online", "true")):
                 resources = online
             else:
                 resources = offline
 
-            if distributor:
+            if distributor != {}:
                 name = distributor.get("distributor_name", "None")
             else:
                 name = "None"

@@ -17,7 +17,7 @@
     <gmd:hierarchyLevel>
         <gmd:MD_ScopeCode
                 codeList='http://standards.iso.org/iso/19139/resources/codelist/gmxCodelists.xml'
-                codeListValue='{{ data_type }}'>{{ data_type }}
+                codeListValue='{{ additional.data_type }}'>{{ additional.data_type }}
         </gmd:MD_ScopeCode>
     </gmd:hierarchyLevel>
     <gmd:hierarchyLevelName>
@@ -56,13 +56,9 @@
     <gmd:metadataStandardVersion>
         <gco:CharacterString>1.2</gco:CharacterString>
     </gmd:metadataStandardVersion>
-
-<!-- <<<<<<<<<<<<<<<<<<<<<<<< datasetUri >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
     <gmd:dataSetURI>
         <gco:CharacterString>{{ additional.datasetUri }}</gco:CharacterString>
     </gmd:dataSetURI>
-<!-- <<<<<<<<<<<<<<<<<<<<<<<< datasetUri >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-
     <gmd:identificationInfo>
         <gmd:MD_DataIdentification>
             <gmd:citation>
@@ -163,22 +159,23 @@
                 </gmd:MD_Keywords>
             </gmd:descriptiveKeywords>
             {% endif %}
-
-            <!-- >>>>>>>>>>>>>>>>>>>>> Facets <<<<<<<<<<<<<<<<<<<<<<<<< -->
+            {% for facet in additional.facets %}
             <gmd:descriptiveKeywords>
                 <gmd:MD_Keywords>
+                    {% for term in additional.facets[facet] %}
                     <gmd:keyword>
-                        <gco:CharacterString>Alabama Geological Survey</gco:CharacterString>
+                        <gco:CharacterString>{{ term }}</gco:CharacterString>
                     </gmd:keyword>
+                    {% endfor %}
                     <gmd:thesaurusName xlink:href='/metadata/collection/'>
                         <gmd:CI_Citation>
                             <gmd:title>
-                                <gco:CharacterString>Server Collections</gco:CharacterString>
+                                <gco:CharacterString>{{ facet }}</gco:CharacterString>
                             </gmd:title>
                             <gmd:date>
                                 <gmd:CI_Date>
                                     <gmd:date>
-                                        <gco:Date>2012-06-06</gco:Date>
+                                        <gco:Date>2013-01-01</gco:Date>
                                     </gmd:date>
                                     <gmd:dateType>
                                         <gmd:CI_DateTypeCode
@@ -191,8 +188,7 @@
                     </gmd:thesaurusName>
                 </gmd:MD_Keywords>
             </gmd:descriptiveKeywords>
-            <!-- >>>>>>>>>>>>>>>>>>>>> Facets <<<<<<<<<<<<<<<<<<<<<<<<< -->
-
+            {% endfor %}
             <gmd:language>
                 <gco:CharacterString>{{ additional.language }}</gco:CharacterString>
             </gmd:language>
@@ -225,8 +221,7 @@
     </gmd:identificationInfo>
     <gmd:distributionInfo>
         <gmd:MD_Distribution>
-
-            {% for distro in online %}
+            {% for distro in additional.online %}
             <gmd:distributor>
                 <gmd:MD_Distributor>
                     <gmd:distributorContact>
@@ -259,8 +254,7 @@
                 </gmd:MD_Distributor>
             </gmd:distributor>
             {% endfor %}
-
-            {% for distro in offline %}
+            {% for distro in additional.offline %}
             {% for resource in distro.resources %}
             <gmd:distributor>
                 <gmd:MD_Distributor>
@@ -291,26 +285,25 @@
                     <gmd:distributionOrderProcess>
                         <gmd:MD_StandardOrderProcess>
                             <gmd:orderingInstructions>
-                                <gco:CharacterString>{{ resource.additional.ordering }}</gco:CharacterString>
+                                <gco:CharacterString>{{ resource.ordering }}</gco:CharacterString>
                             </gmd:orderingInstructions>
                         </gmd:MD_StandardOrderProcess>
                     </gmd:distributionOrderProcess>
                     <gmd:distributorFormat>
                         <gmd:MD_Format>
                             <gmd:name>
-                                <gco:CharacterString>{{ resource.additional.resource_type }}</gco:CharacterString>
+                                <gco:CharacterString>{{ resource.resource_type }}</gco:CharacterString>
                             </gmd:name>
                             <gmd:version>
                                 <gco:CharacterString>None</gco:CharacterString>
                             </gmd:version>
                         </gmd:MD_Format>
                     </gmd:distributorFormat>
-                    <gmd:distributorTransferOptions xlink:href="#distribution-{{ res.id }}"></gmd:distributorTransferOptions>
+                    <gmd:distributorTransferOptions xlink:href="#distribution-{{ resource.id }}"></gmd:distributorTransferOptions>
                 </gmd:MD_Distributor>
             </gmd:distributor>
             {% endfor %}
             {% endfor %}
-
             {% for distro in additional.online %}
             {% for resource in distro.resources %}
             <gmd:transferOptions>
@@ -321,7 +314,7 @@
                                 <gmd:URL>{{ resource.url }}</gmd:URL>
                             </gmd:linkage>
                             <gmd:protocol>
-                                <gco:CharacterString>{{ resource.additional.protocol }}</gco:CharacterString>
+                                <gco:CharacterString>{{ resource.protocol }}</gco:CharacterString>
                             </gmd:protocol>
                             <gmd:name>
                                 <gco:CharacterString>{{ resource.name }}</gco:CharacterString>
@@ -329,8 +322,8 @@
                             <gmd:description>
                                 <gco:CharacterString>
                                     {{ resource.description }}
-                                    {% if resource.additional.layer_name %}
-                                    Look the following layer within the service: {{ resource.additional.layer_name }}
+                                    {% if resource.layer_name %}
+                                    Look the following layer within the service: {{ resource.layer_name }}
                                     {% endif %}
                                 </gco:CharacterString>
                             </gmd:description>
@@ -349,17 +342,19 @@
 
 <!-- <<<<<<<<<<<<<<<<<<<<<<<< transferOptions for Offline Resources >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             {% for resource in additional.offline %}
+            {% for res in resource.resources %}
             <gmd:transferOptions>
-                <gmd:MD_DigitalTransferOptions>
+                <gmd:MD_DigitalTransferOptions id="distribution-{{ res.id }}">
                     <gmd:offLine>
                         <gmd:MD_Medium>
                             <gmd:mediumNote>
-                                <gco:CharacterString>{{ resource.name }} -- {{ resource.description }}</gco:CharacterString>
+                                <gco:CharacterString>{{ res.name }} -- {{ res.description }}</gco:CharacterString>
                             </gmd:mediumNote>
                         </gmd:MD_Medium>
                     </gmd:offLine>
                 </gmd:MD_DigitalTransferOptions>
             </gmd:transferOptions>
+            {% endfor %}
             {% endfor %}
 <!-- <<<<<<<<<<<<<<<<<<<<<<<< transferOptions for Offline Resources >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
 
