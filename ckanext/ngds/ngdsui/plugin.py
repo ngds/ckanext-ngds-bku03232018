@@ -108,7 +108,6 @@ class NgdsuiPlugin(SingletonPlugin):
     implements(IConfigurable, inherit=True)
 
     def configure(self, config):
-
         self.contentmodel_configure(config)
 
     implements(IRoutes,inherit=True)
@@ -230,6 +229,23 @@ class NgdsuiPlugin(SingletonPlugin):
         }
 
     implements(IPackageController,inherit=True)
+
+    def before_index(self, pkg_dict):
+        #pkg_dict['sample_created']={'prahadeesh':'abclll'}
+        import json
+        if pkg_dict.get('data_dict'):
+            dict =json.loads(pkg_dict.get('data_dict'))
+            #dict = pkg_dict.get('data_dict')
+            resources = dict.get('resources')
+        if resources:
+            for resource in resources:
+                res_file_field='resource_file_%s' % resource.get("id")
+                print "res_file_field:",res_file_field
+                pkg_dict[res_file_field]=''
+        #pkg_dict['sample_created']='prahadeesh'
+
+        return pkg_dict
+
 
     def before_search(self, search_params):
         # if 'fq' not in search_params:

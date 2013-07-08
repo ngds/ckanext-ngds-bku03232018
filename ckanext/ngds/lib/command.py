@@ -20,4 +20,12 @@ class APICommand(CkanCommand):
             #bulkLoader.importpackagedata(file_path=self.args[1],resource_dir=self.args[2])
             bulkLoader.execute_bulk_upload()
         else:
-            print "Command %s not recognized" % cmd
+            from ckanext.ngds.lib.index import FullTextIndexer
+
+            text_indexer = FullTextIndexer()
+            data_dict = {'id' : 'd09bcc68-9737-4f7d-bf28-fdf3722552d1',
+                       'site_id' : 'default'}
+            field_to_add = 'resource_file_%s' % '5ffecb7c-1b0c-42df-bbff-75bd6631c31f'
+            file_path = '/home/ngds/Downloads/sample.pdf'
+            text_indexer.index_resource_file(data_dict,'resource_file_5ffecb7c-1b0c-42df-bbff-75bd6631c31f', file_path, defer_commit=True)
+
