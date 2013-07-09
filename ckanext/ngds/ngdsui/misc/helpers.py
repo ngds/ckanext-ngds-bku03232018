@@ -386,8 +386,15 @@ def parseJSON(input):
 def json_extract(input,key):
     if(input==''):
         return ''
-    input = input.decode('ascii').replace("&#34;",'"')
-    return json.loads(input)[key]
+    try:
+        input = input.decode('ascii').replace("&#34;",'"')
+        i_json = json.loads(input)
+        if key in i_json:
+            return i_json[key]
+    except(ValueError):
+        pass
+    finally:
+        return ''
 
 def get_dataset_category_image_path(package):
 

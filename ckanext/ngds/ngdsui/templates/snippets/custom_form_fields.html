@@ -25,18 +25,18 @@
   </div>
 
   <input type="hidden" name="extras__12__value" id="authors" value="{{get_value('authors',extras)}}"/>
-  <input type="hidden" name="author_email" id="author_email" />
+  <input type="hidden" id="author" />
 
   <div class="input-group">
     <div class="sp-label"><label>Maintainer</label></div>
-      <input id="field-extras-13-key" name="extras__13__key" value="maintainer" placeholder="" style="display:none;">
-      <input type="text" id="maintainer_fake" value="{{ get_value('maintainer',extras) }}" />
+      <input id="field-extras-13-key" name="extras__13__key" value="ngds_maintainer" placeholder="" style="display:none;">
+      <input type="text" id="maintainer_fake" value="{{ get_value('ngds_maintainer',extras) }}" />
       <div class="maintainer-tag retreived-tags"></div>
   </div>
 
   <input type="hidden" name="extras__13__value" id="maintainer"/>
-  <input type="hidden" id="maintainer_name" value="{{ h.json_extract(get_value('maintainer',extras),'maintainer_name') }}" />
-  <input type="hidden" id="maintainer_email" value="{{ h.json_extract(get_value('maintainer',extras),'maintainer_email') }}"/>
+  <input type="hidden" id="maintainer_name" name="maintainer" value="{{ h.json_extract(get_value('ngds_maintainer',extras),'name') }}" />
+  <input type="hidden" id="maintainer_email" name="maintainer_email" value="{{ h.json_extract(get_value('ngds_maintainer',extras),'email') }}"/>
 
 
 <div class="input-group">
@@ -135,7 +135,15 @@ $("#authors_fake").on('autocompletechange',function(){
 });
 
 var slugify = function(dict) {
-    console.log(dict);
+    var author_name_f = $("[name='author']").val();
+    var author_email_f = $("[name='author_email']").val();
+
+    if((author_name_f ==='' || typeof author_name_f ==='undefined') && (author_email_f ==='' || typeof author_email_f ==='undefined')) {
+      console.log("First time.");
+      console.log(dict);
+      $("[name='author']").val(dict.name);
+      $("[name='author_email']").val(dict.email);
+    }
     var state = ngds.util.state;
     state['auth_autocomp'] = state['auth_autocomp'] || (state['auth_autocomp'] = [ ]);
     var slug = ngds.util.get_author_slug({ 'name':dict['name'],'email':dict['email'] },ticker,function(authors_map){
@@ -168,14 +176,17 @@ if($("#authors_fake").val()!=="") {
 
 }
 
-var maintainer_resp = new ngds.responsible_party()
-  maintainer_resp.responsibilify({
-  'rs_name':'#maintainer_name',
-  'rs_email':'#maintainer_email',
-  'rs_fake':'#maintainer_fake',
-  'rs':'#maintainer',
-  'slug_container':'.maintainer-tag'
-  });
+var maintainer_resp = new ngds.responsible_party();
+maintainer_resp.responsibilify({
+'rs_name':'#maintainer_name',
+'rs_email':'#maintainer_email',
+'rs_fake':'#maintainer_fake',
+'rs':"#maintainer",
+'slug_container':'.maintainer-tag'
+},function(dict) {
+  $("[name='maintainer']").val(dict['name']);
+  $("[name='maintainer_email']").val(dict['email']);
+});
 
 //$("#maintainer_fake").val("");
 </script>

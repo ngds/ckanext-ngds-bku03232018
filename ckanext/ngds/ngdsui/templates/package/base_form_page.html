@@ -1,12 +1,39 @@
 {% extends "page_ngds.html" %}
 
 {% block content %}
+{% set pkg = c.pkg_dict %}
 
-<h2>
-  CONTRIBUTE
-</h2>
-<div class="about-form">
-  <p>Submit datasets to share with the NGDS community.</p>
+{% block breadcrumb_content_selected %} class="active"{% endblock %}
+
+{% block contribute_landing %}
+  <h2>
+    CONTRIBUTE
+  </h2>
+  <div class="about-form">
+    <p>Submit datasets to share with the NGDS community.</p>
+  </div>
+{% endblock %}
+
+{% block breadcrumb_content %}
+<div class="toolbar">
+  <ol class="breadcrumb">
+    {% snippet 'snippets/home_breadcrumb_item.html' %}
+  {% if pkg %}
+    {% set dataset = pkg.title or pkg.name %}
+    {% if pkg.organization %}
+      {% set organization = pkg.organization.title or pkg.organization.name %}
+      <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
+      <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name %}
+    {% else %}
+      <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
+    {% endif %}
+    <li{{ self.breadcrumb_content_selected() }}>{% link_for dataset|truncate(30), controller='package', action='read', id=pkg.name %}</li>
+  {% else %}
+    <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
+    <li class="active"><a href="">{{ _('Create Dataset') }}</a></li>
+  {% endif %}
+{% endblock %}
+</ol>
 </div>
 
 <!-- <div class="upload-container">

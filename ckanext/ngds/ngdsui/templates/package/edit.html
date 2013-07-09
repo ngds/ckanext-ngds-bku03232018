@@ -3,7 +3,8 @@
 {% set pkg = c.pkg_dict %}
 
 {% block breadcrumb_content_selected %}{% endblock %}
-
+{% block contribute_landing %}
+{% endblock %}
 {% block breadcrumb_content %}
   {{ super() }}
   <li class="active">{% link_for _('Edit'), controller='package', action='edit', id=pkg.name %}</li>

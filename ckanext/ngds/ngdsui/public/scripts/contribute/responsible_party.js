@@ -4,7 +4,7 @@ ngds.responsible_party = function() {
 
 	var me = this;
 
-	var responsibilify = function(fields) {
+	var responsibilify = function(fields,additional_fields) {
 		/*
 		*	Fields - rs-fake, rs_name, rs_email.
 		*/
@@ -36,19 +36,20 @@ ngds.responsible_party = function() {
 	    var rs_email = me.rs_email;
 
         me.slugify = function(dict){
-        	console.log("slugifying");
-            console.log(dict);
             var rs_map = ngds.util.state[me.rs_token] || ( ngds.util.state[me.rs_token] = { });
             var payload = { };
-            console.log(dict["name"] || dict[me.rs_token+"_name"]);
-            payload[me.rs_token+"_name"] = dict["name"] || dict[me.rs_token+"_name"];
-            payload[me.rs_token+"_email"] = dict["name"] || dict[me.rs_token+"_email"];
+            payload["name"] = dict["name"];
+            payload["email"] = dict["name"];
 
-            var i_name = payload[me.rs_token+"_name"];
-            var i_email = payload[me.rs_token+"_email"];
+            var i_name = payload["name"];
+            var i_email = payload["email"];
 
             var vdict = JSON.stringify(payload);
 	        $(me.rs).val(vdict);
+
+	        if(typeof additional_fields !=='undefined')	         {
+	        	additional_fields(dict);
+	        }
 
             setTimeout(function() {
                 $(me.rs_fake).val("");
@@ -56,7 +57,7 @@ ngds.responsible_party = function() {
 
 	        ngds.util.state[me.rs_token] = vdict;
             $(fields['slug_container']).empty();
-            var slug = $("<span/>",{ "class":"ngds-tag","text":payload[me.rs_token+"_name"],"title":"Name : "+i_name+", Email : "+i_email });
+            var slug = $("<span/>",{ "class":"ngds-tag","text":payload["name"],"title":"Name : "+i_name+", Email : "+i_email });
             $(fields['slug_container']).append(slug);
             var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
             slug.append(anch);
@@ -72,6 +73,8 @@ ngds.responsible_party = function() {
 	    rs_ac.proxy(me.rs,me.slugify);
 
         if($(me.rs_fake).val()!=="") {
+        	console.log("In here");
+        	console.log($(me.rs_fake).val());
            var parsed_dict = '';
            try {
                  var parsed_dict = JSON.parse($(me.rs_fake).val());
@@ -156,8 +159,6 @@ ngds.responsible_party = function() {
 			          }
 			        }),
 			        'success':function(response) {
-			        	console.log("Creating rs party");
-			             console.log("ajax call");
 			             me.slugify(response.result);			                        
 			             me.rs_create_anch.show();
 			             rs_c_form_jq.remove();
