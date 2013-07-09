@@ -5,13 +5,20 @@ class NgdsSolrConnection(SolrConnection):
 
     @solr.core.committing
     def update_fields(self, docs, fields_to_update, commit=False):
+        """
+
+        """
         lst = [u'<add>']
         #for doc in docs:
         self.__add_update_fields(lst, docs, fields_to_update)
         lst.append(u'</add>')
-        return ''.join(lst)
+        xml_content = ''.join(lst)
+        return xml_content
 
     def __add_update_fields(self, lst, fields, fields_to_update):
+        """
+
+        """
         from xml.sax.saxutils import escape, quoteattr
         import datetime
         lst.append(u'<doc>')
@@ -43,35 +50,60 @@ class NgdsSolrConnection(SolrConnection):
         lst.append('</doc>')
 
     def _extract_content(self, file_path):
+        """
+
+        """
 
 
         try:
-            request = '-F file=@%s' % file_path
-            selector = '%s/update/extract?extractOnly=true&extractFormat=text ' % self.path
+            selector = '%s/update/extract?extractOnly=true&extractFormat=xml ' % self.url
             _headers = self.auth_headers.copy()
-            self.conn.request('POST', selector, request, _headers)
-            rsp = solr.core.check_response_status(self.conn.getresponse())
-            data = rsp.read()
-        finally:
-            if not self.persistent:
-                self.close()
 
-        # Detect old-style error response (HTTP response code
-        # of 200 with a non-zero status).
-        starts = data.startswith
-        if starts('<result status="') and not starts('<result status="0"'):
-            from xml.dom.minidom import parseString
-            from solr.core import SolrException
+            import requests
+            files = {'file': open(file_path, 'rb')}
+            response = requests.post(selector, files=files, headers=_headers)
+            check_response_status(response)
 
-            data = self.decoder(data)[0]
-            parsed = parseString(data)
-            status = parsed.documentElement.getAttribute('status')
-            if status != 0:
-                reason = parsed.documentElement.firstChild.nodeValue
-                raise SolrException(rsp.status, reason)
+            from lxml import etree
+
+            response_text = response.text
+
+            response_text = response_text.encode("UTF-8")
+
+            root = etree.fromstring(response_text)
+
+            expr = "//str[@name = $name]"
+
+            file_content = root.xpath(expr, name=file_path)
+
+            data = None
+
+            if file_content and len(file_content) > 0:
+                data = file_content[0].text
+
+        except Exception, ex:
+            print "exception while extracting the file contents."
+            raise ex
+
         return data
 
+def check_response_status(response):
+    """
+
+    """
+    if response.status_code != 200:
+        ex = solr.SolrException(response.status_code, response.reason)
+        try:
+            ex.body = response.read()
+        except:
+            pass
+        raise ex
+    return response
+
 def make_connection():
+    """
+
+    """
 
     from ckan.lib.search.common import SolrSettings
 

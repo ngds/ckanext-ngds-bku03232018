@@ -1,6 +1,6 @@
 import logging
 
-from ckan.plugins import toolkit
+from ckan.lib.search.common import SearchIndexError
 from paste.deploy.converters import asbool
 from pylons import config as ckan_config
 
@@ -39,14 +39,12 @@ class FullTextIndexer:
 
             file_content = conn._extract_content(file_path)
 
-            print "file_content:",file_content
-
             data_dict[file_index_field] = file_content
             data_dict['index_id']=index_id
 
             conn.update_fields(data_dict, [file_index_field], commit=commit)
         except Exception, e:
             log.exception(e)
-            #raise SearchIndexError(e)
+            raise SearchIndexError(e)
         finally:
             conn.close()
