@@ -84,7 +84,7 @@ ngds.Map = {
 			map.addLayer(_drawnItems);
 
 			new L.Control.GeoSearch({
-				provider: new L.GeoSearch.Provider.OpenStreetMap()
+				provider: new L.GeoSearch.Provider.OpenStreetMap(),
 			}).addTo(map);
 
 			this.layers = {
@@ -119,10 +119,11 @@ ngds.Map = {
 				'NEXRAD Weather':weather_wms
 				// "ngds":ngds_layer
 			};
-			var zoomFS = new L.Control.ZoomFS({
+
+            var zoom = new L.Control.Zoom({
 				'position':'topright'
 			}); 
-			map.addControl(zoomFS);
+			map.addControl(zoom);
 
 			layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
 			layer_control.addTo(map);
