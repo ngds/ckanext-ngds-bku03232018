@@ -6,7 +6,7 @@ var ngds = ngds || (ngds = { } );
 *	Hide a feature on the map if the zoom level is such that the layer's bounds exceed that of the map's. This is useful
 *	when there are features that overlap and the user is unable to get to a feature that is below another.
 */
-/*
+
 var zoom_handler = ngds.Map.zoom_handler = function(layer) {
 	(function() { // Sanity Checks
 		if(layer===null || typeof layer==='undefined') {
@@ -55,4 +55,3 @@ zoom_handler.clear_listeners = function() { // Unregister the zoom event handler
 	}
 	ngds.Map.handlers = [];
 }
-*/

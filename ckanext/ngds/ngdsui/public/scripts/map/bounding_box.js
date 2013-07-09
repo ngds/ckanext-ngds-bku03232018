@@ -1,4 +1,3 @@
-/*
 ngds.Map.BoundingBox = function() {
 	this.construct_from_leaflet_shape = function(leaflet_shape) {
 		this.minx = ngds.Map.utils.get_bound(leaflet_shape._latlngs,'lng','min');
@@ -63,4 +62,3 @@ ngds.Map.BoundingBox = function() {
 		return this.maxx;
 	}
 };
-*/
