@@ -67,24 +67,24 @@ def get_xpath(xml, xpath):
     except: ns = xml.getroot().nsmap
     return xml.xpath(xpath, namespaces=ns)
 
-def validate_some_xpath(xml, xpath, expected):
-    results = get_xpath(xml, xpath)
-    if isinstance(results, list) and len(results) > 0:
-        derived_value = results[0]
-    elif isinstance(results, list) and len(results) == 0:
-        derived_value = ""
-    else:
-        derived_value = results
-
-    if hasattr(derived_value, "text"):
-        derived_value = derived_value.text
-
-    derived_value = derived_value.strip()
-
-    assert(derived_value == expected)
-
 
 class ViewsTestCase(NgdsTestCase):
+
+    def validate_some_xpath(self, xml, xpath, expected):
+        results = get_xpath(xml, xpath)
+        if isinstance(results, list) and len(results) > 0:
+            derived_value = results[0]
+        elif isinstance(results, list) and len(results) == 0:
+            derived_value = ""
+        else:
+            derived_value = results
+
+        if hasattr(derived_value, "text"):
+            derived_value = derived_value.text
+
+        derived_value = derived_value.strip()
+
+        self.assertEqual(derived_value, expected, "Expected: %s || Found: %s at %s" % (expected, derived_value, xpath))
 
     def test_returns_harvested_data(self):
         pass
@@ -98,14 +98,14 @@ class ViewsTestCase(NgdsTestCase):
         """Test that XML output contains the proper ID"""
         p = self.add_package("id-test")
         metadata = validate("id-test")
-        validate_some_xpath(metadata, "//gmd:fileIdentifier/gco:CharacterString", p.get("id", None))
+        self.validate_some_xpath(metadata, "//gmd:fileIdentifier/gco:CharacterString", p.get("id", None))
 
     def test_xml_hierarchy(self):
         """Test that the XML output contains the proper hierarchy value"""
         p = self.add_package("hierarchy-test", {"extras": [{"key": "data_type", "value": "Wonka"}]})
         metadata = validate("hierarchy-test")
         ds = "Wonka"
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:hierarchyLevel/gmd:MD_ScopeCode",
             ds
@@ -116,7 +116,7 @@ class ViewsTestCase(NgdsTestCase):
         p = self.add_package("hierarchy-code-test", {"extras": [{"key": "data_type", "value": "Wonka"}]})
         metadata = validate("hierarchy-code-test")
         ds = "Wonka"
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue",
             ds
@@ -127,7 +127,7 @@ class ViewsTestCase(NgdsTestCase):
         p = self.add_package("hierarchy-level-test", {"extras": [{"key": "data_type", "value": "Wonka"}]})
         metadata = validate("hierarchy-level-test")
         ds = "Wonka"
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:hierarchyLevelName/gco:CharacterString",
             ds
@@ -145,12 +145,12 @@ class ViewsTestCase(NgdsTestCase):
         }
         p = self.add_package("maintainer-test", maintainer)
         metadata = validate("maintainer-test")
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:contact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString",
             name
         )
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:contact//gmd:CI_Contact//gmd:electronicMailAddress/gco:CharacterString",
             email
@@ -160,7 +160,7 @@ class ViewsTestCase(NgdsTestCase):
         """Test that XML output contains the proper modification date"""
         p = self.add_package("mod-date-test")
         metadata = validate("mod-date-test")
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:dateStamp/gco:DateTime",
             date_parser.parse(p.get("metadata_modified", "")).replace(microsecond=0).isoformat()
@@ -170,12 +170,12 @@ class ViewsTestCase(NgdsTestCase):
         """Test that XML output contains the proper dataset uri"""
         p = self.add_package("set-dataset-uri-test", {"extras": [{"key": "other_id", "value": json.dumps(["uri"])}]})
         metadata = validate("set-dataset-uri-test")
-        validate_some_xpath(metadata, "//gmd:dataSetURI/gco:CharacterString", "uri")
+        self.validate_some_xpath(metadata, "//gmd:dataSetURI/gco:CharacterString", "uri")
 
     def test_xml_unset_datasetURI(self):
         p = self.add_package("unset-dataset-uri-test")
         metadata = validate("unset-dataset-uri-test")
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:dataSetURI/gco:CharacterString",
             pylons_config.get("ckan.site_url", "http://default.ngds.com").rstrip("/") + "/dataset/unset-dataset-uri-test"
@@ -184,7 +184,7 @@ class ViewsTestCase(NgdsTestCase):
     def test_xml_unset_pubdate(self):
         p = self.add_package("unset-pub-date", ngds_extras=False)
         metadata = validate("unset-pub-date")
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:citation//gmd:date//gmd:date/gco:DateTime",
             date_parser.parse(p.get("metadata_created", "")).replace(microsecond=0).isoformat()
@@ -195,7 +195,7 @@ class ViewsTestCase(NgdsTestCase):
         name = "title-test"
         p = self.add_package(name)
         metadata = validate(name)
-        validate_some_xpath(metadata, "//gmd:CI_Citation/gmd:title/gco:CharacterString", p.get("title", None))
+        self.validate_some_xpath(metadata, "//gmd:CI_Citation/gmd:title/gco:CharacterString", p.get("title", None))
 
     def test_xml_creators(self):
         """Test that XML output contains the proper creators"""
@@ -219,22 +219,22 @@ class ViewsTestCase(NgdsTestCase):
             ]
         })
         metadata = validate("authors-test")
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:citedResponsibleParty[1]//gmd:individualName/gco:CharacterString",
             "Ryan"
         )
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:citedResponsibleParty[1]//gmd:CI_Contact//gmd:electronicMailAddress/gco:CharacterString",
             "nothing@false.com"
         )
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:citedResponsibleParty[2]//gmd:individualName/gco:CharacterString",
             "Roger Mebowitz"
         )
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:citedResponsibleParty[2]//gmd:CI_Contact//gmd:electronicMailAddress/gco:CharacterString",
             "nothing@waste.com"
@@ -245,7 +245,7 @@ class ViewsTestCase(NgdsTestCase):
         name = "description-test"
         p = self.add_package(name)
         metadata = validate(name)
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:MD_DataIdentification/gmd:abstract/gco:CharacterString",
             p.get("notes", None)
@@ -272,14 +272,14 @@ class ViewsTestCase(NgdsTestCase):
         metadata = validate(name)
 
         xpath = '//gmd:MD_Keywords[gmd:thesaurusName/gmd:CI_Citation/gmd:title/gco:CharacterString="%s"]/gmd:keyword/gco:CharacterString'
-        validate_some_xpath(metadata, xpath % "Category", "Heatflow")
-        validate_some_xpath(metadata, xpath % "Category=>SubCategory", "Hibbity")
+        self.validate_some_xpath(metadata, xpath % "Category", "Heatflow")
+        self.validate_some_xpath(metadata, xpath % "Category=>SubCategory", "Hibbity")
 
     def test_xml_language(self):
         """Test that XML output contains the right language"""
         p = self.add_package("language-test", {"extras":[dict(key="language", value="drublic")]})
         metadata = validate("language-test")
-        validate_some_xpath(metadata, "//gmd:MD_DataIdentification//gmd:language/gco:CharacterString", "drublic")
+        self.validate_some_xpath(metadata, "//gmd:MD_DataIdentification//gmd:language/gco:CharacterString", "drublic")
 
     def test_xml_extent(self):
         """Test that XML output contains the proper extent info"""
@@ -295,10 +295,10 @@ class ViewsTestCase(NgdsTestCase):
             {"extras": [{"key": "spatial", "value": polygon}]}
         )
         metadata = validate(name)
-        validate_some_xpath(metadata, "//gmd:westBoundLongitude/gco:Decimal", "100.0")
-        validate_some_xpath(metadata, "//gmd:eastBoundLongitude/gco:Decimal", "101.0")
-        validate_some_xpath(metadata, "//gmd:northBoundLatitude/gco:Decimal", "1.0")
-        validate_some_xpath(metadata, "//gmd:southBoundLatitude/gco:Decimal", "0.0")
+        self.validate_some_xpath(metadata, "//gmd:westBoundLongitude/gco:Decimal", "100.0")
+        self.validate_some_xpath(metadata, "//gmd:eastBoundLongitude/gco:Decimal", "101.0")
+        self.validate_some_xpath(metadata, "//gmd:northBoundLatitude/gco:Decimal", "1.0")
+        self.validate_some_xpath(metadata, "//gmd:southBoundLatitude/gco:Decimal", "0.0")
 
     def test_xml_distributors(self):
         """Test that XML output contains the proper distributors listed"""
@@ -362,7 +362,7 @@ class ViewsTestCase(NgdsTestCase):
 
         for res in p.get("resources", []):
             dist = json.loads(res.get("distributor", {})).get("distributor_name")
-            validate_some_xpath(metadata, xpath % dist, "#distribution-%s" % res.get("id", ""))
+            self.validate_some_xpath(metadata, xpath % dist, "#distribution-%s" % res.get("id", ""))
 
     def test_xml_transfer_options(self):
         """Test that XML output contains all the proper distributions"""
@@ -404,7 +404,7 @@ class ViewsTestCase(NgdsTestCase):
         )
         p = self.add_resource(name, dist)
         metadata = validate(name)
-        validate_some_xpath(metadata, "//gmd:MD_Distributor//gmd:individualName/gco:CharacterString", "Roger Mebowitz")
+        self.validate_some_xpath(metadata, "//gmd:MD_Distributor//gmd:individualName/gco:CharacterString", "Roger Mebowitz")
 
     def test_xml_offline_resource_dist_email(self):
         """Test that attributes are correctly assigned in offline resources"""
@@ -421,7 +421,7 @@ class ViewsTestCase(NgdsTestCase):
         )
         p = self.add_resource(name, dist)
         metadata = validate(name)
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:MD_Distributor//gmd:CI_Contact//gmd:electronicMailAddress/gco:CharacterString",
             "roger@mebowitz.com"
@@ -442,7 +442,7 @@ class ViewsTestCase(NgdsTestCase):
         )
         p = self.add_resource(name, dist)
         metadata = validate(name)
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:MD_Distributor//gmd:orderingInstructions/gco:CharacterString",
             "ordering"
@@ -463,7 +463,7 @@ class ViewsTestCase(NgdsTestCase):
         )
         p = self.add_resource(name, dist)
         metadata = validate(name)
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:MD_Distributor//gmd:MD_Format//gmd:name/gco:CharacterString",
             "resource_type"
@@ -486,7 +486,7 @@ class ViewsTestCase(NgdsTestCase):
         p = self.add_resource(name, dist)
         metadata = validate(name)
         res = p["resources"][0]
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             "//gmd:MD_Distributor/gmd:distributorTransferOptions/@xlink:href",
             "#distribution-%s" % res["id"]
@@ -509,8 +509,96 @@ class ViewsTestCase(NgdsTestCase):
         p = self.add_resource(name, dist)
         metadata = validate(name)
         res_id = "distribution-%s" % p["resources"][0]["id"]
-        validate_some_xpath(
+        self.validate_some_xpath(
             metadata,
             '//gmd:MD_DigitalTransferOptions[@id="%s"]/gmd:offLine//gmd:mediumNote/gco:CharacterString' % res_id,
             "%s -- %s" % (p["resources"][0]["name"], p["resources"][0]["description"])
         )
+
+    def test_xml_online_url(self):
+        """Test that attributes are correctly assigned in online resources"""
+        name = "online-url-test"
+        p = self.add_package(name)
+        dist = dict(
+            package_id=name,
+            url="http://nothing.com/",
+            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            is_online="true",
+            name="name",
+            description="description",
+            protocol="OGC:WMS",
+            layer_name="habbi"
+        )
+        p = self.add_resource(name, dist)
+        metadata = validate(name)
+        res_id = "distribution-%s" % p["resources"][0]["id"]
+        self.validate_some_xpath(
+            metadata,
+            '//gmd:MD_DigitalTransferOptions[@id="%s"]//gmd:linkage/gmd:URL' % res_id,
+            "http://nothing.com/"
+        )
+
+    def test_xml_online_protocol(self):
+        """Test that attributes are correctly assigned in online resources"""
+        name = "online-protocol-test"
+        p = self.add_package(name)
+        dist = dict(
+            package_id=name,
+            url="http://nothing.com/",
+            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            is_online="true",
+            name="name",
+            description="description",
+            protocol="OGC:WMS",
+            layer_name="habbi"
+        )
+        p = self.add_resource(name, dist)
+        metadata = validate(name)
+        res_id = "distribution-%s" % p["resources"][0]["id"]
+        self.validate_some_xpath(
+            metadata,
+            '//gmd:MD_DigitalTransferOptions[@id="%s"]//gmd:protocol/gco:CharacterString' % res_id,
+            "OGC:WMS"
+        )
+
+    def test_xml_online_description(self):
+        """Test that attributes are correctly assigned in online resources"""
+        name = "online-description-test"
+        p = self.add_package(name)
+        dist = dict(
+            package_id=name,
+            url="http://nothing.com/",
+            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            is_online="true",
+            name="name",
+            description="description",
+            protocol="OGC:WMS",
+            layer_name="habbi"
+        )
+        p = self.add_resource(name, dist)
+        metadata = validate(name)
+        res = p["resources"][0]
+        res_id = "distribution-%s" % res["id"]
+        ele = get_xpath(metadata, '//gmd:MD_DigitalTransferOptions[@id="%s"]//gmd:description/gco:CharacterString' % res_id)
+        self.assertTrue(ele[0].text.strip().startswith(res.get("description", "hambone")))
+
+    def test_xml_online_layer(self):
+        """Test that attributes are correctly assigned in online resources"""
+        name = "online-layer-test"
+        p = self.add_package(name)
+        dist = dict(
+            package_id=name,
+            url="http://nothing.com/",
+            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            is_online="true",
+            name="name",
+            description="description",
+            protocol="OGC:WMS",
+            layer_name="habbi"
+        )
+        p = self.add_resource(name, dist)
+        metadata = validate(name)
+        res = p["resources"][0]
+        res_id = "distribution-%s" % res["id"]
+        ele = get_xpath(metadata, '//gmd:MD_DigitalTransferOptions[@id="%s"]//gmd:description/gco:CharacterString' % res_id)
+        self.assertTrue(ele[0].text.strip().endswith(res.get("layer_name", "hambone")))

@@ -339,8 +339,6 @@
             </gmd:transferOptions>
             {% endfor %}
             {% endfor %}
-
-<!-- <<<<<<<<<<<<<<<<<<<<<<<< transferOptions for Offline Resources >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
             {% for resource in additional.offline %}
             {% for res in resource.resources %}
             <gmd:transferOptions>
@@ -356,8 +354,6 @@
             </gmd:transferOptions>
             {% endfor %}
             {% endfor %}
-<!-- <<<<<<<<<<<<<<<<<<<<<<<< transferOptions for Offline Resources >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-
         </gmd:MD_Distribution>
     </gmd:distributionInfo>
 </gmd:MD_Metadata>
