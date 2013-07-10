@@ -26,7 +26,7 @@
     <gmd:contact>
         <gmd:CI_ResponsibleParty>
             <gmd:individualName>
-                <gco:CharacterString>{{ additional.maintainer_name }}</gco:CharacterString>
+                <gco:CharacterString>{{ maintainer }}</gco:CharacterString>
             </gmd:individualName>
             <gmd:contactInfo>
                 <gmd:CI_Contact>
@@ -92,14 +92,14 @@
                     <gmd:citedResponsibleParty>
                         <gmd:CI_ResponsibleParty>
                             <gmd:individualName>
-                                <gco:CharacterString>{{ creator.author_name }}</gco:CharacterString>
+                                <gco:CharacterString>{{ creator.name }}</gco:CharacterString>
                             </gmd:individualName>
                             <gmd:contactInfo>
                                 <gmd:CI_Contact>
                                     <gmd:address>
                                         <gmd:CI_Address>
                                             <gmd:electronicMailAddress>
-                                                <gco:CharacterString>{{ creator.author_email }}</gco:CharacterString>
+                                                <gco:CharacterString>{{ creator.email }}</gco:CharacterString>
                                             </gmd:electronicMailAddress>
                                         </gmd:CI_Address>
                                     </gmd:address>
@@ -227,14 +227,14 @@
                     <gmd:distributorContact>
                         <gmd:CI_ResponsibleParty>
                             <gmd:individualName>
-                                <gco:CharacterString>{{ distro.distributor.distributor_name }}</gco:CharacterString>
+                                <gco:CharacterString>{{ distro.distributor.name }}</gco:CharacterString>
                             </gmd:individualName>
                             <gmd:contactInfo>
                                 <gmd:CI_Contact>
                                     <gmd:address>
                                         <gmd:CI_Address>
                                             <gmd:electronicMailAddress>
-                                                <gco:CharacterString>{{ distro.distributor.distributor_email }}</gco:CharacterString>
+                                                <gco:CharacterString>{{ distro.distributor.email }}</gco:CharacterString>
                                             </gmd:electronicMailAddress>
                                         </gmd:CI_Address>
                                     </gmd:address>
@@ -261,14 +261,14 @@
                     <gmd:distributorContact>
                         <gmd:CI_ResponsibleParty>
                             <gmd:individualName>
-                                <gco:CharacterString>{{ distro.distributor.distributor_name }}</gco:CharacterString>
+                                <gco:CharacterString>{{ distro.distributor.name }}</gco:CharacterString>
                             </gmd:individualName>
                             <gmd:contactInfo>
                                 <gmd:CI_Contact>
                                     <gmd:address>
                                         <gmd:CI_Address>
                                             <gmd:electronicMailAddress>
-                                                <gco:CharacterString>{{ distro.distributor.distributor_email }}</gco:CharacterString>
+                                                <gco:CharacterString>{{ distro.distributor.email }}</gco:CharacterString>
                                             </gmd:electronicMailAddress>
                                         </gmd:CI_Address>
                                     </gmd:address>

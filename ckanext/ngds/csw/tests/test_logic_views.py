@@ -138,9 +138,7 @@ class ViewsTestCase(NgdsTestCase):
         name = "mo"
         email = "mo@om.com"
         maintainer = {
-            "extras": [
-                dict(key="maintainer_name", value=name),
-            ],
+            "maintainer": name,
             "maintainer_email": email
         }
         p = self.add_package("maintainer-test", maintainer)
@@ -206,12 +204,12 @@ class ViewsTestCase(NgdsTestCase):
                     "value": json.dumps(
                         [
                             {
-                                "author_name": "Ryan",
-                                "author_email": "nothing@false.com"
+                                "name": "Ryan",
+                                "email": "nothing@false.com"
                             },
                             {
-                                "author_name": "Roger Mebowitz",
-                                "author_email": "nothing@waste.com"
+                                "name": "Roger Mebowitz",
+                                "email": "nothing@waste.com"
                             }
                         ]
                     )
@@ -303,8 +301,8 @@ class ViewsTestCase(NgdsTestCase):
     def test_xml_distributors(self):
         """Test that XML output contains the proper distributors listed"""
         p = self.add_package("test-distributors")
-        dist_one = {"distributor_name": "Roger Mebowitz", "distributor_email": "roger@mebowitz.com"}
-        dist_two = {"distributor_name": "Mebow Roginski", "distributor_email": "mebow@roginski.com"}
+        dist_one = {"name": "Roger Mebowitz", "email": "roger@mebowitz.com"}
+        dist_two = {"name": "Mebow Roginski", "email": "mebow@roginski.com"}
 
         resources = [
             dict(
@@ -339,8 +337,8 @@ class ViewsTestCase(NgdsTestCase):
         """Test that XML output contains the proper relationships between distributors and their distributions"""
         name = "test-distributor-trans-opts"
         p = self.add_package(name)
-        dist_one = {"distributor_name": "Roger Mebowitz", "distributor_email": "roger@mebowitz.com"}
-        dist_two = {"distributor_name": "Mebow Roginski", "distributor_email": "mebow@roginski.com"}
+        dist_one = {"name": "Roger Mebowitz", "email": "roger@mebowitz.com"}
+        dist_two = {"name": "Mebow Roginski", "email": "mebow@roginski.com"}
 
         resources = [
             dict(
@@ -361,15 +359,15 @@ class ViewsTestCase(NgdsTestCase):
         xpath = '//gmd:MD_Distributor[gmd:distributorContact//gmd:individualName/gco:CharacterString="%s"]/gmd:distributorTransferOptions/@xlink:href'
 
         for res in p.get("resources", []):
-            dist = json.loads(res.get("distributor", {})).get("distributor_name")
+            dist = json.loads(res.get("distributor", {})).get("name")
             self.validate_some_xpath(metadata, xpath % dist, "#distribution-%s" % res.get("id", ""))
 
     def test_xml_transfer_options(self):
         """Test that XML output contains all the proper distributions"""
         name = "test-count-trans-opts"
         p = self.add_package(name)
-        dist_one = {"distributor_name": "Roger Mebowitz", "distributor_email": "roger@mebowitz.com"}
-        dist_two = {"distributor_name": "Mebow Roginski", "distributor_email": "mebow@roginski.com"}
+        dist_one = {"name": "Roger Mebowitz", "email": "roger@mebowitz.com"}
+        dist_two = {"name": "Mebow Roginski", "email": "mebow@roginski.com"}
 
         resources = [
             dict(
@@ -396,7 +394,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="false",
             description="description",
             ordering="ordering",
@@ -413,7 +411,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="false",
             description="description",
             ordering="ordering",
@@ -434,7 +432,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="false",
             description="description",
             ordering="ordering",
@@ -455,7 +453,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="false",
             description="description",
             ordering="ordering",
@@ -476,7 +474,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="false",
             name="name",
             description="description",
@@ -499,7 +497,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="false",
             name="name",
             description="description",
@@ -522,7 +520,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="true",
             name="name",
             description="description",
@@ -545,7 +543,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="true",
             name="name",
             description="description",
@@ -568,7 +566,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="true",
             name="name",
             description="description",
@@ -589,7 +587,7 @@ class ViewsTestCase(NgdsTestCase):
         dist = dict(
             package_id=name,
             url="http://nothing.com/",
-            distributor=json.dumps(dict(distributor_name="Roger Mebowitz", distributor_email="roger@mebowitz.com")),
+            distributor=json.dumps(dict(name="Roger Mebowitz", email="roger@mebowitz.com")),
             is_online="true",
             name="name",
             description="description",

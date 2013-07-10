@@ -132,7 +132,7 @@ def iso_metadata(context, data_dict):
                 resources = offline
 
             if distributor != {}:
-                name = distributor.get("distributor_name", "None")
+                name = distributor.get("name", "None")
             else:
                 name = "None"
 
