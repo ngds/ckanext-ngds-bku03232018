@@ -1,5 +1,7 @@
 {% include 'package/resource_form_template.tmf' %}
 {% include 'package/add_responsible_party.tmf' %}
+         {{ data['form-type'] }}
+          {{ data }}
 <script>
 {% if data %}
     resource_location = window.location.origin+"{{data['resource_location']}}";
@@ -37,19 +39,47 @@
         <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
         <input type="radio" id="upload-type-selection" name="upload_type_selection" value="upload_type"/>
         <label for="upload-type-selection">Upload a file</label><br/>
+          {% if data['id'] %}
+          {% if data['form_type']=='structured' %}
+          <input type="hidden" name="upload-type" value="structured" />
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-structured" class="upload-type" />
+          {% endif %}
+          {% else %}
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-structured" class="upload-type" name="upload-type" value="structured"/>
+          {% endif %}
+
         <label for="upload-type-structured" id="upload-type-structured-label">Structured</label><br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-unstructured" class="upload-type" name="upload-type" value="unstructured"/>
+          {% if data['id'] %}
+          {% if data['form_type'] == 'unstructured' %}
+            AMIGO
+            <input type="hidden" name="upload-type" value="unstructured" />
+          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-unstructured" class="upload-type" />
+          {% endif %}
+          {% else %}
+          {{ data['form_type'] }}
+          AMIGO
+          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-unstructured" class="upload-type" name="upload-type" value="unstructured"/>
+          {% endif %}
         <label for="upload-type-unstructured" id="upload-type-unstructured-label">Unstructured</label>
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="data-service" name="upload-type" value="data-service" />
+        {% if data['id'] and data['form_type']=='data-service' %}
+        <input type="hidden" name="upload-type" value="data-service" />
+        <input type="radio" id="data-service" />
+        {% else %}
+          <input type="radio" id="data-service" name="upload-type" value="data-service" />
+        {% endif %}
         <label for="data-service">Link to a data service</label>
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="offline-resource" name="upload-type" value="offline-resource" />
+          {% if data['id'] and data['form_type']=='offline-resource' %}
+          <input type="hidden" name="upload-type" value="offline-resource" />
+        <input type="radio" id="offline-resource" />
+         {% else %}
+         <input type="radio" id="offline-resource" name="upload-type" value="offline-resource" />
+          {% endif %}
         <label for="offline-resource">Offline resource</label>
       </div>
   </div>
