@@ -10,6 +10,7 @@ from ckanext.ngds.ngdsui import authorize
 import ckanext.datastore.logic.auth as datastore_auth
 import ckanext.ngds.contentmodel.model.contentmodels as contentmodels
 import ckanext.ngds.contentmodel.logic.action as contentmodel_action
+import ckanext.ngds.lib.logic.action as lib_action
 
 import sys
 
@@ -182,7 +183,8 @@ class NgdsuiPlugin(SingletonPlugin):
         'contentmodel_list' : contentmodel_action.contentmodel_list, 
         'contentmodel_list_short' : contentmodel_action.contentmodel_list_short, 
         'contentmodel_get': contentmodel_action.contentmodel_get, 
-        'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile
+        'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
+        'create_resource_document_index': lib_action.create_resource_document_index
         }
 
     implements(IAuthFunctions, inherit=True)
@@ -234,15 +236,29 @@ class NgdsuiPlugin(SingletonPlugin):
         #pkg_dict['sample_created']={'prahadeesh':'abclll'}
         import json
         if pkg_dict.get('data_dict'):
-            dict =json.loads(pkg_dict.get('data_dict'))
-            #dict = pkg_dict.get('data_dict')
+            dict = json.loads(pkg_dict.get('data_dict'))
             resources = dict.get('resources')
+
+        print "resources: ", resources
+
         if resources:
             for resource in resources:
-                res_file_field='resource_file_%s' % resource.get("id")
-                print "res_file_field:",res_file_field
-                pkg_dict[res_file_field]=''
-        #pkg_dict['sample_created']='prahadeesh'
+
+                res_file_field = 'resource_file_%s' % resource.get("id")
+                #print "res_file_field:", res_file_field
+                pkg_dict[res_file_field] = ''
+
+                try:
+                    file_path = helpers.file_path_from_url(resource.get("url"))
+                    if file_path:
+                        resource_index_dict = {'package_id': pkg_dict.get('id'),
+                                       'resource_id': resource.get("id"),
+                                       'file_path': file_path,
+                                       }
+                        print "before creating record..."
+                        #lib_action.create_resource_document_index({}, resource_index_dict)
+                except Exception, ex:
+                    print "exception: ", ex
 
         return pkg_dict
 
