@@ -13,16 +13,15 @@ log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
 
-def layer_exists(context,data_dict):
+def layer_exists(context, data_dict):
     """
     Checks whether layer exists in the geoserver. If not then returns False.
 
-    @return:
+    @return: Boolean
     """
 
     if 'layer_name' in data_dict:
         layer_name = _get_or_bust(data_dict, 'layer_name')
-
 
     geoserver = Geoserver.from_ckan_config()
     if geoserver.get_layer(layer_name) is None:
@@ -30,9 +29,10 @@ def layer_exists(context,data_dict):
     else:
         return True
 
+
 def publish(context,data_dict):
     """
-
+    Create a spatialized dataset and expose it to Geoserver
     """
     resource_id = data_dict.get("resource_id")
     latitude_field = data_dict.get("col_latitude")
@@ -42,26 +42,39 @@ def publish(context,data_dict):
 
     format = resource.get('format')
 
-    if format and  format.lower() == 'csv':
-        data_stored = Datastored(resource_id,latitude_field,longitude_field)
-        data_stored.publish()
-        layer_name = resource_id
-    elif format and  format.lower() == 'zip':
-        sf = Shapefile(resource_id)
-        output_location = sf.get_destination_source()
+    if format and format.lower() == 'csv':
+        # CSV files are already ingested via Datastorer
+        data_stored = Datastored(resource_id, latitude_field, longitude_field)
 
-        if sf.create_destination_layer(output_location, sf.get_source_layer().GetName()):
-            layer_name=sf.get_source_layer().GetName()
-            output_layer = sf.get_destination_layer(output_location, sf.get_source_layer().GetName())
+        # Spatialize the table
+        data_stored.publish()
+
+        # Specify the name of the layer
+        layer_name = resource_id
+    elif format and format.lower() == 'zip':
+        # Access the resource's shapefile
+        sf = Shapefile(resource_id)
+
+        # Find output location and name
+        output_location = sf.get_destination_source()
+        name = sf.get_source_layer().GetName()
+
+        # Generate the destination PostGIS table (the destination_layer starts empty)
+        if sf.create_destination_layer(output_location, name):
+            layer_name = name
+            output_layer = sf.get_destination_layer(output_location, name)
+
+            # Push the shapefile into the PostGIS table
             sf.publish(output_layer)
     else:
-        raise Exception("Can't spatialize the files other than csv or zip.")
+        raise Exception("Can't spatialize files other than .csv and .zip.")
 
-    geoserver = Geoserver.from_ckan_config()
-
-    layer = Layer(geoserver=geoserver, name=layer_name, resource_id=resource_id)
-
-    return layer.create()
+    # Add the content to Geoserver
+    return Layer(
+        geoserver=Geoserver.from_ckan_config(),
+        name=layer_name,
+        resource_id=resource_id
+    ).create()
 
 
 def unpublish(context,data_dict):

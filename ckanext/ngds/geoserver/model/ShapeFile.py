@@ -8,7 +8,8 @@ from pylons import config
 from ckan.plugins import toolkit
 import subprocess
 
-class Shapefile:
+
+class Shapefile(object):
     resource = {}
     file_path = ""
     is_valid = False
@@ -54,13 +55,6 @@ class Shapefile:
                     # Check that there are not extension in there that are not required
                     if len([ext for ext in extensions if ext in optional]) == len(extensions) - len(required):
                         return True
-                        '''# If we can make a OGR Shapefile datasource, then we are valid
-                        try:
-                            obj = self.get_source_layer()
-                            if obj:
-                                return True
-                        except Exception as ex:                                                    
-                            pass'''
 
         raise Exception("Not a valid shapefile")
 

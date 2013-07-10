@@ -2,24 +2,20 @@ from ckanext.ngds.tests.ngds_test_case import NgdsTestCase
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
 
 class TestGeoserverConnector(NgdsTestCase):
-    def test_spatial_tables_exist(self):
-        from sqlalchemy import create_engine
-        from pylons import config
+    """
+    These tests assume that Geoserver is running either at the default location (localhost:8080/geoserver) or else
+    at a location specified in your pylons .ini file
+    """
 
-        engine = create_engine(config.get("sqlalchemy.url"))
-        self.assertTrue(engine.dialect.has_table(engine.connect(), "geometry_columns"))
-
-    def test_geoserver_connection(self):
-        """Geoserver class method should return a Geoserver instance"""
-        gs = Geoserver.from_ckan_config()
-        self.assertIsInstance(gs, Geoserver)
+    def setUp(self):
+        self.gs = Geoserver.from_ckan_config()
 
     def test_get_default_workspace(self):
         """Geoserver must be able to create or return the default workspace"""
-        gs = Geoserver.from_ckan_config()
-        ws = gs.default_workspace()
+        ws = self.gs.default_workspace()
         self.assertEqual(ws.name, "ngds") # should read from config
 
-    def test_package_generator(self):
-        p = self.add_package("test-package")
-        self.assertIsNotNone(p)
+    def test_get_default_datastore(self):
+        """Geoserver must be able to create or return the default datastore"""
+        ds = self.gs.default_datastore()
+        self.assertIsNotNone(ds)

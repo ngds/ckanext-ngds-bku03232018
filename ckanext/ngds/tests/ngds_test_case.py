@@ -3,11 +3,13 @@ from postgis_sql import POSTGIS, SPATIAL_REF_SYS
 from ckanext.ngds.env import ckan_model as model
 from ckanext.ngds.env import ckan_logic
 from ckan.plugins import toolkit
+from ckanclient import CkanClient
 import json
 
 class NgdsTestCase(TestCase):
     _sys_admin = None
     _public_org = None
+    _client = None
 
     class ObjectSpoofer():
         def __init__(self, **kwargs):
@@ -43,6 +45,8 @@ class NgdsTestCase(TestCase):
         except Exception as ex:
             print "HARVEST TABLE GENERATION FAILED: %s" % ex.message
 
+
+
     def admin_user(self):
         """Find/Create an admin user"""
         if not self._sys_admin:
@@ -54,6 +58,14 @@ class NgdsTestCase(TestCase):
                 model.Session.remove()
             self._sys_admin = sys_admin
         return self._sys_admin
+
+    '''
+    Doesn't work -- CKAN isn't actually running during tests
+    def client(self):
+        if not self._client:
+            self._client = CkanClient(base_location="http://localhost:5000/api", api_key=self.admin_user().apikey)
+        return self._client
+    '''
 
     def public_org(self):
         if not self._public_org:
