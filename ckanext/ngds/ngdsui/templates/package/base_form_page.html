@@ -3,7 +3,7 @@
 {% block content %}
 {% set pkg = c.pkg_dict %}
 
-{% block breadcrumb_content_selected %} class="active"{% endblock %}
+{% block breadcrumb_content_selected %}{% endblock %}
 
 {% block contribute_landing %}
   <h2>
@@ -14,10 +14,11 @@
   </div>
 {% endblock %}
 
-{% block breadcrumb_content %}
 <div class="toolbar">
   <ol class="breadcrumb">
     {% snippet 'snippets/home_breadcrumb_item.html' %}
+{% block breadcrumb_content %}
+
   {% if pkg %}
     {% set dataset = pkg.title or pkg.name %}
     {% if pkg.organization %}
