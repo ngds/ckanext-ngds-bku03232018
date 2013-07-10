@@ -85,7 +85,7 @@ var render_forms = function(value) {
   else {
       $("[name=upload_type_selection]").prop("checked",false); 
   }
-
+console.log(value);
   if(value==="structured") {
     $("#upload-type-structured").prop("checked",true);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,structured_form));
@@ -100,6 +100,7 @@ var render_forms = function(value) {
   }
 
   if(value==="offline-resource") {
+    $("#offline-resource").prop("checked",true);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,offline_resource_form));
   }
 
@@ -132,9 +133,20 @@ console.log($("#distributor_email"));
 
 $('input[name="upload-type"]').on('change',function(ev){
   
-  var value = ev.target.value;
-    console.log(ev);
-    console.log(value);
+  var id = ev.currentTarget.id;
+  var value ="";
+  if(id==="upload-type-unstructured") {
+    value='unstructured';
+  }
+  if(id==="upload-type-structured") {
+    value='structured';
+  }
+  if(id==="offline-resource") {
+    value='offline-resource';
+  }
+  if(id==="data-service") {
+    value='data-service';
+  }
 
   render_forms(value);
 });
@@ -170,6 +182,7 @@ if(typeof continuation!=='undefined') {
 
 (function template_variables_collect(){
   {% if data %}
+  console.log("Activate populate");
    data="{{data}}";
    data = ngds.util.parse_raw_json("{{h.jsonify(data)}}")
    activate_populate_form(data);

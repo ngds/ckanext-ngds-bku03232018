@@ -86,6 +86,12 @@ var structured_form = {
       'tag':'input',
       'class':'distributor_email',
       'type':'hidden'
+    },
+    {
+      'tag':'input',
+      'type':'hidden',
+      'name':'form_type',
+      'value':'structured'
     }
   ]
 };
@@ -170,6 +176,12 @@ var unstructured_form = {
       'tag':'input',
       'class':'distributor_email',
       'type':'hidden'
+    },
+    {
+      'tag':'input',
+      'type':'hidden',
+      'name':'form_type',
+      'value':'unstructured'
     }
   ]
 };
@@ -221,6 +233,14 @@ var offline_resource_form = {
         return 'description-label-div';
       },
       'title':'How this resource can be obtained'
+    }
+  ],
+  'custom':[
+    {
+      'tag':'input',
+      'type':'hidden',
+      'name':'form_type',
+      'value':'offline-resource'
     }
   ]
 };
@@ -359,6 +379,12 @@ var link_data_service_form = {
       'tag':'input',
       'id':'distributor_email',
       'type':'hidden'
+    },
+    {
+      'tag':'input',
+      'name':'form_type',
+      'type':'hidden',
+      'value':'data-service'
     }
   ]
 };

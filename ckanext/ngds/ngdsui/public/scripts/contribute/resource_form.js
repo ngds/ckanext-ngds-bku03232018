@@ -92,9 +92,11 @@ var populate_form = function(data) {
 };
 
 var activate_populate_form = function(data) {
-    console.log(data['form-type']);
+	console.log("Activating ....... ",data);
 	render_forms(data['form_type']);
 	populate_form(data);
+	$("[name=upload-type]").prop("disabled",true);
+	$("#upload-type-selection").prop("disabled",true);
 	var name = get_prop($("#url").val(),'name');
 	var file_extension = get_prop($("#url").val(),'extension');
 	$("[name=name]").val(name);
