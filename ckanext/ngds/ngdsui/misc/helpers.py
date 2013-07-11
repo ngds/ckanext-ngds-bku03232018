@@ -396,6 +396,7 @@ def json_extract(input,key):
     finally:
         return ''
 
+
 def get_dataset_category_image_path(package):
 
     image_path = '/assets/dataset.png'
@@ -455,15 +456,48 @@ def is_following(obj_type, obj_id):
         following = logic.get_action(action)(context, {'id': obj_id})
     return following
 
-def create_resource_document_index(index_dict):
+def create_package_resource_document_index(pkg_id, resource_dict_list):
     from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
-    import ckan.model as model
+    from ckanext.ngds.env import Session
 
-    print "Create document index: %s " % index_dict
-    index_dict['status'] = 'NEW'
+    #print "Create document index: %s " % index_dict
+
+    model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where package_id=:pkg_id and status=:old_status", {'status_val':'CANCEL','pkg_id': pkg_id,'old_status':'NEW'})
+
+
     data_dict = {'model':'DocumentIndex'}
-    data_dict['data'] = index_dict
-    data_dict['process'] = 'create'
+    data_dict['process'] = 'add'
     context = {'model': model, 'session': model.Session}
-    trans_dispatch(context, data_dict)
+    source = model.DocumentIndex()
+
+    for index_dict in resource_dict_list:
+        index_dict['status'] = 'NEW'
+        data_dict['data'] = index_dict
+        trans_dispatch(context,data_dict)
+        # source.package_id = index_dict['package_id']
+        # source.resource_id = index_dict['resource_id']
+        # source.file_path = index_dict['file_path']
+        # source.status = 'NEW'
+        # source.comments = 'comments'
+        # source.add()
+
     return True
+
+def get_docs_to_index(status):
+
+    query = model.DocumentIndex.search(status)
+
+    return query.all()
+
+def process_resource_docs_to_index():
+
+    docs_to_index = get_docs_to_index('NEW')
+
+    from ckanext.ngds.lib.index import FullTextIndexer
+    text_indexer = FullTextIndexer()
+    data_dict = {'site_id' : 'default'}
+    for doc in docs_to_index:
+        data_dict['id'] = doc.package_id
+        field_to_add = 'resource_file_%s' % doc.resource_id
+        text_indexer.index_resource_file(data_dict, field_to_add, doc.file_path, defer_commit=True)
+        model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where id=:id", {'status_val':'DONE','id': doc.id})

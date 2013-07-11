@@ -12,7 +12,9 @@ class NgdsCrudController():
         
         if process == "create":
             return self.create(data) # Dispatch to the create function
-        elif process == "read":            
+        elif process == "add":
+            return self.add(data)
+        elif process == "read":
             if data.get("id", None) == None: # 400 if there is no ID given                
                 raise toolkit.ValidationError({}, "No ID was given.")
             else:
@@ -45,6 +47,15 @@ class NgdsCrudController():
         if self.valid_data(data):
             instance = self.model(**data)
             instance.save() # Automatically commits, save() defined by ckan.model.domain_object:DomainObject
+            return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
+        else: # 400 if the data is not valid
+            raise toolkit.ValidationError({}, "Please supply a 'data' attribute containing the appropriate content for a %s instance." % self.model.__name__)
+
+    def add(self, data):
+        """Save a new object to the database"""
+        if self.valid_data(data):
+            instance = self.model(**data)
+            instance.add() # No Commit.
             return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
         else: # 400 if the data is not valid
             raise toolkit.ValidationError({}, "Please supply a 'data' attribute containing the appropriate content for a %s instance." % self.model.__name__)
