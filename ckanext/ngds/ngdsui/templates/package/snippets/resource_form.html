@@ -42,7 +42,7 @@
       <div class="radio-section">
         <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
         <input type="radio" id="resource_type-selection" name="upload_type_selection" value="upload_type"/>
-        <label for="resource_type-selection">Upload a file</label><br/>
+        <label for="resource_type-selection">Upload a file</label><br>
           {% if data['resource_type'] %}          
           <input type="hidden" name="resource_type" value="{{data['resource_type']}}" />
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" />
@@ -50,11 +50,11 @@
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" name="resource_type" value="structured"/>
           {% endif %}
 
-        <label for="resource_type-structured" id="resource_type-structured-label">Structured</label><br/>
+        <label for="resource_type-structured" id="resource_type-structured-label">Structured</label><br>
           {% if data['resource_type'] %}
           &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" />
           {% else %}
-          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_type" value="unstructured"/>
+          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_type" value="unstructured" />
           {% endif %}
         <label for="resource_type-unstructured" id="resource_type-unstructured-label">Unstructured</label>
       </div>
@@ -76,9 +76,10 @@
           {% endif %}
         <label for="offline-resource">Offline resource</label>
       </div>
-
       {% if data['id'] %}
         <input type="hidden" name="id" value="{{data['id']}}" />
+      {% else %}
+        <input type="hidden" name="id" value="" />
       {% endif %}
 
 
@@ -97,7 +98,7 @@
         {% endif %}
       {% endif %}
     {% endblock %}
-    {% if stage %}
+    
         {% block previous_button %}
         <button type="submit" name="save" value="go-dataset">Previous Page</button>
         {% endblock %}
@@ -106,7 +107,7 @@
         {% endblock %}
         <button type="button" class="{% block pull_right %}{% endblock %}" id="go-metadata">{% block save_button_text %}{{ _('Next: Additional Metadata') }}{% endblock %}</button>
         <!-- <button type="button" name="save" value="go-metadata">Additional Metadata</button> -->
-        {% endif %}
+    
     </div>
 </form>
 
