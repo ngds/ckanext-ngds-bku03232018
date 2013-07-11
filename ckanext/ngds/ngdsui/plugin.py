@@ -10,7 +10,7 @@ from ckanext.ngds.ngdsui import authorize
 import ckanext.datastore.logic.auth as datastore_auth
 import ckanext.ngds.contentmodel.model.contentmodels as contentmodels
 import ckanext.ngds.contentmodel.logic.action as contentmodel_action
-import ckanext.ngds.lib.logic.action as lib_action
+#import ckanext.ngds.lib.logic.action as lib_action
 
 import sys
 
@@ -184,7 +184,7 @@ class NgdsuiPlugin(SingletonPlugin):
         'contentmodel_list_short' : contentmodel_action.contentmodel_list_short, 
         'contentmodel_get': contentmodel_action.contentmodel_get, 
         'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
-        'create_resource_document_index': lib_action.create_resource_document_index
+        #'create_resource_document_index': lib_action.create_resource_document_index
         }
 
     implements(IAuthFunctions, inherit=True)
@@ -256,7 +256,7 @@ class NgdsuiPlugin(SingletonPlugin):
                                        'file_path': file_path,
                                        }
                         print "before creating record..."
-                        #lib_action.create_resource_document_index({}, resource_index_dict)
+                        helpers.create_resource_document_index(resource_index_dict)
                 except Exception, ex:
                     print "exception: ", ex
 
