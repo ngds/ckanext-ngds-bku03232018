@@ -459,10 +459,11 @@ def create_resource_document_index(index_dict):
     from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
     import ckan.model as model
 
-    print "Create document index: % " % index_dict
+    print "Create document index: %s " % index_dict
     index_dict['status'] = 'NEW'
     data_dict = {'model':'DocumentIndex'}
     data_dict['data'] = index_dict
     data_dict['process'] = 'create'
     context = {'model': model, 'session': model.Session}
-    trans_dispatch(context,data_dict)
+    trans_dispatch(context, data_dict)
+    return True

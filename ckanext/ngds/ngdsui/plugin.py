@@ -242,6 +242,7 @@ class NgdsuiPlugin(SingletonPlugin):
         print "resources: ", resources
 
         if resources:
+            document_list = []
             for resource in resources:
 
                 res_file_field = 'resource_file_%s' % resource.get("id")
@@ -255,10 +256,13 @@ class NgdsuiPlugin(SingletonPlugin):
                                        'resource_id': resource.get("id"),
                                        'file_path': file_path,
                                        }
-                        print "before creating record..."
-                        helpers.create_resource_document_index(resource_index_dict)
+                        document_list.append(resource_index_dict)
                 except Exception, ex:
                     print "exception: ", ex
+
+            for index_dict in document_list:
+                print "before creating record..."
+                helpers.create_resource_document_index(index_dict)
 
         return pkg_dict
 
