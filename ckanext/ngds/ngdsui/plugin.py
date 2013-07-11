@@ -10,7 +10,8 @@ from ckanext.ngds.ngdsui import authorize
 import ckanext.datastore.logic.auth as datastore_auth
 import ckanext.ngds.contentmodel.model.contentmodels as contentmodels
 import ckanext.ngds.contentmodel.logic.action as contentmodel_action
-#import ckanext.ngds.lib.logic.action as lib_action
+
+from pylons import config as ckan_config
 
 import sys
 
@@ -234,6 +235,11 @@ class NgdsuiPlugin(SingletonPlugin):
 
     def before_index(self, pkg_dict):
         #pkg_dict['sample_created']={'prahadeesh':'abclll'}
+        is_full_text_enabled = ckan_config.get('ngds.full_text_indexing','false')
+
+        if is_full_text_enabled == 'false':
+            return pkg_dict
+
         import json
         if pkg_dict.get('data_dict'):
             dict = json.loads(pkg_dict.get('data_dict'))
