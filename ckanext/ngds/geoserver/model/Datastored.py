@@ -60,3 +60,6 @@ class Datastored(object):
 
         log.info("Nothing to do. Returning.")
         return False
+
+    def table_name(self):
+        return self.resource_id

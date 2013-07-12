@@ -107,13 +107,13 @@ class Shapefile(object):
         # Generate the destination DataSource
         try:
             output_driver = ogr.GetDriverByName("PostgreSQL")
-            destination_layer = output_driver.Open(ogr_connection_string)
+            destination_source = output_driver.Open(ogr_connection_string, True)
 
             # Cache the OGR objects so they don't get cleaned up
             self.ogr_destination["driver"] = output_driver
-            self.ogr_destination["layer"] = destination_layer
+            self.ogr_destination["source"] = destination_source
 
-            return destination_layer
+            return destination_source
         except Exception as ex:
             return None
 
@@ -145,23 +145,33 @@ class Shapefile(object):
         # Cache the OGR objects so they don't get cleaned up
         self.ogr_destination["layer"] = new_layer
 
-        return True
+        return new_layer
         
-    def get_destination_layer(self, destination_source, name):
+    def get_destination_layer(self, destination_source=None, name=None):
         """Given an OGRDataSource (destination_source), find an OGRLayer within it by name"""
+        if not destination_source:
+            destination_source = self.get_destination_source()
+        if not name:
+            name = self.get_name()
+
         layer = destination_source.GetLayerByName(name)
+
+        if not layer:
+            layer = self.create_destination_layer(destination_source, name)
 
         # Cache the OGR objects so they don't get cleaned up
         self.ogr_destination["layer"] = layer
 
         return layer
     
-    def publish(self, destination_layer):
+    def publish(self, destination_layer=None):
         """Move shapefile data into the given destination OGRLayer"""
+        if not destination_layer:
+            destination_layer = self.get_destination_layer()
+
         # Get information about the destination layer
         dest_def = destination_layer.GetLayerDefn()
         target_srs = destination_layer.GetSpatialRef()
-        #target_srs = dest_def.GetSpatialRef()
 
         # Cache the OGR objects so they don't get cleaned up
         self.ogr_destination["srs"] = target_srs
@@ -171,6 +181,12 @@ class Shapefile(object):
         source_srs = source.GetSpatialRef()
         transformation = osr.CoordinateTransformation(source_srs, target_srs)
 
+        # Remove any features currently in the destination layer -- they'll be replaced by shapefile contents
+        dest_record = destination_layer.GetNextFeature()
+        while dest_record is not None:
+            destination_layer.DeleteFeature(dest_record.GetFID())
+            dest_record = destination_layer.GetNextFeature()
+
         # Iterate through the shapefile features. Project each one and add it to the destination
         source_record = source.GetNextFeature()
         while source_record is not None:            
@@ -178,7 +194,6 @@ class Shapefile(object):
             dest_record = ogr.Feature(dest_def)
             
             # Set its geometry
-            #new_geom = self.reproject(source_record, target_srs)
             geom = source_record.GetGeometryRef()
             geom.Transform(transformation)
             dest_record.SetGeometry(geom)
@@ -189,7 +204,9 @@ class Shapefile(object):
             # Save it to the destination layer and iterate
             destination_layer.CreateFeature(dest_record)
             source_record = source.GetNextFeature()
-        
+
+        return True
+
     def reproject(self, feature, target_srs):
         """Reproject a single feature's geometry into a new SRS and return the new geometry"""
         # Get the appropriate transformations and build a reprojected geometry
@@ -213,48 +230,5 @@ class Shapefile(object):
         # A dataSource is always an array, but shapefiles are always by themselves. Get the layer
         return dataSource.GetLayerByIndex(0).GetName()
 
-    def default_publish(self):
-        datastore_url = config.get("ckan.datastore.write_url")
-        pattern = "://(?P<user>.+?):(?P<password>.+?)@(?P<host>.+?)/(?P<dbname>.+)$"
-        params = search(pattern, datastore_url)
-        connection = (
-            params.group("host"),
-            params.group("dbname"),
-            params.group("user"),
-            params.group("password")
-        )
-        ogr_connection_string = "PG: host=%s port=5432 dbname=%s user=%s password=%s" % connection
-        name = self.get_name()
-
-        self.publish_as_subprocess("PostgreSQL", ogr_connection_string, name, name, 4326)
-
-    def publish_as_subprocess(self, destination_driver, destination_connection, destination_name, shapefile_name, epsg):
-        def find_ogr2ogr():
-            paths = environ["PATH"].split(pathsep)
-            paths.append("/usr/local/bin")
-            for p in paths:
-                path_dir = p.strip('"')
-                exe = path.join(path_dir, "ogr2ogr")
-                if path.exists(exe):
-                    return exe
-            return None
-
-        ogr2ogr = find_ogr2ogr()
-        if not ogr2ogr:
-            raise Exception("Could not find ogr2ogr")
-
-        parameters = [
-            ogr2ogr,
-            "-f",
-            destination_driver,
-            "-t_srs",
-            "EPSG:%i" % epsg,
-            "-nln",
-            "%s" % destination_name,
-            destination_connection,
-            path.join(self.unzipped_dir, "%s.shp" % shapefile_name)
-        ]
-
-        e = environ
-        p = subprocess.Popen(parameters)
-        print "worked?"
+    def table_name(self):
+        return self.get_name()

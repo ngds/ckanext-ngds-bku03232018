@@ -5,7 +5,8 @@ import os
 params_to_set = [
     ("geoserver.rest_url", "http://localhost:8080/geoserver/rest"),
     ("geoserver.workspace_name", "ngds"),
-    ("geoserver.workspace_uri", "http://localhost:5000/ngds")
+    ("geoserver.workspace_uri", "http://localhost:5000/ngds"),
+    ("ckan.extra_resource_fields", "parent_resource distributor layer_name content_model_version content_model_uri")
 ]
 
 # This builds the config file

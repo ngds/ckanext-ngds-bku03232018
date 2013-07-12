@@ -3,6 +3,8 @@ from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 from ckan.controllers import storage
 from pylons import config
 from datetime import datetime
+from osgeo.ogr import DataSource, Layer
+
 import os
 
 
@@ -48,3 +50,42 @@ class ShapefileTestCase(NgdsTestCase):
         garbage_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "test-shapefile", "test_shapefile.dbf"))
         garbage_resource = self.add_shapefile_resource("test-upload-garbage", garbage_path)
         self.assertRaises(Exception, Shapefile, garbage_resource["id"])
+
+    def test_shapefile_dest_source(self):
+        """Validate that we can open the datastore database as an OGRDataSource"""
+        res = self.add_shapefile_resource("test-dest-source")
+        s = Shapefile(res["id"])
+        self.assertIsInstance(s.get_destination_source(), DataSource)
+
+    def test_shapefile_dest_layer(self):
+        """Check that we can create an OGRLayer in the datastore database"""
+        res = self.add_shapefile_resource("test-create-dest-layer")
+        s = Shapefile(res["id"])
+        ds = s.get_destination_source()
+        self.assertIsInstance(s.create_destination_layer(ds, "test-create-dest-layer"), Layer)
+
+    def test_shapefile_dest_layer_fields(self):
+        """The destination layer must contain the fields from the source"""
+        res = self.add_shapefile_resource("test-dest-fields")
+        s = Shapefile(res["id"])
+        shapefile = s.get_source_layer().GetLayerDefn()
+        source_fields = [shapefile.GetFieldDefn(i).GetName().lower() for i in range(shapefile.GetFieldCount())]
+
+        dest = s.get_destination_layer(s.get_destination_source(), s.get_name()).GetLayerDefn()
+        dest_fields = [dest.GetFieldDefn(i).GetName().lower() for i in range(dest.GetFieldCount())]
+
+        self.assertEqual(len(set(source_fields).difference(dest_fields)), 0)
+
+    def test_shapefile_get_dest_layer(self):
+        """Check that we can get an OGRLayer in the datastore database"""
+        res = self.add_shapefile_resource("test-get-dest-layer")
+        s = Shapefile(res["id"])
+        ds = s.get_destination_source()
+        self.assertIsInstance(s.get_destination_layer(ds, "test-get-dest-layer"), Layer)
+
+    def test_shapefile_publish(self):
+        """Publishing a shapefile puts the data into the PostGIS table"""
+        res = self.add_shapefile_resource("test-publish")
+        s = Shapefile(res["id"])
+        self.assertTrue(s.publish())
+        self.assertEqual(s.get_source_layer().GetFeatureCount(), s.get_destination_layer().GetFeatureCount())
