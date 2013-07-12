@@ -1,62 +1,16 @@
-<h1>
-	Contribute a Dataset
-</h1>
+<div>
+    <h2><img src="/images/create_node.png" alt="">{{ _('CONTRIBUTE') }}</h2>
+    <div class="bordered-container">
+        {% if h.check_access('package_create') %}
+        <p>
+            Want to help? <a href="/ngds/contribute/dataset/new">Share data</a> with us.
+        </p>
+        <p>
+            Want to upload your data in bulk? <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload') }}">Bulk Upload data</a>.
+        </p>
+        {% endif %}
+    </div>
 
-<div class="contribute-menu-table">
-	<div class="cell">
-		<h2><img src="/images/manage_nodes.png" alt="">Source Organization</h2>
-		<div class="bordered-container">
-			<p>
-				Organizations responsible for contributing datasets to the NGDS.
-			</p>
-			<ul>
-				<li>
-					AASG Geothermal Data Project
-				</li>
-				<li>
-					Alabama Geological Survey
-				</li>
-				<li>
-					Kentucky Geological Survey
-				</li>
-				<li>
-					Idaho Geological Survey
-				</li>
-				<li>
-					Stanford University
-				</li>
-				<li>
-					Tennesee Division of Geology
-				</li>
-				<li>
-					Georgia Division
-				</li>
-			</ul>
-		</div>
-
-	</div>
-	<div class="cell">
-		<h2><img src="/images/data-watch.png" alt="">Data Watch</h2>
-		<div class="bordered-container">
-			<p>
-				Recently shared with NGDS
-			</p>
-		</div>
-
-	</div>
-	<div class="cell">
-		<h2><img src="/images/create_node.png" alt="">Contribute</h2>
-		<div class="bordered-container">
-			{% if h.check_access('package_create') %}
-			<p>
-				Want to help? <a href="/ngds/contribute/dataset/new">Share data</a> with us.
-			</p>
-			<p>
-				Want to upload your data in bulk? <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload') }}">Bulk Upload data</a>.
-			</p>			
-			{% endif %}
-		</div>
-
-	</div>
 </div>
+
 

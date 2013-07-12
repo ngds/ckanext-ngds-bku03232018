@@ -309,8 +309,12 @@ class NgdsuiPlugin(SingletonPlugin):
 
     implements(IFacets, inherit=True)
 
-    def dataset_facets(self,facets_dict, package_type):
+    def dataset_facets(self, facets_dict, package_type):
         #print "IFACETS is called.......>>>>>>>>>>>>>>>>"
+
+        if package_type == 'harvest':
+            return OrderedDict([('frequency', 'Frequency'), ('source_type', 'Type')])
+
         ngds_facets = helpers.load_ngds_facets()
         
         if ngds_facets:
@@ -320,6 +324,10 @@ class NgdsuiPlugin(SingletonPlugin):
 
     def organization_facets(self, facets_dict, organization_type, package_type):
         #print "IFACETS is called.......>>>>>>>>>>>>>>>>"
+
+        if package_type == 'harvest':
+            return OrderedDict([('frequency', 'Frequency'), ('source_type', 'Type')])
+
         ngds_facets = helpers.load_ngds_facets()
         
         if ngds_facets:
