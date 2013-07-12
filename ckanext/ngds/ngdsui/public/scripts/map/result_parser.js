@@ -24,7 +24,7 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 				{
 					'tag':'p',
 					'attributes':{
-						'class':'description-wrapper',
+						'class':'description-wrapper'
 					},
 					'children':[
 						{

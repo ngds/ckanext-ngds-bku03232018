@@ -28,6 +28,8 @@ def dispatch(context, data_dict):
         controller = StandingDataController(context)
     elif request_model == "UserSearch":
         controller = UserSearchController(context)
+    elif request_model == "DocumentIndex":
+        controller = DocumentIndexController(context)
     else:
         raise toolkit.ValidationError({}, "Please supply a 'model' attribute in the POST body. Value can be one of: BulkUpload")
     
@@ -57,3 +59,9 @@ class UserSearchController(NgdsCrudController):
     def __init__(self, context):
         """Find the right model for this class"""
         self.model = context['model'].UserSearch
+
+class DocumentIndexController(NgdsCrudController):
+    """Controls CRUD API for DocumentIndex"""
+    def __init__(self, context):
+        """Find the right model for this class"""
+        self.model = context['model'].DocumentIndex

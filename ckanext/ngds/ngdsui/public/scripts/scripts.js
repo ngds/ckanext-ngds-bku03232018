@@ -1,5 +1,24 @@
 var ngds = ngds || { };
 
+function callRating(userText, rvalue, rpackId) {
+    var res = confirm(userText);
+
+    if (res){
+        $.ajax({
+          url:'/ngds/rating_submit',
+          'type':'POST',
+          'data':{
+              rpackageId:rpackId,
+              ratingValue:rvalue
+          },
+          success:function(response){
+                //window.alert("Thank you for the review. Rating is updated.");
+                window.location.reload();
+          }
+        });
+    }
+}
+
 (function() {
 	$(document).ready(function() { 
 
@@ -89,42 +108,7 @@ var ngds = ngds || { };
 		})();
 
 
-		// (function(){ // Handle username and password state transitions.
-			
-		// 	$("#username").click(function(e){
-		// 		return false;
-		// 	});
 
-		// 	$("#password").click(function(e){ // Preventing the click event from firing on the document and resulting in the login popup from vanishing
-		// 										// due to the focus event binding below.
-		// 		return false;
-		// 	});
-
-		// 	$("#username").focus(function(e) {
-		// 			if(this.value==="username") {
-		// 				this.value = "";
-		// 			}
-		// 		});
-
-		// 	$("#username").blur(function(e) {
-		// 			if(this.value==="") {
-		// 				this.value = "username";
-		// 			}
-		// 		});
-
-		// 	$("#password").focus(function(e) {
-		// 			if(this.value==="password") {
-		// 				this.value = "";
-		// 			}
-		// 		});
-
-		// 	$("#password").blur(function(e) {
-		// 			if(this.value==="") {
-		// 				this.value = "password";
-		// 			}
-		// 		});
-
-		// })();
      
 
 /*		var accordions = $(".accordion");
@@ -144,6 +128,8 @@ var ngds = ngds || { };
 		$('#field-lang-select').change(function() {
 			$("#change-language").click();
 		});
+
+
 
 	
 	    var dataset = ngds.autocomplete("#distributor-fake","/responsible_parties",'q','name','name');  

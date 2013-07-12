@@ -1,0 +1,174 @@
+#file-upload {
+				display:inline;
+				position:relative;
+				z-index:5;
+
+				input[type='file'] {
+					position:absolute;
+					left:0px;
+					opacity:0;
+					width:65px;
+					top:-5px;
+					height:33px;
+				}
+
+				input[type='submit'] {
+					position:absolute;
+					left:0px;
+				}
+			}
+
+//.first-stage, .middle-stage, .last-stage {
+//	display:table-cell;
+//	font-size:14px;
+//	font-family:Arial;
+//	font-weight:bold;
+//	width:100px;
+//	height:35px;
+//	padding-top:15px;
+//	padding-bottom:0px;
+//}
+
+.toolbar { 
+	margin-left:20px;
+}
+
+.pull-right { 
+	float:right;
+}
+
+.stages {
+	width:820px;
+	display:table;
+	border-collapse:separate;
+	text-align:center;
+	padding-left:0px;
+	margin-left:70px;
+	margin-top:0px;
+	background-color:#edeef0;
+}
+
+.about-form {
+	margin-left:20px;
+}
+
+.dataset-resource-form {
+	margin:0 25px 25px 25px;
+}
+
+.ngds-module-content {
+	font-family:Arial;
+	font-weight:bold;
+	font-size:18px;
+	min-height:550px;
+
+	.main-controls {
+		position:relative;
+		display:table-row;
+
+		.radio-section {
+			position:relative;
+			display:table-cell;
+			width:500px;
+			padding-left:50px;
+		}
+	}
+
+	label {
+		font-family:arial;
+		font-style:normal;
+		font-weight:bold;
+		font-size:14px;
+		color:@light;
+	}
+
+	.form-body {
+		.input-group {
+
+			margin-top:20px;
+
+			input[type='text'],select, textarea {
+				width:650px;
+				background-color:#edeef0;
+			}
+
+			select {
+				width:665px;
+			}
+
+			input[type="text"].small {
+				width:150px;
+			}
+
+			select {
+
+			}
+
+			.sp-label {
+				display:inline-block;
+				width:150px;
+				margin-right:10px;
+				text-align:right;
+			}
+
+			div.add-responsible-party {
+				margin-left:200px;
+				margin-top:20px;
+			}
+
+			.description-label-div {
+				vertical-align:top;
+			}
+
+			a.form-anchor {
+				margin-left:165px;
+				color:blue;
+				font-size:13px;
+				cursor:pointer;
+                display:block;
+
+				&:visited {
+					color:#blue;
+					cursor:pointer;
+				}
+			}
+
+			span.ngds-slug {
+				font-size:13px;
+				display:none;
+				border:1px solid black;
+				border-radius:5px;
+				padding:5px;
+				margin:5px;
+				background-color:#edeef0;
+			}
+
+            .retreived-tags {
+              margin-left:160px;
+              width:80%;
+              margin-top:5px;
+            }
+		}
+	}
+
+	.form-actions {
+		margin-top:50px;
+		text-align:center;
+
+		button {
+			margin-left:125px;
+
+			&:first-of-type {
+				margin-left:0px;
+			}
+		}
+
+	}
+}
+
+
+#bbox-map {
+	height:250px;
+	width:650px;
+	margin-left:165px;
+}

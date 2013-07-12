@@ -19,5 +19,10 @@ class APICommand(CkanCommand):
             bulkLoader = BulkUploader()
             #bulkLoader.importpackagedata(file_path=self.args[1],resource_dir=self.args[2])
             bulkLoader.execute_bulk_upload()
+        elif cmd == "doc-index":
+            from ckanext.ngds.ngdsui.misc.helpers import process_resource_docs_to_index
+            process_resource_docs_to_index()
+
         else:
             print "Command %s not recognized" % cmd
+

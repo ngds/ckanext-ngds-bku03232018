@@ -480,7 +480,7 @@ class ContributeController(NGDSBaseController):
 			file_attached=False
 			return package_controller.new_resource(dataset_name)
 
-		if data['upload-type'] == 'structured':
+		if data['resource_type'] == 'structured':
 			if 'content_model' in data and data['content_model'] != 'None' and file_attached==True:
 				cm_uri = data['content_model']
 				cm_version = data['content_model_version']
@@ -524,7 +524,7 @@ class ContributeController(NGDSBaseController):
 			metadata = json.loads(storage_api.get_metadata(data['key']))
 			resource_location = metadata['_location']
 			response.headers['Content-Type'] = 'text/html;charset=utf-8'
-			return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'form_type':data['form_type'],'url':data['key']})
+			return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'resource_type':data['resource_type'],'url':data['key']})
 
 
 	def get_structured_form(self,data=None):
@@ -537,13 +537,13 @@ class ContributeController(NGDSBaseController):
 		data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
 		print data
-		if data['upload-type']=='offline-resource':
+		if data['resource_type']=='offline-resource':
 			return self.validate_offline_resource(data)
-		if data['upload-type']=='data-service':
+		if data['resource_type']=='data-service':
 			return self.validate_data_service(data)
-		if data['upload-type']=='unstructured':
+		if data['resource_type']=='unstructured':
 			return self.validate_unstructured_resource(data)
-		if data['upload-type']=='structured':
+		if data['resource_type']=='structured':
 			return self.validate_structured_resource(data)
 
 	def validate_structured_resource(self,data):

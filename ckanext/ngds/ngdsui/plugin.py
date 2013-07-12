@@ -11,6 +11,8 @@ import ckanext.datastore.logic.auth as datastore_auth
 import ckanext.ngds.contentmodel.model.contentmodels as contentmodels
 import ckanext.ngds.contentmodel.logic.action as contentmodel_action
 
+from pylons import config as ckan_config
+
 import sys
 
 try:
@@ -108,7 +110,6 @@ class NgdsuiPlugin(SingletonPlugin):
     implements(IConfigurable, inherit=True)
 
     def configure(self, config):
-
         self.contentmodel_configure(config)
 
     implements(IRoutes,inherit=True)
@@ -124,8 +125,8 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("initiate_search","/ngds/initiate_search",controller=home_controller,action="initiate_search",conditions={"method":["POST"]})
         map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 
-        map.connect("dashboard","/dashboard",controller=home_controller,action="render_index",conditions={"method":["GET"]})
-        map.connect("dashboard_user","/dashboard/{offset}",controller=home_controller,action="render_index",conditions={"method":["GET"]})
+        #map.connect("dashboard","/dashboard",controller=home_controller,action="render_index",conditions={"method":["GET"]})
+        #map.connect("dashboard_user","/dashboard/{offset}",controller=home_controller,action="render_index",conditions={"method":["GET"]})
 
         contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
         map.connect("contribute","/ngds/contribute",controller=contribute_controller,action="index")
@@ -183,7 +184,8 @@ class NgdsuiPlugin(SingletonPlugin):
         'contentmodel_list' : contentmodel_action.contentmodel_list, 
         'contentmodel_list_short' : contentmodel_action.contentmodel_list_short, 
         'contentmodel_get': contentmodel_action.contentmodel_get, 
-        'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile
+        'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
+        #'create_resource_document_index': lib_action.create_resource_document_index
         }
 
     implements(IAuthFunctions, inherit=True)
@@ -222,10 +224,52 @@ class NgdsuiPlugin(SingletonPlugin):
             'highlight_rating_star':helpers.highlight_rating_star,
             'count_rating_reviews':helpers.count_rating_reviews,
             'rating_text':helpers.rating_text,
-            'get_usersearches':helpers.get_usersearches
+            'get_usersearches':helpers.get_usersearches,
+            'get_dataset_category_image_path':helpers.get_dataset_category_image_path,
+            'is_following':helpers.is_following,
+            'parseJSON':helpers.parseJSON,
+            'json_extract':helpers.json_extract
         }
 
     implements(IPackageController,inherit=True)
+
+    def before_index(self, pkg_dict):
+        #pkg_dict['sample_created']={'prahadeesh':'abclll'}
+        is_full_text_enabled = ckan_config.get('ngds.full_text_indexing','false')
+
+        if is_full_text_enabled == 'false':
+            return pkg_dict
+
+        import json
+        if pkg_dict.get('data_dict'):
+            dict = json.loads(pkg_dict.get('data_dict'))
+            resources = dict.get('resources')
+
+        print "resources: ", resources
+
+        if resources:
+            document_index_list = []
+            for resource in resources:
+
+                res_file_field = 'resource_file_%s' % resource.get("id")
+                #print "res_file_field:", res_file_field
+                pkg_dict[res_file_field] = ''
+
+                try:
+                    file_path = helpers.file_path_from_url(resource.get("url"))
+                    if file_path:
+                        resource_index_dict = {'package_id': pkg_dict.get('id'),
+                                       'resource_id': resource.get("id"),
+                                       'file_path': file_path,
+                                       }
+                        document_index_list.append(resource_index_dict)
+                except Exception, ex:
+                    print "exception: ", ex
+
+            helpers.create_package_resource_document_index(pkg_dict.get('id'),document_index_list)
+
+        return pkg_dict
+
 
     def before_search(self, search_params):
         # if 'fq' not in search_params:

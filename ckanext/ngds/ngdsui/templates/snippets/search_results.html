@@ -1,16 +1,21 @@
    
    {% for package in packages %}
+
            <div class="search-results-container">
           <div class="search-item-image">
-            
-             <img src="/assets/dataset.png" /> 
+
+              {% set category_image_path= h.get_dataset_category_image_path(package) %}
+
+
+             <img src="{{category_image_path}}" />
             
             </div>
           <div class="search-results-item">
 
               <div id="search-title-row">
+                {% set controller = 'package' %}
                   <div id="title">
-                    <a class="title" href="/dataset/{{package.name}}">{{package.title}}
+                    <a class="title" href="{{ h.url_for(controller=controller, action='read', id=package.name) }}">{{package.title}}
                     {% if package.get('state', '').startswith('draft') %}
                         <span class="label-info">{{ _('(Draft)') }}</span>
                     {% elif package.get('state', '').startswith('deleted') %}
@@ -21,7 +26,20 @@
                     {% endif %}
                   </div>
                   <div id="banner">
-                    <img src="/assets/bookmark.png" /> 
+
+                    {% if user %}
+                      {% set following = h.is_following('dataset',package.id) %}
+                      
+                      {% if following %}
+                      <a href="{{ h.url_for(controller=controller, action='unfollow', id=package.name) }}" target="_blank">
+                        <img src="/assets/bookmark.png" />
+                      </a>
+                      {% else %}
+                      <a href="{{ h.url_for(controller=controller, action='follow', id=package.name) }}" target="_blank">
+                        <img src="/assets/bookmark.png" />
+                      </a>
+                      {% endif %}
+                    {% endif %}
                   </div>
               </div>
               <div id="search-meta-row">
@@ -64,14 +82,26 @@
                      {% endif %} 
                                                                           
                     </span>
-                    <span>{{h.count_rating_reviews(package.id)}} reviews  #</span>
-                    <span>{{package.downloads}} downloads</span> </p>
+                    <span>{{h.count_rating_reviews(package.id)}} reviews </span></p>
                   </div>
                   
 
               </div>
               <div id="search-action-row">
-                  <span><img src="/assets/email.png" class="action-image"/></span>
+                  <span id="resources">
+                  {% if package.resources and not hide_resources %}
+
+                      <ul class="dataset-resources unstyled">
+                        {% for resource in h.dict_list_reduce(package.resources, 'format') %}
+                          <li>
+                            <a href="{{ h.url_for(controller='package', action='read', id=package.name) }}" class="label" data-format="{{ resource.lower() }}">{{ resource }}</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                  {% endif %}
+                   </span>
+
+                  <span id="actions"><img src="/assets/email.png" class="action-image"/></span>
               </div>              
           </div>
             </div>

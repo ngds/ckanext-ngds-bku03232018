@@ -13,6 +13,7 @@ import re
 from ckan.model.resource import Resource
 import logging
 import ckan.plugins as p
+import json
 _ = p.toolkit._
 
 try:
@@ -142,18 +143,19 @@ def username_for_id(id):
 def get_formatted_date(timestamp):
     return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
 
-'''
-This method loads the ngds facet configuration file and finds the facets to be during the search.
 
-    **Parameters:**
-    None.
-
-    **Results:**
-    :returns: The facets dict to be used for search.
-    :rtype: OrderedDict    
-'''
 
 def load_ngds_facets():
+    """
+    This method loads the ngds facet configuration file and finds the facets to be during the search.
+
+        **Parameters:**
+        None.
+
+        **Results:**
+        :returns: The facets dict to be used for search.
+        :rtype: OrderedDict
+    """
 
     # Return the loaded facets from global context if available. This will avoid unnecssary reading of config file everytime during search.
     try:
@@ -178,17 +180,16 @@ def load_ngds_facets():
     return  facets_dict
 
 
-'''
-This Method loads the given facets config file and constructs the facets structure to be used.
-    **Parameters:**
-    facets_config_path - Facets Configuration file (json file) path.
-
-    **Results:**
-    :returns: The facets dict to be used for search.
-    :rtype: OrderedDict    
-'''
 def read_facets_json(facets_config_path=None):
+    """
+    This Method loads the given facets config file and constructs the facets structure to be used.
+        **Parameters:**
+        facets_config_path - Facets Configuration file (json file) path.
 
+        **Results:**
+        :returns: The facets dict to be used for search.
+        :rtype: OrderedDict
+    """
     #Open the json config file and load it as dict.
     with open(facets_config_path, 'r') as json_file:
         import json
@@ -208,17 +209,18 @@ def read_facets_json(facets_config_path=None):
     else:
         return None
 
-'''
-Reads the input facet_config and its subfacets to find the metadatafields which will be used to used as facets. 
-    **Parameters:**
-    facet_struc - Particular facet structure to be iterated.
-    facets_list - list of found facets to which new facets needs to be added into.
 
-    **Results:**
-    :returns: The facets list 
-    :rtype: list
-'''
 def read_facet(facet_struc,facet_list):
+    """
+    Reads the input facet_config and its subfacets to find the metadatafields which will be used to used as facets.
+        **Parameters:**
+        facet_struc - Particular facet structure to be iterated.
+        facets_list - list of found facets to which new facets needs to be added into.
+
+        **Results:**
+        :returns: The facets list
+        :rtype: list
+    """
 
     #If the metadatafield exists in the facet then add it to the list.
     if facet_struc.get("metadatafield") :
@@ -231,17 +233,17 @@ def read_facet(facet_struc,facet_list):
 
     return facet_list
 
-'''
-This method gets the facets from search results and construct them into NGDS specific structure based on the facet json config file.
-
-    **Parameters:**
-    None.
-
-    **Results:**
-    :returns: Faceted results dict found from the results.
-    :rtype: Dict    
-'''
 def get_ngdsfacets():
+    """
+    This method gets the facets from search results and construct them into NGDS specific structure based on the facet json config file.
+
+        **Parameters:**
+        None.
+
+        **Results:**
+        :returns: Faceted results dict found from the results.
+        :rtype: Dict
+    """
 
     facet_config = g.facet_json_data
 
@@ -252,23 +254,22 @@ def get_ngdsfacets():
 
     return facets
 
-'''
-This method constructs the facet results for each Facet structure (from json file) 
-
-    **Parameters:**
-    facet_group - Facet Structure to be filled based on results.
-    facet_dict - newly constrcuted facets dict which needs to be appended with new values.
-    metadatafield - Metadata field of the facet.
-    facet_level - 1 - Top level facet 2 - Other sub level facets.
-    facet_values - Values of the facets returned from search.
-
-
-    **Results:**
-    :returns: Constructed faceted dict from the input facet structure and the results.
-    :rtype: Dict    
-'''
 def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,facet_values=None):
+    """
+    This method constructs the facet results for each Facet structure (from json file)
 
+        **Parameters:**
+        facet_group - Facet Structure to be filled based on results.
+        facet_dict - newly constrcuted facets dict which needs to be appended with new values.
+        metadatafield - Metadata field of the facet.
+        facet_level - 1 - Top level facet 2 - Other sub level facets.
+        facet_values - Values of the facets returned from search.
+
+
+        **Results:**
+        :returns: Constructed faceted dict from the input facet structure and the results.
+        :rtype: Dict
+    """
 
     #If metadatafield exists, then get the faceted values from the search results.
     if facet_group.get("metadatafield") :
@@ -331,8 +332,11 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
     return facet_dict
 
 def get_formatted_date(datstr):
-    from datetime import datetime
-    return datetime.strptime(datstr[:10], '%Y-%m-%d').strftime('%b %d,%Y')
+    formated_string = ""
+    if datstr:
+        from datetime import datetime
+        formated_string = datetime.strptime(datstr[:10], '%Y-%m-%d').strftime('%b %d,%Y')
+    return formated_string
 
 def to_json(data):
     #print json.dumps(data)
@@ -375,3 +379,125 @@ def get_usersearches():
     query = model.UserSearch.search(user.id)
 
     return query.all()
+
+def parseJSON(input):
+    return json.loads(input)
+
+def json_extract(input,key):
+    if(input==''):
+        return ''
+    try:
+        input = input.decode('ascii').replace("&#34;",'"')
+        i_json = json.loads(input)
+        if key in i_json:
+            return i_json[key]
+    except(ValueError):
+        pass
+    finally:
+        return ''
+
+
+def get_dataset_category_image_path(package):
+
+    image_path = '/assets/dataset.png'
+
+    dataset_category = None
+
+    for extra in package.get('extras'):
+        key = extra.get('key')
+        if key and key=='dataset_category':
+            dataset_category = extra.get('value')
+            break
+
+    category_image_link = {
+        'Dataset' :'/assets/dataset.png',
+        'Physical Collection' :'/assets/dataset.png',
+        'Catalog' :'/assets/dataset.png',
+        'Movie or Video' :'/assets/dataset.png',
+        'Drawing' :'/assets/dataset.png',
+        'Photograph' :'/assets/dataset.png',
+        'Remotely-Sensed Image' :'/assets/dataset.png',
+        'Map' :'/assets/dataset.png',
+        'Text Document' :'/assets/document.png',
+        'Physical Artifact' :'/assets/dataset.png',
+        'Desktop Application' :'/assets/dataset.png',
+        'Web Application' :'/assets/dataset.png'
+    }
+
+    if dataset_category and  dataset_category in category_image_link:
+        image_path = category_image_link.get(dataset_category)
+
+    return image_path
+
+
+def is_following(obj_type, obj_id):
+    '''Return a true/False based on follow for the given object type and id.
+
+    If the user is not logged in return an empty string instead.
+
+    :param obj_type: the type of the object to be followed when the follow
+        button is clicked, e.g. 'user' or 'dataset'
+    :type obj_type: string
+    :param obj_id: the id of the object to be followed when the follow button
+        is clicked
+    :type obj_id: string
+
+    :returns: a follow button as an HTML snippet
+    :rtype: string
+
+    '''
+    import ckan.logic as logic
+    obj_type = obj_type.lower()
+    # If the user is logged in show the follow/unfollow button
+    following = False
+    if c.user:
+        context = {'model': model, 'session': model.Session, 'user': c.user}
+        action = 'am_following_%s' % obj_type
+        following = logic.get_action(action)(context, {'id': obj_id})
+    return following
+
+def create_package_resource_document_index(pkg_id, resource_dict_list):
+    from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
+    from ckanext.ngds.env import Session
+
+    #print "Create document index: %s " % index_dict
+
+    model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where package_id=:pkg_id and status=:old_status", {'status_val':'CANCEL','pkg_id': pkg_id,'old_status':'NEW'})
+
+
+    data_dict = {'model':'DocumentIndex'}
+    data_dict['process'] = 'add'
+    context = {'model': model, 'session': model.Session}
+    source = model.DocumentIndex()
+
+    for index_dict in resource_dict_list:
+        index_dict['status'] = 'NEW'
+        data_dict['data'] = index_dict
+        trans_dispatch(context,data_dict)
+        # source.package_id = index_dict['package_id']
+        # source.resource_id = index_dict['resource_id']
+        # source.file_path = index_dict['file_path']
+        # source.status = 'NEW'
+        # source.comments = 'comments'
+        # source.add()
+
+    return True
+
+def get_docs_to_index(status):
+
+    query = model.DocumentIndex.search(status)
+
+    return query.all()
+
+def process_resource_docs_to_index():
+
+    docs_to_index = get_docs_to_index('NEW')
+
+    from ckanext.ngds.lib.index import FullTextIndexer
+    text_indexer = FullTextIndexer()
+    data_dict = {'site_id' : 'default'}
+    for doc in docs_to_index:
+        data_dict['id'] = doc.package_id
+        field_to_add = 'resource_file_%s' % doc.resource_id
+        text_indexer.index_resource_file(data_dict, field_to_add, doc.file_path, defer_commit=True)
+        model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where id=:id", {'status_val':'DONE','id': doc.id})

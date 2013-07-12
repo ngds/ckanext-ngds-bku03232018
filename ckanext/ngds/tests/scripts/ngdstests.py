@@ -23,68 +23,68 @@ if len(config) == 0:
     sys.exit(1)
 
 # A log file, just in case we need it
-with open("your-last-test.log", "w+") as log:
-    # Make sure that database is all set up
-    parser = ConfigParser.RawConfigParser()
-    parser.read(config[0])
-    db_url = parser.get("app:main", "sqlalchemy.url")
-    pattern = "://(?P<user>.+?):(?P<pass>.+?)@(?P<host>.+?)(:(?P<port>\d+))?/(?P<database>.+)$"
-    details = re.search(pattern, db_url)
+#with open("your-last-test.log", "w+") as log:
+# Make sure that database is all set up
+parser = ConfigParser.RawConfigParser()
+parser.read(config[0])
+db_url = parser.get("app:main", "sqlalchemy.url")
+pattern = "://(?P<user>.+?):(?P<pass>.+?)@(?P<host>.+?)(:(?P<port>\d+))?/(?P<database>.+)$"
+details = re.search(pattern, db_url)
 
-    # Connection to the database engine
-    conn = (details.group("user"), details.group("pass"), details.group("host"), details.group("port") or "5432")
-    Session = sessionmaker(bind=create_engine("postgresql://%s:%s@%s:%s/postgres" % conn))
-    base_session = Session(autocommit=True)
+# Connection to the database engine
+conn = (details.group("user"), details.group("pass"), details.group("host"), details.group("port") or "5432")
+Session = sessionmaker(bind=create_engine("postgresql://%s:%s@%s:%s/postgres" % conn))
+base_session = Session(autocommit=True)
 
-    # Drop the database if it is there.
-    base_session.connection().connection.set_isolation_level(0)
-    try:
-        base_session.execute("DROP DATABASE %s;" % details.group("database"))
-        #print "DROPPED DATABASE %s" % details.group("database")
-    except ProgrammingError:
-        pass
-    base_session.connection().connection.set_isolation_level(1)
+# Drop the database if it is there.
+base_session.connection().connection.set_isolation_level(0)
+try:
+    base_session.execute("DROP DATABASE %s;" % details.group("database"))
+    #print "DROPPED DATABASE %s" % details.group("database")
+except ProgrammingError:
+    pass
+base_session.connection().connection.set_isolation_level(1)
 
-    # Recreate the database
-    base_session.connection().connection.set_isolation_level(0)
-    try:
-        base_session.execute("CREATE DATABASE %s;" % details.group("database"))
-        #print "CREATED DATABASE %s" % details.group("database")
-    except Exception as ex:
-        raise ex
-    base_session.connection().connection.set_isolation_level(1)
+# Recreate the database
+base_session.connection().connection.set_isolation_level(0)
+try:
+    base_session.execute("CREATE DATABASE %s;" % details.group("database"))
+    #print "CREATED DATABASE %s" % details.group("database")
+except Exception as ex:
+    raise ex
+base_session.connection().connection.set_isolation_level(1)
 
-    # Connect to the new database
-    engine = create_engine(db_url)
-    Session = sessionmaker(bind=engine)
-    session = Session(autocommit=True)
+# Connect to the new database
+engine = create_engine(db_url)
+Session = sessionmaker(bind=engine)
+session = Session(autocommit=True)
 
-    # Create PostGIS tables
-    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "postgis.sql"), "r") as pg:
-        session.execute(pg.read())
-    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "spatial_ref_sys.sql")) as sr:
-        session.execute(sr.read())
-    session.close()
+# Create PostGIS tables
+with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "postgis.sql"), "r") as pg:
+    session.execute(pg.read())
+with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "spatial_ref_sys.sql")) as sr:
+    session.execute(sr.read())
+session.close()
 
-    #print "GEOMETRY_COLUMNS EXISTS: %s" % str(engine.dialect.has_table(engine.connect(), "geometry_columns"))
-    #print "SPATIAL_REF_SYS EXISTS: %s" % str(engine.dialect.has_table(engine.connect(), "spatial_ref_sys"))
+#print "GEOMETRY_COLUMNS EXISTS: %s" % str(engine.dialect.has_table(engine.connect(), "geometry_columns"))
+#print "SPATIAL_REF_SYS EXISTS: %s" % str(engine.dialect.has_table(engine.connect(), "spatial_ref_sys"))
 
-    # Building arguments
-    args = [ nosetests ]
-    args = args + sys.argv[1:]
-    args.append("--nologcapture")
+# Building arguments
+args = [ nosetests ]
+args = args + sys.argv[1:]
+args.append("--nologcapture")
 
-    # Run nosetests
-    p = subprocess.Popen(args)
-    p.wait()
+# Run nosetests
+p = subprocess.Popen(args)
+p.wait()
 
-    """
-    # Drop the database
-    base_session.connection().connection.set_isolation_level(0)
-    try:
-        base_session.execute("DROP DATABASE %s;" % details.group("database"))
-    except ProgrammingError:
-        pass
-    base_session.connection().connection.set_isolation_level(1)
-    base_session.close()
-    """
+"""
+# Drop the database
+base_session.connection().connection.set_isolation_level(0)
+try:
+    base_session.execute("DROP DATABASE %s;" % details.group("database"))
+except ProgrammingError:
+    pass
+base_session.connection().connection.set_isolation_level(1)
+base_session.close()
+"""
