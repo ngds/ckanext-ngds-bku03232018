@@ -17,12 +17,19 @@ ngds.util.dom_element_constructor = function(payload) {
 
 ngds.util.sequence_generator = function() {
 	var begin = 0;
+    var begin_alph = 97;
 	return {
 		'next':function() {
+//            begin_alph=begin_alph+1;
 			return begin=begin+1;
 		},
-		'current':function() {
-			return begin;
+		'current':function(alph_switch) {
+			if(typeof alph_switch !== 'undefined' && alph_switch==='alph') {
+                var marker_ch = String.fromCharCode(begin_alph).toUpperCase();
+                begin_alph = begin_alph+1;
+                return marker_ch;
+            }
+            return begin;
 		}
 	}
 };
@@ -59,7 +66,9 @@ ngds.util.node_matcher = function(node,match_exp) {
 };
 
 ngds.util.apply_feature_hover_styles = function(feature,tag_index) {
-	if(feature.feature.type==='Point') {
+    var type = feature.feature.geometry.type;
+    console.log(feature.feature.geometry.type);
+	if(type==='Point') {
 		var marker_tag = $('.lmarker-'+tag_index);
 			if(marker_tag.length>0) {
 				marker_tag.css("width","30px");
@@ -70,13 +79,15 @@ ngds.util.apply_feature_hover_styles = function(feature,tag_index) {
 		 	}
 	}
 	else {
+        console.log("Attempting to set style");
 		feature.setStyle({weight:2,color:"#d54799"});
 	}
 };
 
 
 ngds.util.apply_feature_default_styles = function(feature,tag_index) {
-	if(feature.feature.type==='Point') {
+    var type = feature.feature.geometry.type;
+	if(type==='Point') {
 		var marker_tag = $('.lmarker-'+tag_index);
 		marker_tag.attr("src","/images/marker.png")
 		marker_tag.css("width","25px");
@@ -91,8 +102,9 @@ ngds.util.apply_feature_default_styles = function(feature,tag_index) {
 };
 
 ngds.util.apply_feature_active_styles = function(feature,tag_index) {
+    var type = feature.feature.geometry.type;
 	$('.result-'+tag_index).css('background-color','#dadada');
-	if(feature.feature.type==='Point') {
+	if(type==='Point') {
  		$('.lmarker-'+tag_index).attr("src","/images/marker-red.png");
 	}
 	else {

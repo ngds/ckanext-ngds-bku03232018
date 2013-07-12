@@ -377,6 +377,7 @@ ngds.Map = {
 							return 'Feature';
 						}
 					})(layer);
+                    p = layer;
 					ngds.publish('Map.add_feature',{
 						'feature':layer,
 						'seq_id':options['seq'],

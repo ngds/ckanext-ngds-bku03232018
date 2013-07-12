@@ -72,10 +72,11 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 		};
 		var shaped_loop_scope = ngds.ckandataset(results[i]).get_feature_type()['type'];
 		var marker_container = { };
-		
+		var alph_seq = seq.current('alph');
 		ngds.publish('Map.feature_received',{
 				'feature':results[i],
-				'seq':seq.current()
+				'seq':seq.current(),
+                'alph_seq':alph_seq
 			});
 
 		if(shaped_loop_scope==='Point') {	
@@ -90,14 +91,14 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 						'tag':'img',
 						'attributes':{
 							'src':'/images/marker.png',
-							'class':'result-marker',
+							'class':'result-marker'
 						}
 					},
 					{
 						'tag':'span',
 						'attributes':{
 							'class':'result-marker-label marker-label-'+seq.current(),
-							'text':seq.current()
+							'text':alph_seq
 						}
 					}
 				]
