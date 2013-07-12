@@ -1,14 +1,44 @@
-<div>
-    <h2><img src="/images/create_node.png" alt="">{{ _('CONTRIBUTE') }}</h2>
-    <div class="bordered-container">
+<div id="contribute-landing-page">
+    <h2><img src="/images/create_node.png" alt=""> {{ _('CONTRIBUTE') }}</h2>
+    <span>{{ _('Submit existing datasets to share with community') }}</span>
+    <div id="upload-table">
+
+      <div id="upload-title">Choose one upload method</div>
+
         {% if h.check_access('package_create') %}
-        <p>
-            Want to help? <a href="/ngds/contribute/dataset/new">Share data</a> with us.
-        </p>
-        <p>
-            Want to upload your data in bulk? <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload') }}">Bulk Upload data</a>.
-        </p>
+            <a href="/ngds/contribute/dataset/new">
+        {% else %}
+             <a href="#">
         {% endif %}
+                <div class="upload-type">
+
+                    <div class="image-block">
+                        <img src="/assets/individual_upload.png">
+                    </div>
+                    <div class="text-block">
+                        <p class="title">Individual Upload</p>
+                        <p>* Recommended for submissions with less than 20 files, several large files, or those with a wide variety of files.</p>
+                    </div>
+                </div>
+             </a>
+
+        {% if h.check_access('package_create') %}
+            <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload') }}">
+        {% else %}
+             <a href="#">
+        {% endif %}
+                <div class="upload-type">
+
+                    <div class="image-block">
+                        <img src="/assets/bulk_upload.png">
+                    </div>
+                    <div class="text-block">
+                        <p class="title">Bulk Upload</p>
+                        <p>* Recommended for submissions with lots of smaller files all associated with a single project or task.</p>
+                    </div>
+                </div>
+             </a>
+
     </div>
 
 </div>
