@@ -19,9 +19,10 @@
         
         
             <fieldset>
-              <label >Search</label>
-              <input type="text" class="search-browse-big-bar" name="q" value="{{ c.q }}" />
-              <input type="submit" value="Go"/>
+                <span class=" search-giant">
+                  <input type="text" class="search" name="q" value="{{ c.q }}" autocomplete="off" placeholder="Search...">
+                  <button type="submit" value="Search">Submit</button>
+                </span>
             </fieldset>
         
   </div>
@@ -53,11 +54,12 @@
             {{ h.snippet('snippets/sort_by.html', sort=c.sort_by_selected) }}
           </div>   
           <div id="date-filter">
-              <label >Date Range:</label>
+              <label >Date Range</label>
               <input type="text"  id="from-date"/>
               <label >to</label>
               <input type="text"  id="to-date"/>
-              <input type="button" id="filter-pub-date" value="Go"/>
+              <a class="btn-primary" id ="filter-pub-date" href="#"><i class="icon-hand-right"></i></a>
+              <!-- <input type="button" id="filter-pub-date" value=""><i class="icon-check-sign"></i></input> -->
           </div>
           {% if c.user %}
           <div id="save-block">
@@ -65,12 +67,16 @@
                 <label for="search_name">Name</label>
                 <input type="text" id="search_name" class="text ui-widget-content ui-corner-all" />
              </div>
-            <div>
+            <div id="save-list">
               <div>
-                <input type="button"  id="save_search" value="+ Save search"/>
+                <!-- <input type="button"  id="save_search" value="+ Save search"/> -->
+                <i class="icon-save btn-primary" id="save_search" title="Save Search"></i>
+              </div>
+              <div>
                  {% set user_searches=h.get_usersearches() %}
                   {% if user_searches %}
-                <button type="button" id="saved_searches_list_button">V</button>
+                <!-- <button type="button" class="btn" id="saved_searches_list_button">V</button> -->
+                <i id ="saved_searches_list_button" class="icon-th-list btn-primary" title="Saved List"></i> 
                       <ul id="saved-list">
                         {% for usersearch in user_searches %}
                             <li><a href="{{usersearch.url}}" title="{{usersearch.url}}">{{usersearch.search_name}}</a></li>
@@ -100,12 +106,12 @@
               {% if c.fields_grouped %}
               <div id="filter-block">
                   <div class="filter-list">
-                    <label>{{ _('Filtered by:') }}</label>
+                    <label>{{ _('Filtered by') }}</label>
                     {% for field in c.fields_grouped %}
                       <span class="facet">{{ c.facet_titles.get(field) or h.get_field_title(field) }}:</span>
                       {% for value in c.fields_grouped[field] %}
                       <a href="{{ c.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}">
-                        <span class="filtered pill">
+                        <span class="filtered ">
                           {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
                             {{ c.translated_fields[(field,value)] }}
                           {% else %}
@@ -123,11 +129,11 @@
 
       </div>
 
-          {% snippet 'snippets/search_results.html', packages=c.page.items %}
+          {% snippet 'snippets/search_results.html', packages=c.page.items,user=c.user %}
           {% if c.page.items %}
           <div id="pager">
             <div class="search-item-image valign-bottom">
-              <div class="show-more"><span>show more results</span></div>           
+              <!-- <div class="show-more"><span>show more results</span></div>    -->        
             </div>
             <div class="pagination-container">
                     {{ c.page.pager(q=c.q) }}         

@@ -1,5 +1,11 @@
 {% include 'package/resource_form_template.tmf' %}
 {% include 'package/add_responsible_party.tmf' %}
+
+{% if include_metadata %}
+
+{{ data }}
+
+{% endif %}
 <script>
 {% if data %}
     resource_location = window.location.origin+"{{data['resource_location']}}";
@@ -15,7 +21,7 @@
           <input type="hidden" name="key" id="key1"></input>
           {% endif %}
           <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
-          <input type="hidden" name="form_type" id="form_type"/>
+          <input type="hidden" name="resource_type" id="resource_type"/>
   </div>
 </form>
 
@@ -35,23 +41,48 @@
   <div class="main-controls">
       <div class="radio-section">
         <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
-        <input type="radio" id="upload-type-selection" name="upload_type_selection" value="upload_type"/>
-        <label for="upload-type-selection">Upload a file</label><br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-structured" class="upload-type" name="upload-type" value="structured"/>
-        <label for="upload-type-structured" id="upload-type-structured-label">Structured</label><br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="upload-type-unstructured" class="upload-type" name="upload-type" value="unstructured"/>
-        <label for="upload-type-unstructured" id="upload-type-unstructured-label">Unstructured</label>
+        <input type="radio" id="resource_type-selection" name="upload_type_selection" value="upload_type"/>
+        <label for="resource_type-selection">Upload a file</label><br>
+          {% if data['resource_type'] %}          
+          <input type="hidden" name="resource_type" value="{{data['resource_type']}}" />
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" />
+          {% else %}
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" name="resource_type" value="structured"/>
+          {% endif %}
+
+        <label for="resource_type-structured" id="resource_type-structured-label">Structured</label><br>
+          {% if data['resource_type'] %}
+          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" />
+          {% else %}
+          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_type" value="unstructured" />
+          {% endif %}
+        <label for="resource_type-unstructured" id="resource_type-unstructured-label">Unstructured</label>
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="data-service" name="upload-type" value="data-service" />
+        {% if data['resource_type'] %}
+        <input type="radio" id="data-service" />
+        {% else %}
+          <input type="radio" id="data-service" name="resource_type" value="data-service" />
+        {% endif %}
         <label for="data-service">Link to a data service</label>
       </div>
 
       <div class="radio-section">
-        <input type="radio" id="offline-resource" name="upload-type" value="offline-resource" />
+          {% if data['resource_type'] %}
+        <input type="radio" id="offline-resource" />
+         {% else %}
+         <input type="radio" id="offline-resource" name="resource_type" value="offline-resource" />
+          {% endif %}
         <label for="offline-resource">Offline resource</label>
       </div>
+      {% if data['id'] %}
+        <input type="hidden" name="id" value="{{data['id']}}" />
+      {% else %}
+        <input type="hidden" name="id" value="" />
+      {% endif %}
+
+
   </div>
 
   <div class="form-body">
@@ -59,15 +90,29 @@
 
   </div>
   <div class="form-actions">
+    {% block delete_button %}
+      {% if data.id %}
+        {% if h.check_access('resource_delete', {'id': data.id})  %}
+          {% set locale = h.dump_json({'content': _('Are you sure you want to delete this resource?')}) %}
+          <a class="btn btn-danger pull-left" href="{% url_for controller='package', action='resource_delete', resource_id=data.id, id=pkg_name %}" data-module="confirm-action" data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
+        {% endif %}
+      {% endif %}
+    {% endblock %}
+    
+        {% block previous_button %}
         <button type="submit" name="save" value="go-dataset">Previous Page</button>
-        <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
-        <button type="button" id="go-metadata">Additional Metadata</button>
+        {% endblock %}
+        {% block again_button %}
+        <button type="submit" name="save" value="again">Save and Add Another</button>
+        {% endblock %}
+        <button type="button" class="{% block pull_right %}{% endblock %}" id="go-metadata">{% block save_button_text %}{{ _('Next: Additional Metadata') }}{% endblock %}</button>
         <!-- <button type="button" name="save" value="go-metadata">Additional Metadata</button> -->
+    
     </div>
 </form>
 
 {% raw %}
-
+<script type="text/javascript" src="/scripts/contribute/responsible_party.js"></script>
 <script type="text/javascript" src="/scripts/contribute/resource_form_fields.js"></script>
 <script type="text/javascript" src="/scripts/autocomplete.js"></script>
 <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
@@ -85,21 +130,22 @@ var render_forms = function(value) {
   else {
       $("[name=upload_type_selection]").prop("checked",false); 
   }
-
+console.log(value);
   if(value==="structured") {
-    $("#upload-type-structured").prop("checked",true);
+    $("#resource_type-structured").prop("checked",true);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,structured_form));
     position_file_uploader("#url");
     populate_content_models();
   }
 
   if(value==="unstructured") {
-    $("#upload-type-unstructured").prop("checked",true);
+    $("#resource_type-unstructured").prop("checked",true);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,unstructured_form));
     position_file_uploader("#url");
   }
 
   if(value==="offline-resource") {
+    $("#offline-resource").prop("checked",true);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,offline_resource_form));
   }
 
@@ -108,23 +154,44 @@ var render_forms = function(value) {
   }
 
   if(value==="data-service" || value==="unstructured" || value==="structured") {
-    var dist_autocomp = ngds.autocomplete(".distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
-    dist_autocomp.proxy(".distributor_name","name"); 
-    dist_autocomp.proxy(".distributor_email","email");
-    dist_autocomp.proxy(".distributor",function(dict) {
-      $(".distributor").val(JSON.stringify({
-        "distributor_name":dict.name,
-        "distributor_email":dict.email
-      }));
-    });  
+    // var dist_autocomp = ngds.autocomplete(".distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
+    // dist_autocomp.proxy(".distributor_name","name"); 
+    // dist_autocomp.proxy(".distributor_email","email");
+    // dist_autocomp.proxy(".distributor",function(dict) {
+    //   $(".distributor").val(JSON.stringify({
+    //     "distributor_name":dict.name,
+    //     "distributor_email":dict.email
+    //   }));
+    // });  
+console.log($("#distributor_name"));
+console.log($("#distributor_email"));
+    console.log("here");
+    new ngds.responsible_party().responsibilify({
+      'rs_name':'#distributor_name',
+      'rs_email':'#distributor_email',
+      'rs_fake':'#distributor_fake',
+      'rs':'#distributor',
+      'slug_container':'.distributor-tag'
+    });
   }
 };
 
-$('input[name="upload-type"]').on('change',function(ev){
+$('input[name="resource_type"]').on('change',function(ev){
   
-  var value = ev.target.value;
-    console.log(ev);
-    console.log(value);
+  var id = ev.currentTarget.id;
+  var value ="";
+  if(id==="resource_type-unstructured") {
+    value='unstructured';
+  }
+  if(id==="resource_type-structured") {
+    value='structured';
+  }
+  if(id==="offline-resource") {
+    value='offline-resource';
+  }
+  if(id==="data-service") {
+    value='data-service';
+  }
 
   render_forms(value);
 });
@@ -136,7 +203,7 @@ $("#go-metadata").click(function() {
     'success':function(response) {
       if(response.success===true) {
         $(".dataset-form").append($("<input/>",{'type':'hidden','name':'save','value':'go-metadata'}));
-        $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
+        // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
         $(".dataset-form").submit();
       }
       else {
@@ -160,6 +227,7 @@ if(typeof continuation!=='undefined') {
 
 (function template_variables_collect(){
   {% if data %}
+  console.log("Activate populate");
    data="{{data}}";
    data = ngds.util.parse_raw_json("{{h.jsonify(data)}}")
    activate_populate_form(data);

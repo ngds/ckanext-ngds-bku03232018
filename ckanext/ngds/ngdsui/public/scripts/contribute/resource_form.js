@@ -75,7 +75,7 @@ $("#file").on('change',function(ev){
 	var filename = file.substring(file.lastIndexOf("\\")+1);
 	$("#key1").val(timestamp+"/"+filename);
 	$("#key2").val(timestamp+"/"+filename);
-	$("#form_type").val($("[name=upload-type]:checked").val());
+	$("#resource_type").val($("[name=resource_type]:checked").val());
 	$("#file-upload-form").submit();
 });
 
@@ -92,9 +92,12 @@ var populate_form = function(data) {
 };
 
 var activate_populate_form = function(data) {
-    console.log(data['form-type']);
-	render_forms(data['form_type']);
+	console.log("Activating ....... ",data);
+	render_forms(data['resource_type']);
 	populate_form(data);
+	// $("[name=resource_type]").prop("disabled",true);
+	$("#resource_type-selection").prop("disabled",true);
+	$("input[type=radio]").prop("disabled",true);
 	var name = get_prop($("#url").val(),'name');
 	var file_extension = get_prop($("#url").val(),'extension');
 	$("[name=name]").val(name);

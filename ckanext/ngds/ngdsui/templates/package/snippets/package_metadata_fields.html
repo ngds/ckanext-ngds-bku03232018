@@ -1,33 +1,34 @@
 {% import 'macros/form.html' as form %}
+{% macro is_selected(value,key,extra) %}
+  {% for extra in extras %}
+    {% if extra.key == key %}
+      {% if extra.value == value %}
+        selected
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
 {% include 'package/add_responsible_party.tmf' %}
+        {% macro get_value(key,extra) -%}
+  {% for extra in extras -%}
+    {% if extra.key == key -%}
+      {{ extra.value }}
+    {%- endif %}
+  {%- endfor %}
+{%- endmacro %}
 <div class="form-body">
  
   <!-- <div class="input-group">
     <div class="sp-label"><label>Author Email</label></div>
       <input type="text" name="author_email" placeholder="joe@example.com" value="{{data.author_email}}"></input>
   </div> -->
-  <div class="input-group">
-    <div class="sp-label"><label>Author</label></div>
-      <input type="text" id="authors_fake" /> 
-  </div>
-
-  <input type="hidden" name="authors" id="authors"></input>
-  <input type="hidden" name="author_email" id="author_email" />
-
-
-  <div class="input-group">
-    <div class="sp-label"><label>Maintainer</label></div>
-      <input type="text" id="maintainer_fake"></input>
-  </div>
-
-  <input type="hidden" name="maintainer" id="maintainer"></input>
-  <input type="hidden" name="maintainer_name" id="maintainer_name" />
-  <input type="hidden" name="maintainer_email" id="maintainer_email" />
 
   <!-- <div class="input-group">
     <div class="sp-label"><label>Maintainer Email</label></div>
       <input type="text" name="maintainer_email" placeholder="joe@example.com" value="{{data.maintainer_email}}"></input>
   </div> -->
+  <input type="hidden" name="author" value="{{ data.author }}"/>
+  <input type="hidden" name="author_email" value="{{ data.author_email }}"/>
 
   <div class="input-group">
     <div class="sp-label"><label>Visibility</label></div>
@@ -51,30 +52,7 @@
 <script type="application/javascript" src="/scripts/contribute/responsible_party.js"></script>
 
 <script>
-  new ngds.responsible_party().multi_responsibilify({
-    'mrs_fake':'authors_fake',
-    'mrs':'authors',
-    'rs_frag':'author',
-    'mrs_proxy':{
-      'name':'author_email',
-      'value':'email'
-    }
-  });
 
-
-  // new ngds.responsible_party().responsibilify({
-  //   'rs_name':'#author_name',
-  //   'rs_email':'#author_email',
-  //   'rs_fake':'#author_fake',
-  //   'rs':'#author'
-  // });
-
-  new ngds.responsible_party().responsibilify({
-    'rs_name':'#maintainer_name',
-    'rs_email':'#maintainer_email',
-    'rs_fake':'#maintainer_fake',
-    'rs':'#maintainer'
-  });
 </script>
 
 

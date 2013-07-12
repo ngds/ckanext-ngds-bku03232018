@@ -4,7 +4,7 @@ ngds.responsible_party = function() {
 
 	var me = this;
 
-	var responsibilify = function(fields) {
+	var responsibilify = function(fields,additional_fields) {
 		/*
 		*	Fields - rs-fake, rs_name, rs_email.
 		*/
@@ -29,144 +29,71 @@ ngds.responsible_party = function() {
 
 		var rs_ac = ngds.autocomplete(me.rs_fake,"/responsible_parties",'q',['name','email'],'name'); 
 
-	    rs_ac.proxy(me.rs_name,"name"); 
-	    rs_ac.proxy(me.rs_email,"email");
+	    // rs_ac.proxy(me.rs_name,me.rs_token+"_name"); 
+	    // rs_ac.proxy(me.rs_email,me.rs_token+"_email");
 
 	    var rs_name = me.rs_name;
 	    var rs_email = me.rs_email;
 
-	    rs_ac.proxy(me.rs,function(dict) {
-	      $(me.rs).val(JSON.stringify({
-	        rs_name:dict.name,
-	        rs_email:dict.email
-	      }));
-	    });  
+        me.slugify = function(dict){
+            var rs_map = ngds.util.state[me.rs_token] || ( ngds.util.state[me.rs_token] = { });
+            var payload = { };
+            payload["name"] = dict["name"];
+            payload["email"] = dict["name"];
 
-	    $(me.rs_fake).after($("<span/>",{ 'id':me.rs.replace("#","")+'_slug',class:'ngds-slug' }));
+            var i_name = payload["name"];
+            var i_email = payload["email"];
 
-	   setup_blur();
-	   setup_edit_rs();
+            var vdict = JSON.stringify(payload);
+	        $(me.rs).val(vdict);
+
+	        if(typeof additional_fields !=='undefined')	         {
+	        	additional_fields(dict);
+	        }
+
+            setTimeout(function() {
+                $(me.rs_fake).val("");
+            });
+
+	        ngds.util.state[me.rs_token] = vdict;
+            $(fields['slug_container']).empty();
+            var slug = $("<span/>",{ "class":"ngds-tag","text":payload["name"],"title":"Name : "+i_name+", Email : "+i_email });
+            $(fields['slug_container']).append(slug);
+            var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
+            slug.append(anch);
+            anch.on('click',function(ev) {
+            $(ev.currentTarget.parentElement).fadeOut(500,function(){
+                var parent = ev.currentTarget.parentElement;
+                parent.remove();
+                $(me.rs).val('');
+               });
+             });
+        }
+
+	    rs_ac.proxy(me.rs,me.slugify);
+
+        if($(me.rs_fake).val()!=="") {
+        	console.log("In here");
+        	console.log($(me.rs_fake).val());
+           var parsed_dict = '';
+           try {
+                 var parsed_dict = JSON.parse($(me.rs_fake).val());
+                 $(me.rs_fake).val("");
+                 me.slugify(parsed_dict);
+           }
+           catch(SyntaxError) {
+                   //swallow
+           }
+        }
+
 	   append_create_rs_anchor();
-	};
-
-	var multi_responsibilify = function(fields) {
-		me.slugs = [];
-		var mrs = fields['mrs'];
-        var mrs_elem = $("#"+mrs);
-		var mrs_fake = me.rs_fake = fields['mrs_fake'];
-		me.rs_list = [];
-		var mrs_add_anchor = mrs_fake+"-add";
-		var rs_frag = fields['rs_frag'];
-
-		var mrs_fake_elem = $("#"+mrs_fake);
-		mrs_fake_elem.after($("<a/>",{
-			'id':mrs_add_anchor,
-			'text':'Add Author',
-			'class':'form-anchor'
-		}));
-
-		var mrs_anch = $("#"+mrs_add_anchor);
-
-		var rs_ac = ngds.autocomplete(mrs_fake_elem,"/responsible_parties",'q',['name','email'],'name'); 
-		
-		working_name = null;
-		var working_email = null;
-
-		rs_ac.proxy(null,function(dict) {
-			working_name = dict.name;
-			working_email = dict.email;
-		});
-		
-		mrs_anch.on('click',function(ev){
-			if(working_email === null && working_name === null) {
-				return;
-			}
-			var slug = $("<span/>",{
-				'class':'ngds-slug',
-				'text':working_name,
-				'style':'display:inline;'
-			});
-
-            var close_anchor = $("<a/>",{
-                'text':'X',
-                'class':'close-button-transform'
-            });
-            slug.append(close_anchor);
-
-            close_anchor.on('click',function(ev){
-                console.log(ev);
-            });
-
-			mrs_anch.after(slug);
-			mrs_fake_elem.val("");
-			me.slugs.push(slug);
-            var rs_frag_name_label = rs_frag+'_name';
-            var rs_frag_email_label = rs_frag+'_email';
-			me.rs_list.push({
-				rs_frag_name_label:working_name,
-				rs_frag_email_label:working_email
-			});
-
-            mrs_elem.val(escape(JSON.stringify(me.rs_list)));
-		});
-	};
-
-	var edit_rs = function()  {
-		  $(me.rs_slug).hide();
-		  $(me.rs_fake).show();
-		  // $(".distributor-edit").remove();
-		  me.rs_create_anch.show();
-		  return false;
-	};
-
-	var setup_blur = function() {
-	
-		me.rs_blur = function(ev) {
-			  if($(me.rs_fake).is(":focus")===true) {
-			    return;
-			  }
-
-			  if($(me.rs_fake).val()==="") {
-			    $(me.rs_name).val("");
-			    $(me.rs_email).val("");
-			    $(me.rs_slug).html("");
-			    $(me.rs_slug).hide();
-			    $(me.rs_fake).show();
-			  }
-
-			  if(typeof ev!=='undefined' && typeof $(ev.target).attr('class') !=='undefined' && $(ev.target).attr('class').indexOf(me.rs_slug)!==-1) {
-			    edit_rs();
-			    return;
-			  }
-
-			  var rs_name_v = $(me.rs_name).val();
-			  var rs_email_v = $(me.rs_email).val();
-
-			  if(rs_name_v !==null && typeof rs_name_v !=='undefined' && rs_name_v !=='' && rs_email_v !==null && rs_email_v !=='' && typeof rs_email_v !=='undefined' && ev.target.className.indexOf(me.rs.replace("#",""))===-1) {
-			    $(me.rs_fake).hide();
-			    me.rs_create_anch.hide();
-			    $(me.rs_slug).show();
-			    $(me.rs_slug).html(rs_name_v);
-			    $("."+me.rs_token+"_c_form").remove();
-			    $(me.rs_slug).attr("title",rs_name_v+", "+rs_email_v);
-			  }
-			};
-
-		$(document).on('click',me.rs_blur);
-		$(document).on('blur',me.rs_fake,me.rs_blur);
-	}; 
-
-	var setup_edit_rs = function() {
-
-		$(me.rs_slug).on('click',edit_rs);
 	};
 
 	var append_create_rs_anchor = function() {
 		var rs_fake = $(me.rs_fake);
 		
-		 me.rs_create_anch = $("<a/>",{ 
-				'text':'Add '+me.rs.replace("#",""),
-				'class':'form-anchor '+me.rs.replace("#",""),
+		 me.rs_create_anch = $("<a/>",{
+				'class':'icon-plus '+me.rs.replace("#",""),
 				'style':'cursor:pointer;'
 			});
 
@@ -232,17 +159,16 @@ ngds.responsible_party = function() {
 			          }
 			        }),
 			        'success':function(response) {
-			          $(me.rs_name).val(response.result.name);
-			          $(me.rs_email).val(response.result.email);
-			          // $(rs_cre).html("Success");
-			          rs_c_form_jq.fadeOut(1500,function() {
+			             me.slugify(response.result);			                        
+			             me.rs_create_anch.show();
 			             rs_c_form_jq.remove();
-
-			             $(me.rs_fake).val(response.result.name);
-			             me.rs_blur();
-			          });
 			        }
 			  });
+			});
+
+			rs_c_cancel_button_jq.on('click',function(ev){
+				rs_c_form_jq.remove();
+				me.rs_create_anch.show();
 			});
 			
 
@@ -252,7 +178,6 @@ ngds.responsible_party = function() {
 	};
 
 	return {
-		'responsibilify':responsibilify,
-		'multi_responsibilify':multi_responsibilify
+		'responsibilify':responsibilify
 	}	
 };

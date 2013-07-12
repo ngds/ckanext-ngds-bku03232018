@@ -24,31 +24,7 @@ ngds.state = ngds.state || ( ngds.state = { } );
             + pad(mins) + ':'
             + pad(secs) + 'Z';
     };
-    
-    
-	function callRating(userText, rvalue, rpackId) {
-		var res = confirm(userText);
-/*	 	var ele = document.getElementById("rating-submit");
-		$("#rpackageId").val(rpackId); 
-		$("#ratingValue").val(rvalue); 
-		if (res) {
-		  ele.submit();
-		}*/
 
-        $.ajax({
-          url:'/ngds/rating_submit',
-          'type':'POST',
-          'data':{
-              rpackageId:rpackId,
-              ratingValue:rvalue
-          },
-          success:function(response){
-                window.alert("Thank you for the review. Rating is updated.");
-                window.location.reload();
-          }
-        });
-
-	}
 
 (function() {
 	$(document).ready(function() { 

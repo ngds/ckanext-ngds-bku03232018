@@ -27,14 +27,20 @@ ngds.util.sequence_generator = function() {
 	}
 };
 
-ngds.util.tick = {
-	'hand':0,
-	'next':function() {
-		return ++this['hand'];
-	},
-	'current':function() {
-		return this['hand'];
-	}
+ngds.util.tick = function(){
+	var hand=0;
+
+    var next = function() {
+		return ++hand;
+	};
+
+	var current = function() {
+		return hand;
+	};
+    return {
+        'next':next,
+        'current':current
+    };
 };
 
 ngds.util.node_matcher = function(node,match_exp) { 
@@ -137,5 +143,30 @@ ngds.util.parse_raw_json = function(raw) {
     console.log(parsed_json);
 	x= JSON.parse(parsed_json);
     return x;
-}
+};
 
+ngds.util.get_author_slug = function(author,ticker,sync) {
+	var cur_key = "ngds-slug-"+ticker.next();
+	var sp = $("<span/>",{"class":"ngds-tag","text":author['name'],id:cur_key,"style":"display:inline-block;"});
+    var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
+   	var authors_map = ngds.util.state['authors'] = ngds.util.state['authors'] || (ngds.util.state['authors'] = { });
+   	authors_map[cur_key] = author;
+
+    sp.append(anch);
+    sync(authors_map);
+    
+    anch.on('click',function(ev) {
+        $(ev.currentTarget.parentElement).fadeOut(500,function(){
+        	var parent = ev.currentTarget.parentElement;
+        	var key = parent.id;
+            parent.remove();
+            delete authors_map[key];
+            sync(authors_map);
+        });
+    });
+    return sp;
+};
+
+ngds.util.state = {
+
+};

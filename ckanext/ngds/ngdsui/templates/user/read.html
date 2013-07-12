@@ -4,7 +4,9 @@
 
 {% block primary_content_inner %}
   {% if user.datasets %}
-     {% snippet 'snippets/search_results.html', packages=user.datasets %}
+     <div class="search-results">
+     {% snippet 'snippets/search_results.html', packages=user.datasets,user=c.user %}
+     </div>
   {% else %}
 
     {% if c.is_myself %}

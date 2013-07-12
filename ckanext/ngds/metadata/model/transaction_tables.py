@@ -122,6 +122,25 @@ class UserSearch(NgdsDataObject):
         query = query.filter(cls.user_id == user_id)
         return query
 
+class DocumentIndex(NgdsDataObject):
+
+    def __init__(self, **kwargs):
+        self.package_id = kwargs.get('package_id', None)
+        self.resource_id = kwargs.get('resource_id', None)
+        self.file_path = kwargs.get('file_path', None)
+        self.status = kwargs.get('status', None)
+        self.comments = kwargs.get('comments', None)
+
+    @classmethod
+    def search(cls, status, sqlalchemy_query=None):
+
+        if sqlalchemy_query is None:
+            query = meta.Session.query(cls)
+        else:
+            query = sqlalchemy_query
+        query = query.filter(cls.status == status)
+        return query
+
 
 def define_tables():
     """Create the in-memory represenatation of tables, and map those tables to classes defined above"""
@@ -169,6 +188,20 @@ def define_tables():
         Column("url", types.UnicodeText),
     )
 
+
+    # First define the three tables
+    document_index = Table(
+        "resource_document_index",
+        meta.metadata,
+        Column("id", types.Integer, primary_key=True),
+        Column("package_id", types.UnicodeText),
+        Column("resource_id", types.UnicodeText),
+        Column("file_path", types.UnicodeText),
+        Column("status", types.UnicodeText),
+        Column("comments", types.UnicodeText),
+        Column('last_updated', types.DateTime, default=datetime.datetime.now),
+    )
+
     # Map those tables to classes, define the additional properties for related people
     meta.mapper(BulkUpload, bulkupload,
         properties={
@@ -178,14 +211,16 @@ def define_tables():
     meta.mapper(StandingData, standingdata)
     meta.mapper(BulkUpload_Package, bulkupload_package)
     meta.mapper(UserSearch, user_saved_search)
+    meta.mapper(DocumentIndex, document_index)
     
     # Stick these classes into the CKAN.model, for ease of access later
     model.BulkUpload = BulkUpload
     model.StandingData = StandingData
     model.BulkUpload_Package = BulkUpload_Package
     model.UserSearch = UserSearch
+    model.DocumentIndex = DocumentIndex
     
-    return bulkupload, bulkupload_package, standingdata, user_saved_search
+    return bulkupload, bulkupload_package, standingdata, user_saved_search, document_index
 
 def db_setup():
     """Create tables in the database"""
@@ -197,9 +232,8 @@ def db_setup():
     bulkupload_package = meta.metadata.tables.get("bulk_upload_package", None)
     standingdata = meta.metadata.tables.get("standing_data", None)
     user_saved_search = meta.metadata.tables.get("user_saved_search", None)
-    
-    #print "bulkupload: ",bulkupload
-    
+    document_index = meta.metadata.tables.get("resource_document_index", None)
+
     if bulkupload == None:
         # The tables have not been defined. Its likely that the plugin is not enabled in the CKAN .ini file
         log.debug("Could not create additional tables. Please make sure that you've added the metadata plugin to your CKAN config .ini file.")
@@ -208,4 +242,4 @@ def db_setup():
         
         # Alright. Create the tables.
         from ckanext.ngds.base.commands.ngds_tables import create_tables
-        create_tables([bulkupload,bulkupload_package,standingdata,user_saved_search], log)
+        create_tables([bulkupload,bulkupload_package,standingdata,user_saved_search,document_index], log)
