@@ -8,6 +8,14 @@ import json
 
 class Layer(object):
 
+    @classmethod
+    def publish(cls, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config()):
+        l = cls(package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config())
+        if l.create():
+            return l
+        else:
+            return None
+
     def __init__(self, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config()):
         self.geoserver = geoserver
         self.store = geoserver.default_datastore()
