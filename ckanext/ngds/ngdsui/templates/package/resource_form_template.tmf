@@ -13,7 +13,7 @@ ngds.structured_form_template = "{{#form}}\
 </div>\
 {{/form}}\
 {{#custom}}\
-<{{tag}} type='{{type}}' {{#name}}name='{{name}}'{{/name}} {{#id}}id='{{id}}'{{/id}} {{#class}}class='{{class}}'{{/class}}{{#value}} value='{{value}}{{/value}}''></{{tag}}>\
+<{{tag}} type='{{type}}' {{#name}}name='{{name}}'{{/name}} {{#id}}id='{{id}}'{{/id}} {{#class}}class='{{class}}'{{/class}}{{#value}} value='{{value}}'{{/value}}></{{tag}}>\
 {{/custom}}";
 {% endraw %}
 </script>

@@ -237,8 +237,6 @@ class NgdsuiPlugin(SingletonPlugin):
         #pkg_dict['sample_created']={'prahadeesh':'abclll'}
         is_full_text_enabled = ckan_config.get('ngds.full_text_indexing','false')
 
-        if is_full_text_enabled == 'false':
-            return pkg_dict
 
         import json
         if pkg_dict.get('data_dict'):
@@ -256,17 +254,26 @@ class NgdsuiPlugin(SingletonPlugin):
                 pkg_dict[res_file_field] = ''
 
                 try:
-                    file_path = helpers.file_path_from_url(resource.get("url"))
-                    if file_path:
-                        resource_index_dict = {'package_id': pkg_dict.get('id'),
-                                       'resource_id': resource.get("id"),
-                                       'file_path': file_path,
-                                       }
-                        document_index_list.append(resource_index_dict)
+                    for (okey, nkey) in [('distributor', 'res_distributor'),
+                                         ('protocol', 'res_protocol'),
+                                         ('layer', 'res_layer'),
+                                         ('content_model', 'res_content_model')]:
+                        pkg_dict[nkey] = pkg_dict.get(nkey, []) + [resource.get(okey, u'')]
+
+                    if is_full_text_enabled == 'true':
+
+                        file_path = helpers.file_path_from_url(resource.get("url"))
+                        if file_path:
+                            resource_index_dict = {'package_id': pkg_dict.get('id'),
+                                           'resource_id': resource.get("id"),
+                                           'file_path': file_path,
+                                           }
+                            document_index_list.append(resource_index_dict)
                 except Exception, ex:
                     print "exception: ", ex
 
-            helpers.create_package_resource_document_index(pkg_dict.get('id'),document_index_list)
+            if is_full_text_enabled == 'true' and document_index_list:
+                helpers.create_package_resource_document_index(pkg_dict.get('id'),  document_index_list)
 
         return pkg_dict
 
@@ -302,8 +309,12 @@ class NgdsuiPlugin(SingletonPlugin):
 
     implements(IFacets, inherit=True)
 
-    def dataset_facets(self,facets_dict, package_type):
+    def dataset_facets(self, facets_dict, package_type):
         #print "IFACETS is called.......>>>>>>>>>>>>>>>>"
+
+        if package_type == 'harvest':
+            return OrderedDict([('frequency', 'Frequency'), ('source_type', 'Type')])
+
         ngds_facets = helpers.load_ngds_facets()
         
         if ngds_facets:
@@ -313,6 +324,10 @@ class NgdsuiPlugin(SingletonPlugin):
 
     def organization_facets(self, facets_dict, organization_type, package_type):
         #print "IFACETS is called.......>>>>>>>>>>>>>>>>"
+
+        if package_type == 'harvest':
+            return OrderedDict([('frequency', 'Frequency'), ('source_type', 'Type')])
+
         ngds_facets = helpers.load_ngds_facets()
         
         if ngds_facets:
