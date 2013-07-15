@@ -13,10 +13,27 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 	}
 
 	$(".map-search-results").prepend($("<div/>",{"class":clazz,"id":"results"}));
+
+	var wms_mapping = {
+
+	};
+
 	for(var i=0;i<results.length;i++) {
-		
+	var is_wms_present = false;
 		for(var j=0;j<results[i].resources.length;j++) {
-			console.log(results[i].resources[j].ogc_type);
+			var resource = results[i].resources[j];
+			
+			if(resource.ogc_type==='WMS') {
+				is_wms_present = true;
+				wms_mapping[results[i].id] = wms_mapping[results[i].id] || ( wms_mapping[results[i].id] = [ ] );
+				console.log(resource);
+				wms_mapping[results[i].id].push({
+					'id':resource.id,
+					'url':resource.url.split('?layers=')[0],
+					'layer':resource.url.split('?layers=')[1],
+					'name':resource.description
+				});
+			}
 		}
 
 		results[i]["type"] = results[i]["type"][0].toUpperCase() + results[i]["type"].slice(1,results[i]["type"].length);
@@ -86,6 +103,17 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 				
 			]
 		};
+
+		if(is_wms_present===true) {
+			skeleton.children.push({
+				'tag':'button',
+				'attributes':{
+					'class':'wms',
+					'text':'WMS',
+					'id':results[i].id
+				}
+			});
+		}
 		var shaped_loop_scope = ngds.ckandataset(results[i]).get_feature_type()['type'];
 		var marker_container = { };
 		var alph_seq = seq.current('alph');
@@ -145,17 +173,32 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 	var inc=inc || (inc=0);
 	$(".wms").click(function(ev){
 				var id=ev.currentTarget.id;
-						var ngds_layer = L.tileLayer.wms('http://'+window.location.hostname+":8080/geoserver/NGDS/wms",{
-						layers:"NGDS:"+id,
-						format: 'image/png',
-					    transparent: true,
-					    attribution: "NGDS",
-					    tileSize:128,
-					    opacity:'0.9999'
+				console.log(wms_mapping);
+				for(var k=0;k<wms_mapping[id].length;k++) {
+					var layer_to_add = L.tileLayer.wms(wms_mapping[id][k].url,{
+						'layers':wms_mapping[id][k].layer,
+						'format':'image/png',
+						'transparent':true,
+						'attribution':'NGDS',
+						'tileSize':128,
+						'opacity':0.9999
 					});
+					console.log(layer_to_add);
+					layer_control.addOverlay(layer_to_add,wms_mapping[id][k].name);
+				}
 
-				layer_control.addOverlay(ngds_layer,"WMS"+inc);
-				inc++;
+
+				// 		var ngds_layer = L.tileLayer.wms('http://'+window.location.hostname+":8080/geoserver/NGDS/wms",{
+				// 		layers:"NGDS:"+id,
+				// 		format: 'image/png',
+				// 	    transparent: true,
+				// 	    attribution: "NGDS",
+				// 	    tileSize:128,
+				// 	    opacity:'0.9999'
+				// 	});
+
+				// layer_control.addOverlay(ngds_layer,"WMS"+inc);
+				// inc++;
 			});
 
 };

@@ -130,7 +130,7 @@ class Shapefile:
         source_def = source.GetLayerDefn()
         
         # Read some shapefile properties
-        geom_type = source_def.GetGeomType()
+        geom_type = ogr.wkbUnknown
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(epsg)
 
