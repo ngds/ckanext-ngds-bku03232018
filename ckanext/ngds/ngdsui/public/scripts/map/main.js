@@ -99,7 +99,7 @@ if(typeof ngds.Map!=='undefined') {
 		ngds.pager.go_to({
 			'page':data['page'],
 			'action':ngds.ckanlib.package_search,
-			'rows':5
+			'rows':10
 		});
 	});
 })();
@@ -322,12 +322,14 @@ if(typeof ngds.Map!=='undefined') {
 			$(".results").hide();
 			$(".search-results-pagination").hide();
 			$(".search-results-pagination").addClass("no-padding");
+			$(".map-expander").css("top","80px");
 		}
 		else {
 			operation='contract';
 			$(".results").show();
 			$(".search-results-pagination").show();
 			$(".search-results-pagination").removeClass("no-padding");
+			$(".map-expander").css("top","0px");
 		}
 	});
 })();

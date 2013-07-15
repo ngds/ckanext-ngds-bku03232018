@@ -33,7 +33,7 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 								'class':'description',
 								'href':['/dataset',results[i]['name']].join('/'),
 								'target':'_blank',
-								'text':results[i]['title']
+								'text':ngds.util.get_n_chars(results[i]['title'],38)
 							}
 						}
 						]
@@ -47,27 +47,37 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 					}
 				},
 				{
-					'tag':'p',
+					'tag':'div',
 					'attributes':{
-						'class':'type',
-						'text':results[i]['type']
-					}
-				},
-				{
-					'tag':'button',
-					'attributes':{
-						'class':'wms',
-						'id':results[i]['resources'][0]['id'],
-						'text':"WMS"
-					}
-				},
-				{
-					'tag':'p',
-					'attributes':{
-						'class':'published',
-						'text':"Published "+new Date(results[i]['metadata_created']).toLocaleDateString()
-					}
+						'class':'additional-dataset-info'
+					},
+					'children':[
+							{
+							'tag':'p',
+							'attributes':{
+								'class':'type',
+								'text':results[i]['type']
+								}
+							},
+							{
+							'tag':'p',
+							'attributes':{
+								'class':'published',
+								'text':"Published "+new Date(results[i]['metadata_created']).toLocaleDateString()
+								}
+							}
+					]
 				}
+				
+				// {
+				// 	'tag':'button',
+				// 	'attributes':{
+				// 		'class':'wms',
+				// 		'id':results[i]['resources'][0]['id'],
+				// 		'text':"WMS"
+				// 	}
+				// },
+				
 			]
 		};
 		var shaped_loop_scope = ngds.ckandataset(results[i]).get_feature_type()['type'];
@@ -109,14 +119,21 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 		var dom_node = ngds.util.dom_element_constructor(skeleton);
 		$('.results').prepend(dom_node);
 		var reader = ngds.util.dom_element_constructor({
-			'tag':'p',
+			'tag':'div',
 			'attributes':{
-				'text':'Found '+count+" results for \""+query+"\"",
-				'class':'reader'
+				'class':'results-text'
+			},
+			'children':[{
+				'tag':'p',
+				'attributes':{
+					'text':'Found '+count+" results for \""+query+"\"",
+					'class':'reader'
+				}
 			}
+			]
 		});
 	}
-	$('.results').prepend(reader);
+	$('.results').before(reader);
 	$(".results").jScrollPane({contentWidth:'0px'});
 
 	var inc=inc || (inc=0);

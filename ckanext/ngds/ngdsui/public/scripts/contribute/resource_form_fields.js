@@ -336,7 +336,7 @@ var link_data_service_form = {
     },
     {
     'label':'Layer',
-    'name':'layer_name',
+    'name':'layer',
     'tag':'input',
     'additional':function() {
       return 'type=text';

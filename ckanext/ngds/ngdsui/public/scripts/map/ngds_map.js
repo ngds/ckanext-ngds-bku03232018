@@ -137,6 +137,7 @@ ngds.Map = {
 				}
 			});
 			copy = [];
+			map.addLayer(_geoJSONLayer);
 
 			var placeMarker_single = L.Icon.Label.extend({
 					options: {
