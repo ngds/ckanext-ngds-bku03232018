@@ -14,7 +14,13 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 
 	$(".map-search-results").prepend($("<div/>",{"class":clazz,"id":"results"}));
 	for(var i=0;i<results.length;i++) {
+		
+		for(var j=0;j<results[i].resources.length;j++) {
+			console.log(results[i].resources[j].ogc_type);
+		}
+
 		results[i]["type"] = results[i]["type"][0].toUpperCase() + results[i]["type"].slice(1,results[i]["type"].length);
+		
 		var skeleton = {
 			'tag':'div',
 			'attributes':{
