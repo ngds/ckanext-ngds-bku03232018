@@ -348,6 +348,7 @@ var link_data_service_form = {
     {
       'tag':'input',
       'id':'distributor',
+      'name':'distributor',
       'type':'hidden'
     },
      {

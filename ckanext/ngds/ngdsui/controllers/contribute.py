@@ -20,666 +20,659 @@ import os.path
 
 class ContributeController(NGDSBaseController):
 
- 	def index(self):
-		
-		"""
-		Renders contribute page.
-		"""
+    def index(self):
+        
+        """
+        Renders contribute page.
+        """
+        if g.central:
+            #TODO: Need to change this to point the correct controller
+            url = h.url_for_static(controller='ckanext.harvest.controllers.view:ViewController')
+            redirect(url)
+        else:
+            return render('contribute/contribute.html')
 
-		if g.central:
-			nodes = model.HarvestNode.get_all()
-			c.harvested_nodes = nodes
+    def harvest(self):
+        """
+        Create new Harvest node.
+        """
+        c.action = 'save'
+        return render('contribute/harvest_new.html')
 
-		return render('contribute/contribute.html')		
+    def upload(self):
+        """
+        Render the upload page
+        """
 
-	def harvest(self):
-		"""
-		Create new Harvest node.
-		"""
-		c.action = 'save'
-		return render('contribute/harvest_new.html')
+        return render('contribute/upload.html')
 
-	def upload(self):
-		"""
-		Render the upload page
-		"""
+    def bulk_upload(self):
 
-		return render('contribute/upload.html')
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
-	def bulk_upload(self):
+        try:
+            check_access('package_create',context,None)
+        except NotAuthorized, error:
+            abort(401,error.__str__())        
 
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        return render('contribute/bulkupload_form.html')
 
-		try:
-			check_access('package_create',context,None)
-		except NotAuthorized, error:
-			abort(401,error.__str__())		
+    def bulk_upload_handle(self):
+        """    
+        Handles the bulk upload of datasets. Recieves the dataset file and zip file as part of the request and validates them.
+        """
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
-		return render('contribute/bulkupload_form.html')
+        try:
+            check_access('package_create',context,None)
+        except NotAuthorized, error:
+            abort(401,error.__str__())    
 
-	def bulk_upload_handle(self):
-		"""	
-		Handles the bulk upload of datasets. Recieves the dataset file and zip file as part of the request and validates them.
-		"""
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        #Validate the dataset file.
 
-		try:
-			check_access('package_create',context,None)
-		except NotAuthorized, error:
-			abort(401,error.__str__())	
+        bulk_dir = config.get('ngds.bulk_upload_dir')
 
-		#Validate the dataset file.
+        from datetime import datetime
+        ts = datetime.isoformat(datetime.now()).replace(':','').split('.')[0]
 
-		bulk_dir = config.get('ngds.bulk_upload_dir')
+        upload_dir = os.path.join(bulk_dir, ts)
 
-		from datetime import datetime
-		ts = datetime.isoformat(datetime.now()).replace(':','').split('.')[0]
+        if not os.path.exists(upload_dir):
+            os.makedirs(upload_dir)
 
-		upload_dir = os.path.join(bulk_dir, ts)
 
-		if not os.path.exists(upload_dir):
-			os.makedirs(upload_dir)
+        # Recieve the dataset file to be processed.
+        datasetfile = request.POST['datasetfile']
 
+        if datasetfile == "":
+            #raise Exception (_("Data file can't be empty."))
+            abort(500,_("Data file can't be empty."))    
 
-		# Recieve the dataset file to be processed.
-		datasetfile = request.POST['datasetfile']
 
-		if datasetfile == "":
-			#raise Exception (_("Data file can't be empty."))
-			abort(500,_("Data file can't be empty."))	
+        datafilename = datasetfile.filename        
 
+        datafilepath =os.path.join(upload_dir,datasetfile.filename.replace(os.sep, '_'))
 
-		datafilename = datasetfile.filename		
+        permanent_data_file = open(datafilepath,'wb')        
+        shutil.copyfileobj(datasetfile.file, permanent_data_file )        
+        datasetfile.file.close()        
+        permanent_data_file.close()        
 
-		datafilepath =os.path.join(upload_dir,datasetfile.filename.replace(os.sep, '_'))
 
-		permanent_data_file = open(datafilepath,'wb')		
-		shutil.copyfileobj(datasetfile.file, permanent_data_file )		
-		datasetfile.file.close()		
-		permanent_data_file.close()		
 
+        resourcefile = request.POST['resourceszip']
+        resource_list = None
+        resourcesfilename = None
 
+        if resourcefile !="":
+            resourcesfilename = resourcefile.filename
+            resfilepath =os.path.join(upload_dir,resourcefile.filename.replace(os.sep, '_'))
+            permanent_zip_file = open(resfilepath,'wb')
+            shutil.copyfileobj(resourcefile.file, permanent_zip_file )
+            resourcefile.file.close()
+            permanent_zip_file.close()
 
-		resourcefile = request.POST['resourceszip']
-		resource_list = None
-		resourcesfilename = None
 
-		if resourcefile !="":
-			resourcesfilename = resourcefile.filename
-			resfilepath =os.path.join(upload_dir,resourcefile.filename.replace(os.sep, '_'))
-			permanent_zip_file = open(resfilepath,'wb')
-			shutil.copyfileobj(resourcefile.file, permanent_zip_file )
-			resourcefile.file.close()
-			permanent_zip_file.close()
+            zfile = zipfile.ZipFile(resfilepath)
+            
 
+            zfile.extractall(path=upload_dir)
 
-			zfile = zipfile.ZipFile(resfilepath)
-			
+            def dir_filter(s):
+                if os.path.isdir(os.path.join(upload_dir,s)):
+                    return False
+                return True
 
-			zfile.extractall(path=upload_dir)
+            
+            resource_list = filter(dir_filter , zfile.namelist())
 
-			def dir_filter(s):
-				if os.path.isdir(os.path.join(upload_dir,s)):
-					return False
-	   			return True
 
-			
-			resource_list = filter(dir_filter,zfile.namelist())
+        status,err_msg = self._validate_uploadfile(datafilepath,upload_dir,resource_list)
 
 
-		status,err_msg = self._validate_uploadfile(datafilepath,upload_dir,resource_list)
+        if status == "INVALID":
+            import_helper.delete_files(file_path=upload_dir,ignore_files=[datafilename,resourcesfilename])
 
 
-		if status == "INVALID":
-			import_helper.delete_files(file_path=upload_dir,ignore_files=[datafilename,resourcesfilename])
+        self._create_bulk_upload_record(c.user or c.author,datafilename,resourcesfilename,upload_dir,status,err_msg)
 
+        url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload')
+        redirect(url)
 
-		self._create_bulk_upload_record(c.user or c.author,datafilename,resourcesfilename,upload_dir,status,err_msg)
+    def _validate_uploadfile(self,data_file,resource_path,resource_list):
 
-		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload')
-		redirect(url)		
+        #import ckanext.ngds.lib.importer.validator.NGDSValidator
+        import ckanext.ngds.lib.importer.validator as ngdsvalidator
+        err_msg = ""                   
+        try:
+            validator = ngdsvalidator.NGDSValidator(filepath=data_file,resource_path=resource_path,resource_list=resource_list)
+            validator.validate()
+            status="VALID"
+            h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
+        except Exception, e:
+            err_msg = e.__str__()
+            h.flash_error(_('Files Uploaded but it is invalid. Error: "%s" '%err_msg), allow_html=True)
+            status ="INVALID"
 
+        return status,err_msg
 
-	def _validate_uploadfile(self,data_file,resource_path,resource_list):
+    def _create_bulk_upload_record(self,user,data_file,resources,path,status,comments):
+        #print "inside _create_bulk_upload_record:",c.user
 
-		#import ckanext.ngds.lib.importer.validator.NGDSValidator
-		import ckanext.ngds.lib.importer.validator as ngdsvalidator
-		err_msg = ""            		
-		try:
-			validator = ngdsvalidator.NGDSValidator(filepath=data_file,resource_path=resource_path,resource_list=resource_list)
-			validator.validate()
-			status="VALID"
-			h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
-		except Exception, e:
-			err_msg = e.__str__()
-			h.flash_error(_('Files Uploaded but it is invalid. Error: "%s" '%err_msg), allow_html=True)
-			status ="INVALID"
+        userObj = model.User.by_name(c.user.decode('utf8'))
 
-		return status,err_msg
+        data = {'data_file':data_file,'resources':resources,'path':path,'status':status,'comments':comments,'uploaded_by':userObj.id}
+        data_dict = {'model':'BulkUpload'}
+        data_dict['data']=data
+        data_dict['process']='create'
 
-	def _create_bulk_upload_record(self,user,data_file,resources,path,status,comments):
-		#print "inside _create_bulk_upload_record:",c.user
+        #print "Data dict: ",data_dict
 
-		userObj = model.User.by_name(c.user.decode('utf8'))
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
-		data = {'data_file':data_file,'resources':resources,'path':path,'status':status,'comments':comments,'uploaded_by':userObj.id}
-		data_dict = {'model':'BulkUpload'}
-		data_dict['data']=data
-		data_dict['process']='create'
+        transaction_return = get_action('transaction_data')(context, data_dict)
 
-		#print "Data dict: ",data_dict
+    def edit(self,id):
+        """
+        Editing the existing Harvest node.
+        """
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        try:
+            check_access('manage_nodes',context,None)
+        except NotAuthorized, error:
+            abort(401,error.__str__())
 
-		transaction_return = get_action('transaction_data')(context, data_dict)					
+        c.isEdit = True
+        c.action = 'edit_save'
+        c.node = self._read_node(id)
+        return render('contribute/harvest_edit.html')
 
-		#print "transaction_return:",transaction_return
+    def edit_save(self,id=None):
+        """
+        Updating the edited  Harvest node.
+        """
 
-	def edit(self,id):
-		"""
-		Editing the existing Harvest node.
-		"""
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
-		try:
-			check_access('manage_nodes',context,None)
-		except NotAuthorized, error:
-			abort(401,error.__str__())
+        try:
+            check_access('manage_nodes',context,None)
+        except NotAuthorized, error:
+            abort(401,error.__str__())
 
-		c.isEdit = True
-		c.action = 'edit_save'
-		c.node = self._read_node(id)
-		return render('contribute/harvest_edit.html')	
 
-	def edit_save(self,id=None):
-		"""
-		Updating the edited  Harvest node.
-		"""
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))    
 
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        node_id = data['id'] or id
 
-		try:
-			check_access('manage_nodes',context,None)
-		except NotAuthorized, error:
-			abort(401,error.__str__())
+        # print "Data Dict Values on Edit: " ,data
 
+        #Update responsible Party
 
-		data = clean_dict(unflatten(tuplize_dict(parse_params(
-            request.params))))	
+        data['id'] = data['node_admin_id']
 
-		node_id = data['id'] or id
+        res_party_data = self.update_responsible_party(data)
 
-		# print "Data Dict Values on Edit: " ,data
+        #Update Node Admin ID just to make sure if it is updated as part of edit. TODO: Handle new Responsible party creation
+        data['node_admin_id'] = res_party_data['id']
+        data['id'] = node_id
 
-		#Update responsible Party
+        data_dict = {'model':'HarvestNode'}
+        data_dict['data']=data
+        data_dict['process']='update'
+        
+        context = {'model': model}
 
-		data['id'] = data['node_admin_id']
+        get_action('ngds_harvest')(context, data_dict)        
 
-		res_party_data = self.update_responsible_party(data)
+        #return self.read(node_id)
 
-		#Update Node Admin ID just to make sure if it is updated as part of edit. TODO: Handle new Responsible party creation
-		data['node_admin_id'] = res_party_data['id']
-		data['id'] = node_id
+        print " Node ID: ", node_id
 
-		data_dict = {'model':'HarvestNode'}
-		data_dict['data']=data
-		data_dict['process']='update'
-		
-		context = {'model': model}
+        url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node_id)
+        redirect(url)
 
-		get_action('ngds_harvest')(context, data_dict)		
+    def save(self,data=None):
+        """
+        Create new Harvest node.
+        """
 
-		#return self.read(node_id)
+        #harvestNode = model.HarvestNode
 
-		print " Node ID: ", node_id
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))                            
 
-		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node_id)
-		redirect(url)
+        data_dict = self.create_responsible_party(data)
+        data['node_admin_id'] = data_dict['id']
 
-	def save(self,data=None):
-		"""
-		Create new Harvest node.
-		"""
+        """    
+        harvestNode.url = data['url']
+        harvestNode.frequency = data['frequency']
+        harvestNode.title = data['title']
+        harvestNode.node_admin_id = data['node_admin_id']
+            
+        # print "Harvest the data: ",harvestNode
 
-		#harvestNode = model.HarvestNode
+        harvestNode.save()
+        """
+        data_dict = {'model':'HarvestNode'}
+        data_dict['data']=data
+        data_dict['process']='create'
 
-		data = clean_dict(unflatten(tuplize_dict(parse_params(
-            request.params))))							
+        # print "Data dict: ",data_dict
 
-		data_dict = self.create_responsible_party(data)
-		data['node_admin_id'] = data_dict['id']
+        context = {'model': model}
 
-		"""	
-		harvestNode.url = data['url']
-		harvestNode.frequency = data['frequency']
-		harvestNode.title = data['title']
-		harvestNode.node_admin_id = data['node_admin_id']
-			
-		# print "Harvest the data: ",harvestNode
+        get_action('ngds_harvest')(context, data_dict)        
 
-		harvestNode.save()
-		"""
-		data_dict = {'model':'HarvestNode'}
-		data_dict['data']=data
-		data_dict['process']='create'
 
-		# print "Data dict: ",data_dict
+        #return self.index()
+        url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
+        redirect(url)
 
-		context = {'model': model}
+    def delete(self,id):
 
-		get_action('ngds_harvest')(context, data_dict)		
+        """
+        Deletes Harvest node.
+        """
 
+        data_dict = {'model':'HarvestNode'}
+        data_dict['data']={'id':id}
+        data_dict['process']='delete'
 
-		#return self.index()
-		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
-		redirect(url)		
+        # print "Data dict: ",data_dict
 
-	def delete(self,id):
+        context = {'model': model}
 
-		"""
-		Deletes Harvest node.
-		"""
+        get_action('ngds_harvest')(context, data_dict)        
 
-		data_dict = {'model':'HarvestNode'}
-		data_dict['data']={'id':id}
-		data_dict['process']='delete'
+        url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
+        redirect(url)        
 
-		# print "Data dict: ",data_dict
+    def read(self,id):
+        
+        """
+        Fetches the details about a particular node.
+        """
 
-		context = {'model': model}
+        node = self._read_node(id)
 
-		get_action('ngds_harvest')(context, data_dict)		
+        c.node = node
 
-		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
-		redirect(url)		
+        return render('contribute/harvest_read.html')
 
- 	def read(self,id):
-		
-		"""
-		Fetches the details about a particular node.
-		"""
+    def _read_node(self,id):
+    
+        node =    model.HarvestNode.by_id(id)
+        return node
 
-		node = self._read_node(id)
+    def create_responsible_party(self,data):
 
-		c.node = node
+        """
+        Creates the responsible party in the system and returns the node_id
+        """
+        # responsible = model.ResponsibleParty(data['name'],data['email'])
+        # responsible.organization = data['organization']
+        # responsible.phone = data['phone']
+        # responsible.street = data['street']
+        # responsible.state = data['state']
+        # responsible.city = data['city']
+        # responsible.zip = data['zip']
+        
+        data_dict = {'model':'ResponsibleParty'}
+        data_dict['data']=data
+        data_dict['process']='create'
+        
 
-		return render('contribute/harvest_read.html')
+        # print "Data dict: ",data_dict        
+        context = {'model': model}
 
-	def _read_node(self,id):
-	
-		node = 	model.HarvestNode.by_id(id)
-		return node
+        data_dict = get_action('additional_metadata')(context, data_dict)
 
-	def create_responsible_party(self,data):
+        #responsible.save()
+        return  data_dict
 
-		"""
-		Creates the responsible party in the system and returns the node_id
-		"""
-		# responsible = model.ResponsibleParty(data['name'],data['email'])
-		# responsible.organization = data['organization']
-		# responsible.phone = data['phone']
-		# responsible.street = data['street']
-		# responsible.state = data['state']
-		# responsible.city = data['city']
-		# responsible.zip = data['zip']
-		
-		data_dict = {'model':'ResponsibleParty'}
-		data_dict['data']=data
-		data_dict['process']='create'
-		
+    def update_responsible_party(self,data):
 
-		# print "Data dict: ",data_dict		
-		context = {'model': model}
+        """
+        Creates the responsible party in the system and returns the node_id
+        """
+        # responsible = model.ResponsibleParty(data['name'],data['email'])
+        # responsible.organization = data['organization']
+        # responsible.phone = data['phone']
+        # responsible.street = data['street']
+        # responsible.state = data['state']
+        # responsible.city = data['city']
+        # responsible.zip = data['zip']
+        
+        data_dict = {'model':'ResponsibleParty'}
+        data_dict['data']=data
+        data_dict['process']='update'
+        
 
-		data_dict = get_action('additional_metadata')(context, data_dict)
+        # print "Data dict: ",data_dict        
+        context = {'model': model}
 
-		#responsible.save()
-		return  data_dict
+        data_dict = get_action('additional_metadata')(context, data_dict)
 
-	def update_responsible_party(self,data):
+        #responsible.save()
 
-		"""
-		Creates the responsible party in the system and returns the node_id
-		"""
-		# responsible = model.ResponsibleParty(data['name'],data['email'])
-		# responsible.organization = data['organization']
-		# responsible.phone = data['phone']
-		# responsible.street = data['street']
-		# responsible.state = data['state']
-		# responsible.city = data['city']
-		# responsible.zip = data['zip']
-		
-		data_dict = {'model':'ResponsibleParty'}
-		data_dict['data']=data
-		data_dict['process']='update'
-		
+        return  data_dict
 
-		# print "Data dict: ",data_dict		
-		context = {'model': model}
-
-		data_dict = get_action('additional_metadata')(context, data_dict)
-
-		#responsible.save()
-
-		return  data_dict
-
-	def do_harvest(self,data=None):
-		
-		print "Entering Harvest Node"
-		data = clean_dict(unflatten(tuplize_dict(parse_params(
+    def do_harvest(self,data=None):
+        
+        print "Entering Harvest Node"
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
-			
-		data_dict = {"id" : data['id']}
-		context = {'model': model}
-		try:
-			get_action('do_harvest')(context, data_dict)
-		except:
-			h.flash_error("Error while harvesting", allow_html=True)
+            
+        data_dict = {"id" : data['id']}
+        context = {'model': model}
+        try:
+            get_action('do_harvest')(context, data_dict)
+        except:
+            h.flash_error("Error while harvesting", allow_html=True)
 
-		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
-		redirect(url)
+        url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index')
+        redirect(url)
 
-	def bulkupload_list(self):
+    def bulkupload_list(self):
 
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
-		try:
-			check_access('package_create',context,None)
-		except NotAuthorized, error:
-			err_str = _('User %s not authorized to access bulk uploads')% c.user
-			#abort(401,error.__str__())	
-			abort(401,err_str)
-			
+        try:
+            check_access('package_create',context,None)
+        except NotAuthorized, error:
+            err_str = _('User %s not authorized to access bulk uploads')% c.user
+            #abort(401,error.__str__())    
+            abort(401,err_str)
+            
 
-		uploads = model.BulkUpload.get_all()
+        uploads = model.BulkUpload.get_all()
 
-		data = {'id':1}
-		data_dict = {'model':'BulkUpload'}
-		data_dict['data']=data
-		data_dict['process']='read'
-		context = {'model': model, 'session': model.Session}   
-		#print get_action('transaction_data')(context,data_dict)
+        data = {'id':1}
+        data_dict = {'model':'BulkUpload'}
+        data_dict['data']=data
+        data_dict['process']='read'
+        context = {'model': model, 'session': model.Session}   
+        #print get_action('transaction_data')(context,data_dict)
 
-		#print model.BulkUpload.get(1)
+        #print model.BulkUpload.get(1)
 
-		c.bulkuploads = uploads
+        c.bulkuploads = uploads
 
-		return render('contribute/bulkupload_list.html')
+        return render('contribute/bulkupload_list.html')
 
-	def bulkupload_package_list(self):
-		print "Entering Bulk upload package List"
+    def bulkupload_package_list(self):
+        print "Entering Bulk upload package List"
 
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
-		try:
-			check_access('package_create',context,None)
-		except NotAuthorized, error:
-			err_str = _('User %s not authorized to access bulk uploads')% c.user
-			#abort(401,error.__str__())	
-			abort(401,err_str)	
+        try:
+            check_access('package_create',context,None)
+        except NotAuthorized, error:
+            err_str = _('User %s not authorized to access bulk uploads')% c.user
+            #abort(401,error.__str__())    
+            abort(401,err_str)    
 
-		data = clean_dict(unflatten(tuplize_dict(parse_params(
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
 
-		uploaded_packages=model.BulkUpload_Package.by_bulk_upload(data['id'])
+        uploaded_packages=model.BulkUpload_Package.by_bulk_upload(data['id'])
 
-		# print "uploaded_packages: ",uploaded_packages
+        # print "uploaded_packages: ",uploaded_packages
 
-		c.uploaded_packages = uploaded_packages
-		c.selected_upload = model.BulkUpload.get(data['id'])
+        c.uploaded_packages = uploaded_packages
+        c.selected_upload = model.BulkUpload.get(data['id'])
 
-		return render('contribute/bulkupload_list.html')
+        return render('contribute/bulkupload_list.html')
 
-	def execute_bulkupload(self):
+    def execute_bulkupload(self):
 
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
 
-		try:
-			check_access('execute_bulkupload',context,None)
-		except NotAuthorized, error:
-			abort(401,error.__str__())	
+        try:
+            check_access('execute_bulkupload',context,None)
+        except NotAuthorized, error:
+            abort(401,error.__str__())    
 
-		from ckanext.ngds.lib.importer.importer import BulkUploader
+        from ckanext.ngds.lib.importer.importer import BulkUploader
 
-		bulkLoader = BulkUploader()
-		bulkLoader.execute_bulk_upload()		
+        bulkLoader = BulkUploader()
+        bulkLoader.execute_bulk_upload()        
 
-		h.flash_notice(_('Initiated Bulk Upload process and it is running in the background.'), allow_html=True)
-		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list')
-		redirect(url)
+        h.flash_notice(_('Initiated Bulk Upload process and it is running in the background.'), allow_html=True)
+        url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list')
+        redirect(url)
 
-	def create_or_update_resource(self,data=None):
-		package_controller=PackageController()
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
-		data = clean_dict(unflatten(tuplize_dict(parse_params(
+    def create_or_update_resource(self,data=None):
+        package_controller=PackageController()
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
-		dataset_name = data['dataset_name']
+        dataset_name = data['dataset_name']
 
-		if 'save' in data and data['save']=='go-dataset':
-			return
-			return package_controller.new_metadata(dataset_name)
+        if 'save' in data and data['save']=='go-dataset':
 
-		# if 'save' in data and data['save']=='go-metadata':
-		# 	print "Going to metadata"
-		# 	return package_controller.new_resource(dataset_name)
+            return package_controller.new_metadata(dataset_name)
 
-		
-		content_model = None
-		file_attached = False
-		file_likely_zip = False
+        # if 'save' in data and data['save']=='go-metadata':
+        #    print "Going to metadata"
+        #    return package_controller.new_resource(dataset_name)
 
-		try:
-			if 'url' in data and data['url'].index('storage')>0:
-				print "File attached : "+data['url']
-				file_attached = True
-				url = data['url']
-				if url[len(url)-3:len(url)]=='zip':
-					file_likely_zip = True
-		except(ValueError):
-			print "No file attached"
-			file_attached=False
-			return package_controller.new_resource(dataset_name)
+        
+        content_model = None
+        file_attached = False
+        file_likely_zip = False
 
-		if data['resource_type'] == 'structured':
-			if 'content_model' in data and data['content_model'] != 'None' and file_attached==True:
-				cm_uri = data['content_model']
-				cm_version = data['content_model_version']
-				split_version = cm_version.split('/')
-				cm_version = split_version[len(split_version)-1]
-				data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
-				# We need a way to get just the csv file and validate it here.
-				if file_likely_zip==True:
-					# Skip content model validation for now
-					print "Got a zip file. Need to implement extraction of csv file from the zip file and send it out for validation."
-					print "Dispatch to shape file code here............"
-				# It's not clear yet if this can be something other than a zip file. 
-				else:
-					return contentmodel_checkFile(context,data_dict)
-			else:
-				# It's a structured file but not one that conforms to any content models known to us. 
-				storage = StorageController()
-				storage_api = StorageAPIController()
-				package_controller = PackageController()
-				dataset_name = data['dataset_name']
-				# return contentmodel_checkFile(context,data_dict)
-				print "key : ",data['key']
-				metadata = json.loads(storage_api.get_metadata(data['key']))
-				resource_location = metadata['_location']
-				response.headers['Content-Type'] = 'text/html;charset=utf-8'
-				return package_controller.new_resource(dataset_name)
-		
+        try:
+            if 'url' in data and data['url'].index('storage')>0:
+                print "File attached : "+data['url']
+                file_attached = True
+                url = data['url']
+                if url[len(url)-3:len(url)]=='zip':
+                    file_likely_zip = True
+        except(ValueError):
+            print "No file attached"
+            file_attached=False
+            return package_controller.new_resource(dataset_name)
 
-	def upload_file(self,data=None):
-		context = {'model': model, 'session': model.Session,'user': c.user or c.author}
-		data = clean_dict(unflatten(tuplize_dict(parse_params(
+        if data['resource_type'] == 'structured':
+            if 'content_model' in data and data['content_model'] != 'None' and file_attached==True:
+                cm_uri = data['content_model']
+                cm_version = data['content_model_version']
+                split_version = cm_version.split('/')
+                cm_version = split_version[len(split_version)-1]
+                data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
+                # We need a way to get just the csv file and validate it here.
+                if file_likely_zip==True:
+                    # Skip content model validation for now
+                    print "Got a zip file. Need to implement extraction of csv file from the zip file and send it out for validation."
+                    print "Dispatch to shape file code here............"
+                # It's not clear yet if this can be something other than a zip file. 
+                else:
+                    return contentmodel_checkFile(context,data_dict)
+            else:
+                # It's a structured file but not one that conforms to any content models known to us. 
+                storage = StorageController()
+                storage_api = StorageAPIController()
+                package_controller = PackageController()
+                dataset_name = data['dataset_name']
+                # return contentmodel_checkFile(context,data_dict)
+                print "key : ",data['key']
+                metadata = json.loads(storage_api.get_metadata(data['key']))
+                resource_location = metadata['_location']
+                response.headers['Content-Type'] = 'text/html;charset=utf-8'
+                return package_controller.new_resource(dataset_name)
+
+    def upload_file(self,data=None):
+        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
-		print data
-		storage = StorageController()
-		storage_api = StorageAPIController()
-		package_controller = PackageController()
-		dataset_name = data['dataset_name']
+        print data
+        storage = StorageController()
+        storage_api = StorageAPIController()
+        package_controller = PackageController()
+        dataset_name = data['dataset_name']
 
-		if 'file' and 'key' in data:
-			result = storage.upload_handle()
-			metadata = json.loads(storage_api.get_metadata(data['key']))
-			resource_location = metadata['_location']
-			response.headers['Content-Type'] = 'text/html;charset=utf-8'
-			return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'resource_type':data['resource_type'],'url':data['key']})
+        if 'file' and 'key' in data:
+            result = storage.upload_handle()
+            metadata = json.loads(storage_api.get_metadata(data['key']))
+            resource_location = metadata['_location']
+            response.headers['Content-Type'] = 'text/html;charset=utf-8'
+            return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'resource_type':data['resource_type'],'url':data['key']})
 
+    def get_structured_form(self,data=None):
+        c.data = data
+        return render('package/structured_form.html')
 
-	def get_structured_form(self,data=None):
-		c.data = data
-		return render('package/structured_form.html')
-
-	#  Form creation is going to be asynchronous.
-	@jsonify
-	def validate_resource(self):
-		data = clean_dict(unflatten(tuplize_dict(parse_params(
+    @jsonify
+    def validate_resource(self):
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
-		print data
-		if data['resource_type']=='offline-resource':
-			return self.validate_offline_resource(data)
-		if data['resource_type']=='data-service':
-			return self.validate_data_service(data)
-		if data['resource_type']=='unstructured':
-			return self.validate_unstructured_resource(data)
-		if data['resource_type']=='structured':
-			return self.validate_structured_resource(data)
+        print data
+        if data['resource_type']=='offline-resource':
+            return self.validate_offline_resource(data)
+        if data['resource_type']=='data-service':
+            return self.validate_data_service(data)
+        if data['resource_type']=='unstructured':
+            return self.validate_unstructured_resource(data)
+        if data['resource_type']=='structured':
+            return self.validate_structured_resource(data)
 
-	def validate_structured_resource(self,data):
-		errors = []
-		# A bunch of validations for the unstructured resource form
+    def validate_structured_resource(self,data):
+        errors = []
+        # A bunch of validations for the unstructured resource form
 
-		if not data['url'] or len(data['url'])<3:
-			errors.append({
-				'field':'url',
-				'message':'Resource URL is a mandatory parameter',
-				'ref':'form_validation'
-			})
+        if not data['url'] or len(data['url'])<3:
+            errors.append({
+                'field':'url',
+                'message':'Resource URL is a mandatory parameter',
+                'ref':'form_validation'
+            })
 
-		if 'name' not in data or len(data['name'])==0:
-			errors.append({
-					'field':'name',
-					'message':'Name must be non-empty',
-					'ref':'form_validation'
-			})
-		url = data['url']
-		
-		cm_validation_results = {
-		'valid':True
-		}
+        if 'name' not in data or len(data['name'])==0:
+            errors.append({
+                    'field':'name',
+                    'message':'Name must be non-empty',
+                    'ref':'form_validation'
+            })
+        url = data['url']
+        
+        cm_validation_results = {
+        'valid':True
+        }
 
-		if 'content_model' in data and data['content_model']!='none' and url[len(url)-3:len(url)]!='zip':
-			cm_uri = data['content_model']
-			cm_version = data['content_model_version']
-			split_version = cm_version.split('/')
-			cm_version = split_version[len(split_version)-1]
-			data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
-			context = {'model': model, 'session': model.Session,'user': c.user or c.author}
-			cm_validation_results=contentmodel_checkFile(context,data_dict)
+        if 'content_model' in data and data['content_model']!='none' and url[len(url)-3:len(url)]!='zip':
+            cm_uri = data['content_model']
+            cm_version = data['content_model_version']
+            split_version = cm_version.split('/')
+            cm_version = split_version[len(split_version)-1]
+            data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
+            context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+            cm_validation_results=contentmodel_checkFile(context,data_dict)
 
-		if cm_validation_results['valid']==False:
-			return {
-			'success':False,
-			'validation_errors':cm_validation_results['messages'],
-			'ref':'content_model_validation_error'
-			}
+        if cm_validation_results['valid']==False:
+            return {
+            'success':False,
+            'validation_errors':cm_validation_results['messages'],
+            'ref':'content_model_validation_error'
+            }
 
-		if len(errors)>0:
-			return {
-				'success':False,
-				'display':'Validation Errors',
-				'type':'resource_form_validation_error',
-				'messages':errors
-			}
-		else:
-			return {
-				'success':True
-			}
+        if len(errors)>0:
+            return {
+                'success':False,
+                'display':'Validation Errors',
+                'type':'resource_form_validation_error',
+                'messages':errors
+            }
+        else:
+            return {
+                'success':True
+            }
 
-	def validate_unstructured_resource(self,data):
-		errors = []
-		# A bunch of validations for the unstructured resource form
+    def validate_unstructured_resource(self,data):
+        errors = []
+        # A bunch of validations for the unstructured resource form
 
-		if 'url' not in data or len(data['url'])<3:
-			errors.append({
-				'field':'url',
-				'message':'Resource URL is a mandatory parameter'
-			})
+        if 'url' not in data or len(data['url'])<3:
+            errors.append({
+                'field':'url',
+                'message':'Resource URL is a mandatory parameter'
+            })
 
-		if 'name' not in data or len(data['name'])==0:
-			errors.append({
-					'field':'name',
-					'message':'Name must be non-empty'
-			})
+        if 'name' not in data or len(data['name'])==0:
+            errors.append({
+                    'field':'name',
+                    'message':'Name must be non-empty'
+            })
 
-		if len(errors)>0:
-			return {
-				'success':False,
-				'display':'Validation Errors',
-				'type':'resource_form_validation_error',
-				'messages':errors
-			}
-		else:
-			return {
-				'success':True
-			}
+        if len(errors)>0:
+            return {
+                'success':False,
+                'display':'Validation Errors',
+                'type':'resource_form_validation_error',
+                'messages':errors
+            }
+        else:
+            return {
+                'success':True
+            }
 
-	def validate_data_service(self,data):
-		errors = []
+    def validate_data_service(self,data):
+        errors = []
 
-		# A bunch of validations for the data service resource form
-		if 'url' not in data or len(data['url'])<3:
-			errors.append({
-				'field':'url',
-				'message':'Resource URL is a mandatory parameter'
-			})
+        # A bunch of validations for the data service resource form
+        if 'url' not in data or len(data['url'])<3:
+            errors.append({
+                'field':'url',
+                'message':'Resource URL is a mandatory parameter'
+            })
 
-		if 'name' not in data or len(data['name'])==0:
-			errors.append({
-					'field':'name',
-					'message':'Name must be non-empty'
-			})
+        if 'name' not in data or len(data['name'])==0:
+            errors.append({
+                    'field':'name',
+                    'message':'Name must be non-empty'
+            })
 
-		if 'protocol' not in data or len(data['protocol'])==0:
-			errors.append({
-					'field':'protocol',
-					'message':'Protocol must be non-empty'
-			})
+        if 'protocol' not in data or len(data['protocol'])==0:
+            errors.append({
+                    'field':'protocol',
+                    'message':'Protocol must be non-empty'
+            })
 
-		if 'layer' not in data or len(data['layer'])==0:
-			errors.append({
-					'field':'layer',
-					'message':'Layer must be non-empty'
-			})
+        if 'layer' not in data or len(data['layer'])==0:
+            errors.append({
+                    'field':'layer',
+                    'message':'Layer must be non-empty'
+            })
 
-		if len(errors)>0:
-			return errors
-		else:
-			return {
-				'success':True
-			}
+        if len(errors)>0:
+            return errors
+        else:
+            return {
+                'success':True
+            }
 
+    def validate_offline_resource(self,data):
+        errors = []
 
-	def validate_offline_resource(self,data):
-		errors = []
+        # A bunch of validations for the offline resource form
+        if 'name' not in data or len(data['name'])==0:
+            errors.append({
+                'field':'name',
+                    'message':'Name must be non-empty'
+            })
 
-		# A bunch of validations for the offline resource form
-		if 'name' not in data or len(data['name'])==0:
-			errors.append({
-				'field':'name',
-					'message':'Name must be non-empty'
-			})
+        if 'ordering_procedure' not in data or len(data['ordering_procedure'])==0:
+            errors.append({
+                'field':'ordering_procedure',
+                    'message':'Ordering Procedure must be non-empty'
+            })
 
-		if 'ordering_procedure' not in data or len(data['ordering_procedure'])==0:
-			errors.append({
-				'field':'ordering_procedure',
-					'message':'Ordering Procedure must be non-empty'
-			})
-
-		if len(errors)>0:
-			return errors
-		else:
-			return {
-				'success':True
-			}
+        if len(errors)>0:
+            return errors
+        else:
+            return {
+                'success':True
+            }
