@@ -82,10 +82,6 @@ $("#file").on('change',function(ev){
 var populate_form = function(data) {
 	for(property in data) {
 		if($("[name="+property+"]").length>0) {
-			if(property==='url') {
-				$("[name="+property+"]").val('http://'+window.location.host+'/storage/f/'+data[property]);
-				continue;
-			}
 			$("[name="+property+"]").val(data[property]);
 		}
 	}
