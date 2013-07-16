@@ -56,21 +56,24 @@ $(document).ready(function() {
         window.spatialize_handler = 'defined';
         $(".spatialize").click(function(ev){
         var id = ev.currentTarget.value;
-        $.ajax({
-          url:'/api/action/geoserver_publish_layer',
-          'type':'POST',
-          'data':JSON.stringify({
-              resource_id:id,
-              col_geography:"geometry",
-              col_latitude:"LATITUDE",
-              col_longitude:"LONGITUDE"
-          }),
-          success:function(response){
-                window.alert("This resource has now been published as an OGC service.");
-                window.location.reload();
-          }
+            $.ajax({
+              url:'/api/action/geoserver_publish_layer',
+              'type':'POST',
+              'data':JSON.stringify({
+                  resource_id:id,
+                  col_geography:"geometry",
+                  col_latitude:"LATITUDE",
+                  col_longitude:"LONGITUDE"
+              }),
+              success:function(response){
+                    window.alert("This resource has now been published as an OGC service.");
+                    window.location.reload();
+              },
+              error:function() {
+                  window.alert("Sorry. The action requested could not be successfully completed.");
+              }
+            });
         });
-      });
   }
 
   if((window.unspatialize_handler===null || typeof window.unspatialize_handler==='undefined') && ($(".unspatialize").length>0)) {
