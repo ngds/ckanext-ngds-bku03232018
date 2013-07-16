@@ -5,18 +5,17 @@ from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 from ckan.plugins import toolkit
 import json
 
-
 class Layer(object):
 
     @classmethod
-    def publish(cls, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config()):
-        l = cls(package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config())
+    def publish(cls, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
+        l = cls(package_id, resource_id, layer_name, username, geoserver, lat_field, lng_field)
         if l.create():
             return l
         else:
             return None
 
-    def __init__(self, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config()):
+    def __init__(self, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
         self.geoserver = geoserver
         self.store = geoserver.default_datastore()
         self.name = layer_name
@@ -26,16 +25,21 @@ class Layer(object):
 
         # Spatialize it
         url = self.file_resource["url"]
-        pk = self.file_resource["id"]
+        kwargs = {"resource_id": self.file_resource["id"]}
+
         if url.endswith('.zip'):
             cls = Shapefile
         elif url.endswith('.csv'):
             cls = Datastored
+            kwargs.update({
+                "lat_field": lat_field,
+                "lng_field": lng_field
+            })
         else:
             # The resource cannot be spatialized
             raise Exception("Only CSV and Shapefile data can be spatialized")
 
-        self.data = cls(pk)
+        self.data = cls(**kwargs)
 
         # Spatialize
         if not self.data.publish():
