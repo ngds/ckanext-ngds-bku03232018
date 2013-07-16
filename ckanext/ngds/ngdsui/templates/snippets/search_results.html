@@ -101,7 +101,7 @@
                   {% endif %}
                    </span>
 
-                  <span id="actions"><img src="/assets/email.png" class="action-image"/></span>
+                  <span id="actions"><a href="mailto:?subject=Take a look at - {{package.name}}&body=Hi, %0d%0d I found this very interesting dataset on the NGDS website at {{ h.url_for(controller='package', action='read', id=package.name) }}"><img src="/assets/email.png" class="action-image"/></a></span>
               </div>              
           </div>
             </div>

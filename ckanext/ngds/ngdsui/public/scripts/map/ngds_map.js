@@ -1,5 +1,6 @@
 /*
 *	@author - Vivek
+*	@revised by Adrian 7/2013
 *	This object exposes an API to interact with the NGDS map.
 *
 */
@@ -9,22 +10,38 @@ ngds.Map = {
 		*	Inputs : None.
 		*/
 		initialize:function() {
-			
+
+			var nerc_url = "https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer/export"; //layer 42
+			var geothermal_potential_url = "https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer/export"; //layer 36
+			var counties_url = "https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer/export"; //layer 1
+			var powergrid_url = "https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer/export"; //layers 21,22,26
+			var weather_url = "https://gis.srh.noaa.gov/ArcGIS/rest/services/RIDGERadar/MapServer/export"; //layer 0
+			var soil_url = "http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer/"; //layer ?
+			var water_url = "http://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer/";
+
 			var base = new L.TileLayer('http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8');
 
-			var nerc = new L.AgsDynamicLayer();
-			nerc.initialize("https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export",{
-				'layers':'show:42'
+			var map = this.map = new L.Map('map-container', {
+				layers:[base],
+				center: new L.LatLng(34.1618, -100.53332),
+				zoom: 3,
+				zoomControl:false
 			});
 
-			var geothermal_potential = new L.AgsDynamicLayer();
-			geothermal_potential.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',{
-				'layers':'show:36'
+			var nerc_wms = new L.TileLayer.EsriImageExports(nerc_url,{
+				layers:"42"
 			});
-
-			var counties = new L.AgsDynamicLayer();
-			counties.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',{
-				'layers':'show:1'
+			var geothermal_potential_wms = new L.TileLayer.EsriImageExports(geothermal_potential_url,{
+				layers:"36"
+			});
+			var counties_wms = new L.TileLayer.EsriImageExports(counties_url,{
+				layers:"1"
+			});
+			var powergrid_wms = new L.TileLayer.EsriImageExports(powergrid_url,{
+				layers:["21,22,26"]
+			});
+			var weather_wms = new L.TileLayer.EsriImageExports(weather_url,{
+				layers:"0"
 			});
 
 			var soil = new L.tileLayer.wms('http://geo.cei.psu.edu:8080/geoserver/wms',{
@@ -36,21 +53,11 @@ ngds.Map = {
 				srs:'srs:EPSG:102003'
 			});
 
-			// var soil = new L.AgsDynamicLayer();
-			// soil.initialize('http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer/');
-
-			var water = new L.AgsDynamicLayer();
-			water.initialize('http://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer/');
-
-			var powergrid = new L.AgsDynamicLayer();
-			powergrid.initialize('https://eia-ms.esri.com/arcgis/rest/services/20130301StateEnergyProfilesMap/MapServer//export',
-				{ 'layers':'show:21,22,26'});
-
 			var wells = L.tileLayer.wms("http://geothermal.smu.edu/geoserver/wms", {
-			    layers: 'wells',
-			    format: 'image/png',
-			    transparent: true,
-			    attribution: "SMU Well Data"
+				layers: 'wells',
+				format: 'image/png',
+				transparent: true,
+				attribution: "SMU Well Data"
 			});
 
 			var land = L.tileLayer.wms('http://www.geocommunicator.gov/arcgis/services/Basemaps/MapServer/WMSServer',{
@@ -60,21 +67,10 @@ ngds.Map = {
 			});
 
 			var topography = new L.TileLayer('http://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}');
-			
+
 			var _geoJSONLayer = this.geoJSONLayer = new L.geoJson(null,{onEachFeature:function(a,b){
 
 			}}); // Geo JSON Layer where we'll display all our features.
-			var map = this.map = new L.Map('map-container', {
-				layers:[base,_geoJSONLayer], 
-				center: new L.LatLng(34.1618, -100.53332), 
-				zoom: 3,
-				zoomControl:false
-			});
-
-			// L.control.fullscreen({
-			//   position: 'topleft',
-			//   title: 'Show me the fullscreen !'
-			// }).addTo(map);
 
 			var _drawControl = new L.Control.Draw({
 				position: 'topright',
@@ -88,20 +84,21 @@ ngds.Map = {
 			map.addLayer(_drawnItems);
 
 			new L.Control.GeoSearch({
-	            provider: new L.GeoSearch.Provider.OpenStreetMap()
-	        }).addTo(map);
-		
+				provider: new L.GeoSearch.Provider.OpenStreetMap(),
+			}).addTo(map);
+
 			this.layers = {
 				'geojson':_geoJSONLayer,
 				'drawnItems': _drawnItems,
-				'powergrid':powergrid,
+				'powergrid':powergrid_wms,
 				'soil':soil,
-				'water':water,
+			//	'water':water_wms,
 				'land':land,
 				'topography':topography,
-				'nerc':nerc,
-				'geothermal_potential':geothermal_potential,
-				'counties':counties
+				'nerc':nerc_wms,
+				'geothermal_potential':geothermal_potential_wms,
+				'counties':counties_wms,
+				'weather':weather_wms
 			};
 			// this.initialize_controls();
 
@@ -112,19 +109,21 @@ ngds.Map = {
 			};
 
 			overlayMaps = {				
-				"Power Grid":powergrid,
+				"Power Grid":powergrid_wms,
 				"Search Results":_geoJSONLayer,
 				"SMU Wells":wells,
 				'USBLM Urban Areas, Counties':land,
-				'NERC Regions':nerc,
-				'Geothermal Potential':geothermal_potential,
-				'US County Boundaries':counties
+				'NERC Regions':nerc_wms,
+				'Geothermal Potential':geothermal_potential_wms,
+				'US County Boundaries':counties_wms,
+				'NEXRAD Weather':weather_wms
 				// "ngds":ngds_layer
 			};
-			var zoomFS = new L.Control.ZoomFS({
+
+            var zoom = new L.Control.Zoom({
 				'position':'topright'
 			}); 
-			map.addControl(zoomFS);
+			map.addControl(zoom);
 
 			layer_control = new L.control.layers(baseMaps, overlayMaps,{autoZIndex:true});
 			layer_control.addTo(map);
@@ -138,6 +137,7 @@ ngds.Map = {
 				}
 			});
 			copy = [];
+			map.addLayer(_geoJSONLayer);
 
 			var placeMarker_single = L.Icon.Label.extend({
 					options: {
@@ -188,9 +188,9 @@ ngds.Map = {
 				var expander_handle_unexpanded = '<p>&lt;&lt;</p>';
 				var expander_handle_expanded='<p>&gt;&gt;</p>';
 				$("#map-container").append(html);
-						
+
 						$("#map-expander").click(function(){
-							
+
 							if(expanded_flag===false){	// If the resize handle is clicked, expand if not already expanded.
 									expanded_flag=true;
 									$(".map-search").hide();
@@ -211,7 +211,7 @@ ngds.Map = {
 						});
 		},
 		zoom_managed_list:{
-		
+
 		},
 		zoom_listeners:[
 
@@ -236,32 +236,32 @@ ngds.Map = {
 			}
 			me.clear_layer('geojson');
 			pager.move(1,function(each_result,marker_or_shape) {
-				 	var label = ngds.Map.labeller.get_cur_label();
-				 	ngds.Map.add_raw_result_to_geojson_layer(each_result,{iconimg_id:'lmarker-'+label});
-				 	var span_margin = "0px";
-				 	
-				 	if(marker_or_shape==='marker') {
-					 	$('.result-'+label).hover(function() { //fadein
-						 		$('.lmarker-'+label).css("width","30px");
-						 		$('.lmarker-'+label).css("height","45px");
-						 		var span_elem = $('.lmarker-'+label).next();
-						 		span_elem.css("font-size","14pt");
-						 		// span_margin=span_elem.css("margin-left");
-						 		span_elem.css("margin-left","2px");
-						 	},function(){ // fadeout
-						 		$('.lmarker-'+label).css("width","25px");
-						 		$('.lmarker-'+label).css("height","41px");
-						 		var span_elem = $('.lmarker-'+label).next();
-						 		span_elem.css("font-size","12.5pt");
-						 		span_elem.css("margin-left",span_margin);
-					 	});
+					var label = ngds.Map.labeller.get_cur_label();
+					ngds.Map.add_raw_result_to_geojson_layer(each_result,{iconimg_id:'lmarker-'+label});
+					var span_margin = "0px";
 
-					 	$('.result-'+label).click(function(){					 		// Reset steps
-					 		$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
-					 		var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
-					 		for(var i=0;i<labels_colored.length;i++){
-					 			labels_colored[i].attr("src","/images/marker.png");
-					 		}
+					if(marker_or_shape==='marker') {
+						$('.result-'+label).hover(function() { //fadein
+								$('.lmarker-'+label).css("width","30px");
+								$('.lmarker-'+label).css("height","45px");
+								var span_elem = $('.lmarker-'+label).next();
+								span_elem.css("font-size","14pt");
+								// span_margin=span_elem.css("margin-left");
+								span_elem.css("margin-left","2px");
+							},function(){ // fadeout
+								$('.lmarker-'+label).css("width","25px");
+								$('.lmarker-'+label).css("height","41px");
+								var span_elem = $('.lmarker-'+label).next();
+								span_elem.css("font-size","12.5pt");
+								span_elem.css("margin-left",span_margin);
+						});
+
+						$('.result-'+label).click(function(){					 		// Reset steps
+							$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
+							var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
+							for(var i=0;i<labels_colored.length;i++){
+								labels_colored[i].attr("src","/images/marker.png");
+							}
 
 							for(var shape_index in ngds.Map.state.shapes_map){
 								if(ngds.Map.state.shapes_map[shape_index]!==null && typeof ngds.Map.state.shapes_map[shape_index]!=='undefined') {
@@ -269,20 +269,20 @@ ngds.Map = {
 								}
 							}
 
-					 		labels_colored = ngds.Map.state.colored_labels = [];
-					 		// End reset steps
+							labels_colored = ngds.Map.state.colored_labels = [];
+							// End reset steps
 
-					 		// Now do the actual transitions
-					 		$('.result-'+label).css('background-color','#dadada');
-					 		$('.lmarker-'+label).attr("src","/images/marker-red.png");
-					 		labels_colored.push($('.lmarker-'+label));
-					 		// End actual transitions
-					 	});
+							// Now do the actual transitions
+							$('.result-'+label).css('background-color','#dadada');
+							$('.lmarker-'+label).attr("src","/images/marker-red.png");
+							labels_colored.push($('.lmarker-'+label));
+							// End actual transitions
+						});
 					}
 					else {
 						$('.result-'+label).hover(function(){ //fadein
 								var shape=ngds.Map.state.shapes_map[label];
-								
+
 								ngds.Map.state.shapes_map[label].prev_weight=ngds.Map.state.shapes_map[label].options.weight;
 								ngds.Map.state.shapes_map[label].prev_color=ngds.Map.state.shapes_map[label].options.color;
 								shape.setStyle({weight:2,color:"#d54799"});
@@ -294,12 +294,12 @@ ngds.Map = {
 						$('.result-'+label).click(function(){
 							// Reset steps
 							$('.result').css('background-color','#fff'); // This is really a reset step. Do we need to move this into a .reset_background() ?
-					 		var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
-					 		for(var i=0;i<labels_colored.length;i++){
-					 			labels_colored[i].attr("src","/images/marker.png");
-					 		}
+							var labels_colored = ngds.Map.state.colored_labels || (ngds.Map.state.colored_labels=[]);
+							for(var i=0;i<labels_colored.length;i++){
+								labels_colored[i].attr("src","/images/marker.png");
+							}
 							// shapes
-					 		
+
 							for(var shape_index in ngds.Map.state.shapes_map){
 								if(ngds.Map.state.shapes_map[shape_index]!==null && typeof ngds.Map.state.shapes_map[shape_index]!=='undefined' && shape_index!==label) {
 									ngds.Map.state.shapes_map[shape_index].setStyle({weight:ngds.Map.state.shapes_map[shape_index].orig_weight,color:ngds.Map.state.shapes_map[shape_index].orig_color});
@@ -313,7 +313,7 @@ ngds.Map = {
 								shape.setStyle({weight:3,color:"red"});
 								ngds.Map.state.shapes_map[label].prev_weight=3;
 								ngds.Map.state.shapes_map[label].prev_color="red";
-								
+
 							}
 						});
 					}
@@ -378,11 +378,12 @@ ngds.Map = {
 							return 'Feature';
 						}
 					})(layer);
+                    p = layer;
 					ngds.publish('Map.add_feature',{
 						'feature':layer,
 						'seq_id':options['seq'],
 						'type':type
-					
+
 					});
 					if(layer.feature.type==='Polygon'){
 						ngds.Map.zoom_handler(layer);
@@ -432,7 +433,7 @@ ngds.Map = {
 					throw "Expected a string for id_provider.";
 				}
 			})();
-			
+
 			this.query_provider = "#"+id_provider;
 		},
 		state:{ // Maintain state of various components in here ... make sure your keys are unique

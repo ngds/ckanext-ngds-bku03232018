@@ -130,7 +130,6 @@ var render_forms = function(value) {
   else {
       $("[name=upload_type_selection]").prop("checked",false); 
   }
-console.log(value);
   if(value==="structured") {
     $("#resource_type-structured").prop("checked",true);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,structured_form));
@@ -154,18 +153,6 @@ console.log(value);
   }
 
   if(value==="data-service" || value==="unstructured" || value==="structured") {
-    // var dist_autocomp = ngds.autocomplete(".distributor-fake","/responsible_parties",'q',['name','email'],'name'); 
-    // dist_autocomp.proxy(".distributor_name","name"); 
-    // dist_autocomp.proxy(".distributor_email","email");
-    // dist_autocomp.proxy(".distributor",function(dict) {
-    //   $(".distributor").val(JSON.stringify({
-    //     "distributor_name":dict.name,
-    //     "distributor_email":dict.email
-    //   }));
-    // });  
-console.log($("#distributor_name"));
-console.log($("#distributor_email"));
-    console.log("here");
     new ngds.responsible_party().responsibilify({
       'rs_name':'#distributor_name',
       'rs_email':'#distributor_email',
@@ -227,7 +214,6 @@ if(typeof continuation!=='undefined') {
 
 (function template_variables_collect(){
   {% if data %}
-  console.log("Activate populate");
    data="{{data}}";
    data = ngds.util.parse_raw_json("{{h.jsonify(data)}}")
    activate_populate_form(data);
