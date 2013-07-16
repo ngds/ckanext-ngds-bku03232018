@@ -648,7 +648,11 @@ class ContributeController(NGDSBaseController):
             })
 
         if len(errors)>0:
-            return errors
+             return {
+                'display':'Validation Errors',
+                'type':'resource_form_validation_error',
+                'messages':errors
+                }
         else:
             return {
                 'success':True
@@ -671,7 +675,11 @@ class ContributeController(NGDSBaseController):
             })
 
         if len(errors)>0:
-            return errors
+            return {
+                'display':'Validation Errors',
+                'type':'resource_form_validation_error',
+                'messages':errors
+                }
         else:
             return {
                 'success':True

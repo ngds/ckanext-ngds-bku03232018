@@ -19,7 +19,6 @@ $.ajax({
 ngds.notifications.handlers = {
 	'resource_form_validation_error':function(error){
 		var error_msg = Mustache.render(ngds.error_message_template,error);
-		console.log(error_msg);
 		$(document).append(error_msg);
 		$(error_msg).dialog();
 	}
