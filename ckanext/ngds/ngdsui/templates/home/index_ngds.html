@@ -179,11 +179,11 @@ onload="setUpSlideShow()"
               <p class="menu-caption">Find geothermal data, images, publications and more</p>
               <hr />
               <!-- <select class="search-combo"><option>Map</option><option>Search</option></select> -->
-              <form>
-                <input type="text" class="search-bar"/>
+              <form action="/ngds/initiate_search" method="post">
+                <input type="text" name="query" class="search-bar"/>
                 &nbsp;in&nbsp;
-                <select><option>Map</option><option>Library</option></select>
-                <input type="submit" class="search-button not-implemented" value="Go">
+                <select name="search-type"><option value="map">Map</option><option value="library">Library</option></select>
+                <input type="submit" class="search-button" value="Go">
               </form>
           </div>
           <div id="data-watch-container">

@@ -336,7 +336,7 @@ var link_data_service_form = {
     },
     {
     'label':'Layer',
-    'name':'layer_name',
+    'name':'layer',
     'tag':'input',
     'additional':function() {
       return 'type=text';
@@ -348,6 +348,7 @@ var link_data_service_form = {
     {
       'tag':'input',
       'id':'distributor',
+      'name':'distributor',
       'type':'hidden'
     },
      {

@@ -57,6 +57,7 @@ ngds.Search = function() {
 			'start':start,
 			'extras':package_extras
 		},function(response){
+            console.log(response);
 			ngds.publish('Map.results_received',{
 				'results':response.result.results,
 				'query':ngds.Map.current_query,

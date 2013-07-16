@@ -76,7 +76,6 @@
              
               $(".close").live('click',function(ev){ // Late binding...awesome! Live is deprecated. Replace with 'on' and event delegation.
                   $(ev.currentTarget.parentElement).fadeOut(500,function() {
-                      console.log(ev);
                     ev.currentTarget.parentElement.remove();
                   });
                 });

@@ -1,62 +1,46 @@
-<h1>
-	Contribute a Dataset
-</h1>
+<div id="contribute-landing-page">
+    <h2><img src="/images/create_node.png" alt=""> {{ _('CONTRIBUTE') }}</h2>
+    <span>{{ _('Submit existing datasets to share with community') }}</span>
+    <div id="upload-table">
 
-<div class="contribute-menu-table">
-	<div class="cell">
-		<h2><img src="/images/manage_nodes.png" alt="">Source Organization</h2>
-		<div class="bordered-container">
-			<p>
-				Organizations responsible for contributing datasets to the NGDS.
-			</p>
-			<ul>
-				<li>
-					AASG Geothermal Data Project
-				</li>
-				<li>
-					Alabama Geological Survey
-				</li>
-				<li>
-					Kentucky Geological Survey
-				</li>
-				<li>
-					Idaho Geological Survey
-				</li>
-				<li>
-					Stanford University
-				</li>
-				<li>
-					Tennesee Division of Geology
-				</li>
-				<li>
-					Georgia Division
-				</li>
-			</ul>
-		</div>
+      <div id="upload-title">Choose one upload method</div>
 
-	</div>
-	<div class="cell">
-		<h2><img src="/images/data-watch.png" alt="">Data Watch</h2>
-		<div class="bordered-container">
-			<p>
-				Recently shared with NGDS
-			</p>
-		</div>
+        {% if h.check_access('package_create') %}
+            <a href="/ngds/contribute/dataset/new">
+        {% else %}
+             <a href="#">
+        {% endif %}
+                <div class="upload-type">
 
-	</div>
-	<div class="cell">
-		<h2><img src="/images/create_node.png" alt="">Contribute</h2>
-		<div class="bordered-container">
-			{% if h.check_access('package_create') %}
-			<p>
-				Want to help? <a href="/ngds/contribute/dataset/new">Share data</a> with us.
-			</p>
-			<p>
-				Want to upload your data in bulk? <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload') }}">Bulk Upload data</a>.
-			</p>			
-			{% endif %}
-		</div>
+                    <div class="image-block">
+                        <img src="/assets/individual_upload.png">
+                    </div>
+                    <div class="text-block">
+                        <p class="title">Individual Upload</p>
+                        <p>* Recommended for submissions with less than 20 files, several large files, or those with a wide variety of files.</p>
+                    </div>
+                </div>
+             </a>
 
-	</div>
+        {% if h.check_access('package_create') %}
+            <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload') }}">
+        {% else %}
+             <a href="#">
+        {% endif %}
+                <div class="upload-type">
+
+                    <div class="image-block">
+                        <img src="/assets/bulk_upload.png">
+                    </div>
+                    <div class="text-block">
+                        <p class="title">Bulk Upload</p>
+                        <p>* Recommended for submissions with lots of smaller files all associated with a single project or task.</p>
+                    </div>
+                </div>
+             </a>
+
+    </div>
+
 </div>
+
 
