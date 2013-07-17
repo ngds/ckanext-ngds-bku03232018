@@ -147,7 +147,7 @@ class Layer(object):
             'parent_resource': self.file_resource['id'],
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             'protocol': 'OGC:WMS',
-            'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "ngds"), self.name)
+            'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name)
         }
         if self.file_resource.get("content_model_version") and self.file_resource.get("content_model_uri"):
             data_dict.update({
@@ -159,7 +159,7 @@ class Layer(object):
         # WFS Resource Creation
         data_dict.update({
             "package_id": self.package_id,
-            "url": self.geoserver.service_url.replace("/rest", "wfs?request=GetCapabilities"),
+            "url": self.geoserver.service_url.replace("/rest", "/wfs?request=GetCapabilities"),
             "description": "WFS for %s" % self.file_resource["name"],
             "protocol": "OGC:WFS"
         })
