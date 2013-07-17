@@ -45,8 +45,6 @@ class NgdsTestCase(TestCase):
         except Exception as ex:
             print "HARVEST TABLE GENERATION FAILED: %s" % ex.message
 
-
-
     def admin_user(self):
         """Find/Create an admin user"""
         if not self._sys_admin:
@@ -59,13 +57,6 @@ class NgdsTestCase(TestCase):
             self._sys_admin = sys_admin
         return self._sys_admin
 
-    '''
-    Doesn't work -- CKAN isn't actually running during tests
-    def client(self):
-        if not self._client:
-            self._client = CkanClient(base_location="http://localhost:5000/api", api_key=self.admin_user().apikey)
-        return self._client
-    '''
 
     def public_org(self):
         if not self._public_org:
@@ -152,6 +143,10 @@ class NgdsTestCase(TestCase):
     def add_resources(self, package_id, resources):
         [self.add_resource(package_id, res) for res in resources]
         return toolkit.get_action("package_show")({"user": self.admin_user().name}, {"id": package_id})
+
+    def call_action(self, action_name, post_body={}):
+        """Perform an Action, return the response"""
+        return toolkit.get_action(action_name)({"user": self.admin_user().name}, post_body)
 
     def ngds_table_set_up(self):
         pass
