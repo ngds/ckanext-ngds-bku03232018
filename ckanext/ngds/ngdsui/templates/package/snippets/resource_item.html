@@ -25,7 +25,7 @@
         {% if h.is_spatialized(res)==True %}
          <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
         {% else %}
-           <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }}">Publish as OGC</button>
+           <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish as OGC</button>
         {% endif %}
       {% endif %}
     {% endif %}
@@ -55,12 +55,16 @@ $(document).ready(function() {
   if((window.spatialize_handler===null || typeof window.spatialize_handler==='undefined') && ($(".spatialize").length>0)) {
         window.spatialize_handler = 'defined';
         $(".spatialize").click(function(ev){
-        var id = ev.currentTarget.value;
+            var params = ev.currentTarget.value.split(",");
+            var resource_id = params[0];
+            var package_id = params[1];
+
             $.ajax({
               url:'/api/action/geoserver_publish_layer',
               'type':'POST',
               'data':JSON.stringify({
-                  resource_id:id,
+                  resource_id:resource_id,
+                  package_id:package_id,
                   col_geography:"geometry",
                   col_latitude:"LATITUDE",
                   col_longitude:"LONGITUDE"

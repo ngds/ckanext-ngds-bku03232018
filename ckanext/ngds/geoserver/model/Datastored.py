@@ -34,7 +34,7 @@ class Datastored(object):
             raise toolkit.ObjectNotFound("Resource not found in datastore database")
 
         # If there is not already a geometry column...
-        if True not in map(lambda col: col["id"] == self.geo_col, fields):
+        if not True in { col['id'] == self.geo_col for col in fields }:
             # ... append one
             fields.append({'id': self.geo_col, 'type': u'geometry'})
 
@@ -59,7 +59,7 @@ class Datastored(object):
             return True
 
         log.info("Nothing to do. Returning.")
-        return False
+        return True
 
     def table_name(self):
         return self.resource_id

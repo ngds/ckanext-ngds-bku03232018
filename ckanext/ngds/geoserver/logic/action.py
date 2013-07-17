@@ -58,10 +58,11 @@ def publish(context, data_dict):
     """
     Create a spatialized dataset and expose it to Geoserver
     """
-
+    package_id = data_dict.get("package_id")
     resource_id = data_dict.get("resource_id")
     latitude_field = data_dict.get("col_latitude")
     longitude_field = data_dict.get("col_longitude")
+    username = context['user']
 
     resource = toolkit.get_action('resource_show')(context, {'id': resource_id})
 
@@ -97,8 +98,10 @@ def publish(context, data_dict):
     # Add the content to Geoserver
     return Layer(
         geoserver=Geoserver.from_ckan_config(),
-        name=layer_name,
-        resource_id=resource_id
+        layer_name=layer_name,
+        resource_id=resource_id,
+        package_id=package_id,
+        username=username
     ).create()
 '''
 
