@@ -110,7 +110,8 @@ def unpublish(context,data_dict):
 
     """
     resource_id = data_dict.get("resource_id")
-    layer_name = data_dict.get("layer_name")
+    # layer_name = data_dict.get("layer_name")
+    layer_name = "NGDS:"+resource_id
     username =  context.get('user')
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)
@@ -119,17 +120,18 @@ def unpublish(context,data_dict):
     geoserver = Geoserver.from_ckan_config()
 
     package_id = ckan_model.Resource.get(resource_id).resource_group.package_id
-    package = ckan_model.Package.get(package_id)
+    print "here"
+    # package = ckan_model.Package.get(package_id)
 
-    for resource in package.resources:
-        if 'parent_resource' in resource.extras and 'ogc_type' in resource.extras:
-            extras = resource.extras
-            if extras['parent_resource'] == resource_id:
-                layer_name = extras['layer_name']
-                break
+    # for resource in package.resources:
+    #     if 'parent_resource' in resource.extras and 'ogc_type' in resource.extras:
+    #         extras = resource.extras
+    #         if extras['parent_resource'] == resource_id:
+    #             layer_name = extras['layer_name']
+    #             break
 
     layer = Layer(geoserver=geoserver, layer_name=layer_name, resource_id=resource_id,package_id=package_id,username=username)
-
+    print "next here"
     layer.remove()
-
+    print "finished"
     return True

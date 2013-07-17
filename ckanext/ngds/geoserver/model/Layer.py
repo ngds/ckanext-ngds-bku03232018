@@ -23,7 +23,7 @@ class Layer(object):
         self.username = username
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
         self.package_id = package_id
-
+        self.resource_id = resource_id
         # Spatialize it
         url = self.file_resource["url"]
         kwargs = {"resource_id": self.file_resource["id"]}
@@ -168,13 +168,36 @@ class Layer(object):
         # Return the two resource dicts
         return self.wms_resource, self.wfs_resource
 
-    def remove_geo_resources(self):
+    # def remove_geo_resources(self):
+    #     """
+    #     Removes the list of resources from package. If the resources list not provided then find the geo resources based
+    #     on parent_resource value and then removes them from package.
+    #     """
+
+    #     context = {"user": self.username}
+    #     results = toolkit.get_action("resource_search")(context, {"query": "parent_resource:%s" % self.file_resource["id"]})
+    #     for result in results.get("results", []):
+    #         toolkit.get_action("resource_delete")(context, {"id": result["id"]})
+
+    def remove_geo_resources(self,resources_to_remove=None): 
         """
-        Removes the list of resources from package. If the resources list not provided then find the geo resources based
-        on parent_resource value and then removes them from package.
+        Removes the list of resources from package.If the resoures list not provided then find the geo resources based on
+        parent_resource value and then removes them from package.
         """
 
-        context = {"user": self.username}
-        results = toolkit.get_action("resource_search")(context, {"query": "parent_resource:%s" % self.file_resource["id"]})
-        for result in results.get("results", []):
-            toolkit.get_action("resource_delete")(context, {"id": result["id"]})
+        #Find the resources to be removed.
+        #context = {'model':  model, 'session':  model.Session,'user':  c.user or c.author}
+        from ckanext.ngds.env import ckan_model
+        context ={}
+        if not resources_to_remove: 
+            # file_resource = toolkit.get_action('resource_show')(context, {'id': self.resource_id})
+
+            # package_id = ckan_model.Resource.get(self.resource_id).resource_group.package_id
+            package = ckan_model.Package.get(self.package_id)
+            resources_to_remove = []
+            for resource in package.resources:
+                if 'parent_resource' in resource.extras and 'protocol' in resource.extras and resource.extras['parent_resource']==self.resource_id:
+                    resources_to_remove.append(resource.id)
+
+        for resourceid in resources_to_remove: 
+            toolkit.get_action('resource_delete')(context, {'id': resourceid})
