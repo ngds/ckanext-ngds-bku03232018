@@ -185,10 +185,11 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 						'tileSize':128,
 						'opacity':0.9999
 					});
-					alert("The Web Map Services you requested have been added to the map.")
+					
 					layer_control.addOverlay(layer_to_add,wms_mapping[id][k].name);
                    ngds.Map.map.addLayer(layer_to_add);
 				}
+				alert("The Web Map Services you requested have been added to the map.");
 
 
 				// 		var ngds_layer = L.tileLayer.wms('http://'+window.location.hostname+":8080/geoserver/NGDS/wms",{
