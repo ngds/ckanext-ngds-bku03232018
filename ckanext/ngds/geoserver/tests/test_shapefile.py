@@ -7,8 +7,8 @@ from osgeo.ogr import DataSource, Layer
 
 import os
 
-
-test_shapefile_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "test-shapefile", "test_shapefile_wgs84.zip"))
+shapefile_name = "test_shapefile_wgs84.zip"
+test_shapefile_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "test-shapefile", shapefile_name))
 
 
 class ShapefileTestCase(NgdsTestCase):
@@ -23,7 +23,7 @@ class ShapefileTestCase(NgdsTestCase):
 
         # "Upload" shapefile to the package
         ofs = storage.get_ofs()
-        label = "%s/test_shapefile_wgs84.zip" % datetime.now().isoformat()
+        label = "%s/%s" % (datetime.now().isoformat(), shapefile_name)
         anything = ofs.put_stream(
             config.get('ckan.storage.bucket', 'default'), # bucket
             label, # label

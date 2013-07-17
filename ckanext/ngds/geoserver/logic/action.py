@@ -29,16 +29,41 @@ def layer_exists(context, data_dict):
     else:
         return True
 
+def publish(context, data_dict):
+    # Gather inputs
+    resource_id = data_dict.get("resource_id", None)
+    layer_name = data_dict.get("layer_name", resource_id)
+    username = context.get("user", None)
+    package_id = data_dict.get("package_id", None)
+    lat_field = data_dict.get("col_latitude", None)
+    lng_field = data_dict.get("col_longitude", None)
 
-def publish(context,data_dict):
+    # Check that you have everything you need
+    if None in [resource_id, layer_name, username, package_id]:
+        raise Exception("Not enough information to publish resource")
+
+    # Publish a layer
+    l = Layer.publish(package_id, resource_id, layer_name, username, lat_field=lat_field, lng_field=lng_field)
+
+    # Confirm that everything went according to plan
+    if l is None:
+        raise Exception("Layer generation failed")
+    else:
+        # csv content should be spatialized or a shapefile uploaded, Geoserver updated, resources appended.
+        #  l should be a Layer instance. Return whatever you wish to
+        return "Success"
+
+'''
+def publish(context, data_dict):
     """
     Create a spatialized dataset and expose it to Geoserver
     """
+
     resource_id = data_dict.get("resource_id")
     latitude_field = data_dict.get("col_latitude")
     longitude_field = data_dict.get("col_longitude")
 
-    resource = toolkit.get_action('resource_show')(context,{'id': resource_id})
+    resource = toolkit.get_action('resource_show')(context, {'id': resource_id})
 
     format = resource.get('format')
 
@@ -75,7 +100,7 @@ def publish(context,data_dict):
         name=layer_name,
         resource_id=resource_id
     ).create()
-
+'''
 
 def unpublish(context,data_dict):
     """
