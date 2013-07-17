@@ -23,14 +23,15 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 		for(var j=0;j<results[i].resources.length;j++) {
 			var resource = results[i].resources[j];
 			
-			if(resource.ogc_type==='WMS') {
+			if(resource.protocol==='OGC:WMS') {
 				is_wms_present = true;
 				wms_mapping[results[i].id] = wms_mapping[results[i].id] || ( wms_mapping[results[i].id] = [ ] );
+				var layer_name = resource.layer_name;
 				console.log(resource);
 				wms_mapping[results[i].id].push({
 					'id':resource.id,
-					'url':resource.url.split('?layers=')[0],
-					'layer':resource.url.split('?layers=')[1],
+					'url':resource.url.split('?')[0],
+					'layer':layer_name,
 					'name':resource.description
 				});
 			}
