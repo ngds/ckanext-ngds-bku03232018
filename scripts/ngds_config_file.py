@@ -11,8 +11,8 @@ params_to_set = [
 
 # This builds the config file
 cwd = os.getcwd()
-dir = os.path.abspath(os.path.join("cwd", "..", "..", "..", "ckan"))
-config_file = os.path.join(dir, "development.ini")
+ckan_dir = os.path.abspath(os.path.join(cwd, "..", "..", "..", "ckan"))
+config_file = os.path.join(ckan_dir, "development.ini")
 
 if not os.path.exists(config_file):
     print "Could not find development.ini"
@@ -26,6 +26,6 @@ else:
     for param in params_to_set:
         config.set("app:main", param[0], param[1])
 
-    with open(os.path.join(dir, "ngds.ini"), "w") as new_config:
+    with open(os.path.join(ckan_dir, "ngds.ini"), "w") as new_config:
         config.write(new_config)
 
