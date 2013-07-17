@@ -1,14 +1,14 @@
 from ckan.lib.base import model,h,g,c,request,response
 import ckan.lib.navl.dictization_functions as dictization_functions
-import ckan.logic as logic
 import ckan.controllers.storage as storage
 import ckan.rating as rating
-from ckan.model import User
 DataError = dictization_functions.DataError
 from pylons import config, jsonify
-from datetime import date
+
+from ckanext.ngds.env import ckan_model
+
 import iso8601
-import inspect
+
 import re
 from ckan.model.resource import Resource
 import logging
@@ -458,34 +458,26 @@ def is_following(obj_type, obj_id):
 
 def create_package_resource_document_index(pkg_id, resource_dict_list):
     from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
-    from ckanext.ngds.env import Session
 
     #print "Create document index: %s " % index_dict
 
-    model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where package_id=:pkg_id and status=:old_status", {'status_val':'CANCEL','pkg_id': pkg_id,'old_status':'NEW'})
+    ckan_model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where package_id=:pkg_id and status=:old_status", {'status_val':'CANCEL','pkg_id': pkg_id,'old_status':'NEW'})
 
 
     data_dict = {'model':'DocumentIndex'}
     data_dict['process'] = 'add'
-    context = {'model': model, 'session': model.Session}
-    source = model.DocumentIndex()
+    context = {'model': ckan_model, 'session': ckan_model.Session}
 
     for index_dict in resource_dict_list:
         index_dict['status'] = 'NEW'
         data_dict['data'] = index_dict
-        trans_dispatch(context,data_dict)
-        # source.package_id = index_dict['package_id']
-        # source.resource_id = index_dict['resource_id']
-        # source.file_path = index_dict['file_path']
-        # source.status = 'NEW'
-        # source.comments = 'comments'
-        # source.add()
+        trans_dispatch(context, data_dict)
 
     return True
 
 def get_docs_to_index(status):
 
-    query = model.DocumentIndex.search(status)
+    query = ckan_model.DocumentIndex.search(status)
 
     return query.all()
 
@@ -500,4 +492,7 @@ def process_resource_docs_to_index():
         data_dict['id'] = doc.package_id
         field_to_add = 'resource_file_%s' % doc.resource_id
         text_indexer.index_resource_file(data_dict, field_to_add, doc.file_path, defer_commit=True)
-        model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where id=:id", {'status_val':'DONE','id': doc.id})
+        doc.status = 'DONE'
+        doc.save()
+        #ckan_model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where id=:id", {'status_val':'DONE','id': doc.id})
+        #ckan_model.Session().commit()
