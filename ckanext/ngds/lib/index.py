@@ -33,16 +33,20 @@ class FullTextIndexer:
 
             response = conn.query(query)
 
-            index_id = response.results[0]['index_id']
+            results = response.results
 
-            print "index_id: ", index_id
+            if results and len(results) > 0:
 
-            file_content = conn._extract_content(file_path)
+                index_id = results[0]['index_id']
 
-            data_dict[file_index_field] = file_content
-            data_dict['index_id']=index_id
+                print "index_id: ", index_id
 
-            conn.update_fields(data_dict, [file_index_field], commit=commit)
+                file_content = conn._extract_content(file_path)
+
+                data_dict[file_index_field] = file_content
+                data_dict['index_id']=index_id
+
+                conn.update_fields(data_dict, [file_index_field], commit=commit)
         except Exception, e:
             log.exception(e)
             raise SearchIndexError(e)
