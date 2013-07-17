@@ -3,6 +3,7 @@ from ckanext.ngds.geoserver.model.Geoserver import Geoserver
 from ckanext.ngds.geoserver.model.Datastored import Datastored
 from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 from ckan.plugins import toolkit
+from pylons import config
 import json
 
 class Layer(object):
@@ -146,7 +147,7 @@ class Layer(object):
             'parent_resource': self.file_resource['id'],
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             'protocol': 'OGC:WMS',
-            'layer_name': self.name
+            'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "ngds"), self.name)
         }
         if self.file_resource.get("content_model_version") and self.file_resource.get("content_model_uri"):
             data_dict.update({
