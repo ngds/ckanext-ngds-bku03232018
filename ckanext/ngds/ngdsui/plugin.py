@@ -247,7 +247,7 @@ class NgdsuiPlugin(SingletonPlugin):
             dict = json.loads(pkg_dict.get('data_dict'))
             resources = dict.get('resources')
 
-        print "resources: ", resources
+        #print "resources: ", resources
 
         if resources:
             document_index_list = []
