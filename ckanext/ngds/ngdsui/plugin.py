@@ -163,6 +163,10 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
         map.connect("validate_resource","/ngds/contribute/validate_resource",controller=contribute_controller,action="validate_resource")
 
+        map.connect("execute_fulltext_indexer","/ngds/execute_fulltext_indexer",controller=contribute_controller,action="execute_fulltext_indexer")
+
+
+
         return map
 
     implements(IConfigurer, inherit=True)

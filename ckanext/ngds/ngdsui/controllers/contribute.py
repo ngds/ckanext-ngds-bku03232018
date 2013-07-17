@@ -684,3 +684,9 @@ class ContributeController(NGDSBaseController):
             return {
                 'success':True
             }
+
+    def execute_fulltext_indexer(self):
+        from ckanext.ngds.ngdsui.misc.helpers import process_resource_docs_to_index
+        process_resource_docs_to_index()
+
+        return "Full text indexer is executed successfully. Have fun with searching through documents....."
