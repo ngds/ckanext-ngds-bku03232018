@@ -22,8 +22,9 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 	var is_wms_present = false;
 		for(var j=0;j<results[i].resources.length;j++) {
 			var resource = results[i].resources[j];
-			
+			console.log(resource);
 			if(resource.protocol==='OGC:WMS') {
+				console.log("Im here");
 				is_wms_present = true;
 				wms_mapping[results[i].id] = wms_mapping[results[i].id] || ( wms_mapping[results[i].id] = [ ] );
 				var layer_name = resource.layer_name;

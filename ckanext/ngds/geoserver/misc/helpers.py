@@ -7,7 +7,7 @@ def is_spatialized(resource):
     package_id=ckan_model.Resource.get(resource_id).resource_group.package_id
     package = ckan_model.Package.get(package_id)
     for resource in package.resources:
-        if 'ogc_type' in resource.extras and 'parent_resource' in resource.extras:
+        if 'protocol' in resource.extras and 'parent_resource' in resource.extras:
             extras = resource.extras
             try:
                 toolkit.get_action('resource_show')(None, { 'id':resource.id,'for-view':True })
@@ -15,7 +15,7 @@ def is_spatialized(resource):
                 return False
 
             if extras['parent_resource'] == resource_id\
-                and ( extras['ogc_type'].lower() == 'wms' or extras['ogc_type'].lower() == 'wfs'):
+                and ( extras['protocol'].lower() == 'ogc:wms' or extras['ogc_type'].lower() == 'ogc:wfs'):
                 print resource.state
                 if resource.state !='active':
                     return False

@@ -111,7 +111,7 @@ def unpublish(context,data_dict):
     """
     resource_id = data_dict.get("resource_id")
     layer_name = data_dict.get("layer_name")
-
+    username =  context.get('user')
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)
         # layer_name = resource.get('layer_name')
@@ -128,7 +128,7 @@ def unpublish(context,data_dict):
                 layer_name = extras['layer_name']
                 break
 
-    layer = Layer(geoserver=geoserver, name=layer_name, resource_id=resource_id)
+    layer = Layer(geoserver=geoserver, layer_name=layer_name, resource_id=resource_id,package_id=package_id,username=username)
 
     layer.remove()
 
