@@ -487,7 +487,8 @@ def process_resource_docs_to_index():
 
     from ckanext.ngds.lib.index import FullTextIndexer
     text_indexer = FullTextIndexer()
-    data_dict = {'site_id' : 'default'}
+    site_id = config.get('ckan.site_id', 'default')
+    data_dict = {'site_id': site_id}
     for doc in docs_to_index:
         data_dict['id'] = doc.package_id
         field_to_add = 'resource_file_%s' % doc.resource_id
