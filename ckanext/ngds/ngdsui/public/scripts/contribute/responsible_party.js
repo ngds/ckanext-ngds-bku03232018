@@ -45,6 +45,10 @@ ngds.responsible_party = function() {
             var i_name = payload["name"];
             var i_email = payload["email"];
 
+            if (i_name === "" || i_email === "") {
+            	return;
+            }
+
             var vdict = JSON.stringify(payload);
 	        $(me.rs).val(vdict);
 

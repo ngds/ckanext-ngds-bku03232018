@@ -2,7 +2,7 @@ var ngds = ngds || (ngds = { });
 
 (function subscribe_notifications_received() {
 	ngds.subscribe('Notifications.received',function(topic,data){
-		var handler = ngds.notifications.handlers[data['type']]; // Find a display handler for this type of error message.
+		var handler = ngds.notifications.handlers['resource_form_validation_error']; // Find a display handler for this type of error message.
 		handler(data);
 	});
 })();
@@ -20,7 +20,10 @@ ngds.notifications.handlers = {
 	'resource_form_validation_error':function(error){
 		var error_msg = Mustache.render(ngds.error_message_template,error);
 		$(document).append(error_msg);
-		$(error_msg).dialog();
+		$(error_msg).dialog({
+			'width':600,
+			'height':300
+		});
 	}
 };
 

@@ -445,71 +445,70 @@ class ContributeController(NGDSBaseController):
         url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list')
         redirect(url)
 
-    def create_or_update_resource(self,data=None):
-        package_controller=PackageController()
-        context = {'model': model, 'session': model.Session,'user': c.user or c.author}
-        data = clean_dict(unflatten(tuplize_dict(parse_params(
-            request.params))))
-        dataset_name = data['dataset_name']
+    # def create_or_update_resource(self,data=None):
+    #     package_controller=PackageController()
+    #     context = {'model': model, 'session': model.Session,'user': c.user or c.author}
+    #     data = clean_dict(unflatten(tuplize_dict(parse_params(
+    #         request.params))))
+    #     dataset_name = data['dataset_name']
 
-        if 'save' in data and data['save']=='go-dataset':
+    #     if 'save' in data and data['save']=='go-dataset':
 
-            return package_controller.new_metadata(dataset_name)
+    #         return package_controller.new_metadata(dataset_name)
 
-        # if 'save' in data and data['save']=='go-metadata':
-        #    print "Going to metadata"
-        #    return package_controller.new_resource(dataset_name)
+    #     # if 'save' in data and data['save']=='go-metadata':
+    #     #    print "Going to metadata"
+    #     #    return package_controller.new_resource(dataset_name)
 
         
-        content_model = None
-        file_attached = False
-        file_likely_zip = False
+    #     content_model = None
+    #     file_attached = False
+    #     file_likely_zip = False
 
-        try:
-            if 'url' in data and data['url'].index('storage')>0:
-                print "File attached : "+data['url']
-                file_attached = True
-                url = data['url']
-                if url[len(url)-3:len(url)]=='zip':
-                    file_likely_zip = True
-        except(ValueError):
-            print "No file attached"
-            file_attached=False
-            return package_controller.new_resource(dataset_name)
+    #     try:
+    #         if 'url' in data and data['url'].index('storage')>0:
+    #             print "File attached : "+data['url']
+    #             file_attached = True
+    #             url = data['url']
+    #             if url[len(url)-3:len(url)]=='zip':
+    #                 file_likely_zip = True
+    #     except(ValueError):
+    #         print "No file attached"
+    #         file_attached=False
+    #         return package_controller.new_resource(dataset_name)
 
-        if data['resource_type'] == 'structured':
-            if 'content_model' in data and data['content_model'] != 'None' and file_attached==True:
-                cm_uri = data['content_model']
-                cm_version = data['content_model_version']
-                split_version = cm_version.split('/')
-                cm_version = split_version[len(split_version)-1]
-                data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
-                # We need a way to get just the csv file and validate it here.
-                if file_likely_zip==True:
-                    # Skip content model validation for now
-                    print "Got a zip file. Need to implement extraction of csv file from the zip file and send it out for validation."
-                    print "Dispatch to shape file code here............"
-                # It's not clear yet if this can be something other than a zip file. 
-                else:
-                    return contentmodel_checkFile(context,data_dict)
-            else:
-                # It's a structured file but not one that conforms to any content models known to us. 
-                storage = StorageController()
-                storage_api = StorageAPIController()
-                package_controller = PackageController()
-                dataset_name = data['dataset_name']
-                # return contentmodel_checkFile(context,data_dict)
-                print "key : ",data['key']
-                metadata = json.loads(storage_api.get_metadata(data['key']))
-                resource_location = metadata['_location']
-                response.headers['Content-Type'] = 'text/html;charset=utf-8'
-                return package_controller.new_resource(dataset_name)
+    #     if data['resource_type'] == 'structured':
+    #         if 'content_model' in data and data['content_model'] != 'None' and file_attached==True:
+    #             cm_uri = data['content_model']
+    #             cm_version = data['content_model_version']
+    #             split_version = cm_version.split('/')
+    #             cm_version = split_version[len(split_version)-1]
+    #             data_dict = { 'cm_uri':cm_uri,'cm_version':cm_version,'cm_resource_url':url }
+    #             # We need a way to get just the csv file and validate it here.
+    #             if file_likely_zip==True:
+    #                 # Skip content model validation for now
+    #                 print "Got a zip file. Need to implement extraction of csv file from the zip file and send it out for validation."
+    #                 print "Dispatch to shape file code here............"
+    #             # It's not clear yet if this can be something other than a zip file. 
+    #             else:
+    #                 return contentmodel_checkFile(context,data_dict)
+    #         else:
+    #             # It's a structured file but not one that conforms to any content models known to us. 
+    #             storage = StorageController()
+    #             storage_api = StorageAPIController()
+    #             package_controller = PackageController()
+    #             dataset_name = data['dataset_name']
+    #             # return contentmodel_checkFile(context,data_dict)
+    #             print "key : ",data['key']
+    #             metadata = json.loads(storage_api.get_metadata(data['key']))
+    #             resource_location = metadata['_location']
+    #             response.headers['Content-Type'] = 'text/html;charset=utf-8'
+    #             return package_controller.new_resource(dataset_name)
 
     def upload_file(self,data=None):
         context = {'model': model, 'session': model.Session,'user': c.user or c.author}
         data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
-        print data
         storage = StorageController()
         storage_api = StorageAPIController()
         package_controller = PackageController()
@@ -530,7 +529,6 @@ class ContributeController(NGDSBaseController):
     def validate_resource(self):
         data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
-        print data
         if data['resource_type']=='offline-resource':
             return self.validate_offline_resource(data)
         if data['resource_type']=='data-service':
@@ -563,8 +561,8 @@ class ContributeController(NGDSBaseController):
         'valid':True
         }
 
-        if 'content_model' in data and data['content_model']!='none' and url[len(url)-3:len(url)]!='zip':
-            cm_uri = data['content_model']
+        if 'content_model_uri' in data and 'url' in data and data['url']!='none' and data['url']!='' and data['content_model_uri']!='none' and url[len(url)-3:len(url)]!='zip':
+            cm_uri = data['content_model_uri']
             cm_version = data['content_model_version']
             split_version = cm_version.split('/')
             cm_version = split_version[len(split_version)-1]
@@ -575,8 +573,9 @@ class ContributeController(NGDSBaseController):
         if cm_validation_results['valid']==False:
             return {
             'success':False,
-            'validation_errors':cm_validation_results['messages'],
-            'ref':'content_model_validation_error'
+            'messages':cm_validation_results['messages'],
+            'ref':'content_model_validation_error',
+            'display':'Content Model Validation Errors'
             }
 
         if len(errors)>0:
