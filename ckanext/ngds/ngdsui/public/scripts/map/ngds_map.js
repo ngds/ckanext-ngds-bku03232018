@@ -87,6 +87,11 @@ ngds.Map = {
 				provider: new L.GeoSearch.Provider.OpenStreetMap(),
 			}).addTo(map);
 
+			L.control.fullscreen({
+				position: 'topleft',
+				title: 'Show me the fullscreen !'
+			 }).addTo(map);
+
 			this.layers = {
 				'geojson':_geoJSONLayer,
 				'drawnItems': _drawnItems,
@@ -361,6 +366,7 @@ ngds.Map = {
 				var dataset = ngds.ckandataset(result);	
 				var feature = dataset.getGeoJSON();				
 				var popup = dataset.map.getPopupHTML();
+				
 			}
 			catch(e) {
 				return;
@@ -385,7 +391,8 @@ ngds.Map = {
 						'type':type
 
 					});
-					if(layer.feature.type==='Polygon'){
+
+					if(layer.feature.geometry.type==='Polygon'){
 						ngds.Map.zoom_handler(layer);
 						var label = options['seq'];
 						var shapes_map = ngds.Map.state.shapes_map || (ngds.Map.state.shapes_map={});
@@ -395,7 +402,7 @@ ngds.Map = {
 					}
 				},
 				pointToLayer:function(feature,latlng) {
-					var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:options['seq'],className:'lmarker-'+options['seq']})});
+					var marker = L.marker(latlng, {icon: new placeMarker_triple({ iconUrl:'/images/marker.png',labelText:options['alph_seq'],className:'lmarker-'+options['seq']})});
 					return marker;						
 				}
 			});	

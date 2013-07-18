@@ -67,7 +67,6 @@ ngds.util.node_matcher = function(node,match_exp) {
 
 ngds.util.apply_feature_hover_styles = function(feature,tag_index) {
     var type = feature.feature.geometry.type;
-    console.log(feature.feature.geometry.type);
 	if(type==='Point') {
 		var marker_tag = $('.lmarker-'+tag_index);
 			if(marker_tag.length>0) {
@@ -79,7 +78,6 @@ ngds.util.apply_feature_hover_styles = function(feature,tag_index) {
 		 	}
 	}
 	else {
-        console.log("Attempting to set style");
 		feature.setStyle({weight:2,color:"#d54799"});
 	}
 };
@@ -102,13 +100,13 @@ ngds.util.apply_feature_default_styles = function(feature,tag_index) {
 };
 
 ngds.util.apply_feature_active_styles = function(feature,tag_index) {
-    var type = feature.feature.geometry.type;
+    var type = feature.layer.feature.geometry.type;
 	$('.result-'+tag_index).css('background-color','#dadada');
 	if(type==='Point') {
  		$('.lmarker-'+tag_index).attr("src","/images/marker-red.png");
 	}
 	else {
-		feature.setStyle({weight:3,color:"red"});
+		feature.layer.setStyle({weight:3,color:"red"});
 	}
 };
 
@@ -153,7 +151,6 @@ ngds.util.replace_content = function(container,content) {
 
 ngds.util.parse_raw_json = function(raw) {
 	var parsed_json = raw.replace(/&#34;/g,"\"").replace(/&#39;/g,"\"").replace(/u\"/g,"\"").replace(/null/g,"\"\"");
-    console.log(parsed_json);
 	x= JSON.parse(parsed_json);
     return x;
 };

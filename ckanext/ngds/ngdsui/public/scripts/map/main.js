@@ -131,7 +131,7 @@ if(typeof ngds.Map!=='undefined') {
 
 (function subscribe_feature_received(){
 	ngds.subscribe('Map.feature_received',function(topic,data){
-		ngds.Map.add_raw_result_to_geojson_layer(data['feature'],{'seq':data['seq']});
+		ngds.Map.add_raw_result_to_geojson_layer(data['feature'],{'seq':data['seq'],'alph_seq':data['alph_seq']});
 	});
 
 	$('.map-search-results').on('mouseover',null,function(ev){
@@ -147,7 +147,7 @@ if(typeof ngds.Map!=='undefined') {
 			return;
 		}
 
-		var feature = ngds.layer_map[tag_index];
+		var feature = { 'layer':ngds.layer_map[tag_index] } ;
 		ngds.publish('Layer.mouseover',{
 			'Layer':feature,
 			'tag_index':tag_index
@@ -169,7 +169,7 @@ if(typeof ngds.Map!=='undefined') {
 			return;
 		}
 
-	 	var feature = ngds.layer_map[tag_index];
+	 	var feature = { 'layer':ngds.layer_map[tag_index] } ;
 	 	
 	 	ngds.publish('Layer.mouseout',{
 	 		'Layer':feature,
@@ -193,7 +193,7 @@ if(typeof ngds.Map!=='undefined') {
 		}
 		
 		ngds.util.reset_result_styles();
-		var feature = ngds.layer_map[tag_index];
+		var feature = { 'layer':ngds.layer_map[tag_index] } ;
 	 	ngds.publish('Layer.click',{
 	 		'Layer':feature,
 	 		'tag_index':tag_index
@@ -210,16 +210,16 @@ if(typeof ngds.Map!=='undefined') {
 	*
 	*/
 	ngds.subscribe('Layer.mouseover',function(topic,data){
-		var is_active = data['Layer'].is_active || null;
+		var is_active = data['Layer'].layer.is_active || null;
 		if(is_active === null || is_active===false) {
-			ngds.util.apply_feature_hover_styles(data['Layer'],data['tag_index'])
+			ngds.util.apply_feature_hover_styles(data['Layer'].layer,data['tag_index'])
 		}
 	});
 
 	ngds.subscribe('Layer.mouseout',function(topic,data){
-		var is_active = data['Layer'].is_active || null;
+		var is_active = data['Layer'].layer.is_active || null;
 		if(is_active === null || is_active===false) {
-			ngds.util.apply_feature_default_styles(data['Layer'],data['tag_index']);
+			ngds.util.apply_feature_default_styles(data['Layer'].layer,data['tag_index']);
 		}
 	});
 
@@ -227,14 +227,14 @@ if(typeof ngds.Map!=='undefined') {
 		ngds.util.reset_result_styles();
 		for(var l in ngds.layer_map) {
 			ngds.util.apply_feature_default_styles(ngds.layer_map[l],l);
-			if(ngds.layer_map[l]._leaflet_id===data['Layer']._leaflet_id) {
+			if(ngds.layer_map[l]._leaflet_id===data['Layer'].layer._leaflet_id) {
 				ngds.layer_map[l].is_active=true;
 			}
 			else{
 				ngds.layer_map[l].is_active=false;
 			}
 		}
-		var latlngs = data['Layer']._latlng || data['Layer']._latlngs;
+		var latlngs = data['Layer'].layer._latlng || data['Layer'].layer._latlngs;
 		
 		var approximate_center = (function(latlngs) {
 			if(typeof latlngs==='object' && typeof latlngs[0]==='undefined') { // Then it's a point
@@ -253,7 +253,7 @@ if(typeof ngds.Map!=='undefined') {
 		})(latlngs);
 
 		ngds.Map.map.panTo(approximate_center);
-		data['Layer'].openPopup();
+		data['Layer'].layer.openPopup();
 		ngds.util.apply_feature_active_styles(data['Layer'],data['tag_index']);
 	});
 
@@ -280,23 +280,23 @@ if(typeof ngds.Map!=='undefined') {
 		};
 		
 		feature.on('mouseover',function(feature){
-
+	
 			ngds.publish('Layer.mouseover',{
-				'Layer':feature.layer,
+				'Layer':feature,
 				'tag_index':data['seq_id']
 			});
 		});
 
 		feature.on('mouseout',function(feature){
 			ngds.publish('Layer.mouseout',{
-				'Layer':feature.layer,
+				'Layer':feature,
 				'tag_index':data['seq_id']
 			});
 		});
 
 		feature.on('click',function(feature){
 			ngds.publish('Layer.click',{
-				'Layer':feature.layer,
+				'Layer':feature,
 				'tag_index':data['seq_id']
 			});
 		});

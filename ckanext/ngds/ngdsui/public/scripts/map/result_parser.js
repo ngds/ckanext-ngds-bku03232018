@@ -22,13 +22,10 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 	var is_wms_present = false;
 		for(var j=0;j<results[i].resources.length;j++) {
 			var resource = results[i].resources[j];
-			console.log(resource);
 			if(resource.protocol==='OGC:WMS') {
-				console.log("Im here");
 				is_wms_present = true;
 				wms_mapping[results[i].id] = wms_mapping[results[i].id] || ( wms_mapping[results[i].id] = [ ] );
 				var layer_name = resource.layer_name;
-				console.log(resource);
 				wms_mapping[results[i].id].push({
 					'id':resource.id,
 					'url':resource.url.split('?')[0],
@@ -170,12 +167,11 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 		});
 	}
 	$('.results').before(reader);
-	$(".results").jScrollPane({contentWidth:'0px'});
+	x=$(".results").jScrollPane({contentWidth:'0px'});
 
 	var inc=inc || (inc=0);
 	$(".wms").click(function(ev){
 				var id=ev.currentTarget.id;
-				console.log(wms_mapping);
 				for(var k=0;k<wms_mapping[id].length;k++) {
 					var layer_to_add = L.tileLayer.wms(wms_mapping[id][k].url,{
 						'layers':wms_mapping[id][k].layer,

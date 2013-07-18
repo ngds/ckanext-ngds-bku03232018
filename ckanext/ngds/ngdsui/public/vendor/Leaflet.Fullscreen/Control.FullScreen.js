@@ -70,9 +70,9 @@ L.Control.FullScreen = L.Control.extend({
 	},
 	
 	_handleEscKey: function () {
-		if(!fullScreenApi.isFullScreen(this) && !this._exitFired){
-			this.fire('exitFullscreen');
-			this._exitFired = true;
+		
+		if(!fullScreenApi.isFullScreen(this)){
+			fullScreenApi.cancelFullScreen();			
 		}
 	}
 });
@@ -203,7 +203,6 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 			return this.each(function() {
 				var el = jQuery(this);
 				if (fullScreenApi.supportsFullScreen) {
-					console.log(i);
 					i++;
 					fullScreenApi.requestFullScreen(el);
 					// fullScreenApi.requestFullScreen($(".map-search-results"));
