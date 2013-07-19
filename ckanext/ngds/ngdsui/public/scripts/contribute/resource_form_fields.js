@@ -71,20 +71,22 @@ var structured_form = {
     }
   ],
   'custom':[
-    {
+        {
       'tag':'input',
       'name':'distributor',
-      'class':'distributor',
+      'id':'distributor',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'class':'distributor_name',
+      'name':'distributor_name',
+      'id':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'class':'distributor_email',
+      'id':'distributor_email',
+      'name':'distributor_email',
       'type':'hidden'
     }
   ]
@@ -133,7 +135,6 @@ var unstructured_form = {
       'class':function() {
         return "distributor-fake";
       },
-      'name':'distributor',
       'tag':'input',
       'id':'distributor_fake',
       'additional':function() {
@@ -158,17 +159,19 @@ var unstructured_form = {
     {
       'tag':'input',
       'name':'distributor',
-      'class':'distributor',
+      'id':'distributor',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'class':'distributor_name',
+      'name':'distributor_name',
+      'id':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
-      'class':'distributor_email',
+      'id':'distributor_email',
+      'name':'distributor_email',
       'type':'hidden'
     }
   ]
@@ -345,20 +348,22 @@ var link_data_service_form = {
     }
   ],
   'custom':[
-    {
+     {
       'tag':'input',
-      'id':'distributor',
       'name':'distributor',
+      'id':'distributor',
       'type':'hidden'
     },
      {
       'tag':'input',
+      'name':'distributor_name',
       'id':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
       'id':'distributor_email',
+      'name':'distributor_email',
       'type':'hidden'
     }
   ]

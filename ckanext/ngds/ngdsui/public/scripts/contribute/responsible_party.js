@@ -40,7 +40,7 @@ ngds.responsible_party = function() {
             var rs_map = ngds.util.state[me.rs_token] || ( ngds.util.state[me.rs_token] = { });
             var payload = { };
             payload["name"] = dict["name"];
-            payload["email"] = dict["name"];
+            payload["email"] = dict["email"];
 
             var i_name = payload["name"];
             var i_email = payload["email"];

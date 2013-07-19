@@ -159,7 +159,10 @@ var render_forms = function(value) {
       'rs_fake':'#distributor_fake',
       'rs':'#distributor',
       'slug_container':'.distributor-tag'
-    });
+    },function(dict) {
+  $("[name='distributor_name']").val(dict['name']);
+  $("[name='distributor_email']").val(dict['email']);
+});
   }
 };
 
