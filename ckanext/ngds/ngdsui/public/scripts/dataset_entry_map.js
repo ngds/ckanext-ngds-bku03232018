@@ -54,3 +54,4 @@ function writeGeoJson(geojson) {
 	$('#field-extras-0-key').val('spatial');
 	$('#field-extras-0-value').val(geojson);
 }
+

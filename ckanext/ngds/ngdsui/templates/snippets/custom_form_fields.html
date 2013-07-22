@@ -124,9 +124,13 @@
 
 <script>
   var geojson = $.parseJSON("{{ get_value('spatial',extras) }}".replace(/&#34;/g,"\""));
-  var geoJSONRespresentation =L.geoJson(geojson);  
-  geoJSONRespresentation.addTo(map);
-  writeGeoJson(JSON.stringify(geojson));
+  if (typeof(geojson!=='undefined') && geojson!==null ) {
+    var geoJSONRespresentation =L.geoJson(geojson);  
+    geoJSONRespresentation.addTo(map);
+    writeGeoJson(JSON.stringify(geojson));
+    map.fitBounds(geoJSONRespresentation.getBounds());
+    map.zoomOut();
+  }
 
 var authors_ac = ngds.autocomplete("#authors_fake","/responsible_parties",'q',['name','email'],'name',true);
 var ticker = new ngds.util.tick();
