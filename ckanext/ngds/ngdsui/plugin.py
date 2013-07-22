@@ -232,7 +232,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_dataset_category_image_path':helpers.get_dataset_category_image_path,
             'is_following':helpers.is_following,
             'parseJSON':helpers.parseJSON,
-            'json_extract':helpers.json_extract
+            'json_extract':helpers.json_extract,
+            'get_master_style':helpers.get_master_style
         }
 
     implements(IPackageController,inherit=True)
