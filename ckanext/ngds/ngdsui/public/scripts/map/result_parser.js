@@ -172,7 +172,14 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 	var inc=inc || (inc=0);
 	$(".wms").click(function(ev){
 				var id=ev.currentTarget.id;
-				var label_prefix = $(ev.currentTarget).siblings().find("img").next()[0].textContent;				
+				var label_prefix = '';
+				try {
+					var label_prefix = $(ev.currentTarget).siblings().find("img").next()[0].textContent+" : ";				
+				}
+				catch(e)
+				{
+
+				}
 
 				for(var k=0;k<wms_mapping[id].length;k++) {
 					var layer_to_add = L.tileLayer.wms(wms_mapping[id][k].url,{
@@ -184,7 +191,7 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 						'opacity':0.9999
 					});
 					
-					layer_control.addOverlay(layer_to_add,label_prefix+" : "+wms_mapping[id][k].name);
+					layer_control.addOverlay(layer_to_add,label_prefix+wms_mapping[id][k].name);
                    ngds.Map.map.addLayer(layer_to_add);
 				}
 				alert("The Web Map Services you requested have been added to the map.");
