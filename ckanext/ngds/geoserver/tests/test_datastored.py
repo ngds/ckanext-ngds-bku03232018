@@ -36,7 +36,7 @@ class DatastoredTestCase(NgdsTestCase):
         self.assertRaises(toolkit.ObjectNotFound, ds.publish)
 
     def test_publish_already_published(self):
-        """If a resource has already been spatialized, should return False"""
+        """If a resource has already been spatialized, should not fail"""
         # Create a table
         self.test_table.create(self.engine, checkfirst=True)
 
@@ -53,7 +53,7 @@ class DatastoredTestCase(NgdsTestCase):
 
         # Now try and "spatialize" it
         ds = Datastored("test_already", "lat", "lng")
-        self.assertFalse(ds.publish())
+        self.assertTrue(ds.publish())
 
     def test_publish_add_column(self):
         """Publish should add a geometry column to tables that don't have one"""
