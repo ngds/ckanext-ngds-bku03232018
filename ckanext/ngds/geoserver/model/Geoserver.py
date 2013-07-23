@@ -14,7 +14,16 @@ class Geoserver(Catalog):
         """
         url = ckan_config.get("geoserver.rest_url", "http://localhost:8080/geoserver/rest")
 
-        return cls(url)
+        # Look for user information in the geoserver url
+        userInfo = re.search("://(?P<auth>(?P<user>.+?):(?P<pass>.+?)@)?.+", url)
+        user = userInfo.group("user") or "admin"
+        pwd = userInfo.group("pass") or "geoserver"
+
+        # Remove it from the connection URL if it was there
+        url = url.replace(userInfo.group("auth") or "", "")
+
+        # Make the connection
+        return cls(url, username=user, password=pwd)
 
     def default_workspace(self):
         """
