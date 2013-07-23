@@ -317,16 +317,19 @@ if(typeof ngds.Map!=='undefined') {
 	var operation='contract';
 	ngds.subscribe('Map.expander.toggle',function(topic,data){
 		var no_toggle = data['no_toggle'] || false;
+
 		if(operation==='contract' && no_toggle===false) {
 			operation='expand';
 			$(".results").hide();
 			$(".search-results-pagination").hide();
 			$(".search-results-pagination").addClass("no-padding");
+			$(".results-text").hide();
 			$(".map-expander").css("top","80px");
 		}
 		else {
 			operation='contract';
 			$(".results").show();
+			$(".results-text").show();
 			$(".search-results-pagination").show();
 			$(".search-results-pagination").removeClass("no-padding");
 			$(".map-expander").css("top","0px");
