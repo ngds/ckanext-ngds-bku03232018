@@ -48,14 +48,50 @@
 }
 
 .stages {
-	width:820px;
+	border-width:0px;
+	width:870px;
 	display:table;
 	border-collapse:separate;
 	text-align:center;
 	padding-left:0px;
-	margin-left:70px;
+	margin-left:0px;
 	margin-top:0px;
 	background-color:#edeef0;
+
+	li, li:after, li:before { 
+		border-radius:0px;
+		-webkit-border-radius:0px !important;
+		border-width:0px !important;
+		background-color:white;
+		border:1px solid grey;
+		border-top: 5px solid grey;
+		color:black;
+		button.highlight, span.highlight {
+			padding-top:5px;
+		}
+
+	}
+
+	li.complete .highlight, li.active .highlight{
+		background-color:white;
+		color:black;
+	}
+
+	li.complete .highlight {
+		background-color:lightcyan;
+		border:2px solid grey;
+		border-top:5px solid grey;
+	}
+
+	li.active .highlight {
+		border-top:5px solid #366D96;
+	}
+
+	li.uncomplete .highlight {
+		background-color:#edeef0;
+		border:2px solid grey;
+		border-top:5px solid grey;
+	}
 }
 
 .about-form {
