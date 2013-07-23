@@ -129,10 +129,11 @@
     geoJSONRespresentation.addTo(map);
     writeGeoJson(JSON.stringify(geojson));
     var layers = geoJSONRespresentation._layers;
-    map.fitBounds(geoJSONRespresentation.getBounds());
+    map.panTo(geoJSONRespresentation.getBounds().getCenter());
     for(var index in layers) {
       if(layers[index].feature.type==='Point') {
-        map.setZoom(6);
+        console.log("zooming");
+        map.setZoom(5);
       }
     }
   }
