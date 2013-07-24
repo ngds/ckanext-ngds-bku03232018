@@ -28,7 +28,7 @@ params_to_set = [
     ("ngds.csw.contact.url", "http://geothermaldatasystem.org"),
     ("ngds.csw.contact.hours", "0800h - 1600h EST"),
     ("ngds.csw.contact.instructions", "During hours of service"),
-    ("ngds.csw.contact.role", "pointOfContact")
+    ("ngds.csw.contact.role", "pointOfContact"),
     ("ngds.facets_config", "/home/ubuntu/ckanenv/src/ckanext-ngds/facet-config.json"),
     ("ngds.default_group_name", "public"),
     ("ngds.deployment", "node"),
@@ -37,7 +37,7 @@ params_to_set = [
 
 # This builds the config file
 cwd = os.getcwd()
-ckan_dir = os.path.abspath(os.path.join(cwd, "..", "..", "..", "ckan"))
+ckan_dir = os.path.abspath(os.path.join(cwd, "..", "..", "ckan"))
 config_file = os.path.join(ckan_dir, "development.ini")
 
 if not os.path.exists(config_file):
