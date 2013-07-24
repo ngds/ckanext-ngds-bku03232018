@@ -150,7 +150,7 @@ ngds.render_search_results = function(topic,result) { //Subscription - 'Map.resu
 		}
 
 		var dom_node = ngds.util.dom_element_constructor(skeleton);
-		$('.results').prepend(dom_node);
+		$('.results').append(dom_node);
 		var reader = ngds.util.dom_element_constructor({
 			'tag':'div',
 			'attributes':{
