@@ -6,7 +6,29 @@ params_to_set = [
     ("geoserver.rest_url", "http://localhost:8080/geoserver/rest"),
     ("geoserver.workspace_name", "ngds"),
     ("geoserver.workspace_uri", "http://localhost:5000/ngds"),
-    ("ckan.extra_resource_fields", "parent_resource distributor layer_name content_model_version content_model_uri")
+    ("ckan.extra_resource_fields", "parent_resource distributor layer_name content_model_version content_model_uri"),
+    ("ngds.csw.title", "NGDS CSW"),
+    ("ngds.csw.abstract", "NGDS is awesome"),
+    ("ngds.csw.keywords", "ngds, csw, ogc, catalog"),
+    ("ngds.csw.keywords_type", "theme"),
+    ("ngds.csw.fees", "None"),
+    ("ngds.csw.accessconstraints", "None"),
+    ("ngds.csw.provider.name", "Roger Mebowitz"),
+    ("ngds.csw.provider.url", "http://geothermaldatasystem.org"),
+    ("ngds.csw.contact.name", "Roger Mebowitz"),
+    ("ngds.csw.contact.position", "Maintainer"),
+    ("ngds.csw.contact.address", "123 Somewhere St."),
+    ("ngds.csw.contact.city", "Anywhere"),
+    ("ngds.csw.contact.state", "State"),
+    ("ngds.csw.contact.zip", "12345"),
+    ("ngds.csw.contact.country", "USA"),
+    ("ngds.csw.contact.phone", "123-456-7890"),
+    ("ngds.csw.contact.fax", "123-456-7890"),
+    ("ngds.csw.contact.email", "nothing@false.com"),
+    ("ngds.csw.contact.url", "http://geothermaldatasystem.org"),
+    ("ngds.csw.contact.hours", "0800h - 1600h EST"),
+    ("ngds.csw.contact.instructions", "During hours of service"),
+    ("ngds.csw.contact.role", "pointOfContact")
 ]
 
 # This builds the config file
