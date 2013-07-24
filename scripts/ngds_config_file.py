@@ -37,7 +37,7 @@ params_to_set = [
 
 # This builds the config file
 cwd = os.getcwd()
-ckan_dir = os.path.abspath(os.path.join(cwd, "..", "..", "..", "ckan"))
+ckan_dir = os.path.abspath(os.path.join(cwd, "..", "..", "ckan"))
 config_file = os.path.join(ckan_dir, "development.ini")
 
 if not os.path.exists(config_file):

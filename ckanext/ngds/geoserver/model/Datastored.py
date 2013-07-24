@@ -46,8 +46,6 @@ class Datastored(object):
             connection.execute(sql)
             trans.commit()
 
-            log.info("Created column geometry for table %s" % self.resource_id)
-
             # Update values in the Geometry column
             sql = "UPDATE \"%s\" SET \"%s\" = geometryfromtext('POINT(' || \"%s\" || ' ' || \"%s\" || ')', 4326)"
             sql = sql % (self.resource_id, self.geo_col, self.lng_col, self.lat_col)
@@ -58,7 +56,6 @@ class Datastored(object):
 
             return True
 
-        log.info("Nothing to do. Returning.")
         return True
 
     def table_name(self):
