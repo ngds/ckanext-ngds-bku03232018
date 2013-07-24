@@ -67,7 +67,7 @@ class Geoserver(Catalog):
                 port="5432",
                 database=details.group("database"),
                 user=details.group("user"),
-                password=details.group("pass"),
+                passwd=details.group("pass"),
                 dbtype="postgis"
             )
             self.save(ds)
