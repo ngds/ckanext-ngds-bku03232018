@@ -29,6 +29,10 @@ params_to_set = [
     ("ngds.csw.contact.hours", "0800h - 1600h EST"),
     ("ngds.csw.contact.instructions", "During hours of service"),
     ("ngds.csw.contact.role", "pointOfContact")
+    ("ngds.facets_config", "/home/ubuntu/ckanenv/src/ckanext-ngds/facet-config.json"),
+    ("ngds.default_group_name", "public"),
+    ("ngds.deployment", "node"),
+    ("ngds_resources_dir", "/home/ubuntu/ckanenv/src/ckanext-ngds/ckanext/ngds/base/resources")
 ]
 
 # This builds the config file
