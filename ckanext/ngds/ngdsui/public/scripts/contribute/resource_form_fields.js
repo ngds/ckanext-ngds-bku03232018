@@ -79,14 +79,12 @@ var structured_form = {
     },
      {
       'tag':'input',
-      'name':'distributor_name',
       'id':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
       'id':'distributor_email',
-      'name':'distributor_email',
       'type':'hidden'
     }
   ]
@@ -164,14 +162,12 @@ var unstructured_form = {
     },
      {
       'tag':'input',
-      'name':'distributor_name',
       'id':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
       'id':'distributor_email',
-      'name':'distributor_email',
       'type':'hidden'
     }
   ]
@@ -356,14 +352,12 @@ var link_data_service_form = {
     },
      {
       'tag':'input',
-      'name':'distributor_name',
       'id':'distributor_name',
       'type':'hidden'
     },
      {
       'tag':'input',
       'id':'distributor_email',
-      'name':'distributor_email',
       'type':'hidden'
     }
   ]
