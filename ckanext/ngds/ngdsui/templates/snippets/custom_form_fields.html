@@ -179,6 +179,9 @@ var slugify = function(dict) {
 var determine_first_author = function() {
     var indices = [ ];
     var state = ngds.util.state;
+    if($.isEmptyObject(state['authors'])===true) {
+      return;
+    }
     for(var ordered_class in state['authors']) {
         var index = ordered_class.match(/[0-9].*$/)[0];
         if(isNaN(index)===false) {
