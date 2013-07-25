@@ -1,6 +1,7 @@
 from ckan.lib.base import model,h,g,c,request,response
 import ckan.lib.navl.dictization_functions as dictization_functions
 import ckan.controllers.storage as storage
+from webhelpers.html import literal
 import ckan.rating as rating
 DataError = dictization_functions.DataError
 from pylons import config, jsonify
@@ -497,3 +498,12 @@ def process_resource_docs_to_index():
         doc.save()
         #ckan_model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where id=:id", {'status_val':'DONE','id': doc.id})
         #ckan_model.Session().commit()
+
+
+def get_master_style():
+    if config.get('ngds.is_development',"false")=="true":
+        less_file = '<link rel="stylesheet/less" type="text/css" href="/css/main.less"/>'
+        less_js = ' <script type="text/javascript" src="/vendor/less/less.min.js"></script>'
+        return literal('%s %s' % (less_file,less_js))
+    
+    return literal('<link rel="stylesheet" type="text/css" href="/css/main.css"/>')

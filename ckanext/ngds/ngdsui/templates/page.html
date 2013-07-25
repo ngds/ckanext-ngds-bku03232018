@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet/less" type="text/css" href="/css/main.less"/>
-<script type="text/javascript" src="/vendor/less/less.min.js"></script>
+{{ h.get_master_style() }}
+
 {% endblock %}
 
 {%- block scripts -%}

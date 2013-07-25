@@ -20,19 +20,19 @@
   <script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
   <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
   <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
-  <link rel="stylesheet/less" type="text/css" href="/css/main.less"/>
+  {{ h.get_master_style() }}
   <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
   <!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
   <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css" />
      <script>
    var ngds = ngds || (ngds = { });
    </script>
-  <script type="text/javascript" src="/vendor/less/less.min.js"></script>
   <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
   <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
    <script type="text/javascript" src="/scripts/utils/utils.js"></script>
    <script type="text/javascript" src="/vendor/mustache/mustache.js"></script> 
    <script type="text/javascript" src="/scripts/main/ngds_pubsub.js"></script> 
+   <script type="text/javascript" src="/scripts/map/bounding_box.js"></script> 
    <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
 
 {% endblock %}

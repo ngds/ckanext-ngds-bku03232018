@@ -16,28 +16,28 @@
   <div class="sp-label">
     <label for="title">Title</label>
   </div>
-  <input type="text" name="title" id="title" placeholder="A descriptive title" value="{{data['title']}}"></input>
+  <input type="text" name="title" id="title" placeholder="A descriptive title" value="{{data['title']}}" title="An intuitive label that makes searching, sharing and linking easier"></input>
 </div>
 
 <div class="input-group">
   <div class="sp-label">
     <label for="name">URL</label>
   </div>
-  <input type="text" name="name" id="name" placeholder="my-dataset" value="{{data['name']}}"></input>
+  <input type="text" name="name" id="name" placeholder="my-dataset" value="{{data['name']}}" title="A unique URL where your dataset will be made available"></input>
 </div>
 
 <div class="input-group">
   <div class="sp-label description-label-div">
     <label for="notes">Description</label>
   </div>
-  <textarea rows="4" cols="1" name="notes" id="notes" class="structured-input" placeholder="Some useful notes about this dataset">{{data['notes']}}</textarea>
+  <textarea rows="4" cols="1" name="notes" id="notes" class="structured-input" placeholder="Some useful notes about this dataset" title="A long-text description of this dataset">{{data['notes']}}</textarea>
 </div>
 
 <div class="input-group">
   <div class="sp-label">
     <label for="tags">Tags</label>
   </div>
-  <input type="text" name="tag_string" id="tags" placeholder="geothermal, temperature" value="{{data['tag_string']}}"></input>
+  <input type="text" name="tag_string" id="tags" placeholder="geothermal, temperature" value="{{data['tag_string']}}" title="Keywords that describe the theme of this dataset"></input>
 </div>
 
 <div class="input-group">
@@ -45,7 +45,7 @@
   <div class="sp-label">
   <label for="field-license">{{ _("License") }}</label>
   </div>
-    <select id="field-license" name="license_id" data-module="autocomplete">
+    <select id="field-license" name="license_id" data-module="autocomplete" title="A license indicating the usage restrictions of this dataset">
       {% for licence_desc, licence_id in licences|sort if licence_desc  %}
         <option value="{{ licence_id }}" {% if data.get('license_id', 'notspecified') == licence_id %}selected="selected"{% endif %}>{{ licence_desc }}</option>
       {% endfor %}
@@ -57,5 +57,12 @@
   <input type="hidden" name="owner_org" value="{{ h.get_default_group() }}" />
 
 </div>
-
+<script>
+$(document).tooltip({
+  position:{
+    at:'right top+5',
+    collision:'none'
+  }
+});
+</script>
 <script type="text/javascript" src="/scripts/contribute/dataset_form.js"></script>

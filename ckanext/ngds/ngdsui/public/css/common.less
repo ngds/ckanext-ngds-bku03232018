@@ -1,3 +1,35 @@
+.datepicker-styles {
+
+		.ui-widget-header {
+			background-color:#366D96;
+			background-image:none;
+			color:white;
+		}
+
+		ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+			background-color: #366D96;
+			color: white;
+			text-align: center;
+			background-image:none;
+		}
+
+		.ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {
+			width: 43%;
+			height: 25px;
+			font-size: 10pt;
+		}
+
+		.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+			background-color:white;
+			border:1px solid black;
+			color:black;	
+		}
+
+		.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+			background-color:green;
+		}
+}
+
 #content-container:-webkit-full-screen {
 		 width: 100% !important; height: 100% !important;
 
@@ -8,6 +40,15 @@ h2 {
  	width:90%;
  	padding-bottom:10px;
  	border-bottom:3px solid #366D96;
+}
+
+h2.heading {
+	font-size:21px;
+	padding-bottom:0px;
+}
+
+img.heading-image {
+	padding-bottom:5px;
 }
 
 .ui-tooltip {
@@ -249,10 +290,6 @@ p {
 
 .ngdsbutton {
 	.ngds-button(40px,35px);
-}
-
-input[type="submit"] {
-	.ngds-button(23px);
 }
 
 
