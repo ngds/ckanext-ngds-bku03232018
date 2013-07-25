@@ -78,7 +78,7 @@ def iso_metadata(context, data_dict):
         try:
             p["additional"]["authors"] = json.loads(authors)
         except:
-            p["additional"]["authors"] = [{"author_name": p["author"], "author_email": p["author_email"]}]
+            p["additional"]["authors"] = [{"name": p["author"], "email": p["author_email"]}]
 
         # ---- Load Location keywords
         location = p["additional"].get("location", "[]")
