@@ -1,6 +1,3 @@
-import csv
-import copy
-
 from sqlalchemy.util import OrderedDict
 
 import ckan.model as model
@@ -11,6 +8,7 @@ import ckanext.ngds.lib.importer.helper as import_helper
 from pylons import config
 #the following needs to be revisted and removed...
 from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
+from ckanext.ngds.ngdsui.misc import helpers as ui_helper
 
 #Need to decide our own Read only keys
 readonly_keys = ('id', 'revision_id',
@@ -21,9 +19,11 @@ readonly_keys = ('id', 'revision_id',
                  'metadata_modified',
                  'metadata_created',
                  'notes_rendered')
-referenced_keys = ('category','status','topic','protocol')
 
-#DEFAULT_GROUP = ngds_helper.get_default_group()
+referenced_keys = ('data_type','status','protocol')
+
+
+DEFAULT_GROUP = ui_helper.get_default_group()
 
 
 class BulkUploader(object):
@@ -295,6 +295,8 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                         res_index, field = match.groups()
                         res_index = int(res_index)
                         field = str(field)
+                        if field in referenced_keys:
+                            cell = cls.validate_SD(field,cell)
                         if not pkg_fs_dict.has_key('resources'):
                             pkg_fs_dict['resources'] = []
                         resources = pkg_fs_dict['resources']
@@ -320,5 +322,5 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                     if not pkg_fs_dict.has_key('extras'):
                         pkg_fs_dict['extras'] = {}
                     pkg_fs_dict['extras'][title] = cell
-        pkg_fs_dict['owner_org']='public'
+        pkg_fs_dict['owner_org'] = DEFAULT_GROUP
         return pkg_fs_dict

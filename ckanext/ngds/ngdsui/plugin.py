@@ -10,6 +10,7 @@ from ckanext.ngds.ngdsui import authorize
 import ckanext.datastore.logic.auth as datastore_auth
 import ckanext.ngds.contentmodel.model.contentmodels as contentmodels
 import ckanext.ngds.contentmodel.logic.action as contentmodel_action
+import ckanext.ngds.logic.action.validate as validate_action
 
 from pylons import config as ckan_config
 
@@ -190,6 +191,7 @@ class NgdsuiPlugin(SingletonPlugin):
         'contentmodel_get': contentmodel_action.contentmodel_get, 
         'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
         #'create_resource_document_index': lib_action.create_resource_document_index
+        'validate_resource': validate_action.validate_resource
         }
 
     implements(IAuthFunctions, inherit=True)

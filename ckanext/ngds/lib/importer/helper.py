@@ -1,5 +1,5 @@
 import datetime as datetime
-from ckan.lib.base import config,h,g
+from ckan.lib.base import config
 import ckan.controllers.storage as storage
 
 log = __import__("logging").getLogger(__name__)

@@ -1,9 +1,8 @@
-import re
 import copy
 import ckanext.importlib.loader as loader
 from ckanext.importlib.loader import LoaderError
-from pprint import pformat
 from ckanclient import CkanApiError, CkanApiNotAuthorizedError
+from ckan.plugins import toolkit
 import os
 
 log = __import__("logging").getLogger(__name__)
@@ -26,8 +25,11 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         '''
         try:
             pkg_dict = self._update_resource(pkg_dict)
+        except LoaderError:
+            raise
         except Exception, e:
-            raise LoaderError('Could not update resources Exception: %s'% (existing_pkg, pkg_dict, e))
+            raise LoaderError('Could not update resources Exception: %s'% e.message)
+
         super(ResourceLoader, self)._write_package(pkg_dict,existing_pkg_name,existing_pkg)
 
     def _update_resource(self,pkg_dict):
@@ -48,16 +50,18 @@ class ResourceLoader(loader.ResourceSeriesLoader):
                     resource['url']=uploaded_file_url
                     del resource['upload_file']
 
-                    if resource.get('content_model'):
-                        self.validate_content_model(resource['content_model'],resource.get('content_model_version'),uploaded_file_url)
+                    # if resource.get('content_model'):
+                    #     self.validate_content_model(resource['content_model'],resource.get('content_model_version'),uploaded_file_url)
 
                 except CkanApiNotAuthorizedError:
                     raise
                 except CkanApiError:
                     raise LoaderError('Error (%s) uploading file over API: %s' % (self.ckanclient.last_status,self.ckanclient.last_message))
                 except Exception, e:
-                    print "Error Accessing:",e
+                    print "Error Accessing:", e
                     raise
+
+            self.validate_resource(resource)
 
         return pkg_dict
 
@@ -117,7 +121,23 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         #print "Resource URL ",res.get('name')
         return res.get('name')
 
+    def validate_resource(self, resource_dict):
+
+        print "Inside resource validation"
+        validation_response = toolkit.get_action("validate_resource")(None, resource_dict)
+
+        validation_status = validation_response['success']
+
+        if validation_status:
+            return True
+        else:
+            error_msg = '\n'.join(map(str, validation_response['messages']))
+
+            raise LoaderError("Resource validation Failed due to : %s" % error_msg)
+
+
     def validate_content_model(self,content_model,version,file_path):
+
         from ckanext.ngds.contentmodel.logic.action import *
         import json
         #Validatation method needs to be called.
@@ -130,5 +150,5 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         if validation_status=='true':
             return True
         else:
-            raise Exception ("Content Model validation Failed due to : %s" % validation_dict['messages'])
+            raise Exception("Content Model validation Failed due to : %s" % validation_dict['messages'])
 
