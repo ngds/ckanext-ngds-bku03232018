@@ -133,7 +133,6 @@
     map.panTo(geoJSONRespresentation.getBounds().getCenter());
     for(var index in layers) {
       if(layers[index].feature.type==='Point') {
-        console.log("zooming");
         map.setZoom(5);
       }
     }
@@ -150,14 +149,19 @@ var slugify = function(dict) {
     var author_email_f = $("[name='author_email']").val();
 
     if((author_name_f ==='' || typeof author_name_f ==='undefined') && (author_email_f ==='' || typeof author_email_f ==='undefined')) {
-      console.log("First time.");
-      console.log(dict);
       $("[name='author']").val(dict.name);
       $("[name='author_email']").val(dict.email);
     }
     var state = ngds.util.state;
+    
+    var existing_first_author = $("[name=author]").val();
+
+    if((existing_first_author==="" || typeof existing_first_author === 'undefined' || existing_first_author==="None") && $.isEmptyObject(state['authors'])===false) {
+            determine_first_author();
+    }
+
     state['auth_autocomp'] = state['auth_autocomp'] || (state['auth_autocomp'] = [ ]);
-    var slug = ngds.util.get_author_slug({ 'name':dict['name'],'email':dict['email'] },ticker,function(authors_map){
+    var slug = get_author_slug({ 'name':dict['name'],'email':dict['email'] },ticker,function(authors_map){
       var list_authors = [ ];
       for(key in authors_map) {
         list_authors.push(authors_map[key]);
@@ -170,6 +174,52 @@ var slugify = function(dict) {
         $("#authors_fake").val("");
     });
 //    $("#authors").val(JSON.stringify(state['auth_autocomp']));
+};
+
+var determine_first_author = function() {
+    var indices = [ ];
+    var state = ngds.util.state;
+    for(var ordered_class in state['authors']) {
+        var index = ordered_class.match(/[0-9].*$/)[0];
+        if(isNaN(index)===false) {
+          indices.push(index);
+        }
+    }
+    var first_author_index = Math.min.apply(Math,indices);
+    var first_author = state['authors']['ngds-slug-'+first_author_index]
+    // console.log(state['authors']['ngds-slug-'+first_author_index]);
+    $("[name=author]").val(first_author['name']);
+    $("[name=author_email]").val(first_author['email']);
+}
+
+
+var get_author_slug = function(author,ticker,sync) {
+  var cur_key = "ngds-slug-"+ticker.next();
+  var sp = $("<span/>",{"class":"ngds-tag","text":author['name'],id:cur_key,"style":"display:inline-block;"});
+    var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
+    var authors_map = ngds.util.state['authors'] = ngds.util.state['authors'] || (ngds.util.state['authors'] = { });
+    authors_map[cur_key] = author;
+
+    sp.append(anch);
+    sync(authors_map);
+    
+    anch.on('click',function(ev) {
+        $(ev.currentTarget.parentElement).fadeOut(500,function(){
+          var parent = ev.currentTarget.parentElement;
+          var key = parent.id;
+            parent.remove();
+            delete authors_map[key];
+            $("[name=author]").val("None");
+            $("[name=author_email]").val("None");
+            determine_first_author();
+            sync(authors_map);
+        });
+    });
+    return sp;
+};
+
+ngds.util.state = {
+
 };
 
 authors_ac.proxy("#authors",slugify);

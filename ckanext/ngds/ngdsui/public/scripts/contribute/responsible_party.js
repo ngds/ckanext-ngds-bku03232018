@@ -36,7 +36,6 @@ ngds.responsible_party = function() {
 	    var rs_email = me.rs_email;
 
         me.slugify = function(dict){
-            console.log(dict);
             var rs_map = ngds.util.state[me.rs_token] || ( ngds.util.state[me.rs_token] = { });
             var payload = { };
             payload["name"] = dict["name"];
@@ -78,8 +77,6 @@ ngds.responsible_party = function() {
 	    rs_ac.proxy(me.rs,me.slugify);
 
         if($(me.rs_fake).val()!=="") {
-        	console.log("In here");
-        	console.log($(me.rs_fake).val());
            var parsed_dict = '';
            try {
                  var parsed_dict = JSON.parse($(me.rs_fake).val());

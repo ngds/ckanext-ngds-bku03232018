@@ -155,29 +155,3 @@ ngds.util.parse_raw_json = function(raw) {
 	x= JSON.parse(parsed_json);
     return x;
 };
-
-ngds.util.get_author_slug = function(author,ticker,sync) {
-	var cur_key = "ngds-slug-"+ticker.next();
-	var sp = $("<span/>",{"class":"ngds-tag","text":author['name'],id:cur_key,"style":"display:inline-block;"});
-    var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
-   	var authors_map = ngds.util.state['authors'] = ngds.util.state['authors'] || (ngds.util.state['authors'] = { });
-   	authors_map[cur_key] = author;
-
-    sp.append(anch);
-    sync(authors_map);
-    
-    anch.on('click',function(ev) {
-        $(ev.currentTarget.parentElement).fadeOut(500,function(){
-        	var parent = ev.currentTarget.parentElement;
-        	var key = parent.id;
-            parent.remove();
-            delete authors_map[key];
-            sync(authors_map);
-        });
-    });
-    return sp;
-};
-
-ngds.util.state = {
-
-};
