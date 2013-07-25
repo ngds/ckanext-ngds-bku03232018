@@ -220,10 +220,6 @@ var get_author_slug = function(author,ticker,sync) {
     return sp;
 };
 
-ngds.util.state = {
-
-};
-
 authors_ac.proxy("#authors",slugify);
 if($("#authors_fake").val()!=="") {
     var parsed_dict = '';
