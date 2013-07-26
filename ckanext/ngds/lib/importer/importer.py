@@ -225,7 +225,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         else:
             #print "license_title: ",license_title
             #logger('Warning: No license name matches \'%s\'. Ignoring license.' % license_title)
-            return u''    
+            return u''
 
     @classmethod
     def responsible_party_2_id(self,name,email):
@@ -315,7 +315,9 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                 if title in responsible_party_keys:
                     cell = cls.validate_responsible_party(title, cell)
 
-                if title in standard_fields:
+                if title == 'tags':
+                    pkg_fs_dict['tag_string'] = cell
+                elif title in standard_fields:
                     pkg_fs_dict[title] = cell
                 elif title == 'license':
                     #print "license: ", cell
