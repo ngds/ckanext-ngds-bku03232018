@@ -20,7 +20,9 @@ readonly_keys = ('id', 'revision_id',
                  'metadata_created',
                  'notes_rendered')
 
-referenced_keys = ('data_type','status','protocol')
+referenced_keys = ('data_type', 'status', 'protocol')
+
+responsible_party_keys = ('authors', 'maintainer', 'distributor')
 
 
 DEFAULT_GROUP = ui_helper.get_default_group()
@@ -247,17 +249,48 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
     @classmethod
     def validate_SD(self,model_type,sdValue):
         #Call Model's validate method which will compare the sd value against the Standing data table.
-        from ckan.model import StandingData
+        from ckanext.ngds.env import ckan_model
 
-        sdObject = StandingData()
+        sdObject = ckan_model.StandingData()
 
-        validated_value = sdObject.validate(model_type,sdValue)
+        validated_value = sdObject.validate(model_type, sdValue)
 
         if validated_value is None:
             raise Exception("Data Error: No Standing data matching the input - %s for the type - %s" % (sdValue,model_type)) 
         else:
-            return validated_value    
-        
+            return validated_value
+
+    @classmethod
+    def validate_responsible_party(cls, field_name, email_string):
+        from ckanext.ngds.env import ckan_model
+
+        #res_party = ckan_model.ResponsibleParty()
+
+        email_list = [x.strip() for x in str(email_string).split(',') if x.strip()]
+
+        if len(email_list) > 1 and field_name.lower() != 'authors':
+            raise Exception("Data Error: % can not have more than one person" % field_name)
+
+        user_dict = {}
+
+        party_list = []
+
+        for email in email_list:
+
+            returned_party = ckan_model.ResponsibleParty.find(email.lower()).all()
+
+            if returned_party and len(returned_party) > 0:
+                user_dict['name'] = returned_party[0].name
+                user_dict['email'] = returned_party[0].email
+                party_list.append(user_dict)
+            else:
+                raise Exception("Responsible party with email: % not found in the system. Please add either manually or use loader script." % email)
+
+        if field_name.lower() == 'authors':
+            return party_list
+        else:
+            return party_list[0]
+
     @classmethod
     def pkg_xl_dict_to_fs_dict(cls, pkg_xl_dict, logger=None):
         '''Convert a Package represented in an Excel-type dictionary to a
@@ -279,6 +312,9 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
             if cell:
                 if title in referenced_keys:
                     cell = cls.validate_SD(title,cell)
+                if title in responsible_party_keys:
+                    cell = cls.validate_responsible_party(title, cell)
+
                 if title in standard_fields:
                     pkg_fs_dict[title] = cell
                 elif title == 'license':
@@ -297,6 +333,8 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                         field = str(field)
                         if field in referenced_keys:
                             cell = cls.validate_SD(field,cell)
+                        if field in responsible_party_keys:
+                            cell = cls.validate_responsible_party(field, cell)
                         if not pkg_fs_dict.has_key('resources'):
                             pkg_fs_dict['resources'] = []
                         resources = pkg_fs_dict['resources']

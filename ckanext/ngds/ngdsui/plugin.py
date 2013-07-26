@@ -190,6 +190,7 @@ class NgdsuiPlugin(SingletonPlugin):
         'contentmodel_list_short' : contentmodel_action.contentmodel_list_short, 
         'contentmodel_get': contentmodel_action.contentmodel_get, 
         'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
+        'contentmodel_checkBulkFile':contentmodel_action.contentmodel_checkBulkFile,
         #'create_resource_document_index': lib_action.create_resource_document_index
         'validate_resource': validate_action.validate_resource
         }

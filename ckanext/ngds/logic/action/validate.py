@@ -124,6 +124,7 @@ def validate_data_service(context, data):
         return {
             'display': 'Validation Errors',
             'type': 'resource_form_validation_error',
+            'success': False,
             'messages': errors
         }
     else:
@@ -152,6 +153,7 @@ def validate_offline_resource(context, data):
         return {
             'display': 'Validation Errors',
             'type': 'resource_form_validation_error',
+            'success': False,
             'messages': errors
         }
     else:
