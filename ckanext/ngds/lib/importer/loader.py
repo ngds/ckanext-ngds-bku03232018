@@ -1,9 +1,8 @@
-import re
 import copy
 import ckanext.importlib.loader as loader
 from ckanext.importlib.loader import LoaderError
-from pprint import pformat
 from ckanclient import CkanApiError, CkanApiNotAuthorizedError
+from ckan.plugins import toolkit
 import os
 
 log = __import__("logging").getLogger(__name__)
@@ -26,11 +25,14 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         '''
         try:
             pkg_dict = self._update_resource(pkg_dict)
+        except LoaderError:
+            raise
         except Exception, e:
-            raise LoaderError('Could not update resources Exception: %s'% (existing_pkg, pkg_dict, e))
+            raise LoaderError('Could not update resources Exception: %s'% e.message)
+
         super(ResourceLoader, self)._write_package(pkg_dict,existing_pkg_name,existing_pkg)
 
-    def _update_resource(self,pkg_dict):
+    def _update_resource(self, pkg_dict):
 
         if pkg_dict.get('resources') is None:
             return pkg_dict
@@ -42,22 +44,27 @@ class ResourceLoader(loader.ResourceSeriesLoader):
                     #file_path = self.resource_dir+resource['upload_file']
                     file_path = os.path.join(self.resource_dir,resource['upload_file'])
                     #print "File to be uploaded: ",file_path
-                    #print "self.ckanclient.api_key: ",self.ckanclient.api_key
                     uploaded_file_url,dummy = self.ckanclient.upload_file(file_path)
                     #print "In Update Resource: uploaded_file_url: ", uploaded_file_url
                     resource['url']=uploaded_file_url
                     del resource['upload_file']
 
                     if resource.get('content_model'):
-                        self.validate_content_model(resource['content_model'],resource.get('content_model_version'),uploaded_file_url)
+                        resource['content_model_uri'], resource['content_model_version'] = self.validate_content_model(resource['content_model'], resource.get('content_model_version'))
+                        del resource['content_model']
 
                 except CkanApiNotAuthorizedError:
                     raise
                 except CkanApiError:
                     raise LoaderError('Error (%s) uploading file over API: %s' % (self.ckanclient.last_status,self.ckanclient.last_message))
                 except Exception, e:
-                    print "Error Accessing:",e
+                    print "Error Accessing:", e
                     raise
+            else:
+                if resource.get('content_model') or resource.get('content_model_version'):
+                    raise LoaderError("Content Model referenced but no file referenced for upload. Package Title: %s" % pkg_dict.get('title'))
+
+            self.validate_resource(resource)
 
         return pkg_dict
 
@@ -117,18 +124,26 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         #print "Resource URL ",res.get('name')
         return res.get('name')
 
-    def validate_content_model(self,content_model,version,file_path):
-        from ckanext.ngds.contentmodel.logic.action import *
-        import json
-        #Validatation method needs to be called.
-        validated_json = contentmodel_checkBulkFile(content_model,version,file_path)
+    def validate_resource(self, resource_dict):
 
-        validation_dict = json.loads(validated_json)
+        print "Inside resource validation"
+        validation_response = toolkit.get_action("validate_resource")(None, resource_dict)
 
-        validation_status = validation_dict['valid']
+        validation_status = validation_response['success']
 
-        if validation_status=='true':
+        if validation_status:
             return True
         else:
-            raise Exception ("Content Model validation Failed due to : %s" % validation_dict['messages'])
+            error_msg = '\n'.join(map(str, validation_response['messages']))
+
+            raise LoaderError("Resource validation Failed due to : %s" % error_msg)
+
+
+    def validate_content_model(self, content_model, version):
+
+        #Validatation method needs to be called.
+        cm_dict = {'content_model':content_model,'version':version}
+        return  toolkit.get_action("contentmodel_checkBulkFile")(None, cm_dict)
+
+
 

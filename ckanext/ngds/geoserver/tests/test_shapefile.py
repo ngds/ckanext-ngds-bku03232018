@@ -81,7 +81,7 @@ class ShapefileTestCase(NgdsTestCase):
         res = self.add_shapefile_resource("test-get-dest-layer")
         s = Shapefile(res["id"])
         ds = s.get_destination_source()
-        self.assertIsInstance(s.get_destination_layer(ds, "test-get-dest-layer"), Layer)
+        self.assertIsInstance(s.get_destination_layer(ds, s.table_name()), Layer)
 
     def test_shapefile_publish(self):
         """Publishing a shapefile puts the data into the PostGIS table"""
