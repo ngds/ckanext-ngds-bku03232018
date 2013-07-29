@@ -233,7 +233,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'is_following':helpers.is_following,
             'parseJSON':helpers.parseJSON,
             'json_extract':helpers.json_extract,
-            'get_master_style':helpers.get_master_style
+            'get_master_style':helpers.get_master_style,
+            'toJSON':helpers.to_json
         }
 
     implements(IPackageController,inherit=True)

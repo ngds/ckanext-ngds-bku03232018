@@ -158,17 +158,18 @@ var render_forms = function(value) {
   }
 
   if(value==="data-service" || value==="unstructured" || value==="structured") {
-    new ngds.responsible_party().responsibilify({
-      'rs_name':'#distributor_name',
-      'rs_email':'#distributor_email',
-      'rs_fake':'#distributor_fake',
-      'rs':'#distributor',
-      'slug_container':'.distributor-tag'
-    },function(dict) {
-  $("[name='distributor_name']").val(dict['name']);
-  $("[name='distributor_email']").val(dict['email']);
-});
-  }
+        responsibilified = new ngds.responsible_party();
+        responsibilified.responsibilify({
+          'rs_name':'#distributor_name',
+          'rs_email':'#distributor_email',
+          'rs_fake':'#distributor_fake',
+          'rs':'#distributor',
+          'slug_container':'.distributor-tag'
+        },function(dict) {
+      $("[name='distributor_name']").val(dict['name']);
+      $("[name='distributor_email']").val(dict['email']);
+    });
+      }
 };
 
 $('input[name="resource_type"]').on('change',function(ev){
@@ -222,9 +223,18 @@ if(typeof continuation!=='undefined') {
 
 (function template_variables_collect(){
   {% if data %}
-   data="{{data}}";
-   data = ngds.util.parse_raw_json("{{h.jsonify(data)}}")
+   distributor = ngds.util.parse_raw_json("{{data.distributor}}");
+
+   {% set dist = data['distributor'] %}
+   // data="{{data|replace(data['distributor'],'')}}";
+   data = ngds.util.parse_raw_json("{{data|replace(data.distributor,'')|replace('None','\"\"')|replace('False','false')|replace('True','true')}}");
+   data['distributor'] = distributor;
+
    activate_populate_form(data);
+   $("#distributor_name").val(distributor.name);
+   $("#distributor_email").val(distributor.email);
+   console.log($("#distributor_name").val());
+   responsibilified.slugify();
   {% endif %}
 })();
 

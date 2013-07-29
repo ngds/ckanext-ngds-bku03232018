@@ -86,6 +86,9 @@ var populate_form = function(data) {
                 $("[name="+property+"]").val('http://'+window.location.host+'/storage/f/'+data[property]);
                 continue;
             }
+            else if(property==='distributor') {
+            	 
+            }
 			$("[name="+property+"]").val(data[property]);
 		}
 	}
