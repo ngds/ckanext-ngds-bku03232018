@@ -271,7 +271,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         email_list = [x.strip() for x in str(email_string).split(',') if x.strip()]
 
         if len(email_list) > 1 and field_name.lower() != 'authors':
-            raise Exception("Data Error: % can not have more than one person" % field_name)
+            raise Exception("Data Error: %s can not have more than one person" % field_name)
 
         party_list = []
 
@@ -285,7 +285,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                 user_dict['email'] = returned_party[0].email
                 party_list.append(user_dict)
             else:
-                raise Exception("Responsible party with email: % not found in the system. Please add either manually or use loader script." % email)
+                raise Exception("Responsible party with email: %s not found in the system. Please add either manually or use loader script." % email)
 
         import json
         if field_name.lower() == 'authors':
@@ -316,6 +316,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
+            print "title:%s, value: %s" % (title,cell)
             if cell:
                 if title in referenced_keys:
                     cell = cls.validate_SD(title,cell)
