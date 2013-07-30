@@ -264,7 +264,7 @@ def contentmodel_checkBulkFile(context,cm_dict):
     title = cm_dict.get('content_model')
     version = cm_dict.get('version')
 
-    schema = [rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels if rec['title'] == title]
+    schema = [rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels if rec['title'].strip().lower() == str(title).strip().lower()]
 
     if schema.__len__() != 1:
         raise Exception(" Invalid content model: %s" % title)
@@ -275,12 +275,12 @@ def contentmodel_checkBulkFile(context,cm_dict):
     versionExists = False
 
     for c_version in content_model['versions']:
-        if c_version['version'] == version:
+        if c_version['version'] == str(version):
             versionExists = True
             version_uri = c_version['uri']
 
     if not versionExists:
-        raise Exception(" Invalid content model version. Conten Model: %s , version: %s" % (title,version))
+        raise Exception(" Invalid content model version. Content Model: %s ,version: %s" % (title,version))
 
 
     return content_model['uri'], version_uri
