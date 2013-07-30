@@ -391,6 +391,7 @@ def json_extract(input,key):
         input = input.decode('ascii').replace("&#34;",'"')
         i_json = json.loads(input)
         if key in i_json:
+            print "Found : "+i_json[key] +" for key : " + key
             return i_json[key]
     except(ValueError):
         pass

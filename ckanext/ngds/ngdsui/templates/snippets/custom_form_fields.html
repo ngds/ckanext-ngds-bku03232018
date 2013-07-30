@@ -153,12 +153,6 @@ var slugify = function(dict) {
       $("[name='author_email']").val(dict.email);
     }
     var state = ngds.util.state;
-    
-    var existing_first_author = $("[name=author]").val();
-
-    if((existing_first_author==="" || typeof existing_first_author === 'undefined' || existing_first_author==="None") && $.isEmptyObject(state['authors'])===false) {
-            determine_first_author();
-    }
 
     state['auth_autocomp'] = state['auth_autocomp'] || (state['auth_autocomp'] = [ ]);
     var slug = get_author_slug({ 'name':dict['name'],'email':dict['email'] },ticker,function(authors_map){
@@ -170,6 +164,11 @@ var slugify = function(dict) {
     });
     slug.show();
     $(".author-tags").append(slug);
+    var existing_first_author = $("[name=author]").val();
+
+    if((existing_first_author==="" || typeof existing_first_author === 'undefined' || existing_first_author==="None") && $.isEmptyObject(state['authors'])===false) {
+            determine_first_author();
+    }
     setTimeout(function() {
         $("#authors_fake").val("");
     });
@@ -219,10 +218,6 @@ var get_author_slug = function(author,ticker,sync) {
         });
     });
     return sp;
-};
-
-ngds.util.state = {
-
 };
 
 authors_ac.proxy("#authors",slugify);

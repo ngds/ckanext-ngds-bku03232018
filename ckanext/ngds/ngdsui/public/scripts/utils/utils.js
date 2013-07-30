@@ -155,3 +155,7 @@ ngds.util.parse_raw_json = function(raw) {
 	x= JSON.parse(parsed_json);
     return x;
 };
+
+ngds.util.state = {
+
+};
