@@ -413,15 +413,15 @@ def get_dataset_category_image_path(package):
 
     category_image_link = {
         'Dataset' :'/assets/dataset.png',
-        'Physical Collection' :'/assets/dataset.png',
-        'Catalog' :'/assets/dataset.png',
-        'Movie or Video' :'/assets/dataset.png',
-        'Drawing' :'/assets/dataset.png',
-        'Photograph' :'/assets/dataset.png',
-        'Remotely-Sensed Image' :'/assets/dataset.png',
-        'Map' :'/assets/dataset.png',
-        'Text Document' :'/assets/document.png',
-        'Physical Artifact' :'/assets/dataset.png',
+        'Physical Collection' :'/assets/physicalcollection.png',
+        'Catalog' :'/assets/catalog.png',
+        'Movie or Video' :'/assets/video.png',
+        'Drawing' :'/assets/drawing.png',
+        'Photograph' :'/assets/photograph.png',
+        'Remotely-Sensed Image' :'/assets/remotelysensedimage.png',
+        'Map' :'/assets/map.png',
+        'Text Document' :'/assets/text_document.png',
+        'Physical Artifact' :'/assets/physicalcollection.png',
         'Desktop Application' :'/assets/dataset.png',
         'Web Application' :'/assets/dataset.png'
     }
