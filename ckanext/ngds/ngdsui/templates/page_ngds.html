@@ -25,6 +25,9 @@
   <!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
   <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css" />
      <script>
+     $(document).ready(function() {
+$.noConflict();
+     });
    var ngds = ngds || (ngds = { });
    </script>
   <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
@@ -36,8 +39,7 @@
    <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
 
 {% endblock %}
-{% block bodytag %}
-{%- endblock -%}
+
 
 {%- block page -%}
 
@@ -113,7 +115,15 @@
 {%- endblock -%}
    
   {% block scripts %} 
+      {% resource 'base/main' %}
+    {% resource 'base/ckan' %}
+    {% if g.tracking_enabled %}
+        {% resource 'base/tracking.js' %}
+    {% endif %}
+    
+  {{ super() }}
   <script type="text/javascript" src="/scripts/scripts.js"></script> 
+
 
   {% endblock %}
    

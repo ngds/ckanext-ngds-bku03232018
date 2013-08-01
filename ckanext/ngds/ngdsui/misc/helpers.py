@@ -508,3 +508,6 @@ def get_master_style():
         return literal('%s %s' % (less_file,less_js))
     
     return literal('<link rel="stylesheet" type="text/css" href="/css/main.css"/>')
+
+def split(what,how):
+    return how.join(what)

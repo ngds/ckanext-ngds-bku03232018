@@ -1,3 +1,7 @@
+from inspect import isfunction
+from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty
+import ast
+from ckan.model import meta
 
 def validate_resource(context, data):
     if data['resource_type'] == 'offline-resource':
@@ -160,3 +164,86 @@ def validate_offline_resource(context, data):
         return {
             'success':True
         }
+
+def validate_dataset_metadata(context,data):
+    errors = { }
+    check_existence(data,errors)
+
+    if len(errors)>0:
+        print "errors present"
+        return {
+            "success":False,
+            'errors':errors,
+            'data':data
+        }
+    else:
+        return {
+            "success":True
+        }
+
+def check_existence(data,collector):
+    
+    if not "extras" in data:
+        collector["extras"] = "No extras specified"
+        return collector
+
+    if not is_valid_maintainer(data):
+        collector['maintainer'] = "Maintainer must be specified"
+    
+    if not valid_extra("uri",data['extras'], lambdafn = lambda val : len(val)>4):
+        collector['uri'] = "URI must be specified"
+    
+    if not valid_extra("status",data['extras'], lambdafn = lambda val : val in ["Completed","Ongoing","Deprecated"] ):
+        collector['status'] = "Status must be specified"
+
+    if not is_valid_authors_list(data):
+        collector['authors'] = "At least one author must be specified"
+    
+    return collector
+
+def get_extra(key,extras):
+    for item in extras:
+        if item['key']==key:
+            return item
+    return None
+
+def valid_extra(key,extras,lambdafn):
+    extra = get_extra(key,extras)
+    print "Got extra",extra
+    if extra==None or extra["value"]=="" or extra["value"]==None:
+        return False
+
+    if isfunction(lambdafn):
+        return lambdafn(extra['value'])
+
+    return True
+
+def is_valid_maintainer(payload):
+    return (("maintainer" and "maintainer_email" in payload)\
+            and valid_extra("ngds_maintainer",payload["extras"],lambdafn = lambda val : isinstance(ast.literal_eval(val),dict))\
+            and payload["maintainer_email"] == ast.literal_eval(get_extra("ngds_maintainer",payload["extras"])["value"])["email"]\
+            and payload["maintainer"] == ast.literal_eval(get_extra("ngds_maintainer",payload["extras"])["value"])["name"]\
+            and responsible_party_exists(payload["maintainer_email"]))
+
+def is_valid_authors_list(payload):
+    if valid_extra("authors",payload["extras"],lambdafn = lambda val : isinstance(ast.literal_eval(val),list)):
+        authors = ast.literal_eval(get_extra("authors",payload["extras"])["value"])
+        for author in authors:
+            if not responsible_party_exists(author["email"]):
+                print "returning false"
+                return False
+        print "returning true"
+        return True
+    print "returning false end"
+    return False
+
+def responsible_party_exists(email):
+    try:
+        responsible_party = meta.Session.query(ResponsibleParty).filter(ResponsibleParty.email == email)
+        if responsible_party.first().email == email:
+            print "party exists"
+            return True
+    except Exception as e:
+            pass
+            # swallow it
+    return False

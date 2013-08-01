@@ -16,22 +16,35 @@
     {%- endif %}
   {%- endfor %}
 {%- endmacro %}
-
+  {% if errors.authors %}
+  <div class="input-group error">
+    {% else %}
   <div class="input-group">
+    {% endif %}
     <div class="sp-label"><label>Authors</label></div>
       <input id="field-extras-12-key" name="extras__12__key" value="authors" placeholder="" style="display:none;">
       <input type="text" id="authors_fake" value="{{ get_value('authors',extras) }}"/>
       <div class="author-tags retreived-tags"></div>
+      {% if errors.authors %}
+      <span class="error-block">{{errors.authors}}</span>
+      {% endif %}
   </div>
 
   <input type="hidden" name="extras__12__value" id="authors" value="{{get_value('authors',extras)}}"/>
   <input type="hidden" id="author" />
-
-  <div class="input-group">
+  
+  {% if errors.maintainer %}
+  <div class="input-group error">
+    {% else %}
+    <div class="input-group">
+      {% endif %}
     <div class="sp-label"><label>Maintainer</label></div>
       <input id="field-extras-13-key" name="extras__13__key" value="ngds_maintainer" placeholder="" style="display:none;">
       <input type="text" id="maintainer_fake" value="{{ get_value('ngds_maintainer',extras) }}" />
       <div class="maintainer-tag retreived-tags"></div>
+      {% if errors.maintainer %}
+        <span class="error-block">{{errors.maintainer}}</span>
+      {% endif %}
   </div>
 
   <input type="hidden" name="extras__13__value" id="maintainer"/>
@@ -75,10 +88,17 @@
       </select>
 </div>
 
+{% if errors.uri %}
+<div class="input-group error">
+  {% else %}
 <div class="input-group">
+  {% endif %}
     <div class="sp-label"><label>URI</label></div>
       <input id="field-extras-3-key" name="extras__3__key" value="uri" placeholder="" style="display:none;">
       <input id="field-extras-3-value" type="text" name="extras__3__value" placeholder value="{{ get_value('uri',extras) }}">
+      {% if errors.uri %}
+        <span class="error-block">{{errors.uri}}</span>
+      {% endif %}
 </div>
 
 <div class="input-group">
@@ -93,7 +113,11 @@
       <input id="field-extras-6-value" type="text" name="extras__6__value" placeholder value="{{ get_value('lineage',extras) }}">
 </div>
 
-<div class="input-group">
+{% if errors.status %}
+<div class="input-group error">
+  {% else %}
+  <div class="input-group">
+  {% endif %}
     <div class="sp-label"><label>Status</label></div>
         <input id="field-extras-7-key" name="extras__7__key" value="status" placeholder="" style="display:none;">
       
@@ -102,11 +126,15 @@
             <option{{ is_selected("Ongoing","status",extras) }}>Ongoing</option>
             <option{{ is_selected("Deprecated","status",extras) }}>Deprecated</option>
         </select>
+        {% if errors.status %}
+          <span class='error-block'>{{errors.status}}</span>
+        {% endif %}
 </div>
+
 
 <div class="input-group">
     <div class="sp-label"><label>Publication Date</label></div>
-      <input id="field-extras-4-key" name="extras__4__key" value="publication_date" placeholder="" style="display:none;">
+      <input id="field-extras-4-key" name="extras__4__key" value="publication_date" placeholder="" style="display:none;" autocomplete="off">
       <input id="field-extras-4-value" type="text" name="extras__4__value" value="{{ get_value('publication_date',extras) }}" placeholder="">
       <script>
         $(document).ready(function() {

@@ -8,15 +8,14 @@
 </style>
 {% if include_metadata %}
 
-{{ data }}
-
 {% endif %}
 <script>
 {% if data %}
     resource_location = window.location.origin+"{{data['resource_location']}}";
 {% endif %}
 </script>
-<form id="file-upload-form" action="/ngds/contribute/upload_file" method="post" enctype="multipart/form-data">
+{{data}}
+<!-- <form id="file-upload-form" action="/ngds/contribute/upload_file" method="post" enctype="multipart/form-data">
   <div id="file-upload" style="display:none;">
           <input type="submit" name="file-upload-button" value="Upload"></input>
           <input type="file" id="file" name="file" class="structured-input"></input>
@@ -28,9 +27,18 @@
           <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
           <input type="hidden" name="resource_type" id="resource_type"/>
   </div>
-</form>
+</form> -->
+<!-- <div data-module="resource-upload-field"> -->
+<!-- <span class="resource-upload-field">
+<i class="ckan-icon ckan-icon-link-plugin"></i>
+<input type="file" />
+<input id="field-resource-type-upload" type="radio" name="resource_type" value="file.upload" />
+<label class="radio inline" for="field-resource-type-upload"></label>
+</span> -->
+<!-- </div> -->
 
 <form class="dataset-form dataset-resource-form form-horizontal" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
+  <div data-module="resource-upload-field"></div>
   <ol class="stages stage-2">
     <li class="first-stage complete">
         <button class="highlight" name="save" value="go-dataset" type="submit">1. Create dataset</button>
@@ -120,123 +128,40 @@
 <script type="text/javascript" src="/scripts/contribute/responsible_party.js"></script>
 <script type="text/javascript" src="/scripts/contribute/resource_form_fields.js"></script>
 <script type="text/javascript" src="/scripts/autocomplete.js"></script>
-<script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
 
-<script>
-
-var render_forms = function(value) {
-  $(".form-body").empty();
-  
-  position_file_uploader();
-
-  if(value==='structured' || value==='unstructured') {
-      $("[name=upload_type_selection]").prop("checked",true);
-  }
-  else {
-      $("[name=upload_type_selection]").prop("checked",false); 
-  }
-  if(value==="structured") {
-    $("#resource_type-structured").prop("checked",true);
-    $(".form-body").html(Mustache.render(ngds.structured_form_template,structured_form));
-    position_file_uploader("#url");
-    populate_content_models();
-  }
-
-  if(value==="unstructured") {
-    $("#resource_type-unstructured").prop("checked",true);
-    $(".form-body").html(Mustache.render(ngds.structured_form_template,unstructured_form));
-    position_file_uploader("#url");
-  }
-
-  if(value==="offline-resource") {
-    $("#offline-resource").prop("checked",true);
-    $(".form-body").html(Mustache.render(ngds.structured_form_template,offline_resource_form));
-  }
-
-  if(value==="data-service") {
-    $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
-  }
-
-  if(value==="data-service" || value==="unstructured" || value==="structured") {
-        responsibilified = new ngds.responsible_party();
-        responsibilified.responsibilify({
-          'rs_name':'#distributor_name',
-          'rs_email':'#distributor_email',
-          'rs_fake':'#distributor_fake',
-          'rs':'#distributor',
-          'slug_container':'.distributor-tag'
-        },function(dict) {
-      $("[name='distributor_name']").val(dict['name']);
-      $("[name='distributor_email']").val(dict['email']);
-    });
-      }
-};
-
-$('input[name="resource_type"]').on('change',function(ev){
-  
-  var id = ev.currentTarget.id;
-  var value ="";
-  if(id==="resource_type-unstructured") {
-    value='unstructured';
-  }
-  if(id==="resource_type-structured") {
-    value='structured';
-  }
-  if(id==="offline-resource") {
-    value='offline-resource';
-  }
-  if(id==="data-service") {
-    value='data-service';
-  }
-
-  render_forms(value);
-});
-
-$("#go-metadata").click(function() {
-  $.ajax({
-    'url':'/ngds/contribute/validate_resource',
-    'data':$(".dataset-form").serializeArray(),
-    'success':function(response) {
-      if(response.success===true) {
-        $(".dataset-form").append($("<input/>",{'type':'hidden','name':'save','value':'go-metadata'}));
-        // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
-        $(".dataset-form").submit();
-      }
-      else {
-        ngds.publish('Notifications.received',response);
-      }
-    }
-  });
-});
-
-
-if(typeof continuation!=='undefined') {
-  for(var i=0;i<continuation.length;i++) {
-    $("[name="+continuation['field']+"]").val(continuation['value']);
-  }
+<style>
+.bleh { 
+display:none;
 }
-
+</style>
+<script>
 </script>
 {% endraw %}
 
 <script>
-
+$(document).ready(function() {
 (function template_variables_collect(){
   {% if data %}
-   distributor = ngds.util.parse_raw_json("{{data.distributor}}");
-
+  distributor = null;
+    {% if data.distributor %}
+    distributor = ngds.util.parse_raw_json("{{data.distributor}}");
    {% set dist = data['distributor'] %}
+    {% endif %}
+
+   
    // data="{{data|replace(data['distributor'],'')}}";
    data = ngds.util.parse_raw_json("{{data|replace(data.distributor,'')|replace('None','\"\"')|replace('False','false')|replace('True','true')}}");
    data['distributor'] = distributor;
 
    activate_populate_form(data);
-   $("#distributor_name").val(distributor.name);
-   $("#distributor_email").val(distributor.email);
-   console.log($("#distributor_name").val());
+   if(typeof distributor !== 'undefined' && distributor!==null && distributor !== "") {
+       $("#distributor_name").val(distributor.name);
+       $("#distributor_email").val(distributor.email);
+       // console.log($("#distributor_name").val());
+     }
    responsibilified.slugify();
   {% endif %}
 })();
-
+});
 
 </script>

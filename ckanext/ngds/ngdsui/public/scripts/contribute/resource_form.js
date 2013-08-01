@@ -82,11 +82,11 @@ $("#file").on('change',function(ev){
 var populate_form = function(data) {
 	for(property in data) {
 		if($("[name="+property+"]").length>0) {
-           if(property==='url') {
-                $("[name="+property+"]").val('http://'+window.location.host+'/storage/f/'+data[property]);
-                continue;
-            }
-            else if(property==='distributor') {
+           // if(property==='url') {
+           //      $("[name="+property+"]").val('http://'+window.location.host+'/storage/f/'+data[property]);
+           //      continue;
+           //  }
+            if(property==='distributor') {
             	 
             }
 			$("[name="+property+"]").val(data[property]);
@@ -101,8 +101,8 @@ var activate_populate_form = function(data) {
 	// $("[name=resource_type]").prop("disabled",true);
 	$("#resource_type-selection").prop("disabled",true);
 	$("input[type=radio]").prop("disabled",true);
-	var name = get_prop($("#url").val(),'name');
-	var file_extension = get_prop($("#url").val(),'extension');
+	var name = get_prop($("#field-url").val(),'name');
+	var file_extension = get_prop($("#field-url").val(),'extension');
 	$("[name=name]").val(name);
 	$("[name=format]").val(file_extension);
 };
@@ -121,3 +121,98 @@ var get_prop = function(url,what) {
 	}
 };
 
+
+$(document).ready(function() {
+  position_file_uploader();
+var render_forms = function(value) {
+  $(".form-body").empty();
+  
+
+
+  if(value==='structured' || value==='unstructured') {
+      $("[name=upload_type_selection]").prop("checked",true);
+  }
+  else {
+      $("[name=upload_type_selection]").prop("checked",false); 
+  }
+  if(value==="structured") {
+    $("#resource_type-structured").prop("checked",true);
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,structured_form));
+    position_file_uploader("#field-url");
+    populate_content_models();
+  }
+
+  if(value==="unstructured") {
+    $("#resource_type-unstructured").prop("checked",true);
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,unstructured_form));
+    position_file_uploader("#field-url");
+  }
+
+  if(value==="offline-resource") {
+    $("#offline-resource").prop("checked",true);
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,offline_resource_form));
+  }
+
+  if(value==="data-service") {
+    $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
+  }
+
+  if(value==="data-service" || value==="unstructured" || value==="structured") {
+        responsibilified = new ngds.responsible_party();
+        responsibilified.responsibilify({
+          'rs_name':'#distributor_name',
+          'rs_email':'#distributor_email',
+          'rs_fake':'#distributor_fake',
+          'rs':'#distributor',
+          'slug_container':'.distributor-tag'
+        },function(dict) {
+      $("[name='distributor_name']").val(dict['name']);
+      $("[name='distributor_email']").val(dict['email']);
+    });
+      }
+};
+
+$('input[name="resource_type"]').on('change',function(ev){
+  
+  var id = ev.currentTarget.id;
+  var value ="";
+  if(id==="resource_type-unstructured") {
+    value='unstructured';
+  }
+  if(id==="resource_type-structured") {
+    value='structured';
+  }
+  if(id==="offline-resource") {
+    value='offline-resource';
+  }
+  if(id==="data-service") {
+    value='data-service';
+  }
+
+  render_forms(value);
+});
+
+$("#go-metadata").click(function() {
+  $.ajax({
+    'url':'/ngds/contribute/validate_resource',
+    'data':$(".dataset-form").serializeArray(),
+    'success':function(response) {
+      if(response.success===true) {
+        $(".dataset-form").append($("<input/>",{'type':'hidden','name':'save','value':'go-metadata'}));
+        // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
+        $(".dataset-form").submit();
+      }
+      else {
+        ngds.publish('Notifications.received',response);
+      }
+    }
+  });
+});
+
+
+if(typeof continuation!=='undefined') {
+  for(var i=0;i<continuation.length;i++) {
+    $("[name="+continuation['field']+"]").val(continuation['value']);
+  }
+}
+});

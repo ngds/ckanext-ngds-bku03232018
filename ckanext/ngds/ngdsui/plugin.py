@@ -163,6 +163,8 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("poly","/poly",controller=map_controller,action="test")
         map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
         map.connect("validate_resource","/ngds/contribute/validate_resource",controller=contribute_controller,action="validate_resource")
+        map.connect("additional_metadata","/ngds/contribute/additional_metadata",controller=contribute_controller,action="additional_metadata")
+        map.connect("new_metadata","/ngds/contribute/new_metadata",controller=contribute_controller,action="new_metadata")
 
         map.connect("execute_fulltext_indexer","/ngds/execute_fulltext_indexer",controller=contribute_controller,action="execute_fulltext_indexer")
 
@@ -192,7 +194,8 @@ class NgdsuiPlugin(SingletonPlugin):
         'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
         'contentmodel_checkBulkFile':contentmodel_action.contentmodel_checkBulkFile,
         #'create_resource_document_index': lib_action.create_resource_document_index
-        'validate_resource': validate_action.validate_resource
+        'validate_resource': validate_action.validate_resource,
+        'validate_dataset_metadata':validate_action.validate_dataset_metadata
         }
 
     implements(IAuthFunctions, inherit=True)
@@ -237,7 +240,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'parseJSON':helpers.parseJSON,
             'json_extract':helpers.json_extract,
             'get_master_style':helpers.get_master_style,
-            'toJSON':helpers.to_json
+            'toJSON':helpers.to_json,
+            'split':helpers.split
         }
 
     implements(IPackageController,inherit=True)

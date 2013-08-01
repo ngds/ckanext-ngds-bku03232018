@@ -16,6 +16,7 @@ import os
 import shutil
 import zipfile
 import os.path
+from ckan.plugins import toolkit
 
 class ContributeController(NGDSBaseController):
 
@@ -518,7 +519,7 @@ class ContributeController(NGDSBaseController):
             metadata = json.loads(storage_api.get_metadata(data['key']))
             resource_location = metadata['_location']
             response.headers['Content-Type'] = 'text/html;charset=utf-8'
-            return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'resource_type':data['resource_type'],'url':data['key']})
+            return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'resource_type':data['resource_type'],'url':resource_location})
 
     def get_structured_form(self,data=None):
         c.data = data
@@ -529,8 +530,6 @@ class ContributeController(NGDSBaseController):
         data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
 
-        from ckan.plugins import toolkit
-
         return toolkit.get_action("validate_resource")(None, data)
 
 
@@ -539,3 +538,21 @@ class ContributeController(NGDSBaseController):
         process_resource_docs_to_index()
 
         return "Full text indexer is executed successfully. Have fun with searching through documents....."
+
+    def new_metadata(self):
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+        result = toolkit.get_action('validate_dataset_metadata')(None,data)
+        vars = { "data":data }
+        if result['success'] == True:
+            print "id  : ",data["pkg_name"]
+            return PackageController().new_metadata(id=data['pkg_name'])
+        else:
+            print "In the else part .. oh oh oh"
+            vars["errors"] = result["errors"]
+            return render('package/new_package_metadata.html',extra_vars=vars)
+
+    def additional_metadata(self):
+        data = clean_dict(unflatten(tuplize_dict(parse_params(
+            request.params))))
+        return toolkit.get_action('validate_dataset_metadata')(None,data)
