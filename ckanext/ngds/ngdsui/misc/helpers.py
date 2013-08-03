@@ -144,7 +144,11 @@ def username_for_id(id):
 def get_formatted_date(timestamp):
     return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
 
-
+def get_formatted_date_from_obj(timestamp, isdate):
+    if isdate:
+        return timestamp.strftime("%b %d, %Y %H:%M")
+    else:
+        return iso8601.parse_date(timestamp).strftime("%b %d,%Y %H:%M")
 
 def load_ngds_facets():
     """
