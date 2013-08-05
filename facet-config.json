@@ -9,6 +9,19 @@
                 "type": "keyword"
 			},
 			{
+                "facet": "Economics/Financing",
+                "type": "keyword"
+			},
+			{
+                "facet": "Heat Flow/Temperature Gradient",
+                "type": "keyword"
+			},
+			{
+				"display_name": "Seismicity",
+                "facet": "Seismicity",
+                "type": "keyword"
+			},
+			{
                 "facet": "Drilling Technology",
                 "type": "title",
                 "subfacet": [
@@ -31,10 +44,7 @@
                     }
                 ]				
 			},
-			{
-                "facet": "Economics/Financing",
-                "type": "keyword"
-			},	
+
 			{
                 "facet": "Geochemistry",
                 "type": "title",
@@ -176,11 +186,7 @@
                         "type": "keyword"
                     }
                 ]				
-			},		
-			{
-                "facet": "Heat Flow/Temperature Gradient",
-                "type": "keyword"
-			},	
+			},
 			{
                 "facet": "Reservoir Engineering",
                 "type": "title",
@@ -219,11 +225,6 @@
                 ]				
 			},
 			{
-				"display_name": "Seismicity",
-                "facet": "Seismicity",
-                "type": "keyword"
-			},	
-			{
 				"display_name": "Tracers",
                 "type": "title",
                 "subfacet": [
@@ -260,6 +261,7 @@
                     }					
 				]
 			},
+
             {
                 "facet": "Other User Tags",
                 "type": "dynamic_keywords"              
@@ -282,7 +284,7 @@
                     {
                         "facet": "Service Protocol",
                         "type": "dynamic_keywords",
-                        "metadatafield": "protocol"
+                        "metadatafield": "res_protocol"
                     },
                     {
                         "facet": "Mime Type",
