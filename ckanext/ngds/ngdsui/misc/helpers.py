@@ -60,12 +60,13 @@ def _get_repoze_handler(handler_name):
 
 def get_default_group():
 
+    default_group_id = ''
     try:
-        print g.default_group
-    except AttributeError:
-        g.default_group = config.get('ngds.default_group_name', 'public')
+        default_group_id = g.default_group
+    except Exception:
+        default_group_id = config.get('ngds.default_group_name', 'public')
 
-    return g.default_group
+    return default_group_id
 
 def highlight_rating_star(count,packageId):
     
