@@ -9,18 +9,11 @@ from ckan import model
 from ckan.model import meta
 
 from sqlalchemy import types, Column, Table, ForeignKey
-from sqlalchemy.orm import relationship, validates
-from sqlalchemy.sql.expression import or_ 
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
-from sqlalchemy import types, Column, Table
-from sqlalchemy.orm import validates
 
 import datetime
 
-from pylons import config
-
-import csv
 import logging
 log = logging.getLogger(__name__)
 
@@ -29,6 +22,13 @@ from ckanext.ngds.base.model.ngds_db_object import NgdsDataObject
 class BulkUpload(NgdsDataObject):
     """
     A BulkUpload represents the details of a bulk uploaded dataset and status of the processing.
+    *data_file - xls file path which contains the details about dataset, resource.
+    *resources - zip file path which contains the documents/resources to be uploaded as part of dataset creation which
+                is linked in the xls file.
+    *path - Full path of the location where data_file and resources are stored.
+    *status - Status of a particular record (VALID,INVALID, COMPLETED, FAILURE)
+    *comments - Contains the reason for failure or validaiton error messages.
+    *uploaded_by - User who uploaded this record.
     """
     
     def __init__(self, **kwargs):
@@ -41,7 +41,7 @@ class BulkUpload(NgdsDataObject):
         
     @classmethod
     def search(cls, querystr, sqlalchemy_query=None):
-        '''Search name, fullname, email and openid. '''
+        """Search by status """
         if sqlalchemy_query is None:
             query = meta.Session.query(cls)
         else:
@@ -49,9 +49,14 @@ class BulkUpload(NgdsDataObject):
 
         query = query.filter(cls.status == querystr)
         return query
+
+    @classmethod
+    def get_all(cls):
+         return cls.Session.query(cls).order_by(cls.uploaded_date.desc()).all()
     
     @classmethod
     def by_data_file(cls, querystr):
+        """Returns a bulk upload record referenced by its id or name."""
         query = meta.Session.query(cls).filter(cls.data_file == querystr)
         member = query.first()        
         return member
@@ -59,7 +64,7 @@ class BulkUpload(NgdsDataObject):
 
     @classmethod
     def get(cls, reference):
-        '''Returns a bulk upload record referenced by its id or name.'''
+        """Returns a bulk upload record referenced by its id or name."""
         query = meta.Session.query(cls).filter(cls.id == reference)
         member = query.first()
         if member is None:
@@ -67,6 +72,11 @@ class BulkUpload(NgdsDataObject):
         return member
 
 class BulkUpload_Package(NgdsDataObject):
+    """
+    A BulkUpload_Package represents the packages created as part of the bulk upload process.
+    *package_name - unique name of package
+    *package_title - Short description about the package
+    """
     
     def __init__(self, **kwargs):
         self.bulk_upload_id = kwargs.get('bulk_upload_id', None)
@@ -76,23 +86,30 @@ class BulkUpload_Package(NgdsDataObject):
 
     @classmethod
     def by_bulk_upload(cls, querystr):
+        """ This method returns data based on input bulk upload identifier."""
         query = meta.Session.query(cls).filter(cls.bulk_upload_id == querystr)
         return query.all()
 
 
 class StandingData(NgdsDataObject):
-
+    """
+    A StandingData represents the all the lookup values used in the system. Any restricted list of data is represented
+    in this table.
+     *description - Explains about the lookup value (typically what is displayed to user)
+     *code - Any other code available to represent the lookup data
+     *data_type - type of lookup data. (E.g. status (Dataset status), protocol (Protocol of the resource)
+    """
     def __init__(self, **kwargs):
         self.description = kwargs.get('description', None)
         self.code = kwargs.get('code', None)
         self.data_type = kwargs.get('data_type', None)    
 
     @classmethod
-    def validate(cls,data_type,sdvalue):
+    def validate(cls, data_type, sdvalue):
         """ This method validates whether given SD value is present in the model or not. 
         If exists returns SD description otherwise None """
 
-        print "Data type:%s SD Value: %s" % (data_type,sdvalue)
+        print "Data type:%s SD Value: %s" % (data_type, sdvalue)
 
         query = meta.Session.query(cls).filter(cls.data_type == data_type)
         query = query.filter(func.lower(cls.description) == sdvalue.lower())
@@ -106,6 +123,12 @@ class StandingData(NgdsDataObject):
                 return member.description
 
 class UserSearch(NgdsDataObject):
+    """
+    UserSearch represents the saved searches of registered users.
+    *user_id - Saved user identifier
+    *search_name - Name for the saved search.
+    *url - Actual saved search URL
+    """
 
     def __init__(self, **kwargs):
         self.user_id = kwargs.get('user_id', None)
@@ -114,6 +137,11 @@ class UserSearch(NgdsDataObject):
 
     @classmethod
     def search(cls, user_id, sqlalchemy_query=None):
+        """
+        This method searches the saved searches by a registered user. If the query is provided as input then that is
+        used for constructing the query otherwise default selection is used.
+        """
+
 
         if sqlalchemy_query is None:
             query = meta.Session.query(cls)
@@ -123,6 +151,12 @@ class UserSearch(NgdsDataObject):
         return query
 
 class DocumentIndex(NgdsDataObject):
+    """
+    DocumentIndex model represents the physical documents uploaded as part of resource which needs to be full-text indexed.
+    *file_path - Full path of the uploaded document
+    *status - explains the status of current document (NEW,CANCEL,COMPLETED)
+    *comments - Any exception comments if there is an error.
+    """
 
     def __init__(self, **kwargs):
         self.package_id = kwargs.get('package_id', None)
@@ -145,7 +179,7 @@ class DocumentIndex(NgdsDataObject):
 def define_tables():
     """Create the in-memory represenatation of tables, and map those tables to classes defined above"""
     
-    # First define the three tables
+    # First define the tables
     bulkupload = Table(
         "bulk_upload",
         meta.metadata,
@@ -188,8 +222,6 @@ def define_tables():
         Column("url", types.UnicodeText),
     )
 
-
-    # First define the three tables
     document_index = Table(
         "resource_document_index",
         meta.metadata,
@@ -202,7 +234,7 @@ def define_tables():
         Column('last_updated', types.DateTime, default=datetime.datetime.now),
     )
 
-    # Map those tables to classes, define the additional properties for related people
+    # Map those tables to classes, define the additional properties for related models
     meta.mapper(BulkUpload, bulkupload,
         properties={
             "uploaded_user": relationship(model.User)            
@@ -224,9 +256,7 @@ def define_tables():
 
 def db_setup():
     """Create tables in the database"""
-    # These tables will already be defined in memory if the metadata plugin is enabled.
-    #  IConfigurer will make a call to define_tables()
-    
+    # These tables will already be defined in memory IConfigurer will make a call to define_tables()
     
     bulkupload = meta.metadata.tables.get("bulk_upload", None)
     bulkupload_package = meta.metadata.tables.get("bulk_upload_package", None)

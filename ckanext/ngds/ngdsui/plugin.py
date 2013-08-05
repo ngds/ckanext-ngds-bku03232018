@@ -224,6 +224,7 @@ class NgdsuiPlugin(SingletonPlugin):
             'load_ngds_facets':helpers.load_ngds_facets,
             'get_ngdsfacets':helpers.get_ngdsfacets,
             'get_formatted_date':helpers.get_formatted_date,
+            'get_formatted_date_from_obj':helpers.get_formatted_date_from_obj,
             'get_field_title':helpers.get_field_title,
             'is_string_field':helpers.is_string_field,
             'is_ogc_publishable':helpers.is_ogc_publishable,
@@ -240,11 +241,13 @@ class NgdsuiPlugin(SingletonPlugin):
             'toJSON':helpers.to_json
         }
 
-    implements(IPackageController,inherit=True)
+    implements(IPackageController, inherit=True)
 
     def before_index(self, pkg_dict):
         #pkg_dict['sample_created']={'prahadeesh':'abclll'}
         is_full_text_enabled = ckan_config.get('ngds.full_text_indexing','false')
+
+        file_formats_to_ignore = ('csv')
 
 
         import json
@@ -269,7 +272,8 @@ class NgdsuiPlugin(SingletonPlugin):
                                          ('content_model', 'res_content_model')]:
                         pkg_dict[nkey] = pkg_dict.get(nkey, []) + [resource.get(okey, u'')]
 
-                    if is_full_text_enabled == 'true':
+                    if is_full_text_enabled == 'true' and resource.get('resource_type', '') == 'unstructured' and \
+                            str(resource.get('format', u'')).lower() not in file_formats_to_ignore:
 
                         file_path = helpers.file_path_from_url(resource.get("url"))
                         if file_path:
