@@ -121,7 +121,6 @@ var get_prop = function(url,what) {
 };
 
 
-$(document).ready(function() {
   position_file_uploader();
 var render_forms = function(value) {
   $(".form-body").empty();
@@ -214,4 +213,3 @@ if(typeof continuation!=='undefined') {
     $("[name="+continuation['field']+"]").val(continuation['value']);
   }
 }
-});
