@@ -39,6 +39,8 @@
 {% endblock %}
 {% block styles %}
 {{ super() }}
+        {% block jquery_no_conflict %}
+        {% endblock %}
 	<link rel="stylesheet" href="/vendor/leaflet0.6.2/leaflet.css" />
 	<!-- <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" /> -->
 	<link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
@@ -82,4 +84,5 @@
 	ngds.Map.top_level_search();
 </script> 
 {% endif %}
+
 {% endblock %}   

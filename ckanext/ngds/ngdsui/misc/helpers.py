@@ -511,3 +511,30 @@ def get_master_style():
 
 def split(what,how):
     return how.join(what)
+
+def get_label_for_pkg_attribute(attribute):
+    if attribute in label_attribute_mapping:
+        return label_attribute_mapping[attribute]
+    return attribute
+
+label_attribute_mapping = {
+    u'data_type' : u'Data Type',
+    u'language' : u'Language',
+    u'lineage' : u'Lineage',
+    u'ngds_maintainer' : u'Maintainers',
+    u'publication_date': u'Publication Date',
+    u'quality' : u'Quality',
+    u'spatial' : u'Geographic Location',
+    u'spatial_word' : u'Geographic Location Tags',
+    u'status' : u'Status',
+    u'uri' : u'URI',
+    u'authors' : u'Authors'
+}
+
+def is_json(value):
+    try:
+        json.loads(value)
+        return True
+    except(ValueError):
+        pass
+    return False

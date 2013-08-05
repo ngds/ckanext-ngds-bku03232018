@@ -12,7 +12,7 @@
 {% block secondary_content %}
   {% if pkg_dict and pkg_dict.state != 'draft' %}
     {% snippet 'package/snippets/info.html', pkg=pkg_dict, action='resource_new' %}
-  {% else %}  
+  {% else %}
   {% endif %}
 {% endblock %}
 
@@ -24,14 +24,9 @@
 
 {% endblock %}
 
-{% block after_scripts %}
-<script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
-{% endblock %}
-
 {% block breadcrumb_content %}
-  
+
   <li>{% link_for _('Datasets'), controller='package', action='search', highlight_actions = 'new index' %}</li>
   <li>{% link_for h.dataset_display_name(pkg_dict)|truncate(30), controller='package', action='read', id=pkg_dict.name %}</li>
   <li class="active"><a href="">Add resource</a></li>
 {% endblock %}
-

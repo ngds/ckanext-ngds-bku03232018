@@ -95,7 +95,6 @@ var populate_form = function(data) {
 };
 
 var activate_populate_form = function(data) {
-	console.log("Activating ....... ",data);
 	render_forms(data['resource_type']);
 	populate_form(data);
 	// $("[name=resource_type]").prop("disabled",true);
@@ -151,10 +150,12 @@ var render_forms = function(value) {
   if(value==="offline-resource") {
     $("#offline-resource").prop("checked",true);
     $(".form-body").html(Mustache.render(ngds.structured_form_template,offline_resource_form));
+      position_file_uploader();
   }
 
   if(value==="data-service") {
     $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
+      position_file_uploader();
   }
 
   if(value==="data-service" || value==="unstructured" || value==="structured") {
@@ -171,9 +172,7 @@ var render_forms = function(value) {
     });
       }
 };
-
 $('input[name="resource_type"]').on('change',function(ev){
-  
   var id = ev.currentTarget.id;
   var value ="";
   if(id==="resource_type-unstructured") {

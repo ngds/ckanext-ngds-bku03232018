@@ -227,9 +227,7 @@ var offline_resource_form = {
 
 var position_file_uploader = function(selector) {
     if(typeof selector==='undefined') {
-      console.log("here .............");
-      console.log($(".resource-upload-field").css("display"));
-      $(".resource-upload-field").addClass("bleh");
+      $(".resource-upload-field").addClass("display-none");
         $(".resource-upload-field").css("display","none");
         return;
     }
@@ -239,7 +237,7 @@ var position_file_uploader = function(selector) {
     var file_upload = $(".resource-upload-field");
     file_upload.css("position","absolute");
     ref.css("width",r_width-60);
-    file_upload.css("left",ref.position().left+ref.width()+5);
+    file_upload.css("left",ref.position().left+ref.width());
     file_upload.css("top",ref.position().top);
     file_upload.show();
 };
