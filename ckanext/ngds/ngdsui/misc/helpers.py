@@ -412,8 +412,8 @@ def get_dataset_category_image_path(package):
 
     for extra in package.get('extras'):
         key = extra.get('key')
-        if key and key=='dataset_category':
-            dataset_category = extra.get('value')
+        if key and key=='data_type':
+            dataset_category = str(extra.get('value'))
             break
 
     category_image_link = {
