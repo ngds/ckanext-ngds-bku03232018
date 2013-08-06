@@ -24,6 +24,8 @@ referenced_keys = ('data_type', 'status', 'protocol')
 
 responsible_party_keys = ('authors', 'maintainer', 'distributor')
 
+date_keys = ('publication_date')
+
 
 DEFAULT_GROUP = ui_helper.get_default_group()
 
@@ -225,7 +227,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         else:
             #print "license_title: ",license_title
             #logger('Warning: No license name matches \'%s\'. Ignoring license.' % license_title)
-            return u''    
+            return u''
 
     @classmethod
     def responsible_party_2_id(self,name,email):
@@ -269,9 +271,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         email_list = [x.strip() for x in str(email_string).split(',') if x.strip()]
 
         if len(email_list) > 1 and field_name.lower() != 'authors':
-            raise Exception("Data Error: % can not have more than one person" % field_name)
-
-        user_dict = {}
+            raise Exception("Data Error: %s can not have more than one person" % field_name)
 
         party_list = []
 
@@ -280,16 +280,23 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
             returned_party = ckan_model.ResponsibleParty.find(email.lower()).all()
 
             if returned_party and len(returned_party) > 0:
+                user_dict = {}
                 user_dict['name'] = returned_party[0].name
                 user_dict['email'] = returned_party[0].email
                 party_list.append(user_dict)
             else:
-                raise Exception("Responsible party with email: % not found in the system. Please add either manually or use loader script." % email)
+                raise Exception("Responsible party with email: %s not found in the system. Please add either manually or use loader script." % email)
 
+        import json
         if field_name.lower() == 'authors':
-            return party_list
+            return json.dumps(party_list)
         else:
-            return party_list[0]
+            return json.dumps(party_list[0])
+
+    @classmethod
+    def get_iso_date_string(cls, field_name, cell):
+
+        return None
 
     @classmethod
     def pkg_xl_dict_to_fs_dict(cls, pkg_xl_dict, logger=None):
@@ -309,13 +316,19 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
+            print "title:%s, value: %s" % (title,cell)
             if cell:
                 if title in referenced_keys:
                     cell = cls.validate_SD(title,cell)
                 if title in responsible_party_keys:
                     cell = cls.validate_responsible_party(title, cell)
 
-                if title in standard_fields:
+                if title in date_keys:
+                    cell = cls.get_iso_date_string(title,cell)
+
+                if title == 'tags':
+                    pkg_fs_dict['tag_string'] = cell
+                elif title in standard_fields:
                     pkg_fs_dict[title] = cell
                 elif title == 'license':
                     #print "license: ", cell

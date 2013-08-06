@@ -31,6 +31,7 @@ db_url = parser.get("app:main", "sqlalchemy.url")
 pattern = "://(?P<user>.+?):(?P<pass>.+?)@(?P<host>.+?)(:(?P<port>\d+))?/(?P<database>.+)$"
 details = re.search(pattern, db_url)
 
+print "Starting call for database connection"
 # Connection to the database engine
 conn = (details.group("user"), details.group("pass"), details.group("host"), details.group("port") or "5432")
 Session = sessionmaker(bind=create_engine("postgresql://%s:%s@%s:%s/postgres" % conn))
@@ -40,7 +41,7 @@ base_session = Session(autocommit=True)
 base_session.connection().connection.set_isolation_level(0)
 try:
     base_session.execute("DROP DATABASE %s;" % details.group("database"))
-    #print "DROPPED DATABASE %s" % details.group("database")
+    print "DROPPED DATABASE %s" % details.group("database")
 except ProgrammingError:
     pass
 base_session.connection().connection.set_isolation_level(1)
@@ -49,9 +50,11 @@ base_session.connection().connection.set_isolation_level(1)
 base_session.connection().connection.set_isolation_level(0)
 try:
     base_session.execute("CREATE DATABASE %s;" % details.group("database"))
-    #print "CREATED DATABASE %s" % details.group("database")
+    print "CREATED DATABASE %s" % details.group("database")
 except Exception as ex:
+    print "Exception while trying to create database: %s" % ex.orig
     raise ex
+    sys.exit(1)
 base_session.connection().connection.set_isolation_level(1)
 
 # Connect to the new database
@@ -62,8 +65,10 @@ session = Session(autocommit=True)
 # Create PostGIS tables
 with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "postgis.sql"), "r") as pg:
     session.execute(pg.read())
+print "Executed postgis sql"
 with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "spatial_ref_sys.sql")) as sr:
     session.execute(sr.read())
+print "Executed spatial sql"
 session.close()
 
 #print "GEOMETRY_COLUMNS EXISTS: %s" % str(engine.dialect.has_table(engine.connect(), "geometry_columns"))

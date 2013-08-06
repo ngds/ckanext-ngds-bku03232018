@@ -60,12 +60,13 @@ def _get_repoze_handler(handler_name):
 
 def get_default_group():
 
+    default_group_id = ''
     try:
-        print g.default_group
-    except AttributeError:
-        g.default_group = config.get('ngds.default_group_name', 'public')
+        default_group_id = g.default_group
+    except Exception:
+        default_group_id = config.get('ngds.default_group_name', 'public')
 
-    return g.default_group
+    return default_group_id
 
 def highlight_rating_star(count,packageId):
     
@@ -144,7 +145,11 @@ def username_for_id(id):
 def get_formatted_date(timestamp):
     return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
 
-
+def get_formatted_date_from_obj(timestamp, isdate):
+    if isdate:
+        return timestamp.strftime("%b %d, %Y %H:%M")
+    else:
+        return iso8601.parse_date(timestamp).strftime("%b %d,%Y %H:%M")
 
 def load_ngds_facets():
     """
@@ -407,21 +412,21 @@ def get_dataset_category_image_path(package):
 
     for extra in package.get('extras'):
         key = extra.get('key')
-        if key and key=='dataset_category':
-            dataset_category = extra.get('value')
+        if key and key=='data_type':
+            dataset_category = str(extra.get('value'))
             break
 
     category_image_link = {
         'Dataset' :'/assets/dataset.png',
-        'Physical Collection' :'/assets/dataset.png',
-        'Catalog' :'/assets/dataset.png',
-        'Movie or Video' :'/assets/dataset.png',
-        'Drawing' :'/assets/dataset.png',
-        'Photograph' :'/assets/dataset.png',
-        'Remotely-Sensed Image' :'/assets/dataset.png',
-        'Map' :'/assets/dataset.png',
-        'Text Document' :'/assets/document.png',
-        'Physical Artifact' :'/assets/dataset.png',
+        'Physical Collection' :'/assets/physicalcollection.png',
+        'Catalog' :'/assets/catalog.png',
+        'Movie or Video' :'/assets/video.png',
+        'Drawing' :'/assets/drawing.png',
+        'Photograph' :'/assets/photograph.png',
+        'Remotely-Sensed Image' :'/assets/remotelysensedimage.png',
+        'Map' :'/assets/map.png',
+        'Text Document' :'/assets/text_document.png',
+        'Physical Artifact' :'/assets/physicalcollection.png',
         'Desktop Application' :'/assets/dataset.png',
         'Web Application' :'/assets/dataset.png'
     }
