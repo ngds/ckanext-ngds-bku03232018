@@ -279,7 +279,7 @@ class NgdsuiPlugin(SingletonPlugin):
                                          ('content_model', 'res_content_model')]:
                         pkg_dict[nkey] = pkg_dict.get(nkey, []) + [resource.get(okey, u'')]
 
-                    if is_full_text_enabled == 'true' and resource.get('resource_type', '') == 'unstructured' and \
+                    if is_full_text_enabled == 'true' and resource.get('resource_format', '') == 'unstructured' and \
                             str(resource.get('format', u'')).lower() not in file_formats_to_ignore:
 
                         file_path = helpers.file_path_from_url(resource.get("url"))
