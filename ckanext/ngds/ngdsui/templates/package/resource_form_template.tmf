@@ -3,7 +3,7 @@
 ngds.structured_form_template = "{{#form}}\
 <div class='input-group {{top_classes}}'>\
 <div class='sp-label {{classes}}'><label>{{label}}</label></div>\
-<{{tag}} {{additional}} {{#name}} name='{{name}}' {{/name}} {{#id}}id='{{id}}'{{/id}} class='structured-input{{#class}} {{class}}{{/class}}'{{#title}} title='{{title}}' {{/title}}{{placeholder}} {{^dnt}}/{{/dnt}}>\
+<{{tag}} {{additional}} {{#data-module}} data-module='{{data-module}}' {{/data-module}} {{#name}} name='{{name}}' {{/name}} {{#id}}id='{{id}}'{{/id}} class='structured-input{{#class}} {{class}}{{/class}}'{{#title}} title='{{title}}' {{/title}}{{placeholder}} {{^dnt}}/{{/dnt}}>\
 {{inner}}\
 {{#options}}\
 <option value='{{value}}'>{{label}}</option>\

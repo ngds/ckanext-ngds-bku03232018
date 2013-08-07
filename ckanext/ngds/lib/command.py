@@ -1,5 +1,4 @@
 from ckan.lib.cli import CkanCommand
-from ckanext.ngds.lib.importer.importer import BulkUploader
 
 class APICommand(CkanCommand):
     """
@@ -16,6 +15,7 @@ class APICommand(CkanCommand):
         #print "Arguments: ",self.args
         if cmd == "import":
             #print "File Path: ",self.args[1]
+            from ckanext.ngds.lib.importer.importer import BulkUploader
             bulkLoader = BulkUploader()
             #bulkLoader.importpackagedata(file_path=self.args[1],resource_dir=self.args[2])
             bulkLoader.execute_bulk_upload()

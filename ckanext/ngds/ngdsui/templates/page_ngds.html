@@ -20,24 +20,30 @@
   <script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
   <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom.js"></script>
   <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
-  <link rel="stylesheet/less" type="text/css" href="/css/main.less"/>
+  {{ h.get_master_style() }}
   <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
   <!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
   <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css" />
+{% block jquery_no_conflict %}
      <script>
-   var ngds = ngds || (ngds = { });
+     $(document).ready(function() {
+$.noConflict();
+     });
    </script>
-  <script type="text/javascript" src="/vendor/less/less.min.js"></script>
+{% endblock %}
+        <script>
+               var ngds = ngds || (ngds = { });
+        </script>
   <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
   <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
    <script type="text/javascript" src="/scripts/utils/utils.js"></script>
    <script type="text/javascript" src="/vendor/mustache/mustache.js"></script> 
    <script type="text/javascript" src="/scripts/main/ngds_pubsub.js"></script> 
+   <script type="text/javascript" src="/scripts/map/bounding_box.js"></script> 
    <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
 
 {% endblock %}
-{% block bodytag %}
-{%- endblock -%}
+
 
 {%- block page -%}
 
@@ -112,23 +118,18 @@
   </div>
 {%- endblock -%}
    
-  {% block scripts %} 
+  {% block scripts %}
+  {{ super() }}
+      {% resource 'base/main' %}
+    {% resource 'base/ckan' %}
+    {% if g.tracking_enabled %}
+        {% resource 'base/tracking.js' %}
+    {% endif %}
+
+
   <script type="text/javascript" src="/scripts/scripts.js"></script> 
 
-  {% endblock %}
-   
-   
-   
-  <!-- // <script type="text/javascript" src="/scripts/autocomplete.js"></script> -->
 
-  
-  
-  <!--
-  <script>document.getElementsByTagName('html')[0].className += ' js';</script>
-  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/jquery.min.js"></script>
-  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-02-14T14:42:43.33/:bundle:bootstrap/js/bootstrap-transition.min.js;bootstrap/js/bootstrap-collapse.min.js;bootstrap/js/bootstrap-modal.min.js;bootstrap/js/bootstrap-alert.min.js;bootstrap/js/bootstrap-tab.min.js;bootstrap/js/bootstrap-button.min.js;bootstrap/js/bootstrap-tooltip.js;bootstrap/js/bootstrap-popover.js;bootstrap/js/bootstrap-dropdown.js;jed.min.js;select2/select2.min.js">
-  </script>
-  <script type="text/javascript" src="/fanstatic/base/:version:2013-02-14T14:42:43.32/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/follow.js;modules/popover-context.js;modules/activity-stream.js;modules/dashboard.js">
-  </script>
--->
+  {% endblock %}
+
 

@@ -1,6 +1,7 @@
 from ckan.lib.base import model,h,g,c,request,response
 import ckan.lib.navl.dictization_functions as dictization_functions
 import ckan.controllers.storage as storage
+from webhelpers.html import literal
 import ckan.rating as rating
 DataError = dictization_functions.DataError
 from pylons import config, jsonify
@@ -59,12 +60,13 @@ def _get_repoze_handler(handler_name):
 
 def get_default_group():
 
+    default_group_id = ''
     try:
-        print g.default_group
-    except AttributeError:
-        g.default_group = config.get('ngds.default_group_name', 'public')
+        default_group_id = g.default_group
+    except Exception:
+        default_group_id = config.get('ngds.default_group_name', 'public')
 
-    return g.default_group
+    return default_group_id
 
 def highlight_rating_star(count,packageId):
     
@@ -143,7 +145,11 @@ def username_for_id(id):
 def get_formatted_date(timestamp):
     return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
 
-
+def get_formatted_date_from_obj(timestamp, isdate):
+    if isdate:
+        return timestamp.strftime("%b %d, %Y %H:%M")
+    else:
+        return iso8601.parse_date(timestamp).strftime("%b %d,%Y %H:%M")
 
 def load_ngds_facets():
     """
@@ -381,7 +387,11 @@ def get_usersearches():
     return query.all()
 
 def parseJSON(input):
-    return json.loads(input)
+    try:
+        json_parsed = json.loads(input)
+    except(ValueError,TypeError):
+        return json.loads("{}")
+    return json_parsed
 
 def json_extract(input,key):
     if(input==''):
@@ -390,6 +400,7 @@ def json_extract(input,key):
         input = input.decode('ascii').replace("&#34;",'"')
         i_json = json.loads(input)
         if key in i_json:
+            print "Found : "+i_json[key] +" for key : " + key
             return i_json[key]
     except(ValueError):
         pass
@@ -405,21 +416,21 @@ def get_dataset_category_image_path(package):
 
     for extra in package.get('extras'):
         key = extra.get('key')
-        if key and key=='dataset_category':
-            dataset_category = extra.get('value')
+        if key and key=='data_type':
+            dataset_category = str(extra.get('value'))
             break
 
     category_image_link = {
         'Dataset' :'/assets/dataset.png',
-        'Physical Collection' :'/assets/dataset.png',
-        'Catalog' :'/assets/dataset.png',
-        'Movie or Video' :'/assets/dataset.png',
-        'Drawing' :'/assets/dataset.png',
-        'Photograph' :'/assets/dataset.png',
-        'Remotely-Sensed Image' :'/assets/dataset.png',
-        'Map' :'/assets/dataset.png',
-        'Text Document' :'/assets/document.png',
-        'Physical Artifact' :'/assets/dataset.png',
+        'Physical Collection' :'/assets/physicalcollection.png',
+        'Catalog' :'/assets/catalog.png',
+        'Movie or Video' :'/assets/video.png',
+        'Drawing' :'/assets/drawing.png',
+        'Photograph' :'/assets/photograph.png',
+        'Remotely-Sensed Image' :'/assets/remotelysensedimage.png',
+        'Map' :'/assets/map.png',
+        'Text Document' :'/assets/text_document.png',
+        'Physical Artifact' :'/assets/physicalcollection.png',
         'Desktop Application' :'/assets/dataset.png',
         'Web Application' :'/assets/dataset.png'
     }
@@ -497,3 +508,62 @@ def process_resource_docs_to_index():
         doc.save()
         #ckan_model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where id=:id", {'status_val':'DONE','id': doc.id})
         #ckan_model.Session().commit()
+
+
+def get_master_style():
+    if config.get('ngds.is_development',"false")=="true":
+        less_file = '<link rel="stylesheet/less" type="text/css" href="/css/main.less"/>'
+        less_js = ' <script type="text/javascript" src="/vendor/less/less.min.js"></script>'
+        return literal('%s %s' % (less_file,less_js))
+    
+    return literal('<link rel="stylesheet" type="text/css" href="/css/main.css"/>')
+
+def split(what,how):
+    return how.join(what)
+
+def get_label_for_pkg_attribute(attribute):
+    if attribute in label_attribute_mapping:
+        return label_attribute_mapping[attribute]
+    return attribute
+
+def get_label_for_resource_attribute(attribute):
+    s_attribute = str(attribute)
+    if s_attribute in res_label_attribute_mapping:
+        return res_label_attribute_mapping[s_attribute]
+    return s_attribute
+
+label_attribute_mapping = {
+    u'data_type': u'Data Type',
+    u'language': u'Language',
+    u'lineage': u'Lineage',
+    u'ngds_maintainer': u'Maintainers',
+    u'publication_date': u'Publication Date',
+    u'quality': u'Quality',
+    u'spatial': u'Geographic Location',
+    u'spatial_word': u'Geographic Location Tags',
+    u'status': u'Status',
+    u'uri': u'URI',
+    u'authors': u'Authors'
+}
+
+res_label_attribute_mapping = {
+    'dataset name': 'Dataset Name',
+    'distributor': 'Distributor',
+    'id': 'Id',
+    'layer': 'Layer',
+    'position': 'Position',
+    'protocol': 'Protocol',
+    'resource format': 'Resource Type',
+    'resource group id': 'Resource Group Id',
+    'revision id': 'Revision Id',
+    'revision timestamp': 'Revision Timestamp',
+    'state': 'State'
+}
+
+def is_json(value):
+    try:
+        json.loads(value)
+        return True
+    except(ValueError):
+        pass
+    return False

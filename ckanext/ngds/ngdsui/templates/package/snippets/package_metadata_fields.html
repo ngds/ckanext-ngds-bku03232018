@@ -27,6 +27,11 @@
     <div class="sp-label"><label>Maintainer Email</label></div>
       <input type="text" name="maintainer_email" placeholder="joe@example.com" value="{{data.maintainer_email}}"></input>
   </div> -->
+  {% if pkg_name %}
+  <input name="pkg_name" type="hidden" value="{{pkg_name}}"/>
+  {% elif data.pkg_name %}
+  <input name="pkg_name" type="hidden" value="{{ data.pkg_name}}"/>
+  {% endif %}
   <input type="hidden" name="author" value="{{ data.author }}"/>
   <input type="hidden" name="author_email" value="{{ data.author_email }}"/>
 
@@ -57,7 +62,7 @@
 
 
 {% block custom_fields %}
-  {% snippet 'snippets/custom_form_fields.html', extras=data.extras,data=data, errors=errors, limit=3 %}
+  {% snippet 'snippets/custom_form_fields.html', extras=data.extras,data=data, errors=errors, limit=3, pkg_dict=pkg_dict %}
 {% endblock %}
 
 </div>

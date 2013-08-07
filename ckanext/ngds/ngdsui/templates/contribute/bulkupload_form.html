@@ -1,10 +1,12 @@
 {% extends "page_ngds.html" %}
 {%- block content %}
+<div id="bulk-upload-page">
 <h2>Bulk Upload Dataset</h2>
+<span id="desc">Submit bulk datasets to share with community</span>
 
 <form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulk_upload_handle') }}" enctype="multipart/form-data"  >
 
-	<div style="align:center;padding-top:20px;padding-left:20px;font-size: 12px; font-family: Arial;">
+<!--	<div  style="align:center;padding-top:20px;padding-left:20px;font-size: 12px; font-family: Arial;">
 		<table style="border: 1px solid black;">
 			<tr>
 				<td align="right">Upload Dataset file(csv or xls):</td><td>{{h.file('datasetfile')}}</td>
@@ -13,12 +15,35 @@
 				<td align="right">Upload Resources file(zip):</td><td>{{h.file('resourceszip')}}</td>
 			</tr>
 			<tr>
-				<td></td><td><input type="submit" value"Submit"/></td>
+				<td></td><td><input type="submit" value="Submit"/></td>
 			</tr>
 
 		</table>
-	</div>
+	</div>-->
+
+    <div class="bulk-upload allow-space">
+        <div class="upload-file-block">
+            <label class="title">Upload dataset file(*.xls)</label>
+            <input class="file_path" type="text" id="datasetfile_path" />
+	        <label class="add-photo-btn">Choose File<span><input type="file" id="datasetfile" name="datasetfile" accept=".xls" /></span></label>
+        </div>
+    </div>
+
+    <div class="bulk-upload">
+        <div class="upload-file-block">
+            <label class="title">Upload resource file(*.zip)</label>
+            <input class="file_path" type="text" id="resourcefile_path" />
+	        <label class="add-photo-btn">Choose File<span><input type="file" id="resourceszip" name="resourceszip" accept=".zip"/></span></label>
+        </div>
+    </div>
+
+    <div id="bulk-form-submit"><input  id="upload-submit-button" type="submit" value="Submit" disabled/></div>
+
 </form> 
-<br><br><br>
-<p>To check the status of already uploaded files <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}"><b>Click here</b></a><p>
+
+    <div id="upload-list"><p><a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}"><button>Click here</button></a> to check the status of already uploaded files <p></div>
+
+
+</div>
+<script type="text/javascript" src="/scripts/contribute/contribute.js"></script>
 {% endblock %}

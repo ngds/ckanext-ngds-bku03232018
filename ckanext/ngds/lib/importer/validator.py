@@ -4,7 +4,7 @@ import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
 referenced_keys = ('category','status','topic','protocol')
 
-date_keys = ('date_publication')
+date_keys = ('publication_date')
 mandatory_keys = ('name','title')
 
 class BasicLogger:
@@ -71,10 +71,13 @@ class NGDSValidator(object):
                     #cell = self.xl_data.sheet.cell(row_index, col_index)
                     #if cell and cell.value:
                     if cell:
+                        #value = datetime.datetime.strptime(str(cell), '%m/%d/%Y')
+                        #print "converted value: ", value
+                        #xlrd.da
                         date_tuple = xlrd.xldate_as_tuple(cell, self.xl_data._book.datemode)
-                        value = datetime.date(*date_tuple[:3])  
-            except Exception , e:
-                raise Exception ("Invalid date value: '%s' for the field: %s" % (cell,title))
+                        value = datetime.date(*date_tuple[:3])
+            except Exception, e:
+                raise Exception("Invalid date value: '%s' for the field: %s" % (cell, title))
 
     def _validate_mandatory_field(self):
 

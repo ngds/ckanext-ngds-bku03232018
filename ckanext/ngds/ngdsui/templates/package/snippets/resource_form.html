@@ -1,9 +1,12 @@
 {% include 'package/resource_form_template.tmf' %}
 {% include 'package/add_responsible_party.tmf' %}
-
+<style>
+  .wrapper {
+    border:none;
+    box-shadow:none;
+  }
+</style>
 {% if include_metadata %}
-
-{{ data }}
 
 {% endif %}
 <script>
@@ -11,21 +14,9 @@
     resource_location = window.location.origin+"{{data['resource_location']}}";
 {% endif %}
 </script>
-<form id="file-upload-form" action="/ngds/contribute/upload_file" method="post" enctype="multipart/form-data">
-  <div id="file-upload" style="display:none;">
-          <input type="submit" name="file-upload-button" value="Upload"></input>
-          <input type="file" id="file" name="file" class="structured-input"></input>
-          {% if data['key'] %}
-          <input type="hidden" name="key" id="key1" value="{{data['key']}}"></input>
-          {% else %}
-          <input type="hidden" name="key" id="key1"></input>
-          {% endif %}
-          <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
-          <input type="hidden" name="resource_type" id="resource_type"/>
-  </div>
-</form>
 
 <form class="dataset-form dataset-resource-form form-horizontal" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
+  <div data-module="resource-upload-field"></div>
   <ol class="stages stage-2">
     <li class="first-stage complete">
         <button class="highlight" name="save" value="go-dataset" type="submit">1. Create dataset</button>
@@ -43,36 +34,36 @@
         <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
         <input type="radio" id="resource_type-selection" name="upload_type_selection" value="upload_type"/>
         <label for="resource_type-selection">Upload a file</label><br>
-          {% if data['resource_type'] %}          
-          <input type="hidden" name="resource_type" value="{{data['resource_type']}}" />
+          {% if data['resource_format'] %}
+          <input type="hidden" name="resource_format" value="{{data['resource_format']}}" />
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" />
           {% else %}
-        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" name="resource_type" value="structured"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" name="resource_format" value="structured"/>
           {% endif %}
 
         <label for="resource_type-structured" id="resource_type-structured-label">Structured</label><br>
-          {% if data['resource_type'] %}
+          {% if data['resource_format'] %}
           &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" />
           {% else %}
-          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_type" value="unstructured" />
+          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_format" value="unstructured" />
           {% endif %}
         <label for="resource_type-unstructured" id="resource_type-unstructured-label">Unstructured</label>
       </div>
 
       <div class="radio-section">
-        {% if data['resource_type'] %}
+        {% if data['resource_format'] %}
         <input type="radio" id="data-service" />
         {% else %}
-          <input type="radio" id="data-service" name="resource_type" value="data-service" />
+          <input type="radio" id="data-service" name="resource_format" value="data-service" />
         {% endif %}
         <label for="data-service">Link to a data service</label>
       </div>
 
       <div class="radio-section">
-          {% if data['resource_type'] %}
+          {% if data['resource_format'] %}
         <input type="radio" id="offline-resource" />
          {% else %}
-         <input type="radio" id="offline-resource" name="resource_type" value="offline-resource" />
+         <input type="radio" id="offline-resource" name="resource_format" value="offline-resource" />
           {% endif %}
         <label for="offline-resource">Offline resource</label>
       </div>
@@ -118,110 +109,33 @@
 <script type="text/javascript" src="/scripts/contribute/resource_form.js"></script>
 
 <script>
-
-var render_forms = function(value) {
-  $(".form-body").empty();
-  
-  position_file_uploader();
-
-  if(value==='structured' || value==='unstructured') {
-      $("[name=upload_type_selection]").prop("checked",true);
-  }
-  else {
-      $("[name=upload_type_selection]").prop("checked",false); 
-  }
-  if(value==="structured") {
-    $("#resource_type-structured").prop("checked",true);
-    $(".form-body").html(Mustache.render(ngds.structured_form_template,structured_form));
-    position_file_uploader("#url");
-    populate_content_models();
-  }
-
-  if(value==="unstructured") {
-    $("#resource_type-unstructured").prop("checked",true);
-    $(".form-body").html(Mustache.render(ngds.structured_form_template,unstructured_form));
-    position_file_uploader("#url");
-  }
-
-  if(value==="offline-resource") {
-    $("#offline-resource").prop("checked",true);
-    $(".form-body").html(Mustache.render(ngds.structured_form_template,offline_resource_form));
-  }
-
-  if(value==="data-service") {
-    $(".form-body").html(Mustache.render(ngds.structured_form_template,link_data_service_form));
-  }
-
-  if(value==="data-service" || value==="unstructured" || value==="structured") {
-    new ngds.responsible_party().responsibilify({
-      'rs_name':'#distributor_name',
-      'rs_email':'#distributor_email',
-      'rs_fake':'#distributor_fake',
-      'rs':'#distributor',
-      'slug_container':'.distributor-tag'
-    },function(dict) {
-  $("[name='distributor_name']").val(dict['name']);
-  $("[name='distributor_email']").val(dict['email']);
-});
-  }
-};
-
-$('input[name="resource_type"]').on('change',function(ev){
-  
-  var id = ev.currentTarget.id;
-  var value ="";
-  if(id==="resource_type-unstructured") {
-    value='unstructured';
-  }
-  if(id==="resource_type-structured") {
-    value='structured';
-  }
-  if(id==="offline-resource") {
-    value='offline-resource';
-  }
-  if(id==="data-service") {
-    value='data-service';
-  }
-
-  render_forms(value);
-});
-
-$("#go-metadata").click(function() {
-  $.ajax({
-    'url':'/ngds/contribute/validate_resource',
-    'data':$(".dataset-form").serializeArray(),
-    'success':function(response) {
-      if(response.success===true) {
-        $(".dataset-form").append($("<input/>",{'type':'hidden','name':'save','value':'go-metadata'}));
-        // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
-        $(".dataset-form").submit();
-      }
-      else {
-        ngds.publish('Notifications.received',response);
-      }
-    }
-  });
-});
-
-
-if(typeof continuation!=='undefined') {
-  for(var i=0;i<continuation.length;i++) {
-    $("[name="+continuation['field']+"]").val(continuation['value']);
-  }
-}
-
 </script>
 {% endraw %}
 
 <script>
-
+$(document).ready(function() {
 (function template_variables_collect(){
   {% if data %}
-   data="{{data}}";
-   data = ngds.util.parse_raw_json("{{h.jsonify(data)}}")
+  distributor = null;
+    {% if data.distributor %}
+    distributor = ngds.util.parse_raw_json("{{data.distributor}}");
+   {% set dist = data['distributor'] %}
+    {% endif %}
+
+   
+   // data="{{data|replace(data['distributor'],'')}}";
+   data = ngds.util.parse_raw_json("{{data|replace(data.distributor,'')|replace('None','\"\"')|replace('False','false')|replace('True','true')}}");
+   data['distributor'] = distributor;
+
    activate_populate_form(data);
+   if(typeof distributor !== 'undefined' && distributor!==null && distributor !== "") {
+       $("#distributor_name").val(distributor.name);
+       $("#distributor_email").val(distributor.email);
+       // console.log($("#distributor_name").val());
+     }
+   responsibilified.slugify();
   {% endif %}
 })();
-
+});
 
 </script>

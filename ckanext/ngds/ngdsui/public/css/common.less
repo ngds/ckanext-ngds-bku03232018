@@ -1,13 +1,55 @@
+.datepicker-styles {
+
+		.ui-widget-header {
+			background-color:#366D96;
+			background-image:none;
+			color:white;
+		}
+
+		ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+			background-color: #366D96;
+			color: white;
+			text-align: center;
+			background-image:none;
+		}
+
+		.ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {
+			width: 43%;
+			height: 25px;
+			font-size: 10pt;
+		}
+
+		.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+			background-color:white;
+			border:1px solid black;
+			color:black;	
+		}
+
+		.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+			background-color:green;
+		}
+}
+
 #content-container:-webkit-full-screen {
 		 width: 100% !important; height: 100% !important;
 
 }
+
 
 h2 {
  	margin-left:20px;
  	width:90%;
  	padding-bottom:10px;
  	border-bottom:3px solid #366D96;
+}
+
+h2.heading {
+	font-size:21px;
+	padding-bottom:0px;
+}
+
+img.heading-image {
+	padding-bottom:5px;
 }
 
 .ui-tooltip {
@@ -36,9 +78,36 @@ span.ui-dialog-title {
 	font-size:16px;
 }
 
+.error-explanation {
+	font-size:11pt;
+	font-weight:normal;
+}
+
 .error_dialog p {
 	font-size:12px;
 	font-weight:normal;
+}
+
+.error {
+	.sp-label label, input {
+		color:#b55457;
+	}
+
+	input {
+		border:1px solid #b55457;
+	}
+
+	.error-block {
+		-webkit-border-radius: 0 0 3px 3px;
+		-moz-border-radius: 0 0 3px 3px;
+		border-radius: 0 0 3px 3px;
+		display: block;
+		padding: 6px 8px 3px;
+		background: #c6898b;
+		margin: -3px 0 0;
+		color: #ffffff;
+		width: 208px;
+	}
 }
 
 .pull-right {
@@ -119,13 +188,25 @@ p {
 	border-bottom:2px solid #f0f0f0;
 }
 
+.div-border {
+	background: #fff;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	overflow: hidden;
+	-webkit-box-shadow: -1px 0 0 0 #d2d2d2, -1px 0 0 0 #e6e6e6, 1px 0 0 0 #d2d2d2, 2px 0 0 0 #e6e6e6, 0 -1px 0 0 #e8e8e8, 0 2px 0 0 rgba(241, 241, 241, 0.3), 0 1px 0 0 #b1b1b1;
+	-moz-box-shadow: -1px 0 0 0 #d2d2d2, -1px 0 0 0 #e6e6e6, 1px 0 0 0 #d2d2d2, 2px 0 0 0 #e6e6e6, 0 -1px 0 0 #e8e8e8, 0 2px 0 0 rgba(241, 241, 241, 0.3), 0 1px 0 0 #b1b1b1;
+	box-shadow: -1px 0 0 0 #d2d2d2, -1px 0 0 0 #e6e6e6, 1px 0 0 0 #d2d2d2, 2px 0 0 0 #e6e6e6, 0 -1px 0 0 #e8e8e8, 0 2px 0 0 rgba(241, 241, 241, 0.3), 0 1px 0 0 #b1b1b1;
+	-ie7-8-border: 1px solid #dedede;
+	border: 1px solid #dedede 9;
+}
+
 #top-level-container {
+	.div-border;
 	width:1280px;
 	text-align:center;
 	display:inline-block;
 	position:relative;
-	background-color:#ffffff;
-	.lrb-border;
 }
 
 .close-button-transform {
@@ -251,10 +332,6 @@ p {
 	.ngds-button(40px,35px);
 }
 
-input[type="submit"] {
-	.ngds-button(23px);
-}
-
 
 input[value="Go"] {
 	.ngds-button(40px,23px);
@@ -276,6 +353,7 @@ label{
 .wrapper{
   text-align: left;
   background-position: 72px top;
+  //.div-border;
 }
 
 [role="main"] {
@@ -331,4 +409,15 @@ input[type="text"] {
 
 input[type="radio"] {
   top:0px;
+}
+
+
+.select2-drop {
+	font-size:13px;
+	font-weight:normal;
+	text-align:left;
+}
+
+.select2-results .select2-highlighted {
+	background:#8ca0a6;
 }

@@ -241,10 +241,9 @@ def contentmodel_checkFile(context, data_dict):
         return {"valid": False, "messages": validation_msg}
 
 @logic.side_effect_free
-def contentmodel_checkBulkFile(context, title, version, resource_url ):
+def contentmodel_checkBulkFile(context,cm_dict):
     '''Check whether the given content model is a valid one.
-    Check whether the given csv file follows the specified content model.
-    This action returns detailed description of inconsistent cells.
+
     **Parameters:**
     :param cm_uri: uri of the content model.
     :type cm_uri: string
@@ -259,11 +258,16 @@ def contentmodel_checkBulkFile(context, title, version, resource_url ):
     :returns: A status object (either success, or failed).
     :rtype: dictionary
     '''
-    schema= [ rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels
-        if rec['title'] == title ]
+
+    print "Context: ", context
+
+    title = cm_dict.get('content_model')
+    version = cm_dict.get('version')
+
+    schema = [rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels if rec['title'].strip().lower() == str(title).strip().lower()]
+
     if schema.__len__() != 1:
-        errorMessage = {"valid": "false", "message": "the model is wrong"}
-        return json.dumps(errorMessage)
+        raise Exception(" Invalid content model: %s" % title)
 
     # schema is a list with a single entry
     content_model = schema[0]
@@ -271,15 +275,15 @@ def contentmodel_checkBulkFile(context, title, version, resource_url ):
     versionExists = False
 
     for c_version in content_model['versions']:
-        if c_version['version'] == version:
+        if c_version['version'] == str(version):
             versionExists = True
+            version_uri = c_version['uri']
 
     if not versionExists:
-        errorMessage = {"valid": "false", "message": "the version is wrong"}
-        return json.dumps(errorMessage)
+        raise Exception(" Invalid content model version. Content Model: %s ,version: %s" % (title,version))
 
-    data_dict = {'cm_uri': content_model['uri'], 'cm_version': version, 'cm_resource_url': resource_url}
-    return contentmodel_checkFile(context, data_dict)
+
+    return content_model['uri'], version_uri
 
 
 def create_contentmodel_table(context, data_dict):

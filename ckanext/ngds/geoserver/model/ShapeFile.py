@@ -124,7 +124,7 @@ class Shapefile(object):
         source_def = source.GetLayerDefn()
         
         # Read some shapefile properties
-        geom_type = ogr.wkbUnknown
+        geom_type = source_def.GetGeomType()
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(epsg)
 
@@ -152,7 +152,7 @@ class Shapefile(object):
         if not destination_source:
             destination_source = self.get_destination_source()
         if not name:
-            name = self.get_name()
+            name = self.table_name()
 
         layer = destination_source.GetLayerByName(name)
 
@@ -231,4 +231,4 @@ class Shapefile(object):
         return dataSource.GetLayerByIndex(0).GetName()
 
     def table_name(self):
-        return self.get_name()
+        return self.get_name().lower().replace("-", "_") # Postgresql will have the name screwballed

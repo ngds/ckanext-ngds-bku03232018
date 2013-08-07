@@ -83,7 +83,7 @@
                     <gmd:identifier>
                         <gmd:MD_Identifier>
                             <gmd:code>
-                                <gco:CharacterString>hands</gco:CharacterString>
+                                <gco:CharacterString>{{ other }}</gco:CharacterString>
                             </gmd:code>
                         </gmd:MD_Identifier>
                     </gmd:identifier>

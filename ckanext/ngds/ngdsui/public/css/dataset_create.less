@@ -1,3 +1,4 @@
+
 .ngds-slug {
 				font-size:13px;
 				display:none;
@@ -48,14 +49,55 @@
 }
 
 .stages {
-	width:820px;
+	border-width:0px;
+	width:870px;
 	display:table;
 	border-collapse:separate;
 	text-align:center;
 	padding-left:0px;
-	margin-left:70px;
+	margin-left:0px;
 	margin-top:0px;
 	background-color:#edeef0;
+
+	li span {
+		font-weight:normal;
+	}
+
+	li, li:after, li:before { 
+		border-radius:0px;
+		-webkit-border-radius:0px !important;
+		border-width:0px !important;
+		background-color:white;
+		border:1px solid grey;
+		border-top: 5px solid grey;
+		color:black;
+		button.highlight, span.highlight {
+			padding-top:5px;
+		}
+
+	}
+
+	li.complete .highlight, li.active .highlight{
+		background-color:white;
+		color:black;
+	}
+
+	li.complete .highlight {
+		background-color:lightcyan;
+		border:2px solid grey;
+		border-top:5px solid grey;
+	}
+
+	li.active .highlight {
+		border-top:5px solid #366D96;
+	}
+
+	li.uncomplete .highlight {
+		background-color:#edeef0;
+		border:2px solid grey;
+		border-top:5px solid grey;
+	}
+
 }
 
 .about-form {
@@ -68,8 +110,8 @@
 
 .ngds-module-content {
 	font-family:Arial;
-	font-weight:bold;
-	font-size:18px;
+	font-weight:normal;
+	font-size:13px;
 	min-height:550px;
 
 	.main-controls {
@@ -94,6 +136,12 @@
 
 	.form-body {
 		.input-group {
+
+            .select2-container .select2-choice {
+              width:655px;
+              display:inline-block;
+            }
+
 
 			margin-top:20px;
 
@@ -163,12 +211,29 @@
 			}
 		}
 
+		input[type="submit"], button[type="submit"] {
+			.ngds-button(23px);
+		}
+
+
 	}
 }
 
 
 #bbox-map {
-	height:250px;
-	width:650px;
+	height:300px;
+	width:660px;
 	margin-left:165px;
+}
+
+.resource-upload-field {
+  display:none;
+}
+
+.ckan-icon-link-plugin {
+  display:none;
+}
+
+.display-none {
+  display:none;
 }

@@ -1,67 +1,113 @@
 {% extends "page_ngds.html" %}
 {%- block content %}
+<div id="bulk-upload-page">
+<h2>{{ _('BULK UPLOADED RESOURCES') }}</h2>
+
+	{% if c.bulkuploads %}
+    <span id="desc">{{ _('Status of uploaded resource files.') }}</span>
+
+        {% if c.userobj.sysadmin %}
+        <form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='execute_bulkupload') }}">
+            <p style="margin-left:15px;margin-top:15px;margin-bottom:15px; align:right; border:1px solid #F8F8F8; padding:5px; width:50%;text-align: center;">To initiate bulk uploader process manually click here: {{h.submit('submit', 'Execute')}}</p>
+        </form>
+        {% endif %}
+
+        <table id="bulk-upload-list">
+            <thead class="table-head">
+                <tr>
+                    <td class="heading data-file">{{ _('Data File') }}</td>
+                    <td class="heading resource-file">{{ _('Resources File') }}</td>
+                    <td class="heading status">{{ _('Status') }}</td>
+                    <td class="heading comments">{{ _('Comments') }}</td>
+                    <td class="heading uploaded-date">{{ _('Uploaded Date') }}</td>
+                    <td class="heading details-button">{{ _('') }}</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bulkupload in c.bulkuploads %}
+                    <tr>
+                        <td>{{bulkupload.data_file}}</td>
+                        <td>{{bulkupload.resources}}</td>
+                        <td>{{bulkupload.status}}</td>
+                        <td>{{bulkupload.comments}}</td>
+                        <td>{{ h.get_formatted_date_from_obj(bulkupload.uploaded_date, True)}}</td>
+                        <td><a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_package_list', id=bulkupload.id ) }}">Details</a></td>
+                    </tr>
+                {% endfor%}
+            </tbody>
+        </table>
+
+    {% else %}
 
 
-	{% if c.bulkuploads %}  
-	<h4>Bulk Uploaded Records</h4>
-	<div style="height:325px; overflow:auto;align:center;padding-left:20px;font-size: 12px; font-family: Arial;">
-		{% if c.userobj.sysadmin %}
-		<form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='execute_bulkupload') }}">
-			<p style="margin-bottom:15px; align:right;">To initiate bulk uploader process manually click here: {{h.submit('submit', 'Execute')}}</p>
-		</form>
-		{% endif %}
-		
-		<table style="width:100%;border: 1px solid black;">
-			<tr>
-				<th>Data File</th><th>Resources File</th><th>Status</th><th>Comments</th><th>Uploaded Date</th><th>Details</th>
-			</tr>
-			{% for bulkupload in c.bulkuploads %}
-			<form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_package_list') }}">
-				<input type="hidden" name="id" value="{{ bulkupload.id }}"/>
-			<tr>
-				<td>{{bulkupload.data_file}}</td><td>{{bulkupload.resources}}</td><td>{{bulkupload.status}}</td><td>{% if bulkupload.comments %} {{bulkupload.comments}} {% else %} {% endif%}</td><td>{{bulkupload.uploaded_date}}</td><td>{{h.submit('submit', 'Details')}}</td>
-			</tr>
-			</form>
-			{% endfor%}
-
-		</table>
-	</div>
 	{% endif %}
 
 	{% if c.selected_upload %}  
-	<h4>Details of Bulk Uploaded Packages</h4>
-	<table style="margin-left:20px;width:70%;font-size: 12px; font-family: Arial;">
-		<tr>
-			<td><b>Data File:</b> {{c.selected_upload.data_file}}</td><td><b>Resources File:</b> {{c.selected_upload.resources}}</td>
-		</tr>	
-		<tr>
-			<td><b>Status:</b> {{c.selected_upload.status}}</td><td><b>Comments:</b> {{c.selected_upload.comments}}</td>
-		</tr>
-	</table>
-	<br>
-	<div style="height:250px; overflow:auto;align:center;padding-left:20px;font-size: 12px; font-family: Arial;">
-		<table style="width:70%;border: 1px solid black;">
-			{% if c.uploaded_packages %} 
-			{% set i = 0 %}
-				<tr>
-					<th>S. No.</th><th>Package Title</th><th>Uploaded Date</th>
-				</tr>
-				{% for bulkupload_package in c.uploaded_packages %}
-				{% set i = i+1 %}
-				<tr>
-					<td>{{i}}</td><td><a href='/dataset/{{bulkupload_package.package_name}}' target="_blank" style="text-decoration: none;" >{{bulkupload_package.package_title}}</a></td><td>{{bulkupload_package.uploaded_date}}</td>
-				</tr>
-				{% endfor%}
-			{% else %}
-				<tr> <td>None of the Packages created/updated as part of this upload.</td></tr>
-			{% endif %}
+	<span id="desc">{{ _('Details of uploaded Datasets part of this Bulk Upload.') }}</span>
 
+<!--    <div id="bulk-record-detail">
+        <div class="t-row">
+            <div class="t-cell"><label>{{ _('Data File') }}</label><span>{{c.selected_upload.data_file}}</span></div>
+            <div class="t-cell"><label>{{ _('Resource File') }}</label><span>{{c.selected_upload.resources}}</span></div>
+            <div class="t-cell"><label>{{ _('Status') }}</label><span>{{c.selected_upload.status}}</span></div>
+        </div>
+    </div>
+    <div class="t-cell"><label>{{ _('Comments') }}</label><span>{{c.selected_upload.comments}}</span></div>-->
 
-		</table>
-	<a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}" >Go back</a>
-	</div>		
+    <table id="bulk-record-detail">
+        <thead>
+            <tr>
+                <td class="heading empty-cell"> </td>
+                <td class="bulk-det-value empty-cell"> </td>
+                <td class="bulk-comments">{{ _('Comments') }}</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="heading">{{ _('Data File') }}</td>
+                <td class="bulk-det-value">{{c.selected_upload.data_file}}</td>
+                <td rowspan="3" class="comments-value">{{c.selected_upload.comments}}</td>
+            </tr>
+            <tr>
+                <td class="heading">{{ _('Resource File') }}</td>
+                <td class="bulk-det-value">{{c.selected_upload.resources}}</td>
+            </tr>
+            <tr>
+                <td class="heading">{{ _('Status') }}</td>
+                <td class="bulk-det-value">{{c.selected_upload.status}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <table id="bulk-upload-list" class="package-list">
+            <thead class="table-head">
+                <tr>
+                    <td class="heading serial-no">{{ _('S.No') }}</td>
+                    <td class="heading">{{ _('Package Title') }}</td>
+                    <td class="heading uploaded-date">{{ _('Uploaded Date') }}</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% if c.uploaded_packages %}
+                    {% set i = 0 %}
+                    {% for bulkupload_package in c.uploaded_packages %}
+                    {% set i = i+1 %}
+                    <tr>
+                        <td>{{i}}</td>
+                        <td><a href="{{h.url_for(controller='package', action='read', id=bulkupload_package.package_name)}}" target="_blank" style="text-decoration: none;" >{{bulkupload_package.package_title}}</a></td>
+                        <td>{{ h.get_formatted_date_from_obj(bulkupload_package.uploaded_date, True)}}</td>
+                    </tr>
+                    {% endfor%}
+                {% else %}
+				    <tr> <td colspan="3">None of the Packages created/updated as part of this upload.</td></tr>
+			    {% endif %}
+            </tbody>
+        </table>
+<!--    <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}" >Go back</a>-->
+
+    <div id="upload-list"><p><a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}"><button>Click here</button></a> to go back to the list of bulk uploaded files.<p></div>
 
 	{% endif %}
 
-
+</div>
 {% endblock %}

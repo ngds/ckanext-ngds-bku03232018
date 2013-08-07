@@ -130,6 +130,7 @@
 
     <field name="data_dict" type="string" indexed="false" stored="true" />
 
+    <field name="author_string" type="string" indexed="true" stored="true" />
     <field name="res_distributor" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="res_protocol" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="res_layer" type="string" indexed="true" stored="true" multiValued="true"/>
@@ -167,6 +168,7 @@
 <copyField source="res_description" dest="text"/>
 <copyField source="maintainer" dest="text"/>
 <copyField source="author" dest="text"/>
+<copyField source="author" dest="author_string"/>
 
 <copyField source="res_distributor" dest="text"/>
 <copyField source="res_protocol" dest="text"/>

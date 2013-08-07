@@ -10,6 +10,7 @@ from ckanext.ngds.ngdsui import authorize
 import ckanext.datastore.logic.auth as datastore_auth
 import ckanext.ngds.contentmodel.model.contentmodels as contentmodels
 import ckanext.ngds.contentmodel.logic.action as contentmodel_action
+import ckanext.ngds.logic.action.validate as validate_action
 
 from pylons import config as ckan_config
 
@@ -162,6 +163,8 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("poly","/poly",controller=map_controller,action="test")
         map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
         map.connect("validate_resource","/ngds/contribute/validate_resource",controller=contribute_controller,action="validate_resource")
+        map.connect("additional_metadata","/ngds/contribute/additional_metadata",controller=contribute_controller,action="additional_metadata")
+        map.connect("new_metadata","/ngds/contribute/new_metadata",controller=contribute_controller,action="new_metadata")
 
         map.connect("execute_fulltext_indexer","/ngds/execute_fulltext_indexer",controller=contribute_controller,action="execute_fulltext_indexer")
 
@@ -189,7 +192,10 @@ class NgdsuiPlugin(SingletonPlugin):
         'contentmodel_list_short' : contentmodel_action.contentmodel_list_short, 
         'contentmodel_get': contentmodel_action.contentmodel_get, 
         'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
+        'contentmodel_checkBulkFile':contentmodel_action.contentmodel_checkBulkFile,
         #'create_resource_document_index': lib_action.create_resource_document_index
+        'validate_resource': validate_action.validate_resource,
+        'validate_dataset_metadata':validate_action.validate_dataset_metadata
         }
 
     implements(IAuthFunctions, inherit=True)
@@ -221,6 +227,7 @@ class NgdsuiPlugin(SingletonPlugin):
             'load_ngds_facets':helpers.load_ngds_facets,
             'get_ngdsfacets':helpers.get_ngdsfacets,
             'get_formatted_date':helpers.get_formatted_date,
+            'get_formatted_date_from_obj':helpers.get_formatted_date_from_obj,
             'get_field_title':helpers.get_field_title,
             'is_string_field':helpers.is_string_field,
             'is_ogc_publishable':helpers.is_ogc_publishable,
@@ -232,14 +239,22 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_dataset_category_image_path':helpers.get_dataset_category_image_path,
             'is_following':helpers.is_following,
             'parseJSON':helpers.parseJSON,
-            'json_extract':helpers.json_extract
+            'json_extract':helpers.json_extract,
+            'get_master_style':helpers.get_master_style,
+            'toJSON':helpers.to_json,
+            'split':helpers.split,
+            'get_label_for_pkg_attribute':helpers.get_label_for_pkg_attribute,
+            'is_json':helpers.is_json,
+            'get_label_for_resource_attribute':helpers.get_label_for_resource_attribute
         }
 
-    implements(IPackageController,inherit=True)
+    implements(IPackageController, inherit=True)
 
     def before_index(self, pkg_dict):
         #pkg_dict['sample_created']={'prahadeesh':'abclll'}
         is_full_text_enabled = ckan_config.get('ngds.full_text_indexing','false')
+
+        file_formats_to_ignore = ('csv')
 
 
         import json
@@ -264,7 +279,8 @@ class NgdsuiPlugin(SingletonPlugin):
                                          ('content_model', 'res_content_model')]:
                         pkg_dict[nkey] = pkg_dict.get(nkey, []) + [resource.get(okey, u'')]
 
-                    if is_full_text_enabled == 'true':
+                    if is_full_text_enabled == 'true' and resource.get('resource_format', '') == 'unstructured' and \
+                            str(resource.get('format', u'')).lower() not in file_formats_to_ignore:
 
                         file_path = helpers.file_path_from_url(resource.get("url"))
                         if file_path:

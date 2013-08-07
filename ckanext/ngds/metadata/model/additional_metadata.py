@@ -33,7 +33,7 @@ from ckan import model
 
 from ckan.model import meta
 
-from sqlalchemy import types, Column, Table, ForeignKey
+from sqlalchemy import types, Column, Table, func , ForeignKey
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.sql.expression import or_ 
 
@@ -78,7 +78,6 @@ class ResponsibleParty(NgdsDataObject):
             cls.name.ilike(qstr),
             cls.email.ilike(qstr)
             ))
-        print query
         return query
     # Vivek - Put this in here temporarily to explore if this works.
 
@@ -91,6 +90,7 @@ class ResponsibleParty(NgdsDataObject):
             member = cls.by_name(reference)
         return member
 
+    @classmethod
     def find(cls,email):
         '''Returns responsible party details with matching name and/ email. If the email is None then get the detail matching only name '''
         
@@ -99,7 +99,7 @@ class ResponsibleParty(NgdsDataObject):
 
         query = meta.Session.query(cls)
         
-        query = query.filter(cls.email.lower() == email.lower())
+        query = query.filter(func.lower(cls.email) == email )
 
         return query
 

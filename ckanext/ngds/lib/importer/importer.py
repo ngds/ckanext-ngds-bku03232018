@@ -1,6 +1,3 @@
-import csv
-import copy
-
 from sqlalchemy.util import OrderedDict
 
 import ckan.model as model
@@ -11,6 +8,7 @@ import ckanext.ngds.lib.importer.helper as import_helper
 from pylons import config
 #the following needs to be revisted and removed...
 from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
+from ckanext.ngds.ngdsui.misc import helpers as ui_helper
 
 #Need to decide our own Read only keys
 readonly_keys = ('id', 'revision_id',
@@ -21,9 +19,15 @@ readonly_keys = ('id', 'revision_id',
                  'metadata_modified',
                  'metadata_created',
                  'notes_rendered')
-referenced_keys = ('category','status','topic','protocol')
 
-#DEFAULT_GROUP = ngds_helper.get_default_group()
+referenced_keys = ('data_type', 'status', 'protocol')
+
+responsible_party_keys = ('authors', 'maintainer', 'distributor')
+
+date_keys = ('publication_date')
+
+
+DEFAULT_GROUP = ui_helper.get_default_group()
 
 
 class BulkUploader(object):
@@ -223,7 +227,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         else:
             #print "license_title: ",license_title
             #logger('Warning: No license name matches \'%s\'. Ignoring license.' % license_title)
-            return u''    
+            return u''
 
     @classmethod
     def responsible_party_2_id(self,name,email):
@@ -247,17 +251,53 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
     @classmethod
     def validate_SD(self,model_type,sdValue):
         #Call Model's validate method which will compare the sd value against the Standing data table.
-        from ckan.model import StandingData
+        from ckanext.ngds.env import ckan_model
 
-        sdObject = StandingData()
+        sdObject = ckan_model.StandingData()
 
-        validated_value = sdObject.validate(model_type,sdValue)
+        validated_value = sdObject.validate(model_type, sdValue)
 
         if validated_value is None:
             raise Exception("Data Error: No Standing data matching the input - %s for the type - %s" % (sdValue,model_type)) 
         else:
-            return validated_value    
-        
+            return validated_value
+
+    @classmethod
+    def validate_responsible_party(cls, field_name, email_string):
+        from ckanext.ngds.env import ckan_model
+
+        #res_party = ckan_model.ResponsibleParty()
+
+        email_list = [x.strip() for x in str(email_string).split(',') if x.strip()]
+
+        if len(email_list) > 1 and field_name.lower() != 'authors':
+            raise Exception("Data Error: %s can not have more than one person" % field_name)
+
+        party_list = []
+
+        for email in email_list:
+
+            returned_party = ckan_model.ResponsibleParty.find(email.lower()).all()
+
+            if returned_party and len(returned_party) > 0:
+                user_dict = {}
+                user_dict['name'] = returned_party[0].name
+                user_dict['email'] = returned_party[0].email
+                party_list.append(user_dict)
+            else:
+                raise Exception("Responsible party with email: %s not found in the system. Please add either manually or use loader script." % email)
+
+        import json
+        if field_name.lower() == 'authors':
+            return json.dumps(party_list)
+        else:
+            return json.dumps(party_list[0])
+
+    @classmethod
+    def get_iso_date_string(cls, field_name, cell):
+
+        return None
+
     @classmethod
     def pkg_xl_dict_to_fs_dict(cls, pkg_xl_dict, logger=None):
         '''Convert a Package represented in an Excel-type dictionary to a
@@ -276,10 +316,19 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
+            print "title:%s, value: %s" % (title,cell)
             if cell:
                 if title in referenced_keys:
                     cell = cls.validate_SD(title,cell)
-                if title in standard_fields:
+                if title in responsible_party_keys:
+                    cell = cls.validate_responsible_party(title, cell)
+
+                if title in date_keys:
+                    cell = cls.get_iso_date_string(title,cell)
+
+                if title == 'tags':
+                    pkg_fs_dict['tag_string'] = cell
+                elif title in standard_fields:
                     pkg_fs_dict[title] = cell
                 elif title == 'license':
                     #print "license: ", cell
@@ -295,6 +344,10 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                         res_index, field = match.groups()
                         res_index = int(res_index)
                         field = str(field)
+                        if field in referenced_keys:
+                            cell = cls.validate_SD(field,cell)
+                        if field in responsible_party_keys:
+                            cell = cls.validate_responsible_party(field, cell)
                         if not pkg_fs_dict.has_key('resources'):
                             pkg_fs_dict['resources'] = []
                         resources = pkg_fs_dict['resources']
@@ -320,5 +373,5 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                     if not pkg_fs_dict.has_key('extras'):
                         pkg_fs_dict['extras'] = {}
                     pkg_fs_dict['extras'][title] = cell
-        pkg_fs_dict['owner_org']='public'
+        pkg_fs_dict['owner_org'] = DEFAULT_GROUP
         return pkg_fs_dict

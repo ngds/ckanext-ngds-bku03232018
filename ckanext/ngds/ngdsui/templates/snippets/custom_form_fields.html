@@ -16,22 +16,35 @@
     {%- endif %}
   {%- endfor %}
 {%- endmacro %}
-
+  {% if errors.authors %}
+  <div class="input-group error">
+    {% else %}
   <div class="input-group">
+    {% endif %}
     <div class="sp-label"><label>Authors</label></div>
       <input id="field-extras-12-key" name="extras__12__key" value="authors" placeholder="" style="display:none;">
       <input type="text" id="authors_fake" value="{{ get_value('authors',extras) }}"/>
       <div class="author-tags retreived-tags"></div>
+      {% if errors.authors %}
+      <span class="error-block">{{errors.authors}}</span>
+      {% endif %}
   </div>
 
   <input type="hidden" name="extras__12__value" id="authors" value="{{get_value('authors',extras)}}"/>
   <input type="hidden" id="author" />
-
-  <div class="input-group">
+  
+  {% if errors.maintainer %}
+  <div class="input-group error">
+    {% else %}
+    <div class="input-group">
+      {% endif %}
     <div class="sp-label"><label>Maintainer</label></div>
       <input id="field-extras-13-key" name="extras__13__key" value="ngds_maintainer" placeholder="" style="display:none;">
       <input type="text" id="maintainer_fake" value="{{ get_value('ngds_maintainer',extras) }}" />
       <div class="maintainer-tag retreived-tags"></div>
+      {% if errors.maintainer %}
+        <span class="error-block">{{errors.maintainer}}</span>
+      {% endif %}
   </div>
 
   <input type="hidden" name="extras__13__value" id="maintainer"/>
@@ -58,27 +71,34 @@
 
 <div class="input-group">
     <div class="sp-label"><label>Category</label></div>
-     <input id="field-extras-2-key" name="extras__2__key" value="dataset_category" placeholder="" style="display:none;">
-      <select id="field-extras-1-value" name="extras__2__value" placeholder="">
-          <option{{ is_selected("Dataset","dataset_category",extras) }}>Dataset</option>
-          <option{{ is_selected("Physical Collection","dataset_category",extras) }}>Physical Collection</option>
-          <option{{ is_selected("Catalog","dataset_category",extras) }}>Catalog</option>
-          <option{{ is_selected("Movie or Video","dataset_category",extras) }}>Movie or Video</option>
-          <option{{ is_selected("Drawing","dataset_category",extras) }}>Drawing</option>
-          <option{{ is_selected("Photograph","dataset_category",extras) }}>Photograph</option>
-          <option{{ is_selected("Remotely-Sensed Image","dataset_category",extras) }}>Remotely-Sensed Image</option>
-          <option{{ is_selected("Map","dataset_category",extras) }}>Map</option>
-          <option{{ is_selected("Text Document","dataset_category",extras) }}>Text Document</option>
-          <option{{ is_selected("Physical Artifact","dataset_category",extras) }}>Physical Artifact</option>
-          <option{{ is_selected("Desktop Application","dataset_category",extras) }}>Desktop Application</option>
-          <option{{ is_selected("Web Application","dataset_category",extras) }}>Web Application</option>
+     <input id="field-extras-2-key" name="extras__2__key" value="data_type" placeholder="" style="display:none;">
+      <select id="field-extras-1-value" name="extras__2__value" placeholder="" data-module="autocomplete">
+          <option{{ is_selected("Dataset","data_type",extras) }}>Dataset</option>
+          <option{{ is_selected("Physical Collection","data_type",extras) }}>Physical Collection</option>
+          <option{{ is_selected("Catalog","data_type",extras) }}>Catalog</option>
+          <option{{ is_selected("Movie or Video","data_type",extras) }}>Movie or Video</option>
+          <option{{ is_selected("Drawing","data_type",extras) }}>Drawing</option>
+          <option{{ is_selected("Photograph","data_type",extras) }}>Photograph</option>
+          <option{{ is_selected("Remotely-Sensed Image","data_type",extras) }}>Remotely-Sensed Image</option>
+          <option{{ is_selected("Map","data_type",extras) }}>Map</option>
+          <option{{ is_selected("Text Document","data_type",extras) }}>Text Document</option>
+          <option{{ is_selected("Physical Artifact","data_type",extras) }}>Physical Artifact</option>
+          <option{{ is_selected("Desktop Application","data_type",extras) }}>Desktop Application</option>
+          <option{{ is_selected("Web Application","data_type",extras) }}>Web Application</option>
       </select>
 </div>
 
+{% if errors.uri %}
+<div class="input-group error">
+  {% else %}
 <div class="input-group">
+  {% endif %}
     <div class="sp-label"><label>URI</label></div>
-      <input id="field-extras-3-key" name="extras__3__key" value="dataset_uri" placeholder="" style="display:none;">
-      <input id="field-extras-3-value" type="text" name="extras__3__value" placeholder value="{{ get_value('dataset_uri',extras) }}">
+      <input id="field-extras-3-key" name="extras__3__key" value="uri" placeholder="" style="display:none;">
+      <input id="field-extras-3-value" type="text" name="extras__3__value" placeholder value="{{ get_value('uri',extras) }}">
+      {% if errors.uri %}
+        <span class="error-block">{{errors.uri}}</span>
+      {% endif %}
 </div>
 
 <div class="input-group">
@@ -93,7 +113,11 @@
       <input id="field-extras-6-value" type="text" name="extras__6__value" placeholder value="{{ get_value('lineage',extras) }}">
 </div>
 
-<div class="input-group">
+{% if errors.status %}
+<div class="input-group error">
+  {% else %}
+  <div class="input-group">
+  {% endif %}
     <div class="sp-label"><label>Status</label></div>
         <input id="field-extras-7-key" name="extras__7__key" value="status" placeholder="" style="display:none;">
       
@@ -102,31 +126,45 @@
             <option{{ is_selected("Ongoing","status",extras) }}>Ongoing</option>
             <option{{ is_selected("Deprecated","status",extras) }}>Deprecated</option>
         </select>
+        {% if errors.status %}
+          <span class='error-block'>{{errors.status}}</span>
+        {% endif %}
 </div>
+
 
 <div class="input-group">
     <div class="sp-label"><label>Publication Date</label></div>
-      <input id="field-extras-4-key" name="extras__4__key" value="publication_date" placeholder="" style="display:none;">
+      <input id="field-extras-4-key" name="extras__4__key" value="publication_date" placeholder="" style="display:none;" autocomplete="off">
       <input id="field-extras-4-value" type="text" name="extras__4__value" value="{{ get_value('publication_date',extras) }}" placeholder="">
       <script>
         $(document).ready(function() {
           $( "#field-extras-4-value" ).datepicker();
+          $("#ui-datepicker-div").addClass("datepicker-styles");
         });
       </script>
 </div>
 
 <div class="input-group">
     <div class="sp-label"><label>Language</label></div>
-      <input id="field-extras-8-key" name="extras__8__key" value="dataset_lang" placeholder="" style="display:none;">
-      <input id="field-extras-8-value" type="text" name="extras__8__value" placeholder value="{{ get_value('dataset_lang',extras) }}" style="display:none;">
-      <input id="field-language-fake" type="text" name="field-language-fake" placeholder value="{{ h.get_language(get_value('dataset_lang',extras)) }}">
+      <input id="field-extras-8-key" name="extras__8__key" value="language" placeholder="" style="display:none;">
+      <input id="field-extras-8-value" type="text" name="extras__8__value" placeholder value="{{ get_value('language',extras) }}" style="display:none;">
+      <input id="field-language-fake" type="text" name="field-language-fake" placeholder value="{{ h.get_language(get_value('language',extras)) }}">
 </div>
 
 <script>
   var geojson = $.parseJSON("{{ get_value('spatial',extras) }}".replace(/&#34;/g,"\""));
-  var geoJSONRespresentation =L.geoJson(geojson);  
-  geoJSONRespresentation.addTo(map);
-  writeGeoJson(JSON.stringify(geojson));
+  if (typeof(geojson!=='undefined') && geojson!==null ) {
+    var geoJSONRespresentation =L.geoJson(geojson);  
+    geoJSONRespresentation.addTo(map);
+    writeGeoJson(JSON.stringify(geojson));
+    var layers = geoJSONRespresentation._layers;
+    map.panTo(geoJSONRespresentation.getBounds().getCenter());
+    for(var index in layers) {
+      if(layers[index].feature.type==='Point') {
+        map.setZoom(5);
+      }
+    }
+  }
 
 var authors_ac = ngds.autocomplete("#authors_fake","/responsible_parties",'q',['name','email'],'name',true);
 var ticker = new ngds.util.tick();
@@ -139,14 +177,13 @@ var slugify = function(dict) {
     var author_email_f = $("[name='author_email']").val();
 
     if((author_name_f ==='' || typeof author_name_f ==='undefined') && (author_email_f ==='' || typeof author_email_f ==='undefined')) {
-      console.log("First time.");
-      console.log(dict);
       $("[name='author']").val(dict.name);
       $("[name='author_email']").val(dict.email);
     }
     var state = ngds.util.state;
+
     state['auth_autocomp'] = state['auth_autocomp'] || (state['auth_autocomp'] = [ ]);
-    var slug = ngds.util.get_author_slug({ 'name':dict['name'],'email':dict['email'] },ticker,function(authors_map){
+    var slug = get_author_slug({ 'name':dict['name'],'email':dict['email'] },ticker,function(authors_map){
       var list_authors = [ ];
       for(key in authors_map) {
         list_authors.push(authors_map[key]);
@@ -155,10 +192,60 @@ var slugify = function(dict) {
     });
     slug.show();
     $(".author-tags").append(slug);
+    var existing_first_author = $("[name=author]").val();
+
+    if((existing_first_author==="" || typeof existing_first_author === 'undefined' || existing_first_author==="None") && $.isEmptyObject(state['authors'])===false) {
+            determine_first_author();
+    }
     setTimeout(function() {
         $("#authors_fake").val("");
     });
 //    $("#authors").val(JSON.stringify(state['auth_autocomp']));
+};
+
+var determine_first_author = function() {
+    var indices = [ ];
+    var state = ngds.util.state;
+    if($.isEmptyObject(state['authors'])===true) {
+      return;
+    }
+    for(var ordered_class in state['authors']) {
+        var index = ordered_class.match(/[0-9].*$/)[0];
+        if(isNaN(index)===false) {
+          indices.push(index);
+        }
+    }
+    var first_author_index = Math.min.apply(Math,indices);
+    var first_author = state['authors']['ngds-slug-'+first_author_index]
+    // console.log(state['authors']['ngds-slug-'+first_author_index]);
+    $("[name=author]").val(first_author['name']);
+    $("[name=author_email]").val(first_author['email']);
+}
+
+
+var get_author_slug = function(author,ticker,sync) {
+  var cur_key = "ngds-slug-"+ticker.next();
+  var sp = $("<span/>",{"class":"ngds-tag","text":author['name'],id:cur_key,"style":"display:inline-block;"});
+    var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
+    var authors_map = ngds.util.state['authors'] = ngds.util.state['authors'] || (ngds.util.state['authors'] = { });
+    authors_map[cur_key] = author;
+
+    sp.append(anch);
+    sync(authors_map);
+    
+    anch.on('click',function(ev) {
+        $(ev.currentTarget.parentElement).fadeOut(500,function(){
+          var parent = ev.currentTarget.parentElement;
+          var key = parent.id;
+            parent.remove();
+            delete authors_map[key];
+            $("[name=author]").val("None");
+            $("[name=author_email]").val("None");
+            determine_first_author();
+            sync(authors_map);
+        });
+    });
+    return sp;
 };
 
 authors_ac.proxy("#authors",slugify);

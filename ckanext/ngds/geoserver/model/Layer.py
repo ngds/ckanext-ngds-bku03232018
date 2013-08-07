@@ -141,8 +141,8 @@ class Layer(object):
 
         # WMS Resource Creation
         data_dict = {
-            # 'url': self.geoserver.service_url.replace("/rest", "/wms?request=GetCapabilities"),
-            'url':'http://129.73.13.134:8080/geoserver/wms?request=GetCapabilities',
+            'url': self.geoserver.service_url.replace("/rest", "/wms?request=GetCapabilities"),
+            #'url':'http://129.73.13.134:8080/geoserver/wms?request=GetCapabilities',
             'package_id': self.package_id,
             'description': 'WMS for %s' % self.file_resource['name'],
             'parent_resource': self.file_resource['id'],

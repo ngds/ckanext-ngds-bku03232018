@@ -7,7 +7,6 @@ then itself be extended to add/remove blocks of functionality. #}
   {% block stages %}
     {{ h.snippet('package/snippets/stages.html', stages=stage) }}
   {% endblock %}
-
   <input type="hidden" name="_ckan_phase" value="dataset_new_1" />
   {# pkg_name used in 3 stage edit #}
   <input type="hidden" name="pkg_name" value="{{ data.id }}" />
@@ -18,7 +17,7 @@ then itself be extended to add/remove blocks of functionality. #}
   {% endblock %}
 
   {% block metadata_fields %}
-    {% snippet 'package/snippets/package_metadata_fields.html', data=data, errors=errors %}
+    {% snippet 'package/snippets/package_metadata_fields.html', data=data, errors=errors, pkg_dict=c.pkg_dict %}
   {% endblock %}
 
   {% block form_actions %}

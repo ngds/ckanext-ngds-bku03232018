@@ -35,12 +35,13 @@ ngds.responsible_party = function() {
 	    var rs_name = me.rs_name;
 	    var rs_email = me.rs_email;
 
-        me.slugify = function(dict){
-            console.log(dict);
+        me.slugify = this.slugify = function(dict){
+        	var dict = dict || { };
+        	console.log("Glug glug");
             var rs_map = ngds.util.state[me.rs_token] || ( ngds.util.state[me.rs_token] = { });
             var payload = { };
-            payload["name"] = dict["name"];
-            payload["email"] = dict["email"];
+            payload["name"] = dict["name"] || $(me.rs_name).val();
+            payload["email"] = dict["email"] || $(me.rs_email).val();
 
             var i_name = payload["name"];
             var i_email = payload["email"];
@@ -78,8 +79,6 @@ ngds.responsible_party = function() {
 	    rs_ac.proxy(me.rs,me.slugify);
 
         if($(me.rs_fake).val()!=="") {
-        	console.log("In here");
-        	console.log($(me.rs_fake).val());
            var parsed_dict = '';
            try {
                  var parsed_dict = JSON.parse($(me.rs_fake).val());

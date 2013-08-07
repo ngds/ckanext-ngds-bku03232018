@@ -45,7 +45,8 @@ def iso_metadata(context, data_dict):
     # NOTE: If this is a harvested package, we should just return the XML, without alteration
     #   ... but we can't figure out if it was harvested if no context is passed in
     harvested_content = None
-    if context is not None:
+    ngds_type = config.get("ngds.deployment", "node")
+    if context is not None and ngds_type == "central":
         harvested_content = get_harvested_content(package_id, context)
 
     if harvested_content:
@@ -78,7 +79,7 @@ def iso_metadata(context, data_dict):
         try:
             p["additional"]["authors"] = json.loads(authors)
         except:
-            p["additional"]["authors"] = [{"author_name": p["author"], "author_email": p["author_email"]}]
+            p["additional"]["authors"] = [{"name": p["author"], "email": p["author_email"]}]
 
         # ---- Load Location keywords
         location = p["additional"].get("location", "[]")
@@ -124,7 +125,11 @@ def iso_metadata(context, data_dict):
         online = {}
         offline = {}
         for resource in p.get("resources", []):
-            distributor = json.loads(resource.get("distributor", "{}"))
+            try:
+                distributor = json.loads(resource.get("distributor", "{}"))
+            except ValueError:
+                # This will happen if the content of the distributor field is invalid JSON
+                distributor = {}
 
             if json.loads(resource.get("is_online", "true")):
                 resources = online
