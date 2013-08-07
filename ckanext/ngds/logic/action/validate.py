@@ -4,13 +4,13 @@ import ast
 from ckan.model import meta
 
 def validate_resource(context, data):
-    if data['resource_type'] == 'offline-resource':
+    if data['resource_format'] == 'offline-resource':
         return validate_offline_resource(context, data)
-    if data['resource_type'] == 'data-service':
+    if data['resource_format'] == 'data-service':
         return validate_data_service(context, data)
-    if data['resource_type'] == 'unstructured':
+    if data['resource_format'] == 'unstructured':
         return validate_unstructured_resource(context, data)
-    if data['resource_type'] == 'structured':
+    if data['resource_format'] == 'structured':
         return validate_structured_resource(context, data)
 
 

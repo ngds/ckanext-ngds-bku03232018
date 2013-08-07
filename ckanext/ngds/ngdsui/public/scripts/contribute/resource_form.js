@@ -75,7 +75,7 @@ $("#file").on('change',function(ev){
 	var filename = file.substring(file.lastIndexOf("\\")+1);
 	$("#key1").val(timestamp+"/"+filename);
 	$("#key2").val(timestamp+"/"+filename);
-	$("#resource_type").val($("[name=resource_type]:checked").val());
+	$("#resource_type").val($("[name=resource_format]:checked").val());
 	$("#file-upload-form").submit();
 });
 
@@ -95,7 +95,7 @@ var populate_form = function(data) {
 };
 
 var activate_populate_form = function(data) {
-	render_forms(data['resource_type']);
+	render_forms(data['resource_format']);
 	populate_form(data);
 	// $("[name=resource_type]").prop("disabled",true);
 	$("#resource_type-selection").prop("disabled",true);
@@ -171,7 +171,7 @@ var render_forms = function(value) {
     });
       }
 };
-$('input[name="resource_type"]').on('change',function(ev){
+$('input[name="resource_format"]').on('change',function(ev){
   var id = ev.currentTarget.id;
   var value ="";
   if(id==="resource_type-unstructured") {

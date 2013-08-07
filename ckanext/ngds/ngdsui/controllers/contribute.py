@@ -519,7 +519,7 @@ class ContributeController(NGDSBaseController):
             metadata = json.loads(storage_api.get_metadata(data['key']))
             resource_location = metadata['_location']
             response.headers['Content-Type'] = 'text/html;charset=utf-8'
-            return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'resource_type':data['resource_type'],'url':resource_location})
+            return package_controller.new_resource(dataset_name,{'save':'dummy_required_by_ckan','resource_location':resource_location,'resource_format':data['resource_format'],'url':resource_location})
 
     def get_structured_form(self,data=None):
         c.data = data

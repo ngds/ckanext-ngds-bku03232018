@@ -14,27 +14,6 @@
     resource_location = window.location.origin+"{{data['resource_location']}}";
 {% endif %}
 </script>
-<!-- <form id="file-upload-form" action="/ngds/contribute/upload_file" method="post" enctype="multipart/form-data">
-  <div id="file-upload" style="display:none;">
-          <input type="submit" name="file-upload-button" value="Upload"></input>
-          <input type="file" id="file" name="file" class="structured-input"></input>
-          {% if data['key'] %}
-          <input type="hidden" name="key" id="key1" value="{{data['key']}}"></input>
-          {% else %}
-          <input type="hidden" name="key" id="key1"></input>
-          {% endif %}
-          <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
-          <input type="hidden" name="resource_type" id="resource_type"/>
-  </div>
-</form> -->
-<!-- <div data-module="resource-upload-field"> -->
-<!-- <span class="resource-upload-field">
-<i class="ckan-icon ckan-icon-link-plugin"></i>
-<input type="file" />
-<input id="field-resource-type-upload" type="radio" name="resource_type" value="file.upload" />
-<label class="radio inline" for="field-resource-type-upload"></label>
-</span> -->
-<!-- </div> -->
 
 <form class="dataset-form dataset-resource-form form-horizontal" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
   <div data-module="resource-upload-field"></div>
@@ -55,36 +34,36 @@
         <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
         <input type="radio" id="resource_type-selection" name="upload_type_selection" value="upload_type"/>
         <label for="resource_type-selection">Upload a file</label><br>
-          {% if data['resource_type'] %}          
-          <input type="hidden" name="resource_type" value="{{data['resource_type']}}" />
+          {% if data['resource_format'] %}
+          <input type="hidden" name="resource_format" value="{{data['resource_format']}}" />
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" />
           {% else %}
-        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" name="resource_type" value="structured"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" name="resource_format" value="structured"/>
           {% endif %}
 
         <label for="resource_type-structured" id="resource_type-structured-label">Structured</label><br>
-          {% if data['resource_type'] %}
+          {% if data['resource_format'] %}
           &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" />
           {% else %}
-          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_type" value="unstructured" />
+          &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_format" value="unstructured" />
           {% endif %}
         <label for="resource_type-unstructured" id="resource_type-unstructured-label">Unstructured</label>
       </div>
 
       <div class="radio-section">
-        {% if data['resource_type'] %}
+        {% if data['resource_format'] %}
         <input type="radio" id="data-service" />
         {% else %}
-          <input type="radio" id="data-service" name="resource_type" value="data-service" />
+          <input type="radio" id="data-service" name="resource_format" value="data-service" />
         {% endif %}
         <label for="data-service">Link to a data service</label>
       </div>
 
       <div class="radio-section">
-          {% if data['resource_type'] %}
+          {% if data['resource_format'] %}
         <input type="radio" id="offline-resource" />
          {% else %}
-         <input type="radio" id="offline-resource" name="resource_type" value="offline-resource" />
+         <input type="radio" id="offline-resource" name="resource_format" value="offline-resource" />
           {% endif %}
         <label for="offline-resource">Offline resource</label>
       </div>
