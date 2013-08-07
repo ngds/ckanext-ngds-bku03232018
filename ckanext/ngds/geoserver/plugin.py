@@ -1,10 +1,14 @@
 import logging
 import pylons
+import re
 from sqlalchemy.exc import ProgrammingError
+from jinja2 import Environment, FileSystemLoader
+import flask
 
 import ckan.plugins as p
-from ckan.plugins import ITemplateHelpers, IRoutes
+from ckan.plugins import ITemplateHelpers, IRoutes, IConfigurer, IResourcePreview
 import ckanext.ngds.geoserver.logic.action as action
+import ckanext.ngds.geoserver.model.GMLtoReclineJSON as recline
 import ckanext.datastore.logic.auth as auth
 from ckanext.datastore.plugin import DatastoreException
 import ckan.logic as logic
@@ -89,3 +93,32 @@ class GeoserverPlugin(p.SingletonPlugin):
       map.connect('publish_layer','/ngds/publish_layer',controller="ckanext.ngds.geoserver.controllers.ogc:OGCController",action="publish_layer",conditions={"method":["POST"]})
 
       return map
+
+    # Start WFS preview plugin
+
+    p.implements(p.IConfigurer, inherit=True)
+
+    # Add new resource containing libraries, scripts, etc. to the global config
+    def update_config(self, config):
+        p.toolkit.add_template_directory(config, 'geo-recline/theme/templates')
+        p.toolkit.add_resource('geo-recline/theme/public', 'geo-reclinepreview')
+
+    p.implements(IResourcePreview)
+
+    # If the resource protocol is a WFS, then we can preview it
+    def can_preview(self, data_dict):
+        if data_dict.get("resource", {}).get("protocol", {}) == "OGC:WFS":
+            return True
+
+    # Get the GML service for our resource and parse it into a JSON object
+    # that is compatible with recline.  Bind that JSON object to the
+    # CKAN resource in order to pass it client-side.
+    def setup_template_variables(self, context, data_dict):
+        armchair = recline.GMLtoReclineJS()
+        reclineJSON = armchair.MakeReclineJSON(data_dict)
+        p.toolkit.c.resource["reclineJSON"] = reclineJSON
+
+    # Render the jinja2 template which builds the recline preview
+    def preview_template(self, context, data_dict):
+        template = "wfs_preview_template.html"
+        return template
