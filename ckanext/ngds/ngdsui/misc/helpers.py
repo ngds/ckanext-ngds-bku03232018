@@ -387,7 +387,11 @@ def get_usersearches():
     return query.all()
 
 def parseJSON(input):
-    return json.loads(input)
+    try:
+        json_parsed = json.loads(input)
+    except(ValueError,TypeError):
+        return json.loads("{}")
+    return json_parsed
 
 def json_extract(input,key):
     if(input==''):
@@ -522,18 +526,38 @@ def get_label_for_pkg_attribute(attribute):
         return label_attribute_mapping[attribute]
     return attribute
 
+def get_label_for_resource_attribute(attribute):
+    s_attribute = str(attribute)
+    if s_attribute in res_label_attribute_mapping:
+        return res_label_attribute_mapping[s_attribute]
+    return s_attribute
+
 label_attribute_mapping = {
-    u'data_type' : u'Data Type',
-    u'language' : u'Language',
-    u'lineage' : u'Lineage',
-    u'ngds_maintainer' : u'Maintainers',
+    u'data_type': u'Data Type',
+    u'language': u'Language',
+    u'lineage': u'Lineage',
+    u'ngds_maintainer': u'Maintainers',
     u'publication_date': u'Publication Date',
-    u'quality' : u'Quality',
-    u'spatial' : u'Geographic Location',
-    u'spatial_word' : u'Geographic Location Tags',
-    u'status' : u'Status',
-    u'uri' : u'URI',
-    u'authors' : u'Authors'
+    u'quality': u'Quality',
+    u'spatial': u'Geographic Location',
+    u'spatial_word': u'Geographic Location Tags',
+    u'status': u'Status',
+    u'uri': u'URI',
+    u'authors': u'Authors'
+}
+
+res_label_attribute_mapping = {
+    'dataset name': 'Dataset Name',
+    'distributor': 'Distributor',
+    'id': 'Id',
+    'layer': 'Layer',
+    'position': 'Position',
+    'protocol': 'Protocol',
+    'resource format': 'Resource Type',
+    'resource group id': 'Resource Group Id',
+    'revision id': 'Revision Id',
+    'revision timestamp': 'Revision Timestamp',
+    'state': 'State'
 }
 
 def is_json(value):

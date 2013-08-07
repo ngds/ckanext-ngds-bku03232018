@@ -244,7 +244,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'toJSON':helpers.to_json,
             'split':helpers.split,
             'get_label_for_pkg_attribute':helpers.get_label_for_pkg_attribute,
-            'is_json':helpers.is_json
+            'is_json':helpers.is_json,
+            'get_label_for_resource_attribute':helpers.get_label_for_resource_attribute
         }
 
     implements(IPackageController, inherit=True)
