@@ -373,6 +373,7 @@ ngds.Map = {
 			}														
 			var geoJSONRepresentation = L.geoJson(feature,{
 					style:{
+                        color:"black",
 						weight:2
 					},
 				onEachFeature:function(feature_data,layer){
@@ -384,7 +385,6 @@ ngds.Map = {
 							return 'Feature';
 						}
 					})(layer);
-                    p = layer;
 					ngds.publish('Map.add_feature',{
 						'feature':layer,
 						'seq_id':options['seq'],
