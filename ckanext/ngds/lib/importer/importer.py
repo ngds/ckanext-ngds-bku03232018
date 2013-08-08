@@ -97,15 +97,15 @@ class BulkUploader(object):
 
         for bulk_upload_record in query.all():
 
-            log.debug("Processing the file: ", bulk_upload_record.data_file)
+            log.debug("Processing the file: %s", bulk_upload_record.data_file)
 
             try:
                 data_file_path = os.path.join(bulk_upload_record.path,bulk_upload_record.data_file)
                 self.importpackagedata(bulk_upload_record.id,file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
                 bulk_upload_record.status = "COMPLETED"
-            except Exception , e:
+            except Exception, e:
                 log.debug(e)
-                log.debug("Exception while processing bulk upload for the file :" ,bulk_upload_record.data_file)
+                log.debug("Exception while processing bulk upload for the file : %s" , bulk_upload_record.data_file )
                 bulk_upload_record.status = "FAILURE"
                 bulk_upload_record.comments = e.message
             finally:
@@ -138,7 +138,8 @@ class BulkUploader(object):
                 self._create_bulk_upload_package(bulk_upload_id,returned_package['name'],returned_package['title'])
 
             except Exception , e:
-                log.info("Skipping this record and proceeding with next one....",e)
+                log.info(e)
+                log.info("Skipping this record and proceeding with next one....")
                 raise
     
     def _create_bulk_upload_package(self,bulk_upload_id, package_name, package_title):
@@ -246,7 +247,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         elif numberofResParties > 1:
             raise Exception("Data Error: More than one responsible party is found with the given name %s and email %s " % (name,email))
         else:
-            log.debug("Found Party ID: ",numberofResParties[0].id)
+            log.debug("Found Party ID: %s",numberofResParties[0].id)
             return numberofResParties[0].id
 
     @classmethod
