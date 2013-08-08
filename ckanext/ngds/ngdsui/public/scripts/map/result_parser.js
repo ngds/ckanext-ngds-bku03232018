@@ -54,7 +54,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                                 'class': 'description',
                                 'href': ['/dataset', results[i]['name']].join('/'),
                                 'target': '_blank',
-                                'text': ngds.util.get_n_chars(results[i]['title'], 38)
+                                'text': ngds.util.get_n_chars(results[i]['title'], 30)
                             }
                         }
                     ]
