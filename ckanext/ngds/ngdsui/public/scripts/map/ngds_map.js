@@ -374,7 +374,10 @@ ngds.Map = {
 			var geoJSONRepresentation = L.geoJson(feature,{
 					style:{
                         color:"black",
-						weight:2
+						weight:1,
+                        opacity:1,
+                        fillColor:"grey",
+                        fillOpacity:0.2
 					},
 				onEachFeature:function(feature_data,layer){
 					var type = (function(layer){

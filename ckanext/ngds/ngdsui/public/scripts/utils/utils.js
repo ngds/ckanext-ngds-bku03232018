@@ -94,7 +94,7 @@ ngds.util.apply_feature_default_styles = function (feature, tag_index) {
         span_elem.css("margin-left", "0px");
     }
     else {
-        feature.setStyle({weight: 2, color: "black"});
+        feature.setStyle({weight: 1, color: "black", fillColor:"grey", dashArray:"", opacity:1, fillOpacity:0.2});
     }
 };
 
@@ -105,7 +105,7 @@ ngds.util.apply_feature_active_styles = function (feature, tag_index) {
         $('.lmarker-' + tag_index).attr("src", "/images/marker-red.png");
     }
     else {
-        feature.layer.setStyle({weight: 3, color: "red",dashArray:"5, 10"});
+        feature.layer.setStyle({weight: 3, color: "red", fillColor:"red", fillOpacity:0.2, opacity:1, dashArray:"5, 10"});
     }
 };
 

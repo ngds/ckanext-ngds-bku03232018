@@ -62,75 +62,44 @@ ngds.ckandataset = function(raw) {
 								'tag':'strong',
 								'priority':1,
 								'attributes':{
-									'text':'Type : ',
+									'text':'Type : '
 								}
 							}
 						]
 					},
 					{
-						'tag':'p',
+						'tag':'strong',
 						'attributes':{							
 							'style':'margin-bottom:3px; margin-top:3px;',
-							'text':raw.author
+							'text':'Author : '
 						},
 						'children':[
 							{
-								'tag':'strong',
-								'priority':1,
+								'tag':'a',
 								'attributes':{
-									'text':'Author : ',
+									'href':'mailto:'+raw.author_email,
+                                    'text':raw.author
 								}
 							}
 						]
 					},
 					{
-						'tag':'p',
+						'tag':'strong',
 						'attributes':{							
 							'style':'margin-bottom:3px; margin-top:3px;',
-							'text':raw.author_email
+							'text':"Maintainer : "
 						},
 						'children':[
 							{
-								'tag':'strong',
+								'tag':'a',
 								'priority':1,
 								'attributes':{
-									'text':'Author\'s Email : ',
+									'href':'mailto:'+raw.maintainer_email,
+                                    'text':raw.maintainer
 								}
 							}
 						]
 					},
-					{
-						'tag':'p',
-						'attributes':{							
-							'style':'margin-bottom:3px; margin-top:3px;',
-							'text':raw.maintainer
-						},
-						'children':[
-							{
-								'tag':'strong',
-								'priority':1,
-								'attributes':{
-									'text':'Maintainer : ',
-								}
-							}
-						]
-					},
-					{
-						'tag':'p',
-						'attributes':{							
-							'style':'margin-bottom:3px; margin-top:3px;',
-							'text':raw.maintainer_email
-						},
-						'children':[
-							{
-								'tag':'strong',
-								'priority':1,
-								'attributes':{
-									'text':'Maintainer\'s Email : ',
-								}
-							}
-						]
-					},					
 					{
 						'tag':'p',
 						'attributes':{							
@@ -142,7 +111,7 @@ ngds.ckandataset = function(raw) {
 								'tag':'strong',
 								'priority':1,
 								'attributes':{
-									'text':'Description : ',
+									'text':'Description : '
 								}
 							}
 						]
@@ -158,7 +127,7 @@ ngds.ckandataset = function(raw) {
 								'tag':'strong',
 								'priority':1,
 								'attributes':{
-									'text':'Created : ',
+									'text':'Created : '
 								}
 							}
 						]
@@ -174,7 +143,7 @@ ngds.ckandataset = function(raw) {
 								'tag':'strong',
 								'priority':1,
 								'attributes':{
-									'text':'Last Modified : ',
+									'text':'Last Modified : '
 								}
 							}
 						]
@@ -190,7 +159,7 @@ ngds.ckandataset = function(raw) {
 								'tag':'strong',
 								'priority':1,
 								'attributes':{
-									'text':'Number of Resources : ',
+									'text':'Number of Resources : '
 								}
 							}
 						]
