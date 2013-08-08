@@ -89,11 +89,8 @@ class BulkUploader(object):
         If it can process the records successfully then updates the status as "Completed" otherwise as "Failure" and corresponding comments.
         """        
         import os
-        print "entering execute_bulk_upload"
+        log.debug("entering execute_bulk_upload")
         query = model.BulkUpload.search("VALID")
-
-        #print "Returned Query:",query
-        
 
         for bulk_upload_record in query.all():
 
@@ -318,9 +315,8 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
-            log.debug("title:%s, value: %s" % (title,cell))
+            #log.debug("title:%s, value: %s" % (title,cell))
             if cell:
-                log.debug("inside cell . . . . . . .")
                 if title in referenced_keys:
                     cell = cls.validate_SD(title,cell)
                 if title in responsible_party_keys:
@@ -357,7 +353,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                         num_new_resources = 1 + res_index - len(resources)
                         for i in range(num_new_resources):
                             blank_dict = OrderedDict()
-                            for blank_field in model.Resource.get_columns():
+                            for blank_field in model.Resource.get_columns(extra_columns=False):
                                 blank_dict[blank_field] = u''
                             pkg_fs_dict['resources'].append(blank_dict)
 

@@ -30,7 +30,7 @@ class ResourceLoader(loader.ResourceSeriesLoader):
             raise
         except Exception, e:
             log.error(e)
-            raise LoaderError('Could not update resources Exception: %s'% e.message)
+            raise LoaderError('Could not update resources Exception: %s'% e)
 
         super(ResourceLoader, self)._write_package(pkg_dict,existing_pkg_name,existing_pkg)
 
