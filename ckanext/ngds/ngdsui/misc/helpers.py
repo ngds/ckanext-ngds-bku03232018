@@ -567,3 +567,8 @@ def is_json(value):
     except(ValueError):
         pass
     return False
+
+def is_development():
+    if config.get('ngds.is_development',"false")=="true":
+        return True
+    return False

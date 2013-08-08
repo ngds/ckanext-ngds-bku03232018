@@ -150,7 +150,10 @@
 </div>
 
 
-
+{% if h.is_development() %}
 <script type="text/javascript" src="/scripts/library/library.js"></script>
+{% else %}
+<script type="text/javascript" src="/scripts/library/library.min.js"></script>
+{% endif %}
 
 {% endblock %}
