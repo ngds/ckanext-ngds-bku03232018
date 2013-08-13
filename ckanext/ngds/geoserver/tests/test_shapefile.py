@@ -7,7 +7,8 @@ from osgeo.ogr import DataSource, Layer
 
 import os
 
-shapefile_name = "test_shapefile_wgs84.zip"
+#shapefile_name = "test_shapefile_wgs84.zip"
+shapefile_name = "ca-active-faults.zip"
 test_shapefile_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "test-shapefile", shapefile_name))
 
 
