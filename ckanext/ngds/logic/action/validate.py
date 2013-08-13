@@ -2,23 +2,60 @@ from inspect import isfunction
 from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty
 import ast
 from ckan.model import meta
+from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
+
+def validate_dataset_metadata(context,data):
+    '''
+    This function is the main entry point to validating a dataset's metadata.
+    :param context:
+    :param data:
+    :return:
+    '''
+    errors = { }
+    check_existence(data,errors)
+
+    if len(errors)>0:
+        print "errors present"
+        return {
+            "success":False,
+            'errors':errors,
+            'data':data
+        }
+    else:
+        return {
+            "success":True
+        }
 
 def validate_resource(context, data):
+    '''
+    The main entry point to validating a resource.
+    :param context:
+    :param data:
+    :return:
+    '''
+    if 'resource_format' not in data:
+        return {
+            'success':False,
+            'display':'Parameter error',
+            'messages':[
+                {'message':"Expecting parameter resource_format indicating the type of resource being validated. One of unstructured,structured,\
+                          data-service,offline-resource"}
+            ]
+        }
+
     if data['resource_format'] == 'offline-resource':
-        return validate_offline_resource(context, data)
+        return validate_offline_resource(data)
     if data['resource_format'] == 'data-service':
-        return validate_data_service(context, data)
+        return validate_data_service(data)
     if data['resource_format'] == 'unstructured':
-        return validate_unstructured_resource(context, data)
+        return validate_unstructured_resource(data)
     if data['resource_format'] == 'structured':
-        return validate_structured_resource(context, data)
+        return validate_structured_resource(data)
 
 
-def validate_structured_resource(context, data):
+def validate_structured_resource(data):
     errors = []
     # A bunch of validations for the unstructured resource form
-
-    from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
 
     if not data['url'] or len(data['url']) < 3:
         errors.append({
@@ -67,7 +104,7 @@ def validate_structured_resource(context, data):
             'success': True
         }
 
-def validate_unstructured_resource(context, data):
+def validate_unstructured_resource(data):
     errors = []
     # A bunch of validations for the unstructured resource form
 
@@ -96,7 +133,7 @@ def validate_unstructured_resource(context, data):
         }
 
 
-def validate_data_service(context, data):
+def validate_data_service(data):
     errors = []
 
     # A bunch of validations for the data service resource form
@@ -137,7 +174,7 @@ def validate_data_service(context, data):
         }
 
 
-def validate_offline_resource(context, data):
+def validate_offline_resource(data):
     errors = []
 
     # A bunch of validations for the offline resource form
@@ -163,22 +200,6 @@ def validate_offline_resource(context, data):
     else:
         return {
             'success':True
-        }
-
-def validate_dataset_metadata(context,data):
-    errors = { }
-    check_existence(data,errors)
-
-    if len(errors)>0:
-        print "errors present"
-        return {
-            "success":False,
-            'errors':errors,
-            'data':data
-        }
-    else:
-        return {
-            "success":True
         }
 
 def check_existence(data,collector):
