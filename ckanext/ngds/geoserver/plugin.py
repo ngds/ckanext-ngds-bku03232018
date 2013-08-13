@@ -3,7 +3,6 @@ import pylons
 import re
 from sqlalchemy.exc import ProgrammingError
 from jinja2 import Environment, FileSystemLoader
-import flask
 
 import ckan.plugins as p
 from ckan.plugins import ITemplateHelpers, IRoutes, IConfigurer, IResourcePreview
