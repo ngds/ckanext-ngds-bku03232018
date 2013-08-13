@@ -1,17 +1,11 @@
 import logging
-import pylons
-import re
-from sqlalchemy.exc import ProgrammingError
-from jinja2 import Environment, FileSystemLoader
 
 import ckan.plugins as p
-from ckan.plugins import ITemplateHelpers, IRoutes, IConfigurer, IResourcePreview
+from ckan.plugins import ITemplateHelpers, IRoutes, IResourcePreview
 import ckanext.ngds.geoserver.logic.action as action
 import ckanext.ngds.geoserver.model.GMLtoReclineJSON as recline
 import ckanext.datastore.logic.auth as auth
-from ckanext.datastore.plugin import DatastoreException
 import ckan.logic as logic
-import ckan.model as model
 import ckanext.ngds.geoserver.misc.helpers as helpers
 
 log = logging.getLogger(__name__)
