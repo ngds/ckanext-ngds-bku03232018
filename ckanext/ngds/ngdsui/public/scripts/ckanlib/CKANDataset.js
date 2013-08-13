@@ -92,7 +92,6 @@ ngds.ckandataset = function(raw) {
 						'children':[
 							{
 								'tag':'a',
-								'priority':1,
 								'attributes':{
 									'href':'mailto:'+raw.maintainer_email,
                                     'text':raw.maintainer

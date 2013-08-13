@@ -1,4 +1,4 @@
-   
+   {% set rating_dict = { 1:'Rate as very Poor?',2:'Rate as Poor?', 3:'Rate as Fair?', 4:'Rate as Good?', 5:'Rate as Very Good?' } %}
    {% for package in packages %}
 
            <div class="search-results-container">
@@ -29,7 +29,7 @@
 
                     {% if user %}
                       {% set following = h.is_following('dataset',package.id) %}
-                      
+
                       {% if following %}
                       <a href="{{ h.url_for(controller=controller, action='unfollow', id=package.name) }}" target="_blank">
                         <img src="/assets/bookmark.png" />
@@ -52,37 +52,19 @@
                     </p>
                     <p>
                     <span title="Select a star to rate this dataset">
-                    <!-- TODO make this a for loop for simpler maintainance - tried to do it but then doesn't work not sure why yet -->
-                     
-                      
-                      {% if h.highlight_rating_star(1, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(1))}}", "1.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(1))}}", "1.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                           {% if h.highlight_rating_star(2, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(2))}}", "2.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(2))}}", "2.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                      {% if h.highlight_rating_star(3, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(3))}}", "3.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(3))}}", "3.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                      {% if h.highlight_rating_star(4, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(4))}}", "4.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(4))}}", "4.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                      {% if h.highlight_rating_star(5, package.id)  == 1 %}
-                      <img src="/images/u448_normal.png" onclick='callRating("{{_(h.rating_text(5))}}", "5.0", "{{_(package.id)}}");'/>
-                      {% else %}
-                      <img src="/images/u448_clear.png" onclick='callRating("{{_(h.rating_text(5))}}", "5.0", "{{_(package.id)}}");'/>
-                     {% endif %} 
-                                                                          
+
+                        {% set rating_val, rating_counter = h.get_rating_details(package.id) %}
+
+                        {% for i in range(1,rating_val+1) %}
+                            <img src="/images/u448_normal.png" onclick='callRating("{{_(rating_dict[i])}}", "{{i|float}}", "{{_(package.id)}}");'/>
+                        {% endfor %}
+
+                        {% for i in range(1,6-rating_val) %}
+                            <img src="/images/u448_clear.png" onclick='callRating("{{_(rating_dict[i])}}", "{{i|float}}", "{{_(package.id)}}");'/>
+                        {% endfor %}
+
                     </span>
-                    <span>{{h.count_rating_reviews(package.id)}} reviews </span></p>
+                    <span>{{rating_counter}} reviews </span></p>
                   </div>
                   
 

@@ -10,6 +10,8 @@ from pylons import config
 from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
 from ckanext.ngds.ngdsui.misc import helpers as ui_helper
 
+log = __import__("logging").getLogger(__name__)
+
 #Need to decide our own Read only keys
 readonly_keys = ('id', 'revision_id',
                  'relationships',
@@ -87,23 +89,20 @@ class BulkUploader(object):
         If it can process the records successfully then updates the status as "Completed" otherwise as "Failure" and corresponding comments.
         """        
         import os
-        print "entering execute_bulk_upload"
+        log.debug("entering execute_bulk_upload")
         query = model.BulkUpload.search("VALID")
-
-        #print "Returned Query:",query
-        
 
         for bulk_upload_record in query.all():
 
-            print "Processing the file: ",bulk_upload_record.data_file
+            log.debug("Processing the file: %s", bulk_upload_record.data_file)
 
             try:
                 data_file_path = os.path.join(bulk_upload_record.path,bulk_upload_record.data_file)
                 self.importpackagedata(bulk_upload_record.id,file_path=data_file_path,resource_dir=bulk_upload_record.path,ckanclient=self.ckanclient)
                 bulk_upload_record.status = "COMPLETED"
-            except Exception , e:
-                print e
-                print "Exception while processing bulk upload for the file :" ,bulk_upload_record.data_file
+            except Exception, e:
+                log.debug(e)
+                log.debug("Exception while processing bulk upload for the file : %s" , bulk_upload_record.data_file )
                 bulk_upload_record.status = "FAILURE"
                 bulk_upload_record.comments = e.message
             finally:
@@ -136,19 +135,19 @@ class BulkUploader(object):
                 self._create_bulk_upload_package(bulk_upload_id,returned_package['name'],returned_package['title'])
 
             except Exception , e:
-                print "Skipping this record and proceeding with next one....",e 
+                log.info(e)
+                log.info("Skipping this record and proceeding with next one....")
                 raise
     
-    def _create_bulk_upload_package(self,bulk_upload_id,package_name,package_title):
-        print "Create Bulk Upload Package: bid: %s pname: %s  ptitle: %s" % (bulk_upload_id,package_name,package_title)
-        data = {'bulk_upload_id':bulk_upload_id,'package_name':package_name,'package_title':package_title}
-        data_dict = {'model':'BulkUpload_Package'}
-        data_dict['data']=data
-        data_dict['process']='create'
+    def _create_bulk_upload_package(self,bulk_upload_id, package_name, package_title):
+        log.debug("Create Bulk Upload Package: bid: %s pname: %s  ptitle: %s" % (bulk_upload_id, package_name, package_title))
+        data = {'bulk_upload_id': bulk_upload_id, 'package_name': package_name, 'package_title': package_title}
+        data_dict = {'model': 'BulkUpload_Package'}
+        data_dict['data'] = data
+        data_dict['process'] = 'create'
         context = {'model': model, 'session': model.Session}   
-        trans_dispatch(context,data_dict)     
+        trans_dispatch(context, data_dict)
 
-       
 
 class SpreadsheetDataRecords(DataRecords):
     '''Takes SpreadsheetData and converts it its titles and
@@ -245,7 +244,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         elif numberofResParties > 1:
             raise Exception("Data Error: More than one responsible party is found with the given name %s and email %s " % (name,email))
         else:
-            print "Found Party ID: ",numberofResParties[0].id
+            log.debug("Found Party ID: %s",numberofResParties[0].id)
             return numberofResParties[0].id
 
     @classmethod
@@ -316,7 +315,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
-            print "title:%s, value: %s" % (title,cell)
+            #log.debug("title:%s, value: %s" % (title,cell))
             if cell:
                 if title in referenced_keys:
                     cell = cls.validate_SD(title,cell)
@@ -354,7 +353,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                         num_new_resources = 1 + res_index - len(resources)
                         for i in range(num_new_resources):
                             blank_dict = OrderedDict()
-                            for blank_field in model.Resource.get_columns():
+                            for blank_field in model.Resource.get_columns(extra_columns=False):
                                 blank_dict[blank_field] = u''
                             pkg_fs_dict['resources'].append(blank_dict)
 

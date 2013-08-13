@@ -26,9 +26,11 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         try:
             pkg_dict = self._update_resource(pkg_dict)
         except LoaderError:
+            log.error(e)
             raise
         except Exception, e:
-            raise LoaderError('Could not update resources Exception: %s'% e.message)
+            log.error(e)
+            raise LoaderError('Could not update resources Exception: %s'% e)
 
         super(ResourceLoader, self)._write_package(pkg_dict,existing_pkg_name,existing_pkg)
 
@@ -39,6 +41,8 @@ class ResourceLoader(loader.ResourceSeriesLoader):
 
         for resource in pkg_dict['resources']:
 
+            log.debug("Before processing: %s", resource)
+
             if resource.get('upload_file'):
                 try:
                     #file_path = self.resource_dir+resource['upload_file']
@@ -48,8 +52,10 @@ class ResourceLoader(loader.ResourceSeriesLoader):
                     #print "In Update Resource: uploaded_file_url: ", uploaded_file_url
                     resource['url']=uploaded_file_url
                     del resource['upload_file']
+                    log.debug("After processing: %s", resource)
 
                     if resource.get('content_model'):
+                        log.debug("Inside content_model....")
                         resource['content_model_uri'], resource['content_model_version'] = self.validate_content_model(resource['content_model'], resource.get('content_model_version'))
                         del resource['content_model']
 
