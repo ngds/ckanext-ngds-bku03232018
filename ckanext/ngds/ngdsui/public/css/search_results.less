@@ -48,15 +48,15 @@
         background-image: url('/assets/facet_expand.png') !important;
         width: 30px;
         height: 40px;
-        left: -0.5em;
-		top: 0em;
+        left: -0.6em;
+		top: -0.2em;
     }
     .collapseIcon
     {
         background-image: url('/assets/facet_collapse.png') !important;
         width: 30px;
         height: 40px;
-        left: -0.5em;
+        left: -0.6em;
 		top: -0.2em;
     }
 
@@ -71,6 +71,7 @@
 			//padding-top:5px;
 			width:25%;
 			display:table-cell;
+            background-color: #FAFAFA;
 			#search-accoridion{
 				padding:10px;
 				padding-right:20px;
@@ -97,12 +98,25 @@
 				padding: 0.1em 0.5em 0.1em 1.5em;
 			}
 
+
+
+            .ui-state-focus, .ui-state-active{
+                outline: none;
+            }
+
+            .ui-widget-content{
+               border:none;
+            }
+
 			.sub{
 				border:none;
 				li{
 					margin-top:5px;
 					margin-bottom:5px;
 				}
+                .ui-accordion-header {
+                  margin-left:-6px;
+                }
 			}
 
 			ul{

@@ -7,6 +7,9 @@ log = __import__("logging").getLogger(__name__)
 BUCKET = config.get('ckan.storage.bucket', 'default')
 
 def upload_file_return_path(file_name=None,file_path=None):
+    """
+
+    """
     print "file_name %s " % file_name
     print "file_path %s " % file_path
     if file_name is None or file_path is None:
@@ -36,16 +39,12 @@ def upload_file_return_path(file_name=None,file_path=None):
     #uploaded_file_url = h.url_for('storage_file',label=label,qualified=True)
     uploaded_file_url = ofs.get_url(bucket_id,label)
 
-    print "uploaded_file_url: ",uploaded_file_url
-
     log.info("uploaded_file_url: %s" % uploaded_file_url)
 
     return uploaded_file_url
 
-def validate_bulkupload_datafile(file_name):
-    print "validate the data file..."
 
-def delete_files(file_path,files_to_delete=None,ignore_files=None):
+def delete_files(file_path, files_to_delete=None, ignore_files=None):
 
     import os
     os.chdir(file_path)    
