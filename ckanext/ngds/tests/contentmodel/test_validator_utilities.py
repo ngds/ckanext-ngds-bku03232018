@@ -135,8 +135,66 @@ def test_data_empty_cell():
     print validation_existence_messages
     assert len(validation_existence_messages) > 0
     
+def test_data_Numeric1():
+    assert_equals(isNumber("-1.0"), True)
+    assert_equals(isNumber("-1"  ), True)
+    assert_equals(isNumber("-0"  ), True)
+    assert_equals(isNumber("1.0" ), True)
+    assert_equals(isNumber("2"   ), True)
+    assert_equals(isNumber(".99" ), True)
+    assert_equals(isNumber(" "   ), False)
+    assert_equals(isNumber("s"   ), False)
+    
+def test_data_Numeric2():
+    assert_equals(isInteger("-1.0"), False)
+    assert_equals(isInteger("-1"  ), True)
+    assert_equals(isInteger("-0"  ), True)
+    assert_equals(isInteger("1.0" ), False)
+    assert_equals(isInteger("2"   ), True)
+    assert_equals(isInteger(".99" ), False)
+    assert_equals(isInteger(" "   ), False)
+    assert_equals(isInteger("s"   ), False)
+    
+def test_data_Number1():
+    csv_file_path = "./testdata/PowerPlantFacility_Number.csv"
+    data_dict = {"cm_uri":"http://schemas.usgin.org/uri-gin/ngds/dataschema/PowerPlantFacility/", "cm_version":"0.2"}
+    
+    user_schema = support_contentmodel_get(data_dict)
+    print(user_schema)
+    
+    fieldModelList = support_filter_valid_model(user_schema)
+    print(fieldModelList)
+    
+    csv_data = support_CSV_loader(csv_file_path)
+    assert_equals(csv_data['validation_msg'],[])
+    
+    validation_numericType_messages = validate_numericType(fieldModelList, csv_data['dataHeaderList'], csv_data['dataListList'])
+    print validation_numericType_messages
+    assert len(validation_numericType_messages) > 0
+
+def test_data_Number2():
+    csv_file_path = "./testdata/PowerPlantFacility_NumberOK.csv"
+    data_dict = {"cm_uri":"http://schemas.usgin.org/uri-gin/ngds/dataschema/PowerPlantFacility/", "cm_version":"0.2"}
+    
+    user_schema = support_contentmodel_get(data_dict)
+    print(user_schema)
+    
+    fieldModelList = support_filter_valid_model(user_schema)
+    print(fieldModelList)
+    
+    csv_data = support_CSV_loader(csv_file_path)
+    assert_equals(csv_data['validation_msg'],[])
+    
+    validation_numericType_messages = validate_numericType(fieldModelList, csv_data['dataHeaderList'], csv_data['dataListList'])
+    print validation_numericType_messages
+    assert len(validation_numericType_messages) == 0
+    
 if __name__ == '__main__':
     test_data_has_extra_column_compare_to_model()
     test_data_miss_must_have_column_compare_to_model()
     test_data_empty_cell()
+    test_data_Numeric1()
+    test_data_Numeric2()
+    test_data_Number1()
+    test_data_Number2()
     print "done"

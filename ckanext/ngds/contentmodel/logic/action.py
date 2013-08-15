@@ -222,11 +222,6 @@ def contentmodel_checkFile(context, data_dict):
                     validation_msg.extend(validation_existence_messages)
         
         if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
-            validation_dateType_messages = validate_dateType(fieldModelList, dataHeaderList, dataListList)
-            if len(validation_dateType_messages) > 0:
-                validation_msg.extend(validation_dateType_messages)
-                
-        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             validation_numericType_messages = validate_numericType(fieldModelList, dataHeaderList, dataListList)
             if len(validation_numericType_messages) > 0:
                 validation_msg.extend(validation_numericType_messages)
