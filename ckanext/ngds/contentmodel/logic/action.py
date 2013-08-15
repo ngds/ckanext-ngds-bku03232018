@@ -211,6 +211,12 @@ def contentmodel_checkFile(context, data_dict):
 
         if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             if ckanext.ngds.contentmodel.model.contentmodels.checkfile_checkoptionalfalse == True:
+                validate_missing_message = validate_detectMissingColumn(fieldModelList, dataHeaderList)
+                if len(validate_missing_message) > 0:
+                    validation_msg.extend(validate_missing_message)
+            
+        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
+            if ckanext.ngds.contentmodel.model.contentmodels.checkfile_checkoptionalfalse == True:
                 validation_existence_messages = validate_existence(fieldModelList, dataHeaderList, dataListList)
                 if len(validation_existence_messages) > 0:
                     validation_msg.extend(validation_existence_messages)

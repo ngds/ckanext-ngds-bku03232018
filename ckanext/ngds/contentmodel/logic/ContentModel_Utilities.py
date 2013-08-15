@@ -84,6 +84,27 @@ def validate_header(fieldModelList, dataHeaderList, dataListList):
     return validation_messages
 # def validate_header(fieldModelList, dataHeaderList, dataListList)
 
+def validate_detectMissingColumn(fieldModelList, dataHeaderList):
+    print "about to start missing columns checking"
+    
+    validation_messages = []
+    for field in fieldModelList:
+        print field.name, field.optional
+        if field.optional == False:
+            try:
+                index = [i for i, header in enumerate(dataHeaderList) if field.name == header]
+                if len(index) == 0:
+                    msg = "header: %s could NOT be found in the CSV file" %(field.name)
+                    print msg
+                    validation_messages.append({'row':0, 'col':0, 'errorType': 'columnNameDoesntExist', 'message':msg})
+            except:
+                msg = "header: %s could NOT be found in the CSV file" %(field.name)
+                print msg
+                validation_messages.append({'row':0, 'col':0, 'errorType': 'columnNameDoesntExist', 'message':msg})
+    print "about to finish missing columns checking"
+    return validation_messages
+# def validate_detectMissingColumn(fieldModelList, dataHeaderList):
+
 def validate_existence(fieldModelList, dataHeaderList, dataListList):
     print "about to start field existence checking"
     
