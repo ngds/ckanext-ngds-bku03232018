@@ -27,6 +27,30 @@ def isInteger(s):
     return False
 # def isInteger(s)
 
+def isDate_Long(s):
+    try:
+        timestamp = datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
+        return True
+    except ValueError as e:
+        print e
+        pass
+    return False
+# def isDate_Long(s)
+
+def isDate_Short(s):
+    try:
+        timestamp = datetime.datetime.strptime(s, "%Y-%m-%d")
+        return True
+    except ValueError as e:
+        print e
+        pass
+    return False
+# def isDate_Short(s)
+
+def isDate(s):
+    return (isDate_Short(s) == True) or (isDate_Long(s) == True)
+# def isDate(s)
+
 def enum(*sequential, **named):
     enums = dict(zip(sequential, range(len(sequential))), **named)
     return type('Enum', (), enums)
@@ -200,7 +224,7 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
 
     print "about to finish field numeric checking"
     return validation_messages
-
+# def validate_numericType(fieldModelList, dataHeaderList, dataListList)
 
 def validate_dateType(fieldModelList, dataHeaderList, dataListList):
     print "about to start date data type checking"
@@ -226,29 +250,22 @@ def validate_dateType(fieldModelList, dataHeaderList, dataListList):
     print "DateTypeIndex:"
     print DateTypeIndex
 
-    
     for jd in xrange(len(dataListList)):
         # check the int type
         for i in xrange(len(DateTypeIndex)):
             data = dataListList[jd][DateTypeIndex[i]]
-            try:
-                timestamp = data[:-6]
-                timestamp = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
-            except ValueError as e:
-                print e
-                msg = "cell (%d,%d): %s (field %s) is expected to be a ISO 1861 Format datetime"   %(jd+2, DateTypeIndex[i]+1, data, dataHeaderList[DateTypeIndex[i]])
-                print msg
-                validation_messages.append({'row':jd+2, 'col':DateTypeIndex[i]+1, 'errorType': 'dateCellViolation', 'message':msg})
-                pass
-
-
-
+            if isDate(data) == False:
+                if len(data) > 0:
+                    msg = "cell (%d,%d): %s (field %s) is expected to be a ISO 1861 Format datetime"   %(jd+2, DateTypeIndex[i]+1, data, dataHeaderList[DateTypeIndex[i]])
+                    print msg
+                    validation_messages.append({'row':jd+2, 'col':DateTypeIndex[i]+1, 'errorType': 'dateCellViolation', 'message':msg})
+            
         if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             break
 
     print "about to finish field datetime checking"
     return validation_messages
-# def validate_numericType(fieldModelList, dataHeaderList, dataListList)
+# def validate_dateType(fieldModelList, dataHeaderList, dataListList)
 
 import ckan.controllers.storage as storage
 from pylons import config
