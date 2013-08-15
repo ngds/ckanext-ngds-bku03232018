@@ -98,6 +98,7 @@ def test_data_has_extra_column_compare_to_model():
     assert_equals(csv_data['validation_msg'],[])
     
     validate_header_messages = validate_header(fieldModelList, csv_data['dataHeaderList'], csv_data['dataListList'])
+    print validate_header_messages
     assert len(validate_header_messages) > 0
 
 def test_data_miss_must_have_column_compare_to_model():
@@ -114,9 +115,28 @@ def test_data_miss_must_have_column_compare_to_model():
     assert_equals(csv_data['validation_msg'],[])
     
     validate_header_messages = validate_detectMissingColumn(fieldModelList, csv_data['dataHeaderList'])
+    print validate_header_messages
     assert len(validate_header_messages) > 0
+
+def test_data_empty_cell():
+    csv_file_path = "./testdata/PowerPlantFacility_missingValue.csv"
+    data_dict = {"cm_uri":"http://schemas.usgin.org/uri-gin/ngds/dataschema/PowerPlantFacility/", "cm_version":"0.2"}
+    
+    user_schema = support_contentmodel_get(data_dict)
+    print(user_schema)
+    
+    fieldModelList = support_filter_valid_model(user_schema)
+    print(fieldModelList)
+    
+    csv_data = support_CSV_loader(csv_file_path)
+    assert_equals(csv_data['validation_msg'],[])
+    
+    validation_existence_messages = validate_existence(fieldModelList, csv_data['dataHeaderList'], csv_data['dataListList'])
+    print validation_existence_messages
+    assert len(validation_existence_messages) > 0
     
 if __name__ == '__main__':
     test_data_has_extra_column_compare_to_model()
     test_data_miss_must_have_column_compare_to_model()
+    test_data_empty_cell()
     print "done"
