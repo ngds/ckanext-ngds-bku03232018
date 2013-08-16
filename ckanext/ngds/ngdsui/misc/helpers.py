@@ -9,6 +9,7 @@ from pylons import config, jsonify
 from ckanext.ngds.env import ckan_model
 
 import iso8601
+import urllib2
 
 import re
 from ckan.model.resource import Resource
@@ -126,7 +127,7 @@ def file_path_from_url(url):
 
     pattern = "^(?P<protocol>.+?)://(?P<host>.+?)/.+/(?P<label>\d{4}-.+)$"
     label = re.match(pattern, url).group("label")
-    return get_url_for_file(label)
+    return get_url_for_file(urllib2.unquote(label))
 
 def get_url_for_file(label):
     bucket = config.get('ckan.storage.bucket', 'default')
