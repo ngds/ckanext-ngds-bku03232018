@@ -291,7 +291,7 @@ class NgdsuiPlugin(SingletonPlugin):
                                            }
                             document_index_list.append(resource_index_dict)
                 except Exception, ex:
-                    print "exception: ", ex
+                    print "Exception while getting some full text indexing values: %s" % ex
 
             if is_full_text_enabled == 'true' and document_index_list:
                 helpers.create_package_resource_document_index(pkg_dict.get('id'),  document_index_list)
