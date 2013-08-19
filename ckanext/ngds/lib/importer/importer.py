@@ -77,9 +77,10 @@ class BulkUploader(object):
 
     
     def _get_ckanclient(self):
-        from ckanclient import CkanClient
+        #from ckanclient import CkanClient
+        from ckanext.ngds.lib.client import NgdsCkanClient
 
-        testclient = CkanClient(base_location=self.url, api_key=self.api_key)
+        testclient = NgdsCkanClient(base_location=self.url, api_key=self.api_key)
 
         return testclient
 
