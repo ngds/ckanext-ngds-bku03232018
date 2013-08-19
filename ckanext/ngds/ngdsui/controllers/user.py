@@ -84,10 +84,11 @@ class UserController(NGDSBaseController):
 
 		if role == 'default':
 			get_action('group_member_delete')(context, data_dict)
-			#TODO: See how to show the status message on the screen.
+			h.flash_notice(_('User rights are removed.'), allow_html=True)
 		else:
-			get_action('group_member_create')(context, data_dict)		
-			#TODO: See how to show the status message on the screen.
+			get_action('group_member_create')(context, data_dict)
+			h.flash_success(_('User Role is Updated Successfully.'), allow_html=True)
+
 		url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.user:UserController', action='manage_users')
 		redirect(url)
 

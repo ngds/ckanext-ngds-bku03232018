@@ -799,34 +799,7 @@ div.controls select[id="field-extras-0-value"] {
 
 /* User Management */
 
-div#manage-users table{
-	font-family: Arial;
-	font-size: 12px;
-	margin: 5px;
-	width: 750px;
-	border-collapse: collapse;
-	text-align: left;
-}
 
-div#manage-users th{
-	font-size: 13px;
-	font-weight: bold;
-	padding: 4px 4px;
-	background: #a8a8a8;
-	border-bottom: 2px solid #a8a8a8;
-}
-
-div#manage-users td{
-	border-bottom: 1px solid #ccc;
-	color: #000000;
-	padding: 6px 8px;
-}
-
-div#manage-users td,div#manage-users th{
-	padding-top: 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-}
 
 .ngds-button {
   display: block;
@@ -914,13 +887,10 @@ div#manage-users td,div#manage-users th{
 .btn [class^="icon-"],
 .nav [class^="icon-"],
 .module-heading [class^="icon-"],
-.dropdown [class^="icon-"],
 .btn [class*=" icon-"],
 .nav [class*=" icon-"],
 .module-heading [class*=" icon-"],
-.dropdown [class*=" icon-"] {
-  margin-right: 4px;
-}
+
 
 .nav {
   margin-left: 0;
