@@ -314,9 +314,8 @@ def construct_facet(facet_group,facet_dict={},metadatafield=None,facet_level=1,f
         found = False
         for ret_facet in facet_values:
             #print "ret_facet['name']: ",ret_facet['name']
-            if ret_facet['name'] == facet_group.get('facet'):
-                if facet_group.get('display_name'):
-                    ret_facet['display_name'] = facet_group['display_name']
+            if str(ret_facet['name']).lower() == str(facet_group.get('facet')).lower():
+                ret_facet['display_name'] = facet_group.get('display_name') or facet_group.get('facet')
                 facet_dict['fvalues'] = [ret_facet]
                 found = True
                 facet_values.remove(ret_facet)
