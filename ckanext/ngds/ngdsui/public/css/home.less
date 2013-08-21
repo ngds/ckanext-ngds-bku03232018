@@ -41,6 +41,7 @@ div#showcase-find-map-container { // Showcase map find container begin
 	float:right;
 	margin-top:5px;
 	right:0px;
+    //margin-right:195px;
 
 	.map-find-common(@left,@right) {
 		top:10px;
@@ -164,50 +165,40 @@ div#showcase-find-map-container { // Showcase map find container begin
 	}
 }
 
-
-#slideshow{
-    height:400px;
-    width:840px;
-    float:left
-}
 #slides {
     height:400px;
-    position:relative
-}
-.slide{
-    height:400px;
     width:840px;
-    overflow:hidden;
-    position:absolute;
-    background:#000;
-    color:#fff
-}
-#slides-controls{
-    width:60px;
-    background-color:#fff;
-    height:20px;
-    margin-left:auto;
-    margin-right:auto;
-    padding:5px;
-    a  {
-       margin:5px;
-       width:8px;
-       height:8px;
-       border-radius:4px;
-       -moz-border-radius:4px;
-       -webkit-border-radius:4px;
-       -o-border-radius:4px;
-       background:#083656;
-       border:1px solid #fff;
-       text-indent:-9000px;
-       display:block;
-       overflow:hidden;
-       float:left
-
+    line-height: 400px;
+    position:relative;
+    text-align: center;
+    //background:black;
+    border: 1px dotted grey;
+    a{
+      width: 100%;
+      img{
+        vertical-align: middle;
+        overflow:hidden;
+      }
     }
 }
-#slides-controls a:hover{background:#f60}
-#slides-controls a.highlight{background:#fff; border:1px solid #083656}
+#slide-controls{
+    background-color:#fff;
+    z-index: 5000;
+    position: absolute;
+    margin: 5px;
+}
+
+/*
+
+.wraptocenter {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+.wraptocenter * {
+    vertical-align: middle;
+}
+*/
 
 
 
