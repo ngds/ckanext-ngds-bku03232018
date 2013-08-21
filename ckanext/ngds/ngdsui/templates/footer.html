@@ -4,42 +4,38 @@
 				<div id ="footer-links-section">
 					<div>
 						<p>{{ _('About NGDS') }}</p>				
-						<span><a class="footer-link not-implemented" href="#">{{ _('Partners') }}</a></span>				
-						<span><a class="footer-link not-implemented" href="#">{{ _('Data') }}</a></span>
-						<span><a class="footer-link not-implemented" href="#">{{ _('History') }}</a></span>
+						<span><a class="footer-link" href="/ngds/partners">{{ _('Partners') }}</a></span>
+						<span><a class="footer-link" href="/ngds/data">{{ _('Data') }}</a></span>
+						<span><a class="footer-link" href="/ngds/history">{{ _('History') }}</a></span>
 					</div>
 					<div>
 						<p>Help</p>				
-						<span><a class="footer-link not-implemented">{{ _('New to NGDS?') }}</a></span>
-						<span><a class="footer-link not-implemented">{{ _('Get started now.') }}</a></span>
-						<span><a class="footer-link not-implemented">{{ _('FAQ\'s') }}</a></span>
+						<span><a class="footer-link" href="/ngds/new_to_ngds">{{ _('New to NGDS?') }}</a></span>
+						<span><a class="footer-link">{{ _('Get started now.') }}</a></span>
+						<span><a class="footer-link" href="/ngds/faq">{{ _('FAQ\'s') }}</a></span>
 					</div>	
 					<div>
 						<p>I want to ...</p>				
-						<span><a class="footer-link not-implemented">{{ _('Contribute data to NGDS') }}</a></span>
-						<span><a class="footer-link not-implemented">{{ _('Contact NGDS') }}</a></span>
-						<span><a class="footer-link not-implemented">{{ _('View my saved searches') }}</a></span>
-						<span><a class="footer-link not-implemented">{{ _('Share my favorites') }}</a></span>
+						<span><a class="footer-link">{{ _('Contribute data to NGDS') }}</a></span>
+						<span><a class="footer-link">{{ _('Contact NGDS') }}</a></span>
+						<span><a class="footer-link">{{ _('View my saved searches') }}</a></span>
+						<span><a class="footer-link">{{ _('Share my favorites') }}</a></span>
 					</div>		
 
 				</div>
-				 <div id="feedback-section">
-		          <p> {{ _('How do you like our website?') }} <button type="submit">{{ _('Give us feedback') }}</button></p>
-		        </div>
 			</div>
 
-			<div id="data-contributors-container">
-				<p>{{ _('Hello, we share data with NGDS') }}</p>
-				<p><span>AZGS</span></p>
-				<p><span>SMU</span></p>
-				<p><span>EGI</span></p>
-				<p><span>SMU</span></p>
-				<p><span>SCR</span></p>
-				<p><span>SCR</span></p>
-				<p><span>SCR</span></p>
-				<p><span>SCR</span></p>
-				<p><span>SCR</span></p>
-			</div>
+			<!--<div id="data-contributors-container">-->
+				<!--<p><span>AZGS</span></p>-->
+				<!--<p><span>SMU</span></p>-->
+				<!--<p><span>EGI</span></p>-->
+				<!--<p><span>SMU</span></p>-->
+				<!--<p><span>SCR</span></p>-->
+				<!--<p><span>SCR</span></p>-->
+				<!--<p><span>SCR</span></p>-->
+				<!--<p><span>SCR</span></p>-->
+				<!--<p><span>SCR</span></p>-->
+			<!--</div>-->
 		</div>
 		</div>
 	<div class="postface">
@@ -47,9 +43,9 @@
 		    <p>&copy; {{ _('US DEPARTMENT OF ENERGY') }}</p>
 		</div>
 		<div class="right">
-		    <span class="left"><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{ _('Home') }}</a></span>
-		    <span class="center"><a class="not-implemented">{{ _('CONTACT') }}</a></span>
-		    <span class="right"><a class="not-implemented">{{ _('TERMS OF USE') }} &amp; {{ _('PRIVACY') }}</a></span>
+		    <span class="left"><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{ _('HOME') }}</a></span>
+		    <span class="center"><a href="#">{{ _('CONTACT') }}</a></span>
+		    <span class="right"><a href="#">{{ _('TERMS OF USE') }} &amp; {{ _('PRIVACY') }}</a></span>
 		</div>
 	</div>		
 

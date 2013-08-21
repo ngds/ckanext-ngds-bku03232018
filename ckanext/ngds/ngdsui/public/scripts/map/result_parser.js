@@ -6,6 +6,9 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
     ngds.log("Received " + count + " results : " + results, results);
     $(".results").remove();
     var clazz = "results";
+    ngds.util.state['colorify'] = {
+//    Colors for different map search results.
+    };
 
     if (ngds.Map.is_fullscreen() === true) {
         clazz = clazz + " large";
@@ -61,13 +64,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
                 },
                 {
-                    'tag': 'p',
-                    'attributes': {
-                        'class': 'notes',
-                        'text': ngds.util.get_n_chars(results[i]['notes'], 58)
-                    }
-                },
-                {
                     'tag': 'div',
                     'attributes': {
                         'class': 'additional-dataset-info'
@@ -91,25 +87,29 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 }
             ]
         };
+        var dataset_resources = {
+            'tag': 'div',
+            'attributes': {
+                class: 'dataset-resources'
+            }
+        };
 
         if (is_wms_present === true) {
-            skeleton.children.push({
-                                       'tag': 'button',
-                                       'attributes': {
-                                           'class': 'wms ngds-slug',
-                                           'text': 'WMS',
-                                           'id': results[i].id
-                                       }
-                                   });
+            dataset_resources.children = [];
+            dataset_resources.children.push({
+                                                'tag': 'button',
+                                                'attributes': {
+                                                    'class': 'wms ngds-slug',
+                                                    'text': 'WMS',
+                                                    'id': results[i].id
+                                                }
+                                            });
         }
+        skeleton.children.push(dataset_resources);
         var shaped_loop_scope = ngds.ckandataset(results[i]).get_feature_type()['type'];
         var marker_container = { };
         var alph_seq = seq.current('alph');
-        ngds.publish('Map.feature_received', {
-            'feature': results[i],
-            'seq': seq.current(),
-            'alph_seq': alph_seq
-        });
+
 
         if (shaped_loop_scope === 'Point') {
             marker_container = {
@@ -120,23 +120,36 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 'priority': 1,
                 'children': [
                     {
-                        'tag': 'img',
+                        'tag': 'div',
                         'attributes': {
-                            'src': '/images/marker.png',
-                            'class': 'result-marker'
-                        }
-                    },
-                    {
-                        'tag': 'span',
-                        'attributes': {
-                            'class': 'result-marker-label marker-label-' + seq.current(),
-                            'text': alph_seq
+                            'class': 'red-marker'
                         }
                     }
                 ]
             };
-            skeleton['children'].push(marker_container);
         }
+
+        else {
+            var color = ngds.util.rotate_color();
+            ngds.util.state['colorify'][seq.current()] = color;
+            marker_container = {
+                'tag': 'div',
+                'attributes': {
+                    'class': 'red-box',
+                    'style': "background-color:" + color
+                },
+                'priority': 1
+
+            };
+
+        }
+        ngds.publish('Map.feature_received', {
+            'feature': results[i],
+            'seq': seq.current(),
+            'alph_seq': alph_seq
+        });
+
+        skeleton['children'].push(marker_container);
 
         var dom_node = ngds.util.dom_element_constructor(skeleton);
         $('.results').append(dom_node);
@@ -149,7 +162,14 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                                                                {
                                                                    'tag': 'p',
                                                                    'attributes': {
-                                                                       'text': 'Found ' + count + " results for \"" + query + "\"",
+                                                                       'text': 'Found ' + count + " results" + (function (count, query) {
+
+                                                                           if (query !== "" && typeof query !== "undefined") {
+                                                                               return " for \"" + query + "\""
+                                                                           } else {
+                                                                               return "";
+                                                                           }
+                                                                       })(count, query),
                                                                        'class': 'reader'
                                                                    }
                                                                }

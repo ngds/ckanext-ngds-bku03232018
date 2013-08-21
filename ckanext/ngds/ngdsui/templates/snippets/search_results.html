@@ -27,19 +27,6 @@
                   </div>
                   <div id="banner">
 
-                    {% if user %}
-                      {% set following = h.is_following('dataset',package.id) %}
-
-                      {% if following %}
-                      <a href="{{ h.url_for(controller=controller, action='unfollow', id=package.name) }}" target="_blank">
-                        <img src="/assets/bookmark.png" />
-                      </a>
-                      {% else %}
-                      <a href="{{ h.url_for(controller=controller, action='follow', id=package.name) }}" target="_blank">
-                        <img src="/assets/bookmark.png" />
-                      </a>
-                      {% endif %}
-                    {% endif %}
                   </div>
               </div>
               <div id="search-meta-row">

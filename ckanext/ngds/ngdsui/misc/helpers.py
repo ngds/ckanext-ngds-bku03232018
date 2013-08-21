@@ -6,6 +6,7 @@ import ckan.rating as rating
 DataError = dictization_functions.DataError
 from pylons import config, jsonify
 import ckan.logic as logic
+from operator import itemgetter
 
 from ckanext.ngds.env import ckan_model
 
@@ -580,3 +581,10 @@ def is_development():
     if config.get('ngds.is_development',"false")=="true":
         return True
     return False
+
+def get_top_5_harvest_sources():
+    sources = logic.get_action('harvest_source_list')(None,{})
+    top_sources = sorted(sources,key=lambda x: x['status']['overall_statistics']['added'])
+    return top_sources[0:5]
+
+

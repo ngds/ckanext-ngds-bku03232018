@@ -1,3 +1,10 @@
+"""
+This controller class is responsible purely for rendering top-level pages in the NGDS UI. These are the home page,map, about,
+library search, contribute landing page and page links in the footer section of every NGDS Page. Each page has a corresponding render function
+that is automatically invoked when a request to a specific URL path is made, and renders a template that in turn is responsible for constructing
+an HTML page from a predefined template(s).
+"""
+
 from ckan.lib.base import *
 from ckan.lib.base import (request,
                            render,
@@ -8,8 +15,8 @@ from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 from sqlalchemy import orm, types, Column, Table, ForeignKey, desc, and_
 from ckan.controllers.organization import OrganizationController
 from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
-from ckan.logic import (tuplize_dict,clean_dict,
-                        parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
+from ckan.logic import (tuplize_dict, clean_dict,
+                        parse_params, flatten_to_string_key, get_action, check_access, NotAuthorized)
 from ckan.model import Session, Package
 import ckan.logic as logic
 import ckan.lib.dictization.model_dictize as model_dictize
@@ -18,11 +25,13 @@ from ckan.lib.base import config
 import ckan.rating as rating
 import logging
 
-class HomeController(NGDSBaseController):
 
+class HomeController(NGDSBaseController):
     def render_index(self):
-        """    
-        Render the home/index page
+        """
+        This function renders the NGDS home page. The page sent to the user depends on the deployment of the system
+        i.e. if the deployment is a central node, then the page sent is the central home page, if it is a node-in-a-box,
+        the page sent will be the map page.
         """
 
         if g.node_in_a_box:
@@ -30,26 +39,20 @@ class HomeController(NGDSBaseController):
 
         context = {'model': model, 'session': model.Session, 'user': c.user}
 
-        activity_objects = model.Session.query(model.Activity).join(model.Package, model.Activity.object_id == model.Package.id).\
-        filter(model.Activity.activity_type == 'new package').order_by(desc(model.Activity.timestamp)).\
-        limit(5).all()
+        activity_objects = model.Session.query(model.Activity).join(model.Package,
+                                                                    model.Activity.object_id == model.Package.id). \
+            filter(model.Activity.activity_type == 'new package').order_by(desc(model.Activity.timestamp)). \
+            limit(5).all()
         activity_dicts = model_dictize.activity_list_dictize(activity_objects, context)
-        # c.recent_activity = logic.get_action('dashboard_activity_list')(
-  #           context, {'id': None, 'offset': 0})[1:7]
         c.recent_activity = activity_dicts
         return render('home/index_ngds.html')
 
-    def render_about(self):
-        """    
-        Render the about page
-        """
-        return render('home/about_ngds.html')
 
 
-    def render_map(self,query=None):
+    def render_map(self, query=None):
 
         """
-        Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
+        This function is responsible for rendering the Map Search page.
         """
         if query:
             c.query = query
@@ -58,14 +61,14 @@ class HomeController(NGDSBaseController):
     def render_library(self):
 
         """
-        Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
+        This function is responsible for rendering the Library Search page.
         """
         return render('library/library.html')
 
     def render_resources(self):
 
         """
-        Renders the given page. This method is a temporary one & needs to be removed once the actual navigations are defined.
+        This function is responsible for rendering the Resources page.
         """
         return render('resources/resources.html')
 
@@ -92,12 +95,13 @@ class HomeController(NGDSBaseController):
 
         user = model.User.by_name(c.user.decode('utf8'))
 
-        data_dict = {'model':'UserSearch'}
+        data_dict = {'model': 'UserSearch'}
         data_dict['data'] = {'user_id': user.id, 'search_name': data['search_name'], 'url': data['url']}
-        data_dict['process']='create'
+        data_dict['process'] = 'create'
         context = {'model': model, 'session': model.Session}
 
         from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
+
         trans_dispatch(context, data_dict)
 
         return {
@@ -105,18 +109,57 @@ class HomeController(NGDSBaseController):
         }
 
 
-
     def initiate_search(self):
+        """
+        This function is responsible for processing requests from the home page to initiate either a map search or library search
+        with a search query that is provided to it.
+        """
         data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
 
-        query =''
+        query = ''
 
         if 'query' in data:
             query = data['query']
 
-        if data['search-type']=='library':
-            return redirect('/organization/public?q='+query)
+        if data['search-type'] == 'library':
+            return redirect('/organization/public?q=' + query)
         else:
             return self.render_map(query)
-        
+
+
+    def render_partners(self):
+        """
+        This function is responsible for rendering the NGDS Partners' page via the template defined at templates/info/master/partners_master.html
+        """
+        return render('info/master/partners_master.html')
+
+    def render_data(self):
+        """
+        This function is responsible for rendering the NGDS Data page via the template defined at templates/info/master/data_master.html
+        """
+        return render('info/master/data_master.html')
+
+    def render_history(self):
+        """
+        This function is responsible for rendering the NGDS History page via the template defined at templates/info/master/history_master.html
+        """
+        return render('info/master/history_master.html')
+
+    def render_new_to_ngds(self):
+        """
+        This function is responsible for rendering the New to NGDS page via the template defined at templates/info/master/new_to_ngds_master.html
+        """
+        return render('info/master/new_to_ngds_master.html')
+
+    def render_faq(self):
+        """
+        This function is responsible for rendering the NGDS FAQ page via the template defined at templates/info/master/faq_master.html
+        """
+        return render('info/master/faq_master.html')
+
+    def render_about(self):
+        """
+        This function is responsible for rendering the About page via the template defined at templates/info/master/about_master.html
+        """
+        return render('info/master/about_master.html')

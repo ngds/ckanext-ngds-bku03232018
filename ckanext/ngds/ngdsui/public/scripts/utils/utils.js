@@ -77,7 +77,8 @@ ngds.util.apply_feature_hover_styles = function (feature, tag_index) {
         }
     }
     else {
-        feature.setStyle({weight: 2, color: "#d54799"});
+        feature.setStyle({weight: 2, color: "#d54799", fillColor: ngds.util.state['colorify'][tag_index]});
+//        ngds.util.svg_crispify_post_process();
     }
 };
 
@@ -94,23 +95,29 @@ ngds.util.apply_feature_default_styles = function (feature, tag_index) {
         span_elem.css("margin-left", "0px");
     }
     else {
-        feature.setStyle({weight: 1, color: "black", fillColor:"grey", dashArray:"", opacity:1, fillOpacity:0.2});
+        feature.setStyle({weight: 1, color: "black", fillColor: ngds.util.state['colorify'][tag_index], dashArray: "", opacity: 1, fillOpacity: 0.5});
+//        ngds.util.svg_crispify_post_process();
     }
 };
 
 ngds.util.apply_feature_active_styles = function (feature, tag_index) {
     var type = feature.layer.feature.geometry.type;
-    $('.result-' + tag_index).css('background-color', '#dadada');
+    $('.result-' + tag_index).css('background-color', '#DDE9ED');
     if (type === 'Point') {
         $('.lmarker-' + tag_index).attr("src", "/images/marker-red.png");
     }
     else {
-        feature.layer.setStyle({weight: 3, color: "red", fillColor:"red", fillOpacity:0.2, opacity:1, dashArray:"5, 10"});
+        feature.layer.setStyle({weight: 3, color: "red", fillColor: "red", fillOpacity: 0.2, opacity: 1, dashArray: "5, 10"});
+//        ngds.util.svg_crispify_post_process();
     }
 };
 
 ngds.util.reset_result_styles = function () {
     $('.result').css('background-color', '#fff');
+};
+
+ngds.util.svg_crispify_post_process = function () {
+    $("#map-container g").attr("shape-rendering", "crispEdges");
 };
 
 ngds.util.clear_map_state = function () {
@@ -124,6 +131,9 @@ ngds.util.clear_map_state = function () {
 };
 
 ngds.util.get_n_chars = function (words_str, num_chars) {
+    if (typeof words_str === "undefined" || words_str === "") {
+        return "";
+    }
     if (words_str.length <= num_chars) {
         return words_str;
     }
@@ -156,4 +166,21 @@ ngds.util.parse_raw_json = function (raw) {
 
 ngds.util.state = {
 
+};
+
+ngds.util.rotate_color = function () {
+    var colors = ["#FF85BC", "#FFBA85", "#FFCB26", "#FFFF66", "#78E78E", "#0099FF", "#8AFFBF", "#3333FF", "#28362C"];
+
+    if (typeof ngds.util.state['rotate_color'] === "undefined" || ngds.util.state === null) {
+        ngds.util.state['rotate_color'] = {};
+        ngds.util.state['rotate_color']['index'] = -1;
+    }
+
+    if (ngds.util.state['rotate_color']['index'] === colors.length - 1) {
+        ngds.util.state['rotate_color']['index'] = -1;
+    }
+
+    ngds.util.state['rotate_color']['index'] = ngds.util.state['rotate_color']['index'] + 1;
+
+    return colors[ngds.util.state['rotate_color']['index']];
 };

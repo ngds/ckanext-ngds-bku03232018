@@ -145,14 +145,14 @@ span.ui-dialog-title {
 }
 
 body {
-	margin:@page-margin;
-	text-align:center;
-    background:none;
-	background:#f2f2f2;
-	font-family:"Lucida Grande" arial;
-	font-style:normal;
-	font-weight:bold;
-	line-height: 20px;
+  margin: @page-margin;
+  text-align: center;
+  background: none;
+  background: #f2f2f2;
+  font-family: "Lucida Grande" arial;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 20px;
 }
 
 div {
@@ -192,7 +192,6 @@ p {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  overflow: hidden;
   -webkit-box-shadow: -1px 0 0 0 #d2d2d2, -1px 0 0 0 #e6e6e6, 1px 0 0 0 #d2d2d2, 2px 0 0 0 #e6e6e6, 0 -1px 0 0 #e8e8e8, 0 2px 0 0 rgba(241, 241, 241, 0.3), 0 1px 0 0 #b1b1b1;
   -moz-box-shadow: -1px 0 0 0 #d2d2d2, -1px 0 0 0 #e6e6e6, 1px 0 0 0 #d2d2d2, 2px 0 0 0 #e6e6e6, 0 -1px 0 0 #e8e8e8, 0 2px 0 0 rgba(241, 241, 241, 0.3), 0 1px 0 0 #b1b1b1;
   box-shadow: -1px 0 0 0 #d2d2d2, -1px 0 0 0 #e6e6e6, 1px 0 0 0 #d2d2d2, 2px 0 0 0 #e6e6e6, 0 -1px 0 0 #e8e8e8, 0 2px 0 0 rgba(241, 241, 241, 0.3), 0 1px 0 0 #b1b1b1;
@@ -272,6 +271,7 @@ p {
   width: 100%;
   display: table;
   text-align: left;
+  min-height: 600px;
 }
 
 .ngds-button-common() {
@@ -414,19 +414,10 @@ input[type="radio"] {
   background: #8ca0a6;
 }
 
-.leaflet-popup-content-wrapper, .leaflet-popup-tip {
-  box-shadow: 0 3px 5px #4F4D4E !important;
+.leaflet-center .leaflet-control-geosearch ul {
+  width: 50%;
 }
 
-.leaflet-popup-content-wrapper {
-  -webkit-border-radius: 0 !important;
-  border-radius: 0 !important;
-
-  strong {
-    display:block;
-  }
-
-  p strong {
-    display:inline;
-  }
+.leaflet-center .leaflet-control-geosearch {
+  width: 50%;
 }
