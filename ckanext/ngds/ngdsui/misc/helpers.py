@@ -11,6 +11,7 @@ from operator import itemgetter
 from ckanext.ngds.env import ckan_model
 
 import iso8601
+import urllib2
 
 import re
 from ckan.model.resource import Resource
@@ -136,7 +137,7 @@ def file_path_from_url(url):
 
     pattern = "^(?P<protocol>.+?)://(?P<host>.+?)/.+/(?P<label>\d{4}-.+)$"
     label = re.match(pattern, url).group("label")
-    return get_url_for_file(label)
+    return get_url_for_file(urllib2.unquote(label))
 
 def get_url_for_file(label):
     bucket = config.get('ckan.storage.bucket', 'default')
@@ -477,9 +478,13 @@ def is_following(obj_type, obj_id):
     return True
 
 def create_package_resource_document_index(pkg_id, resource_dict_list):
-    from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
+    """
+    Creates entry for the documents to be full-text indexed for a particular dataset or package. (resource_document_index table).
+    Before creating new entries, existing to be indexed (status as 'NEW') entries are updated as 'CANCEL'.
+    :returns: True after creating entries in db.
+    """
 
-    #print "Create document index: %s " % index_dict
+    from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
 
     ckan_model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where package_id=:pkg_id and status=:old_status", {'status_val':'CANCEL','pkg_id': pkg_id,'old_status':'NEW'})
 
@@ -496,12 +501,19 @@ def create_package_resource_document_index(pkg_id, resource_dict_list):
     return True
 
 def get_docs_to_index(status):
+    """
+    Finds and returns all the documents to be indexed records from 'resource_document_index' table based on the input status.
+    """
 
     query = ckan_model.DocumentIndex.search(status)
 
     return query.all()
 
 def process_resource_docs_to_index():
+    """
+    This is the initial step to Full Text Indexing process. Will get all the documents to be indexed with status "NEW' and
+    for each document's content will be extracted and updated to Dataset's solr indexing.
+    """
 
     docs_to_index = get_docs_to_index('NEW')
 
@@ -515,8 +527,6 @@ def process_resource_docs_to_index():
         text_indexer.index_resource_file(data_dict, field_to_add, doc.file_path, defer_commit=True)
         doc.status = 'DONE'
         doc.save()
-        #ckan_model.Session().execute("UPDATE public.resource_document_index SET status=:status_val where id=:id", {'status_val':'DONE','id': doc.id})
-        #ckan_model.Session().commit()
 
 
 def get_master_style():

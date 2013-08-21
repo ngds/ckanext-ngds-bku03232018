@@ -1,0 +1,5 @@
+pycsw
+gsconfig
+iso8601
+gdal
+flask

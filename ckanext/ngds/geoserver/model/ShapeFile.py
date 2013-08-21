@@ -1,12 +1,11 @@
 from osgeo import ogr
 from osgeo import osr
 import zipfile
-from os import path, environ, pathsep
+from os import path
 from re import search
 from ckanext.ngds.ngdsui.misc.helpers import file_path_from_url
 from pylons import config
 from ckan.plugins import toolkit
-import subprocess
 
 
 class Shapefile(object):
@@ -72,6 +71,7 @@ class Shapefile(object):
     
     def get_source_layer(self):
         """Get a OGRLayer for this shapefile"""
+
         # Where is the unzipped shapefile?
         if self.unzipped_dir is None:
             self.unzipped_dir = self.unzip()
@@ -124,13 +124,15 @@ class Shapefile(object):
         source_def = source.GetLayerDefn()
         
         # Read some shapefile properties
-        geom_type = source_def.GetGeomType()
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(epsg)
 
         # Cache the OGR objects so they don't get cleaned up
         self.ogr_source["srs"] = srs
-        
+
+        # Multi any single geometry types
+        geom_type = self.output_geom(source)
+
         # Create the destination layer in memory
         new_layer = destination_source.CreateLayer(name, srs, geom_type, ["OVERWRITE=YES"])
         
@@ -195,11 +197,18 @@ class Shapefile(object):
             
             # Set its geometry
             geom = source_record.GetGeometryRef()
+
+            # Transform
             geom.Transform(transformation)
-            dest_record.SetGeometry(geom)
-            
+
+            # Force multi onto geoms
+            geom_type = geom.GetGeometryType()
+            force_function = self.output_geom_force(geom_type)
+            geom = force_function(geom)
+
             # Set its attributes from the source feature
             dest_record.SetFrom(source_record)
+            dest_record.SetGeometry(geom)
             
             # Save it to the destination layer and iterate
             destination_layer.CreateFeature(dest_record)
@@ -232,3 +241,28 @@ class Shapefile(object):
 
     def table_name(self):
         return self.get_name().lower().replace("-", "_") # Postgresql will have the name screwballed
+
+    def output_geom(self, source):
+        # Find the geometry type of the source shapefile
+        source_def = source.GetLayerDefn()
+        geom_type = source_def.GetGeomType()
+
+        # Convert to Multi
+        geom_type = ogr.wkbMultiLineString if geom_type == ogr.wkbLineString else geom_type
+        geom_type = ogr.wkbMultiPolygon if geom_type == ogr.wkbPolygon else geom_type
+        geom_type = ogr.wkbMultiPoint if geom_type == ogr.wkbPoint else geom_type
+
+        return geom_type
+
+    def output_geom_force(self, geom_type):
+        # Return the correct function
+        if geom_type == ogr.wkbLineString:
+            return ogr.ForceToMultiLineString
+        elif geom_type == ogr.wkbPolygon:
+            return ogr.ForceToMultiPolygon
+        elif geom_type == ogr.wkbPoint:
+            return ogr.ForceToMultiPoint
+        else:
+            def do_nothing(geom):
+                return geom
+            return do_nothing
