@@ -24,6 +24,7 @@ class Layer(object):
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
         self.package_id = package_id
         self.resource_id = resource_id
+
         # Spatialize it
         url = self.file_resource["url"]
         kwargs = {"resource_id": self.file_resource["id"]}
@@ -76,6 +77,7 @@ class Layer(object):
 
         # If the layer already exists in Geoserver then return it
         layer = self.geoserver.get_layer(self.name)
+
         if not layer:
             #Construct layer creation request.
             feature_type_url = url(self.geoserver.service_url, [
@@ -92,6 +94,7 @@ class Layer(object):
                     "nativeName": self.data.table_name()
                 }
             }
+
             request_headers = {"Content-type": "application/json"}
 
             response_headers, response = self.geoserver.http.request(

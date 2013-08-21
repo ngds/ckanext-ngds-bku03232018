@@ -2,6 +2,7 @@ from lxml import etree
 from collections import OrderedDict
 import json
 import re
+import ogr
 
 class GMLtoReclineJS():
     def __init__(self):
@@ -35,9 +36,9 @@ class GMLtoReclineJS():
         layer_name = data["resource"]["layer_name"]
         dataStore = self.getWorkSpace(data)
         url = base_url
-        url += "/" + dataStore + "/"
+        url += "/" + dataStore.lower() + "/"
         url += "ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
-        url += "NGDS:activefaults" #layer_name
+        url += layer_name.lower()
         return url
 
     def getGML(self, url):
@@ -46,30 +47,19 @@ class GMLtoReclineJS():
         return root
 
     def MakeReclineJSON(self, data_dict):
+        json_obj = []
+        attribs = []
         data = data_dict
-        url = self.makeGetFeatureURL(data)
-        ws = self.getWorkSpace(data)
-        lyr = "activefaults" #self.getLayerName(data)
-        gml = self.getGML(url)
-        attributes = []
-        valid_geometry = ["Point", "MultiPoint", "LineString", "MultiLineString", "Polygon", "MultiPolygon"]
-        nsmap = gml.nsmap
-        if None in nsmap.keys():
-            del nsmap[None]
-        try:
-            leaves = gml.xpath("//" + ws + ":" + lyr, namespaces=nsmap)
-            for maple in leaves:
-                fid = maple.attrib["fid"]
-                geometryType = [self.getElementName(twig.find("gml:" + valid, namespaces=nsmap)) for twig in maple for valid in valid_geometry if twig.find("gml:" + valid, namespaces=nsmap) is not None]
-                properties = [(self.getElementName(twig),twig.text) for twig in maple]
-                properties.insert(0, ("field_id",fid))
-                geometry_coords = [twig.find("gml:" + valid + "/gml:coordinates", namespaces=nsmap).text for twig in maple for valid in valid_geometry if twig.find("gml:" + valid + "/gml:coordinates", namespaces=nsmap) is not None]
-                geom_coordinates = geometry_coords[0].split(" ")
-                coordinates = [[float(x) for x in q.split(",")] for q in geom_coordinates]
-                data = {}
-                data.update(dict(type=geometryType[0],coordinates=coordinates))
-                properties.insert(len(properties),("geometry", data))
-                attributes.append(OrderedDict(properties))
-        except:
-            pass
-        return json.dumps(attributes)
+        gml_wfs = self.makeGetFeatureURL(data)
+        source = ogr.Open(gml_wfs)
+        layer = source.GetLayerByIndex(0)
+
+        for feature in layer:
+            json_obj.append(feature.ExportToJson(as_object=True))
+
+        for i in json_obj:
+            properties = i['properties']
+            properties.update(dict(geometry=i['geometry']))
+            attribs.append(properties)
+
+        return attribs
