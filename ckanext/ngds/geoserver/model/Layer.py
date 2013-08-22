@@ -24,6 +24,10 @@ class Layer(object):
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
         self.package_id = package_id
         self.resource_id = resource_id
+
+        print "LAYER"
+        print self.file_resource
+
         # Spatialize it
         url = self.file_resource["url"]
         kwargs = {"resource_id": self.file_resource["id"]}
@@ -46,6 +50,8 @@ class Layer(object):
         if not self.data.publish():
             # Spatialization failed
             raise Exception("Spatialization failed.")
+
+
 
     def create(self):
         """
@@ -75,7 +81,10 @@ class Layer(object):
         """
 
         # If the layer already exists in Geoserver then return it
+        print self.data.ogr_source_info()
+
         layer = self.geoserver.get_layer(self.name)
+
         if not layer:
             #Construct layer creation request.
             feature_type_url = url(self.geoserver.service_url, [
@@ -92,6 +101,7 @@ class Layer(object):
                     "nativeName": self.data.table_name()
                 }
             }
+
             request_headers = {"Content-type": "application/json"}
 
             response_headers, response = self.geoserver.http.request(
@@ -138,6 +148,7 @@ class Layer(object):
         """
 
         context = {"user": self.username}
+        ogrinfo = self.data.ogr_source_info()
 
         # WMS Resource Creation
         data_dict = {
@@ -148,7 +159,8 @@ class Layer(object):
             'parent_resource': self.file_resource['id'],
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             'protocol': 'OGC:WMS',
-            'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name)
+            'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
+            'geom_extent': ogrinfo["geom_extent"]
         }
         if self.file_resource.get("content_model_version") and self.file_resource.get("content_model_uri"):
             data_dict.update({

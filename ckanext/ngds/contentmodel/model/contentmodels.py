@@ -12,7 +12,7 @@ contentmodels= []
 usgin_url= None
 
 checkfile_maxerror= 5
-checkfile_checkheader= False
+checkfile_checkheader= True
 checkfile_checkoptionalfalse= False
 
 class ContentModelRecord(object):

@@ -10,6 +10,15 @@ var structured_form = {
       'title':'A URL for this resource or upload a file'
     },
     {
+      'label':'Geoserver Layer Name',
+      'name':'geoserver_layer_name',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      },
+      'title':'A layer name for this resource in the Geoserver.  Must begin with a letter ("a-Z").'
+    },
+    {
       'label':'Name',
       'name':'name',
       'tag':'input',
@@ -100,6 +109,15 @@ var unstructured_form = {
         return 'type=text id=field-url';
       },
       'title':'A URL for this resource or upload a file'
+    },
+    {
+      'label':'Geoserver Layer Name',
+      'name':'geoserver_layer_name',
+      'tag':'input',
+      'additional':function() {
+        return 'type=text';
+      },
+      'title':'A layer name for this resource in the Geoserver.  Must begin with a letter ("a-Z").'
     },
     {
       'label':'Name',

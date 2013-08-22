@@ -6,7 +6,7 @@ from re import search
 from ckanext.ngds.ngdsui.misc.helpers import file_path_from_url
 from pylons import config
 from ckan.plugins import toolkit
-
+import ckan.plugins as p
 
 class Shapefile(object):
     resource = {}
@@ -17,13 +17,15 @@ class Shapefile(object):
         "driver": None,
         "source": None,
         "layer": None,
-        "srs": None
+        "srs": None,
+        "geom_extent": None
     }
     ogr_destination = {
         "driver": None,
         "source": None,
         "layer": None,
-        "srs": None
+        "srs": None,
+        "geom_extent": None
     }
 
     def __init__(self, resource_id=""):
@@ -82,13 +84,20 @@ class Shapefile(object):
         
         # A dataSource is always an array, but shapefiles are always by themselves. Get the layer
         layer = input_datasource.GetLayerByIndex(0)
+        geom = layer.GetExtent()
+        geom_extent = [[geom[2],geom[0]],[geom[3],geom[1]]]
 
         # Cache the OGR objects so they don't get cleaned up
         self.ogr_source["driver"] = input_driver
         self.ogr_source["source"] = input_datasource
         self.ogr_source["layer"] = layer
+        self.ogr_source["geom_extent"] = geom_extent
 
         return layer
+
+    def ogr_source_info(self):
+        source = self.ogr_source
+        return source
 
     def get_destination_source(self):
         """Get an OGRDataSource for the default PostgreSQL destination"""

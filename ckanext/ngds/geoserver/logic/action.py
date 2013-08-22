@@ -31,19 +31,32 @@ def layer_exists(context, data_dict):
 
 def publish(context, data_dict):
     # Gather inputs
+    print "CONTEXT"
+    print context
+
     resource_id = data_dict.get("resource_id", None)
     layer_name = data_dict.get("layer_name", resource_id)
     username = context.get("user", None)
     package_id = data_dict.get("package_id", None)
     lat_field = data_dict.get("col_latitude", None)
     lng_field = data_dict.get("col_longitude", None)
+    file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
+    geoserver_layer_name = file_resource.get("geoserver_layer_name")
 
     # Check that you have everything you need
     if None in [resource_id, layer_name, username, package_id]:
         raise Exception("Not enough information to publish resource")
 
     # Publish a layer
-    l = Layer.publish(package_id, resource_id, layer_name, username, lat_field=lat_field, lng_field=lng_field)
+    def pub():
+        if geoserver_layer_name is not None:
+            l = Layer.publish(package_id, resource_id, geoserver_layer_name, username, lat_field=lat_field, lng_field=lng_field)
+            return l
+        else:
+            l = Layer.publish(package_id, resource_id, layer_name, username, lat_field=lat_field, lng_field=lng_field)
+            return l
+
+    l = pub()
 
     # Confirm that everything went according to plan
     if l is None:
@@ -61,6 +74,9 @@ def unpublish(context,data_dict):
     # layer_name = data_dict.get("layer_name")
     layer_name = "NGDS:"+resource_id
     username =  context.get('user')
+    file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
+    geoserver_layer_name = file_resource.get("geoserver_layer_name")
+
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)
         # layer_name = resource.get('layer_name')
@@ -78,7 +94,16 @@ def unpublish(context,data_dict):
     #             layer_name = extras['layer_name']
     #             break
 
-    layer = Layer(geoserver=geoserver, layer_name=layer_name, resource_id=resource_id,package_id=package_id,username=username)
+    def unpub():
+        if geoserver_layer_name is not None:
+            layer = Layer(geoserver=geoserver, layer_name=geoserver_layer_name, resource_id=resource_id,package_id=package_id,username=username)
+            return layer
+        else:
+            layer = Layer(geoserver=geoserver, layer_name=layer_name, resource_id=resource_id,package_id=package_id,username=username)
+            return layer
+
+    layer = unpub()
+
     print "next here"
     layer.remove()
     print "finished"

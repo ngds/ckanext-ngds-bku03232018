@@ -5,6 +5,7 @@ from ckan.plugins import ITemplateHelpers, IRoutes, IResourcePreview
 import ckanext.ngds.geoserver.logic.action as action
 import ckanext.ngds.geoserver.model.GMLtoReclineJSON as recline
 import ckanext.datastore.logic.auth as auth
+from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 import ckan.logic as logic
 import ckanext.ngds.geoserver.misc.helpers as helpers
 
@@ -102,16 +103,29 @@ class GeoserverPlugin(p.SingletonPlugin):
     def can_preview(self, data_dict):
         if data_dict.get("resource", {}).get("protocol", {}) == "OGC:WFS":
             return True
+        elif data_dict.get("resource", {}).get("protocol", {}) == "OGC:WMS":
+            return True
 
     # Get the GML service for our resource and parse it into a JSON object
     # that is compatible with recline.  Bind that JSON object to the
     # CKAN resource in order to pass it client-side.
     def setup_template_variables(self, context, data_dict):
-        armchair = recline.GMLtoReclineJS()
-        reclineJSON = armchair.MakeReclineJSON(data_dict)
-        p.toolkit.c.resource["reclineJSON"] = reclineJSON
+        if data_dict.get("resource", {}).get("protocol", {}) == "OGC:WFS":
+            armchair = recline.GMLtoReclineJS()
+            reclineJSON = armchair.MakeReclineJSON(data_dict)
+            p.toolkit.c.resource["reclineJSON"] = reclineJSON
+        elif data_dict.get("resource", {}).get("protocol", {}) == "OGC:WMS":
+            armchair = recline.GMLtoReclineJS()
+            wms_url = armchair.makeGetWMSURL(data_dict)
+            p.toolkit.c.resource["wms_url"] = wms_url
+            p.toolkit.c.resource["layer_name"] = data_dict["resource"]["layer_name"].lower()
+            p.toolkit.c.resource["geom_extent"] = data_dict["resource"]["geom_extent"]
 
     # Render the jinja2 template which builds the recline preview
     def preview_template(self, context, data_dict):
-        template = "wfs_preview_template.html"
-        return template
+        if data_dict.get("resource", {}).get("protocol", {}) == "OGC:WFS":
+            template = "wfs_preview_template.html"
+            return template
+        elif data_dict.get("resource", {}).get("protocol", {}) == "OGC:WMS":
+            template = "wms_preview_template.html"
+            return template

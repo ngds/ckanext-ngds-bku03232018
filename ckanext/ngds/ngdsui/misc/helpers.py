@@ -5,6 +5,8 @@ from webhelpers.html import literal
 import ckan.rating as rating
 DataError = dictization_functions.DataError
 from pylons import config, jsonify
+import ckan.logic as logic
+from operator import itemgetter
 
 from ckanext.ngds.env import ckan_model
 
@@ -77,6 +79,14 @@ def highlight_rating_star(count,packageId):
         return 1
     else:
         return 0
+
+def get_rating_details(package_id):
+    rating_obj = rating.get_rating(model.Package.get(package_id))
+    rating_v = rating_obj[0] or 0
+    ratings_count = rating_obj[1]
+    rnd = round(rating_v)
+    intv = int(rnd)
+    return intv,ratings_count
 
 def count_rating_reviews(packageId):
     package = model.Package.get(packageId)
@@ -457,15 +467,14 @@ def is_following(obj_type, obj_id):
     :rtype: string
 
     '''
-    import ckan.logic as logic
     obj_type = obj_type.lower()
     # If the user is logged in show the follow/unfollow button
     following = False
     if c.user:
         context = {'model': model, 'session': model.Session, 'user': c.user}
         action = 'am_following_%s' % obj_type
-        following = logic.get_action(action)(context, {'id': obj_id})
-    return following
+        # following = logic.get_action(action)(context, {'id': obj_id})
+    return True
 
 def create_package_resource_document_index(pkg_id, resource_dict_list):
     """
@@ -582,6 +591,10 @@ def is_development():
         return True
     return False
 
+def get_top_5_harvest_sources():
+    sources = logic.get_action('harvest_source_list')(None,{})
+    top_sources = sorted(sources,key=lambda x: x['status']['overall_statistics']['added'])
+    return top_sources[0:5]
 
 def get_home_images():
     """
@@ -616,3 +629,5 @@ def get_home_images():
                 g.home_image_items = transform(image_items)
 
     return g.home_image_items
+
+

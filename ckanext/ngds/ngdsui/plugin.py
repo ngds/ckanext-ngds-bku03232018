@@ -169,6 +169,12 @@ class NgdsuiPlugin(SingletonPlugin):
 
         map.connect("execute_fulltext_indexer","/ngds/execute_fulltext_indexer",controller=contribute_controller,action="execute_fulltext_indexer")
 
+        #Footer URLS
+        map.connect("partners","/ngds/partners",controller=home_controller,action="render_partners")
+        map.connect("data","/ngds/data",controller=home_controller,action="render_data")
+        map.connect("history","/ngds/history",controller=home_controller,action="render_history")
+        map.connect("new_to_ngds","/ngds/new_to_ngds",controller=home_controller,action="render_new_to_ngds")
+        map.connect("faq","/ngds/faq",controller=home_controller,action="render_faq")
 
 
         return map
@@ -248,6 +254,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'is_json':helpers.is_json,
             'get_label_for_resource_attribute':helpers.get_label_for_resource_attribute,
             'is_development':helpers.is_development,
+            'get_rating_details':helpers.get_rating_details,
+            'get_top_5_harvest_sources':helpers.get_top_5_harvest_sources,
             'get_home_images':helpers.get_home_images
         }
 

@@ -1,106 +1,73 @@
 {% extends "page_ngds.html" %}
 {% set active_page = "resources" %}
 {%- block content %}
-<style>
-	.res-container {
-		display:table; margin-left:50px; font-family:Arial; font-size:13px;
-	}
 
-	.res-table {
-		display:table-row; position:relative;
-	}
+<div class="res-container">
+    <div class="res-table">
 
-	.res-websites-section-head {
-		display:table-cell; width:250px; text-align:center; background-color:#eaeaea; position:relative; border:1px solid #bababa; vertical-align: middle;
-	}
+        <div class="res-websites-section-head">
+            <p>Websites</p>
+        </div>
 
-	.smaller {
-		top:40%;
-	}
+        <div class="res-websites-section-content">
+            <p>Popular Geothermal Information Websites</p>
+            <ul>
+                <li><a href="http://www.energy.gov"
+                       target="_blank">DOE</a><span> &nbsp; (US Department of Energy)</span></li>
+                <li><a href="http://www.usgs.gov" target="_blank">USGS</a><span> &nbsp; (US Geological Survey)</span>
+                </li>
+                <li><a href="http://www.geothermal.org"
+                       target="_blank">GRC</a><span> (Geothermal Resources Council)</span></li>
+                <li><a href="http://www.blm.gov" target="_blank">BLM</a><span> (Bureau of Land Management)</span></li>
+                <li><a href="http://www.geo-energy.org"
+                       target="_blank">GEA</a><span> (Geothermal Energy Association)</span></li>
+            </ul>
 
-	.res-websites-section-head p {
-		position:relative; font-size:17px; font-weight:bold;
-	}
+            <p>State Agencies</p>
+            <ul>
+                <li><a href="http://www.consrv.ca.gov/dog/" target="_blank">DOGGR</a><span> &nbsp; (Department of Conservation/Division of Oil, Gas, and Geothermal Resources)</span>
+                </li>
+                <li><a href="http://www.oregongeology.org/" target="_blank">DOGAMI</a><span> (Oregon Department of Geology and Mineral Industries)</span>
+                </li>
+                <li><a href="http://www.blm.gov" target="_blank">SONRIS</a><span> (Strategic Online Natural Resources Information System)</span>
+                </li>
+                <li><a href="http://keck.library.unr.edu/Data/GreatBasinGeoScience" target="_blank">Great Basin
+                    Geosciene Database</a></li>
+            </ul>
 
-	.res-websites-section-content {
-		display:table-cell; padding-top:40px; padding-bottom:40px; width:600px; padding-left:50px; border-top:1px solid #bababa; border-bottom:1px solid #bababa;
-	}
+            <p>Publications</p>
+            <ul>
+                <li><a href="http://www.bakerhughes.com/" target="_blank">Baker Hughes</a></li>
+                <li><a href="http://pangea.stanford.edu/ERE/research/geoth/publications/" target="_blank">Stanford
+                    Publications</a></li>
+                <li><a href="http://www.osti.gov/" target="_blank">OSTI</a><span> (Office of Scientific and Technical Information)</span>
+                </li>
+            </ul>
 
-	.res-websites-section-content p {
-		font-size:14px; font-weight:bold;
-	}
+            <p>Service Industry</p>
+            <ul>
+                <li><a href="http://www.bakerhughes.com/" target="_blank">Baker Hughes</a></li>
+                <li><a href="http://www.slb.com/" target="_blank">Schlumberger</a></li>
+            </ul>
+        </div>
+    </div>
 
-	.res-websites-section-content ul {
-		line-height:30px;
-	}
+    <div class="res-table">
 
-	.res-websites-section-content ul li a {
-		display:block; text-decoration:underline; color:#000; display:inline;
-	}
+        <div class="res-websites-section-head">
+            <p style="top:30%;">NGDS Nodes</p>
+        </div>
 
-	.res-websites-section-content ul li span {
-		font-style:italic;
-		font-size:12px;
-	}
-</style>
-
-	<div class="res-container">
-		<div class="res-table">
-			
-			<div class="res-websites-section-head">
-				<p>Websites</p>
-			</div>
-
-			<div class="res-websites-section-content">
-				<p>Popular Geothermal Information Websites</p>
-				<ul>
-					<li><a href="http://www.energy.gov" target="_blank">DOE</a><span> &nbsp; (US Department of Energy)</span></li>
-					<li><a href="http://www.usgs.gov" target="_blank">USGS</a><span> &nbsp; (US Geological Survey)</span></li>
-					<li><a href="http://www.geothermal.org" target="_blank">GRC</a><span> (Geothermal Resources Council)</span></li>
-					<li><a href="http://www.blm.gov" target="_blank">BLM</a><span> (Bureau of Land Management)</span></li>
-					<li><a href="http://www.geo-energy.org" target="_blank">GEA</a><span> (Geothermal Energy Association)</span></li>
-				</ul>
-
-				<p>State Agencies</p>
-				<ul>
-					<li><a href="http://www.consrv.ca.gov/dog/" target="_blank">DOGGR</a><span> &nbsp; (Department of Conservation/Division of Oil, Gas, and Geothermal Resources)</span></li>
-					<li><a href="http://www.oregongeology.org/" target="_blank">DOGAMI</a><span> (Oregon Department of Geology and Mineral Industries)</span></li>
-					<li><a href="http://www.blm.gov" target="_blank">SONRIS</a><span> (Strategic Online Natural Resources Information System)</span></li>
-					<li><a href="http://keck.library.unr.edu/Data/GreatBasinGeoScience" target="_blank">Great Basin Geosciene Database</a></li>
-				</ul>
-
-				<p>Publications</p>
-				<ul>
-					<li><a href="http://www.bakerhughes.com/" target="_blank">Baker Hughes</a></li>
-					<li><a href="http://pangea.stanford.edu/ERE/research/geoth/publications/" target="_blank">Stanford Publications</a></li>
-					<li><a href="http://www.osti.gov/" target="_blank">OSTI</a><span> (Office of Scientific and Technical Information)</span></li>
-				</ul>
-
-				<p>Service Industry</p>
-				<ul>
-					<li><a href="http://www.bakerhughes.com/" target="_blank">Baker Hughes</a></li>
-					<li><a href="http://www.slb.com/" target="_blank">Schlumberger</a></li>
-				</ul>
-			</div>
-
-		</div>
-
-		<div class="res-table">
-			
-			<div class="res-websites-section-head">
-				<p style="top:30%;">NGDS Nodes</p>
-			</div>
-
-			<div class="res-websites-section-content">
-				<ul>
-					<li><a href="http://geothermal.smu.edu/gtda/" target="_blank">SMU GTDA</a><span> &nbsp; (Southern Methodist University - Geothermal Data Aggregation)</span></li>
-				</ul>
-
-			</div>
-
-		</div>
+        <div class="res-websites-section-content">
+            <ul>
+                <li><a href="http://geothermal.smu.edu/gtda/" target="_blank">SMU GTDA</a><span> &nbsp; (Southern Methodist University - Geothermal Data Aggregation)</span>
+                </li>
+            </ul>
+        </div>
+    </div>
 
 
-	</div>
+</div>
+
 {% endblock %}
 

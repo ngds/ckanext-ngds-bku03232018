@@ -3,7 +3,7 @@ div.postface {
 	float:left;
 	width:100%;
 	height:30px;
-	background-color:#cbcbcb;
+	background-color:#E4E4E4;
 
 	 div.left {
 		float:left;
@@ -32,9 +32,10 @@ div.postface {
 			font-size:@font-regular;
 			text-decoration:none;
 			text-align:left;
+            color:#5E5E5E;
 
 			&:visited {
-				color:@extra-light;
+				color:#515151;
 			}
 		}
 
@@ -59,11 +60,15 @@ div.postface {
 } // End of postface
 
 #footer {
-	height:145px;
+	height:125px;
 	//position:relative;
-	background-color:#dadada;
+	background-color:#efefef;
 	display:table;
 	width:100%;
+    border:1px solid #B7BBBF;
+    box-sizing:border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
 
 	.row {
 		display:table-row;
@@ -103,6 +108,7 @@ div.postface {
 
 		span {
 			display:block;
+            line-height:1.2em;
 		}
 	} // End of footer-links section
 
@@ -114,6 +120,8 @@ div.postface {
 	.footer-links-feedback-caption-container {
 		display:table-cell;
 		width:815px;
+        float:left;
+        margin-top:10px;
 	}
 
 	div#feedback-section {

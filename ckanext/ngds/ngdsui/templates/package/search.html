@@ -76,7 +76,7 @@
                  {% set user_searches=h.get_usersearches() %}
                   {% if user_searches %}
                 <!-- <button type="button" class="btn" id="saved_searches_list_button">V</button> -->
-                <i id ="saved_searches_list_button" class="icon-th-list btn-primary" title="Saved List"></i> 
+                <i id ="saved_searches_list_button" class="icon-th-list btn-primary" title="Saved List"></i>
                       <ul id="saved-list">
                         {% for usersearch in user_searches %}
                             <li><a href="{{usersearch.url}}" title="{{usersearch.url}}">{{usersearch.search_name}}</a></li>
@@ -132,7 +132,7 @@
           {% snippet 'snippets/search_results.html', packages=c.page.items,user=c.user %}
           {% if c.page.items %}
           <div id="pager">
-            <div class="search-item-image valign-bottom">
+            <div class="valign-bottom">
               <!-- <div class="show-more"><span>show more results</span></div>    -->        
             </div>
             <div class="pagination-container">
