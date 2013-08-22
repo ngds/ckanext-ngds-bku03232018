@@ -32,6 +32,7 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
     //
     // Returns nothing.
     loadPreviewDialog: function (resourceData) {
+      console.log(resourceData);
       var self = this;
 
       function showError(msg){
@@ -66,6 +67,24 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
           resourceData.backend = 'memory';
           dataset = new recline.Model.Dataset({records:resourceData.reclineJSON});
           dataset.fetch().done(function(dataset){self.initializeDataExplorer(dataset)});
+      } else if (resourceData.protocol === "OGC:WMS") {
+        function initMap() {
+            map = new L.Map('map');
+
+            var baseUrl='http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8';
+            var osmAttrib='Map data © OpenStreetMap contributors';
+            var osm = new L.TileLayer(baseUrl, {minZoom: 1, maxZoom: 12, attribution: osmAttrib});
+            var wms = new L.TileLayer.WMS(resourceData.wms_url, {
+                layers: resourceData.layer_name,
+                format: "image/png",
+                transparent: true
+             });
+
+            map.setView(new L.LatLng(34.1618, -100.53332),3);
+            map.addLayer(osm);
+            map.addLayer(wms);
+        }
+        initMap();
       }
     },
 
