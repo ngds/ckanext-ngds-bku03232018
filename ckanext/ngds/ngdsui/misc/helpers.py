@@ -581,3 +581,38 @@ def is_development():
     if config.get('ngds.is_development',"false")=="true":
         return True
     return False
+
+
+def get_home_images():
+    """
+    Reads the home images configuration file and return the home images and their hyperlinks as dictionary.
+    If the configuration is already loaded the return from global context otherwise read the config file and load
+    images values.
+    """
+
+    try:
+        if g.home_image_items:
+            log.debug("Home images are already loaded.")
+    except AttributeError:
+        log.debug("Home images are yet to be loaded. Loading from configuration.")
+
+        ngds_home_image_config_path = config.get('ngds.home_images_config_path')
+
+        import ConfigParser
+        import os
+        if os.path.exists(ngds_home_image_config_path):
+            cfgparser = ConfigParser.SafeConfigParser()
+            cfgparser.readfp(open(ngds_home_image_config_path))
+            section = 'ngds:images'
+            if cfgparser.has_section(section):
+                image_items = dict(cfgparser.items(section))
+
+            if image_items:
+                image_direcotry = config.get('ngds.home_images_dir', 'assets')
+
+                prepend_str = "/"+image_direcotry+"/"
+                def transform(multilevelDict):
+                    return dict((prepend_str+str(key), (transform(value) if isinstance(value, dict) else value)) for key, value in multilevelDict.items())
+                g.home_image_items = transform(image_items)
+
+    return g.home_image_items

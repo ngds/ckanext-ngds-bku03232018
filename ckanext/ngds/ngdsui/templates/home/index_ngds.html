@@ -10,7 +10,7 @@
           <div id="search-container">
               <p class="main-menu-item menu-align">SEARCH</p>
               <p class="menu-caption">Find geothermal data, images, publications and more</p>
-              <hr />
+              <hr/>
               <!-- <select class="search-combo"><option>Map</option><option>Search</option></select> -->
               <form action="/ngds/initiate_search" method="post">
                 <input type="text" name="query" class="search-bar"/>
@@ -65,9 +65,13 @@
                         <a href="#"><i class="icon-arrow-right" id="next"></i></a>
                   </div>
                   <div id="slides" class="wraptocenter" >
-                        <a href="http://www.energy.gov" target="_blank"><img src="/assets/FindInLibrary.png" max-width="840" max-height="400"/></a>
-                        <a href="http://www.siemens.com" target="_blank"> <img src="/assets/banner_image1.png" width="840" height="400"/></a>
-                        <a href="http://www.USA.gov" target="_blank"> <img src="/assets/banner_image2.png" width="840" height="400"/></a>
+                        {% if c.image_files %}
+                        {% for image_path in c.image_files.keys() %}
+                            <a href="{{c.image_files.get(image_path)}}" target="_blank"><img src="{{image_path}}" /></a>
+<!--                        <a href="http://www.siemens.com" target="_blank"> <img src="/assets/banner_image1.png" width="840" height="400"/></a>
+                        <a href="http://www.USA.gov" target="_blank"> <img src="/assets/banner_image2.png" width="840" height="400"/></a>-->
+                        {% endfor %}
+                        {% endif %}
                   </div>
               </div>
               <!-- <img src="/assets/banner_image.png" class="showcase-image" alt=""/> -->

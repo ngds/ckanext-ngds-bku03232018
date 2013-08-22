@@ -51,6 +51,7 @@ class NgdsuiPlugin(SingletonPlugin):
                 ('member', ['read']),
         ])
 
+
     def create_default_group(self,data_dict=None):
         group = model.Group.get('public')
 
@@ -246,7 +247,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_label_for_pkg_attribute':helpers.get_label_for_pkg_attribute,
             'is_json':helpers.is_json,
             'get_label_for_resource_attribute':helpers.get_label_for_resource_attribute,
-            'is_development':helpers.is_development
+            'is_development':helpers.is_development,
+            'get_home_images':helpers.get_home_images
         }
 
     implements(IPackageController, inherit=True)

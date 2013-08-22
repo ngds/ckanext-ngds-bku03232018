@@ -32,7 +32,9 @@ params_to_set = [
     ("ngds.facets_config", "/home/ubuntu/ckanenv/src/ckanext-ngds/facet-config.json"),
     ("ngds.default_group_name", "public"),
     ("ngds.deployment", "node"),
-    ("ngds_resources_dir", "/home/ubuntu/ckanenv/src/ckanext-ngds/ckanext/ngds/base/resources")
+    ("ngds_resources_dir", "/home/ubuntu/ckanenv/src/ckanext-ngds/ckanext/ngds/base/resources"),
+    ("ngds.home_images_dir", "assets"),
+    ("ngds.home_images_config_path", "/home/ngds/pyenv2/src/ckanext-ngds/home_images.cfg")
 ]
 
 # This builds the config file

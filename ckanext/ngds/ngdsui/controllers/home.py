@@ -1,18 +1,15 @@
 from ckan.lib.base import *
 from ckan.lib.base import (request,
                            render,
-                           BaseController,
-                           model,
-                           abort, h, g, c)
+                           model, g, c)
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
-from sqlalchemy import orm, types, Column, Table, ForeignKey, desc, and_
-from ckan.controllers.organization import OrganizationController
-from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
-from ckan.logic import (tuplize_dict,clean_dict,
-                        parse_params,flatten_to_string_key,get_action,check_access,NotAuthorized)
-from ckan.model import Session, Package
-import ckan.logic as logic
+from sqlalchemy import desc
+from ckan.lib.navl.dictization_functions import unflatten
+from ckan.logic import (tuplize_dict, clean_dict, parse_params)
+
 import ckan.lib.dictization.model_dictize as model_dictize
+from ckanext.ngds.ngdsui.misc import helpers
+
 from pylons.decorators import jsonify
 from ckan.lib.base import config
 import ckan.rating as rating
@@ -23,7 +20,8 @@ class HomeController(NGDSBaseController):
 
     def render_index(self):
         """    
-        Render the home/index page
+        Render the home/index page. If configuration is node then load the map page. If it is 'Central'
+        find the recent activities in the datasets and load the home images for rendering homepage.
         """
 
         if g.node_in_a_box:
@@ -38,6 +36,11 @@ class HomeController(NGDSBaseController):
         # c.recent_activity = logic.get_action('dashboard_activity_list')(
   #           context, {'id': None, 'offset': 0})[1:7]
         c.recent_activity = activity_dicts
+
+
+        c.image_files = helpers.get_home_images()
+        print "image_files: ", c.image_files
+
         return render('home/index_ngds.html')
 
     def render_about(self):
