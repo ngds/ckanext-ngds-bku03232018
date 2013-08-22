@@ -347,7 +347,8 @@ label {
 .wrapper {
   text-align: left;
   background-position: 72px top;
-  //.div-border;
+  border: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
 }
 
 [role="main"] {
@@ -420,4 +421,29 @@ input[type="radio"] {
 
 .leaflet-center .leaflet-control-geosearch {
   width: 50%;
+}
+
+.module {
+  margin-top: 0px;
+
+  .module-heading {
+    background-color: #efefef;
+  }
+
+  .page-header {
+    background-color: #efefef;
+  }
+
+  .module-content {
+    .table-striped tbody tr:nth-child(even) td, .table-striped tbody tr:nth-child(even) th {
+      background-color: #efefef;
+    }
+  }
+}
+
+.recline-data-explorer {
+  .clearfix {
+    padding: 10px 5px 0px 5px;
+    background-color: #efefef;
+  }
 }

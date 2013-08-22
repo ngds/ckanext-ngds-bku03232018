@@ -546,6 +546,7 @@ def get_label_for_pkg_attribute(attribute):
 
 def get_label_for_resource_attribute(attribute):
     s_attribute = str(attribute)
+    print s_attribute
     if s_attribute in res_label_attribute_mapping:
         return res_label_attribute_mapping[s_attribute]
     return s_attribute
@@ -575,7 +576,11 @@ res_label_attribute_mapping = {
     'resource group id': 'Resource Group Id',
     'revision id': 'Revision Id',
     'revision timestamp': 'Revision Timestamp',
-    'state': 'State'
+    'state': 'State',
+    'content model uri':'Content Model URI',
+    'format':'Format',
+    'geoserver layer name':'Geoserver Layer',
+
 }
 
 def is_json(value):

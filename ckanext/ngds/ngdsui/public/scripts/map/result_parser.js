@@ -48,18 +48,19 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 {
                     'tag': 'p',
                     'attributes': {
-                        'class': 'description-wrapper'
+                        'class': 'description-wrapper description',
+                        'text': ngds.util.get_n_chars(results[i]['title'], 30)
                     },
                     'children': [
-                        {
-                            'tag': 'a',
-                            'attributes': {
-                                'class': 'description',
-                                'href': ['/dataset', results[i]['name']].join('/'),
-                                'target': '_blank',
-                                'text': ngds.util.get_n_chars(results[i]['title'], 30)
-                            }
-                        }
+//                        {
+//                            'tag': 'a',
+//                            'attributes': {
+//                                'class': 'description',
+//                                'href': ['/dataset', results[i]['name']].join('/'),
+//                                'target': '_blank',
+////                                'text': ngds.util.get_n_chars(results[i]['title'], 30)
+//                            }
+//                        }
                     ]
 
                 },
