@@ -47,7 +47,7 @@ def test_find_column_pos2():
     print "self.mandatory_keys_pos: ",validator.mandatory_keys_pos
     print 'self.mandatory_keys_pos: %s date_field_pos: %s upload_file_pos: %s' % (validator.mandatory_keys_pos,validator.date_field_pos,validator.upload_file_pos)
     assert_equals(validator.mandatory_keys_pos,[(0,u'name'),(1,u'title')])
-    assert_equals(validator.date_field_pos,[(8, u'date_publication')])
+    assert_equals(validator.date_field_pos,[(8, u'publication_date')])
     assert_equals(validator.upload_file_pos,[(14, u'resource-0-upload_file')])
 
 @raises(Exception)
@@ -61,7 +61,7 @@ def test_without_title_row():
     print "self.mandatory_keys_pos: ",validator.mandatory_keys_pos
     print 'self.mandatory_keys_pos: %s date_field_pos: %s upload_file_pos: %s' % (validator.mandatory_keys_pos,validator.date_field_pos,validator.upload_file_pos)
     assert_equals(validator.mandatory_keys_pos,[(0,u'name'),(1,u'title')])
-    assert_equals(validator.date_field_pos,[(8, u'date_publication')])
+    assert_equals(validator.date_field_pos,[(8, u'publication_date')])
     assert_equals(validator.upload_file_pos,[(14, u'resource-0-upload_file')])        
 
 @raises(Exception)

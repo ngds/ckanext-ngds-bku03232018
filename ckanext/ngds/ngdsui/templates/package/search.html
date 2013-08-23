@@ -103,14 +103,22 @@
                     {% snippet 'snippets/search_result_text.html', query=c.q, count=c.page.item_count, type='dataset' %}
                 </div>
               </div>
+
               {% if c.fields_grouped %}
+                {% set fields_grouped=c.fields_grouped%}
+              {% else %}
+                {% set fields_grouped=h.get_filtered_items(request.params)%}
+              {% endif %}
+
+              {% if fields_grouped or h.get_filtered_items(request.params) %}
               <div id="filter-block">
                   <div class="filter-list">
                     <label>{{ _('Filtered by') }}</label>
-                    {% for field in c.fields_grouped %}
+                    {% for field in fields_grouped %}
                       <span class="facet">{{ c.facet_titles.get(field) or h.get_field_title(field) }}:</span>
-                      {% for value in c.fields_grouped[field] %}
-                      <a href="{{ c.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}">
+                      {% for value in fields_grouped[field] %}
+
+                      <a href="{{ h.remove_url_param(field, value=value, replace=None,controller='organization', action='read',extras=dict(id=default_group)) }}" class="remove" title="{{ _('Remove') }}">
                         <span class="filtered ">
                           {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
                             {{ c.translated_fields[(field,value)] }}

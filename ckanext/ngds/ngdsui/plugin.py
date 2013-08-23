@@ -15,6 +15,7 @@ import ckanext.ngds.logic.action.validate as validate_action
 from pylons import config as ckan_config
 
 import sys
+import re
 
 try:
     from collections import OrderedDict # 2.7
@@ -248,7 +249,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'is_development':helpers.is_development,
             'get_rating_details':helpers.get_rating_details,
             'get_top_5_harvest_sources':helpers.get_top_5_harvest_sources,
-            'get_home_images':helpers.get_home_images
+            'get_home_images':helpers.get_home_images,
+            'get_filtered_items':helpers.get_filtered_items
         }
 
     implements(IPackageController, inherit=True)
@@ -302,9 +304,15 @@ class NgdsuiPlugin(SingletonPlugin):
 
 
     def before_search(self, search_params):
-        # if 'fq' not in search_params:
-        #         search_params['fq'] = ''
-        # search_params['fq'] = search_params['fq']+' capacity:"public"'
+
+        if 'fq' in search_params:
+            def repl(m):
+                datestr = m.group()
+                datestr = datestr.replace("\"", "")
+                return datestr
+            search_params['fq'] = re.sub('publication_date:".*"', repl, search_params['fq'])
+
+
         if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:
             # do some validation
             # We'll perform the existing search but also filtering by the ids
