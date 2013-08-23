@@ -127,29 +127,21 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("initiate_search","/ngds/initiate_search",controller=home_controller,action="initiate_search",conditions={"method":["POST"]})
         map.connect("about","/ngds/about",controller=home_controller,action="render_about",conditions={"method":["GET"]})
 
-        #map.connect("dashboard","/dashboard",controller=home_controller,action="render_index",conditions={"method":["GET"]})
-        #map.connect("dashboard_user","/dashboard/{offset}",controller=home_controller,action="render_index",conditions={"method":["GET"]})
-
         contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
         map.connect("contribute","/ngds/contribute",controller=contribute_controller,action="index")
         map.connect("upload_file","/ngds/contribute/upload_file",controller=contribute_controller,action="upload_file")
-        #map.connect("do_harvest","/ngds/do_harvest",controller=contribute_controller,action="do_harvest")
-        #map.connect("harvest","/ngds/harvest",controller=contribute_controller,action="harvest")        
-        # map.connect("upload","/ngds/contribute/upload",controller=contribute_controller,action="upload")
         map.connect("create_or_update_resource","/ngds/contribute/create_or_update_resource",controller=contribute_controller,action="create_or_update_resource",conditions={"method":["POST"]})
         map.redirect('/ngds/contribute/dataset/{action}', '/dataset/{action}')
         map.connect('get_structured_form','/ngds/contribute/get_structured_form',controller=contribute_controller,action="get_structured_form",conditions={"method":["GET"]})
-        #map.connect("harvest_new","/ngds/harvest/edit",controller="ckanext.ngds.ngdsui.controllers.contribute:ContributeController",action="edit")
         map.connect("bulk_upload","/ngds/bulk_upload",controller=contribute_controller,action="bulk_upload")
         map.connect("bulk_upload_handle","/ngds/bulk_upload_handle",controller=contribute_controller,action="bulk_upload_handle")
-        #map.connect("harvest_new","/ngds/harvest/{action}",controller=contribute_controller)
+
         map.connect("bulk_upload_list","/ngds/bulkupload_list",controller=contribute_controller,action="bulkupload_list")
         map.connect("bulk_upload_package","/ngds/bulkupload_package",controller=contribute_controller,action="bulkupload_package_list")
         map.connect("execute_bulkupload","/ngds/execute_bulkupload",controller=contribute_controller,action="execute_bulkupload")
 
         map.connect("rating_submit","/ngds/rating_submit",controller=home_controller,action="rating_submit",conditions={"method":["POST"]})
         map.connect("save_search","/ngds/save_search",controller=home_controller, action="save_search",conditions={"method":["POST"]})
-
 
         #Map related paths
         map.connect("map","/ngds/map",controller=home_controller,action="render_map",conditions={"method":["GET"]})

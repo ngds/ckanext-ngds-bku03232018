@@ -2,7 +2,7 @@ from lxml import etree
 from collections import OrderedDict
 import json
 import re
-import ogr
+from osgeo import ogr
 
 class GMLtoReclineJS():
     def __init__(self):

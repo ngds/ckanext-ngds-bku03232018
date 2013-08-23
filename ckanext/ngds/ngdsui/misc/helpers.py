@@ -580,7 +580,9 @@ res_label_attribute_mapping = {
     'content model uri':'Content Model URI',
     'format':'Format',
     'geoserver layer name':'Geoserver Layer',
-
+    'geom extent':'Geographic Extent',
+    'layer name':'Geoserver Layer Name',
+    'parent resource':'Parent Resource Id'
 }
 
 def is_json(value):

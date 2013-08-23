@@ -206,6 +206,9 @@ def check_existence(data,collector):
     
     if not "extras" in data:
         collector["extras"] = "No extras specified"
+        if 'spatial' in data['extras']:
+            if data['extras']['spatial'] == "" or data['extras']['spatial'] == None or data['extras']['spatial'] == "null":
+                del data['extras']['spatial']
         return collector
 
     if not is_valid_maintainer(data):
