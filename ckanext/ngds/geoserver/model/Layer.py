@@ -50,14 +50,14 @@ class Layer(object):
         if not self.data.publish():
             # Spatialization failed
             raise Exception("Spatialization failed.")
-
+    '''
     def returnGeomExtent(self):
         url = self.file_resource["url"]
         if url.endswith('.zip'):
             return self.data.ogr_source_info()
         else:
             pass
-
+    '''
     def create(self):
         """
         Creates the new layer to Geoserver and then creates the resources in Package(CKAN).
@@ -163,7 +163,7 @@ class Layer(object):
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             'protocol': 'OGC:WMS',
             'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
-            'geom_extent': self.returnGeomExtent()
+#            'geom_extent': self.returnGeomExtent()
         }
         if self.file_resource.get("content_model_version") and self.file_resource.get("content_model_uri"):
             data_dict.update({

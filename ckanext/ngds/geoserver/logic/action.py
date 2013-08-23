@@ -31,8 +31,6 @@ def layer_exists(context, data_dict):
 
 def publish(context, data_dict):
     # Gather inputs
-    print "CONTEXT"
-    print context
 
     resource_id = data_dict.get("resource_id", None)
     layer_name = data_dict.get("layer_name", resource_id)

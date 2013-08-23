@@ -119,7 +119,7 @@ class GeoserverPlugin(p.SingletonPlugin):
             wms_url = armchair.makeGetWMSURL(data_dict)
             p.toolkit.c.resource["wms_url"] = wms_url
             p.toolkit.c.resource["layer_name"] = data_dict["resource"]["layer_name"].lower()
-            p.toolkit.c.resource["geom_extent"] = data_dict["resource"]["geom_extent"]
+#            p.toolkit.c.resource["geom_extent"] = data_dict["resource"]["geom_extent"]
 
     # Render the jinja2 template which builds the recline preview
     def preview_template(self, context, data_dict):
