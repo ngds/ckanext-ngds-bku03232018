@@ -1,6 +1,8 @@
 from ckanext.ngds.lib.importer.importer import BulkUploader
 from ckanext.ngds.tests.ngds_test_case import NgdsTestCase
 
+import os
+
 from nose.tools import *
 
 class ImporterTestCase(NgdsTestCase):
@@ -17,25 +19,25 @@ class ImporterTestCase(NgdsTestCase):
         assert True
 
     def test_loadclientconfig(self):
-        client_config_path= "./testdata/ckanclient.cfg"
+        client_config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "testdata", "ckanclient.cfg"))
         bulkuploader = BulkUploader(client_config=client_config_path)
-        assert_equals(bulkuploader.url,'http://localhost:5000/api')
-        assert_equals(bulkuploader.api_key,'5364e36d-0bd0-43af-be38-452149466950')
+        assert_equals(bulkuploader.url, 'http://localhost:5000/api')
+        assert_equals(bulkuploader.api_key, '5364e36d-0bd0-43af-be38-452149466950')
 
 
     @raises(Exception)
     def test_loadclientconfig_1(self):
-        client_config_path= "./testdata/ckanclient_without_url.cfg"
+        client_config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "testdata", "ckanclient_without_url.cfg"))
         bulkuploader = BulkUploader(client_config=client_config_path)
 
     @raises(Exception)
     def test_loadclientconfig_2(self):
-        client_config_path= "./testdata/ckanclient_without_api.cfg"
+        client_config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "testdata", "ckanclient_without_api.cfg"))
         bulkuploader = BulkUploader(client_config=client_config_path)
 
     @raises(Exception)
     def test_loadclientconfig_3(self):
-        client_config_path= "./testdata/ckanclient_without_host.cfg"
+        client_config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "testdata", "ckanclient_without_host.cfg"))
         bulkuploader = BulkUploader(client_config=client_config_path)
 
     # def test_execute_bulk_upload():
