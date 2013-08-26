@@ -135,6 +135,7 @@
     <field name="res_protocol" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="res_layer" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="res_content_model" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="res_resource_format" type="string" indexed="true" stored="true" multiValued="true"/>
 
     <field name="_version_" type="string" indexed="true" stored="true"/>
 

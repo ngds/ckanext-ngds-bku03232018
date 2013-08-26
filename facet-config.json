@@ -269,7 +269,7 @@
         ]
     },
     {
-        "facet": "Resource",
+        "facet": "Format",
         "type": "title",
         "subfacet": [
             {
@@ -292,6 +292,12 @@
                         "metadatafield": "res_format"
                     }
                 ]
+            },
+            {
+                "display_name": "Offline Resource",
+                "facet": "offline-resource",
+                "type": "keyword",
+                "metadatafield": "res_resource_format"
             }
         ]
     },

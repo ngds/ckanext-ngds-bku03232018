@@ -281,6 +281,7 @@ class NgdsuiPlugin(SingletonPlugin):
                     for (okey, nkey) in [('distributor', 'res_distributor'),
                                          ('protocol', 'res_protocol'),
                                          ('layer', 'res_layer'),
+                                         ('resource_format', 'res_resource_format'),
                                          ('content_model', 'res_content_model')]:
                         pkg_dict[nkey] = pkg_dict.get(nkey, []) + [resource.get(okey, u'')]
 
