@@ -23,6 +23,7 @@ import zipfile
 import os.path
 from ckan.plugins import toolkit
 import ckanext.ngds.lib.importer.validator as ngdsvalidator
+from ckanext.ngds.ngdsui.misc.helpers import process_resource_docs_to_index
 
 
 class ContributeController(NGDSBaseController):
@@ -210,6 +211,9 @@ class ContributeController(NGDSBaseController):
 
 
     def bulkupload_list(self):
+        """
+        This function is responsible for rendering the bulk upload list page which in turn displays all the bulk uploads submitted to the system.
+        """
 
         context = {'model': model, 'session': model.Session, 'user': c.user or c.author}
 
@@ -232,7 +236,9 @@ class ContributeController(NGDSBaseController):
         return render('contribute/bulkupload_list.html')
 
     def bulkupload_package_list(self):
-        print "Entering Bulk upload package List"
+        """
+        This function is responsible for displaying the list of packages that constitute a given bulk upload submission.
+        """
 
         context = {'model': model, 'session': model.Session, 'user': c.user or c.author}
 
@@ -248,15 +254,15 @@ class ContributeController(NGDSBaseController):
 
         uploaded_packages = model.BulkUpload_Package.by_bulk_upload(data['id'])
 
-        # print "uploaded_packages: ",uploaded_packages
-
         c.uploaded_packages = uploaded_packages
         c.selected_upload = model.BulkUpload.get(data['id'])
 
         return render('contribute/bulkupload_list.html')
 
     def execute_bulkupload(self):
-
+        """
+        Executes a bulk upload job. This function can only be triggered by an admin via the bulk upload page.
+        """
         context = {'model': model, 'session': model.Session, 'user': c.user or c.author}
 
         try:
@@ -274,31 +280,11 @@ class ContributeController(NGDSBaseController):
                         action='bulkupload_list')
         redirect(url)
 
-    def upload_file(self, data=None):
-        context = {'model': model, 'session': model.Session, 'user': c.user or c.author}
-        data = clean_dict(unflatten(tuplize_dict(parse_params(
-            request.params))))
-        storage = StorageController()
-        storage_api = StorageAPIController()
-        package_controller = PackageController()
-        dataset_name = data['dataset_name']
-
-        if 'file' and 'key' in data:
-            result = storage.upload_handle()
-            metadata = json.loads(storage_api.get_metadata(data['key']))
-            resource_location = metadata['_location']
-            response.headers['Content-Type'] = 'text/html;charset=utf-8'
-            return package_controller.new_resource(dataset_name, {'save': 'dummy_required_by_ckan',
-                                                                  'resource_location': resource_location,
-                                                                  'resource_format': data['resource_format'],
-                                                                  'url': resource_location})
-
-    def get_structured_form(self, data=None):
-        c.data = data
-        return render('package/structured_form.html')
-
     @jsonify
     def validate_resource(self):
+        """
+        Validate a resource to ensure that it conforms to NGDS standards. For ex: if a resource specifies that it conforms to a content model, that validation occurs here.
+        """
         data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
 
@@ -306,13 +292,18 @@ class ContributeController(NGDSBaseController):
 
 
     def execute_fulltext_indexer(self):
-        from ckanext.ngds.ngdsui.misc.helpers import process_resource_docs_to_index
-
+        """
+        Executes the fulltext indexer to index documents that were uploaded since the last indexer run.
+        """
         process_resource_docs_to_index()
 
         return "Full text indexer is executed successfully. Have fun with searching through documents....."
 
     def new_metadata(self):
+        """
+        Process a dataset metadata submission and validate it. If valid, then proceed to add the dataset metadata and if not return the new_package_metadata page to display the errors so
+        the user can try to fix his submission.
+        """
         data = clean_dict(unflatten(tuplize_dict(parse_params(
             request.params))))
         result = toolkit.get_action('validate_dataset_metadata')(None, data)
@@ -325,7 +316,8 @@ class ContributeController(NGDSBaseController):
             vars["errors"] = result["errors"]
             return render('package/new_package_metadata.html', extra_vars=vars)
 
-    def additional_metadata(self):
-        data = clean_dict(unflatten(tuplize_dict(parse_params(
-            request.params))))
-        return toolkit.get_action('validate_dataset_metadata')(None, data)
+            # TODO : Is this really needed?
+            # def additional_metadata(self):
+            #     data = clean_dict(unflatten(tuplize_dict(parse_params(
+            #         request.params))))
+            #     return toolkit.get_action('validate_dataset_metadata')(None, data)

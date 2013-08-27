@@ -34,15 +34,15 @@ class NgdsuiPlugin(SingletonPlugin):
             return ('Data Steward')
 
         def _trans_role_datasubmitter():
-            return ('Data Submitter')            
+            return ('Data Submitter')
 
         module_obj = sys.modules['ckan.new_authz']
 
         #Create this new module methods for new roles. 'admin' and 'member' already exists in the default roles.
-        setattr(module_obj, '_trans_role_datasteward', _trans_role_datasteward)        
+        setattr(module_obj, '_trans_role_datasteward', _trans_role_datasteward)
         setattr(module_obj, '_trans_role_datasubmitter', _trans_role_datasubmitter)
 
-        from ckan import new_authz     
+        from ckan import new_authz
 
         # Initialise NGDS roles.
         new_authz.ROLE_PERMISSIONS=OrderedDict([
@@ -70,7 +70,7 @@ class NgdsuiPlugin(SingletonPlugin):
         # get_action('group_create')(context, data_dict)
 
     def contentmodel_configure(self, config):
-        if "usgin_url" in config: 
+        if "usgin_url" in config:
             contentmodels.usgin_url= config["usgin_url"]
         else:
             contentmodels.usgin_url= "http://schemas.usgin.org/contentmodels.json"
@@ -122,7 +122,6 @@ class NgdsuiPlugin(SingletonPlugin):
         For the moment, set up routes under the sub-root /ngds to render the UI.
         """
         home_controller = "ckanext.ngds.ngdsui.controllers.home:HomeController"
-        map_controller = "ckanext.ngds.ngdsui.controllers.map:MapController"
         map.connect("home","/",controller=home_controller,action="render_index",conditions={"method":["GET"]})
         map.connect("ngds_home","/ngds",controller=home_controller,action="render_index",conditions={"method":["GET"]})
         map.connect("initiate_search","/ngds/initiate_search",controller=home_controller,action="initiate_search",conditions={"method":["POST"]})
@@ -130,10 +129,8 @@ class NgdsuiPlugin(SingletonPlugin):
 
         contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
         map.connect("contribute","/ngds/contribute",controller=contribute_controller,action="index")
-        map.connect("upload_file","/ngds/contribute/upload_file",controller=contribute_controller,action="upload_file")
         map.connect("create_or_update_resource","/ngds/contribute/create_or_update_resource",controller=contribute_controller,action="create_or_update_resource",conditions={"method":["POST"]})
         map.redirect('/ngds/contribute/dataset/{action}', '/dataset/{action}')
-        map.connect('get_structured_form','/ngds/contribute/get_structured_form',controller=contribute_controller,action="get_structured_form",conditions={"method":["GET"]})
         map.connect("bulk_upload","/ngds/bulk_upload",controller=contribute_controller,action="bulk_upload")
         map.connect("bulk_upload_handle","/ngds/bulk_upload_handle",controller=contribute_controller,action="bulk_upload_handle")
 
@@ -154,7 +151,6 @@ class NgdsuiPlugin(SingletonPlugin):
 
         map.connect("manage_users","/ngds/users",controller=user_controller,action="manage_users")
         map.connect("member_new","/ngds/member_new",controller=user_controller,action="member_new")
-        map.connect("poly","/poly",controller=map_controller,action="test")
         map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
         map.connect("validate_resource","/ngds/contribute/validate_resource",controller=contribute_controller,action="validate_resource")
         map.connect("additional_metadata","/ngds/contribute/additional_metadata",controller=contribute_controller,action="additional_metadata")
@@ -187,10 +183,10 @@ class NgdsuiPlugin(SingletonPlugin):
     implements(IActions, inherit=True)
     def get_actions(self):
         return {
-        'contentmodel_refreshCache' : contentmodel_action.contentmodel_refreshCache, 
-        'contentmodel_list' : contentmodel_action.contentmodel_list, 
-        'contentmodel_list_short' : contentmodel_action.contentmodel_list_short, 
-        'contentmodel_get': contentmodel_action.contentmodel_get, 
+        'contentmodel_refreshCache' : contentmodel_action.contentmodel_refreshCache,
+        'contentmodel_list' : contentmodel_action.contentmodel_list,
+        'contentmodel_list_short' : contentmodel_action.contentmodel_list_short,
+        'contentmodel_get': contentmodel_action.contentmodel_get,
         'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
         'contentmodel_checkBulkFile':contentmodel_action.contentmodel_checkBulkFile,
         #'create_resource_document_index': lib_action.create_resource_document_index
@@ -207,10 +203,10 @@ class NgdsuiPlugin(SingletonPlugin):
             'publish_dataset': authorize.publish_dataset,
             'manage_nodes': authorize.manage_nodes,
             'execute_bulkupload':authorize.execute_bulkupload,
-            'contentmodel_refreshCache' : datastore_auth.datastore_create, 
-            'contentmodel_list' : datastore_auth.datastore_create, 
+            'contentmodel_refreshCache' : datastore_auth.datastore_create,
+            'contentmodel_list' : datastore_auth.datastore_create,
             'contentmodel_checkFile' : datastore_auth.datastore_create,
-        }    
+        }
 
     implements(ITemplateHelpers, inherit=True)
 
@@ -348,11 +344,11 @@ class NgdsuiPlugin(SingletonPlugin):
             return OrderedDict([('frequency', 'Frequency'), ('source_type', 'Type')])
 
         ngds_facets = helpers.load_ngds_facets()
-        
+
         if ngds_facets:
             facets_dict = ngds_facets
-        
-        return facets_dict        
+
+        return facets_dict
 
     def organization_facets(self, facets_dict, organization_type, package_type):
         #print "IFACETS is called.......>>>>>>>>>>>>>>>>"
@@ -361,8 +357,8 @@ class NgdsuiPlugin(SingletonPlugin):
             return OrderedDict([('frequency', 'Frequency'), ('source_type', 'Type')])
 
         ngds_facets = helpers.load_ngds_facets()
-        
+
         if ngds_facets:
             facets_dict = ngds_facets
-        
+
         return facets_dict    
