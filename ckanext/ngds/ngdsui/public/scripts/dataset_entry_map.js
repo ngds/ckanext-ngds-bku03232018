@@ -16,24 +16,24 @@ map.addControl(drawControl);
 
 // Add callbacks for when drawing is completed
 var drawnItems = new L.LayerGroup();
-map.on('draw:poly-created', function(e) {
-	drawnItems.clearLayers();
-	drawnItems.addLayer(e.poly);
-	geojson = getGeoJSON("Polygon", e.poly._latlngs);
-	writeGeoJson(geojson);
-});
-//map.on('draw:rectangle-created', function (e) {
+//map.on('draw:poly-created', function(e) {
 //	drawnItems.clearLayers();
-//	drawnItems.addLayer(e.rect);
-//	geojson = getGeoJSON("Polygon", e.rect._latlngs);
+//	drawnItems.addLayer(e.poly);
+//	geojson = getGeoJSON("Polygon", e.poly._latlngs);
 //	writeGeoJson(geojson);
 //});
-map.on('draw:marker-created', function (e) {
+map.on('draw:rectangle-created', function (e) {
 	drawnItems.clearLayers();
-	drawnItems.addLayer(e.marker);
-	geojson = getGeoJSON("Point", e.marker._latlng);
+	drawnItems.addLayer(e.rect);
+	geojson = getGeoJSON("Polygon", e.rect._latlngs);
 	writeGeoJson(geojson);
 });
+//map.on('draw:marker-created', function (e) {
+//	drawnItems.clearLayers();
+//	drawnItems.addLayer(e.marker);
+//	geojson = getGeoJSON("Point", e.marker._latlng);
+//	writeGeoJson(geojson);
+//});
 map.addLayer(drawnItems);
 
 // Custom function to write GeoJSON from LatLngs
