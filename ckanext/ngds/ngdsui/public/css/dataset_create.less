@@ -1,33 +1,32 @@
-
 .ngds-slug {
-				font-size:13px;
-				display:none;
-				border:1px solid black;
-				border-radius:5px;
-				padding:5px;
-				margin:5px;
-				background-color:#edeef0;
-			}
+  font-size: 13px;
+  display: none;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  background-color: #edeef0;
+}
 
 #file-upload {
-				display:inline;
-				position:relative;
-				z-index:5;
+  display: inline;
+  position: relative;
+  z-index: 5;
 
-				input[type='file'] {
-					position:absolute;
-					left:0px;
-					opacity:0;
-					width:65px;
-					top:-5px;
-					height:33px;
-				}
+  input[type='file'] {
+    position: absolute;
+    left: 0px;
+    opacity: 0;
+    width: 65px;
+    top: -5px;
+    height: 33px;
+  }
 
-				input[type='submit'] {
-					position:absolute;
-					left:0px;
-				}
-			}
+  input[type='submit'] {
+    position: absolute;
+    left: 0px;
+  }
+}
 
 //.first-stage, .middle-stage, .last-stage {
 //	display:table-cell;
@@ -40,200 +39,291 @@
 //	padding-bottom:0px;
 //}
 
-.toolbar { 
-	margin-left:20px;
+.toolbar {
+  margin-left: 20px;
 }
 
-.pull-right { 
-	float:right;
+.pull-right {
+  float: right;
 }
 
 .stages {
-	border-width:0px;
-	width:870px;
-	display:table;
-	border-collapse:separate;
-	text-align:center;
-	padding-left:0px;
-	margin-left:0px;
-	margin-top:0px;
-	background-color:#edeef0;
+  font-size:16px;
+  border-width: 0px;
+  width: 870px;
+  display: table;
+  border-collapse: separate;
+  text-align: center;
+  padding-left: 0px;
+  margin-left: 0px;
+  margin-top: 0px;
+  background-color: #edeef0;
 
-	li span {
-		font-weight:normal;
-	}
+  li span, li.last .highlight {
+    font-weight: normal;
+    border-radius:10px 10px 0px 0px;
+  }
 
-	li, li:after, li:before { 
-		border-radius:0px;
-		-webkit-border-radius:0px !important;
-		border-width:0px !important;
-		background-color:white;
-		border:1px solid grey;
-		border-top: 5px solid grey;
-		color:black;
-		button.highlight, span.highlight {
-			padding-top:5px;
-		}
+  li, li:after, li:before {
+//    border-radius: 0px;
+//    -webkit-border-radius: 0px !important;
+    border-width: 0px !important;
+    background-color: white;
+    border: 1px solid grey;
+    border-top: 5px solid grey;
+    color: black;
 
-	}
+    button {
+      border-radius:10px 10px 0px 0px;
+    }
 
-	li.complete .highlight, li.active .highlight{
-		background-color:white;
-		color:black;
-	}
+    button,span {
+      font-weight:bold;
+    }
 
-	li.complete .highlight {
-		background-color:lightcyan;
-		border:2px solid grey;
-		border-top:5px solid grey;
-	}
+    button.highlight, span.highlight {
+      padding-top: 5px;
+    }
 
-	li.active .highlight {
-		border-top:5px solid #366D96;
-	}
+    .highlight {
+      padding: 0;
+      font-size:16px;
+      text-align:center;
+    }
 
-	li.uncomplete .highlight {
-		background-color:#edeef0;
-		border:2px solid grey;
-		border-top:5px solid grey;
-	}
+  }
+
+  li.complete .highlight, li.active .highlight {
+    background-color: white;
+    color: black;
+    padding: 0;
+  }
+
+  li.complete .highlight {
+    background-color: #206b82;
+    color:white;
+    border: 2px solid grey;
+    border-top: 2px solid grey;
+  }
+
+  li.active .highlight {
+    border-top: 2px solid #366D96;
+  }
+
+  li.uncomplete .highlight {
+    background-color: #edeef0;
+    border: 2px solid grey;
+    border-top: 2px solid grey;
+  }
 
 }
 
 .about-form {
-	margin-left:20px;
+  margin-left: 20px;
 }
 
 .dataset-resource-form {
-	margin:0 25px 25px 25px;
+  margin: 0 25px 25px 0px;
 }
 
 .ngds-module-content {
-	font-family:Arial;
-	font-weight:normal;
-	font-size:13px;
-	min-height:550px;
+  font-family: Arial;
+  font-weight: normal;
+  font-size: 13px;
+  min-height: 550px;
 
-	.main-controls {
-		position:relative;
-		display:table-row;
+  .main-controls {
+    position: relative;
+    border:2px solid #206b82;
+    padding:7px;
+    margin-left:30px;
+    margin-bottom:35px;
+    width:905px;
 
-		.radio-section {
-			position:relative;
-			display:table-cell;
-			width:500px;
-			padding-left:50px;
-		}
-	}
+    .radio-section {
+      position: relative;
+      display: table-cell;
+      width: 500px;
+      padding-left: 80px;
 
-	label {
-		font-family:arial;
-		font-style:normal;
-		font-weight:bold;
-		font-size:14px;
-		color:@light;
-	}
+      label:after {
+        content:"";
+      }
 
-	.form-body {
-		.input-group {
+      input[type="radio"] {
+        height:15px;
+      }
+    }
+  }
 
-            .select2-container .select2-choice {
-              width:655px;
-              display:inline-block;
-            }
+  label {
+    font-family: arial;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    color: @light;
+  }
 
+  .form-body {
+    .input-group {
+      margin-bottom: 25px;
 
-			margin-top:20px;
+      .select2-container .select2-choice {
+        width: 660px;
+        display: inline-block;
+      }
 
-			input[type='text'],select, textarea {
-				width:650px;
-				background-color:#edeef0;
-			}
+      margin-top: 20px;
 
-			select {
-				width:665px;
-			}
+      input[type='text'], select, textarea {
+        width: 650px;
+        background-color: #edeef0;
+      }
 
-			input[type="text"].small {
-				width:150px;
-			}
+      select {
+        width: 670px;
+      }
 
-			select {
+      input[type="text"].small {
+        width: 150px;
+      }
 
-			}
+      select {
 
-			.sp-label {
-				display:inline-block;
-				width:150px;
-				margin-right:10px;
-				text-align:right;
-			}
+      }
 
-			div.add-responsible-party {
-				margin-left:200px;
-				margin-top:20px;
-			}
+      .sp-label {
+        display: inline-block;
+        width: 150px;
+        margin-right: 10px;
+        text-align: right;
+      }
 
-			.description-label-div {
-				vertical-align:top;
-			}
+      div.add-responsible-party {
+        margin-left: 200px;
+        margin-top: 20px;
+      }
 
-			a.form-anchor {
-				margin-left:165px;
-				color:blue;
-				font-size:13px;
-				cursor:pointer;
-                display:block;
+      .description-label-div {
+        vertical-align: top;
+      }
 
-				&:visited {
-					color:#blue;
-					cursor:pointer;
-				}
-			}
+      a.form-anchor {
+        margin-left: 165px;
+        color: blue;
+        font-size: 13px;
+        cursor: pointer;
+        display: block;
 
-            .retreived-tags {
-              margin-left:160px;
-              width:80%;
-              margin-top:5px;
-            }
-		}
-	}
+        &:visited {
+          color: #blue;
+          cursor: pointer;
+        }
+      }
 
-	.form-actions {
-		margin-top:50px;
-		text-align:center;
+      .retreived-tags {
+        margin-left: 160px;
+        width: 80%;
+        margin-top: 5px;
+      }
+    }
+  }
 
-		button {
-			margin-left:125px;
+  .form-actions {
+    margin-top: 50px;
+    text-align: center;
+    border-top: none;
+    padding-left:100px;
 
-			&:first-of-type {
-				margin-left:0px;
-			}
-		}
+    button {
+      margin-left: 125px;
+      .ngds-button(23px);
 
-		input[type="submit"], button[type="submit"] {
-			.ngds-button(23px);
-		}
+      &:first-of-type {
+        margin-left: 0px;
+      }
+    }
 
+    input[type="submit"], button[type="submit"] {
+      .ngds-button(23px);
+    }
 
-	}
+    .btn {
+      margin-left:200px;
+    }
+  }
 }
 
-
 #bbox-map {
-	height:300px;
-	width:660px;
-	margin-left:165px;
+  height: 300px;
+  width: 660px;
+  margin-left: 165px;
 }
 
 .resource-upload-field {
-  display:none;
+  .ngds-button(23px);
+  display: none;
+
+  label.radio.inline {
+    color:white;
+    padding-left:0px;
+    padding-top:0px;
+  }
+
 }
 
 .ckan-icon-link-plugin {
-  display:none;
+  display: none;
 }
 
 .display-none {
-  display:none;
+  display: none;
+}
+
+[role="main"] {
+  .wide {
+    width: 1048px;
+    margin-left: 130px;
+    float: left;
+
+    .dataset-form {
+      width: 980px;
+      border: 1px solid #dadada;
+      border-top-right-radius:10px;
+      border-top-left-radius:10px;
+      border-top:0px;
+
+      .input-group {
+        input {
+          width: 720px;
+        }
+
+        textarea {
+         width:720px;
+        }
+        select {
+          width: 735px;
+        }
+
+        .select2-choice {
+          width: 730px;
+        }
+      }
+
+      .form-actions {
+        margin-bottom: 30px;
+      }
+
+    }
+
+    .stages {
+      width: 100%;
+      margin-bottom: 40px;
+    }
+  }
+
+  .no-background {
+    background: none;
+  }
+
 }

@@ -32,8 +32,8 @@
   <div class="main-controls">
       <div class="radio-section">
         <input type="hidden" name="dataset_name" value="{{pkg_name}}"/>
-        <input type="radio" id="resource_type-selection" name="upload_type_selection" value="upload_type"/>
-        <label for="resource_type-selection">Upload a file</label><br>
+        <!--<input type="radio" id="resource_type-selection" name="upload_type_selection" value="upload_type"/>-->
+        <!--<label for="resource_type-selection">Upload a file</label><br>-->
           {% if data['resource_format'] %}
           <input type="hidden" name="resource_format" value="{{data['resource_format']}}" />
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" />
@@ -41,13 +41,13 @@
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" name="resource_format" value="structured"/>
           {% endif %}
 
-        <label for="resource_type-structured" id="resource_type-structured-label">Structured</label><br>
+        <label for="resource_type-structured" id="resource_type-structured-label">Structured resource</label><br>
           {% if data['resource_format'] %}
           &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" />
           {% else %}
           &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_format" value="unstructured" />
           {% endif %}
-        <label for="resource_type-unstructured" id="resource_type-unstructured-label">Unstructured</label>
+        <label for="resource_type-unstructured" id="resource_type-unstructured-label">Unstructured resource</label>
       </div>
 
       <div class="radio-section">

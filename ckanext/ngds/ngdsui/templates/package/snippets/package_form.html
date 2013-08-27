@@ -32,7 +32,7 @@ then itself be extended to add/remove blocks of functionality. #}
         {% endif %}
       {% endblock %}
       {% block cancel_button %}
-       <input type="reset" name="reset"/>
+       <button type="reset" name="reset">Clear</button>
       {% endblock %}
       <button type="submit" name="save">{% block save_button_text %}{{ _('Next : Add Resources') }}{% endblock %}</button>
     </div>

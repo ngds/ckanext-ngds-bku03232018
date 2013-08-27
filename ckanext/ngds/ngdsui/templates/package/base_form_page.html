@@ -2,35 +2,36 @@
 
 {% block content %}
 {% set pkg = c.pkg_dict %}
-
 {% block breadcrumb_content_selected %}{% endblock %}
 
 {% block contribute_landing %}
-  <h2 class="heading"><img class="heading-image" src="/images/create_node.png" alt=""> {{ _('CONTRIBUTE') }}</h2>
+<!--<h2 class="heading"><img class="heading-image" src="/images/create_node.png" alt=""> {# _('CONTRIBUTE') #}</h2>-->
 
 {% endblock %}
 
 <div class="toolbar">
-  <ol class="breadcrumb">
-    {% snippet 'snippets/home_breadcrumb_item.html' %}
-{% block breadcrumb_content %}
+    <ol class="breadcrumb">
+        {% snippet 'snippets/home_breadcrumb_item.html' %}
+        {% block breadcrumb_content %}
 
-  {% if pkg %}
-    {% set dataset = pkg.title or pkg.name %}
-    {% if pkg.organization %}
-      {% set organization = pkg.organization.title or pkg.organization.name %}
-      <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
-      <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name %}
-    {% else %}
-      <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
-    {% endif %}
-    <li{{ self.breadcrumb_content_selected() }}>{% link_for dataset|truncate(30), controller='package', action='read', id=pkg.name %}</li>
-  {% else %}
-    <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
-    <li class="active"><a href="">{{ _('Create Dataset') }}</a></li>
-  {% endif %}
-{% endblock %}
-</ol>
+        {% if pkg %}
+        {% set dataset = pkg.title or pkg.name %}
+        {% if pkg.organization %}
+        {% set organization = pkg.organization.title or pkg.organization.name %}
+        <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
+        <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name %}
+            {% else %}
+        <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
+        {% endif %}
+        <li
+        {{ self.breadcrumb_content_selected() }}>{% link_for dataset|truncate(30), controller='package', action='read',
+        id=pkg.name %}</li>
+        {% else %}
+        <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
+        <li class="active"><a href="">{{ _('Create Dataset') }}</a></li>
+        {% endif %}
+        {% endblock %}
+    </ol>
 </div>
 
 <!-- <div class="upload-container">
@@ -39,25 +40,29 @@
   <div class="title">3. Additional data</div>
 </div> -->
 <div role="main" class="container">
-<div class="wrapper">
-<div class="primary">
-  <section class="module">
-    <div class="ngds-module-content">
-      {% block form %}{{ c.form | safe }}{% endblock %}
+    <div class="wrapper{% if not pkg.name %} no-background{% endif %}">
+        <div class="primary{% if not pkg.name %} wide{% endif %}">
+            <section class="module">
+                <div class="ngds-module-content">
+                    {% block form %}{{ c.form | safe }}{% endblock %}
+                </div>
+            </section>
+        </div>
+        {% if pkg.name %}
+
+        <aside class="secondary">
+
+            {% block secondary_content %}
+
+            {% block resources_module %}
+            {# TODO: Pass in a list of previously created resources and the current package dict #}
+            {% snippet "package/snippets/resources.html", pkg={}, action='new_resource' %}
+            {% endblock %}
+            {% endblock %}
+
+        </aside>
+        {% endif %}
     </div>
-  </section>
-  </div>
-
-<aside class="secondary">
-{% block secondary_content %}
-
-  {% block resources_module %}
-    {# TODO: Pass in a list of previously created resources and the current package dict #}
-    {% snippet "package/snippets/resources.html", pkg={}, action='new_resource' %}
-  {% endblock %}
-</aside>
 </div>
-</div>
-{% endblock %}
 
 {% endblock %}
