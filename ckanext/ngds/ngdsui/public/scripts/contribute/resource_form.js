@@ -6,23 +6,22 @@ var populate_content_models = function () {
 
         };
         $.ajax({ // Fetch content models.
-            url: '/api/action/contentmodel_list_short',
-            type: 'POST',
-            data: JSON.stringify({
-                dummy: 'appendix' // Ckan needs something in the body or the request is not accepted.
-            }),
-            success: function (response) {
-                for (var i = 0; i < response.result.length; i++) {
-                    content_models[response.result[i].uri] = response.result[i];
-                }
+                   url: '/api/action/contentmodel_list_short',
+                   type: 'POST',
+                   data: JSON.stringify({
+                                            dummy: 'appendix' // Ckan needs something in the body or the request is not accepted.
+                                        }),
+                   success: function (response) {
+                       for (var i = 0; i < response.result.length; i++) {
+                           content_models[response.result[i].uri] = response.result[i];
+                       }
 
-                options.push($('<option/>', {value: 'none', text: 'None'}).appendTo(content_model_combo));
-                for (var val in content_models) {
-                    options.push($('<option/>', {value: val, text: content_models[val].title}).appendTo(content_model_combo));
-                }
-            }
-        });
-        jQuery(".content_model").select2();
+                       options.push($('<option/>', {value: 'none', text: 'None'}).appendTo(content_model_combo));
+                       for (var val in content_models) {
+                           options.push($('<option/>', {value: val, text: content_models[val].title}).appendTo(content_model_combo));
+                       }
+                   }
+               });
         return;
     }
 
@@ -55,7 +54,6 @@ var populate_content_model_versions = function () {
                 }
             }
         ]};
-
     content_model_combo.after(Mustache.render(ngds.structured_form_template, content_model_version_struct));
 
     var content_model_version_combo = $(".content_model_version");
@@ -65,11 +63,6 @@ var populate_content_model_versions = function () {
         $('<option/>', {value: content_models[content_model_selected].versions[i].uri, text: content_models[content_model_selected].versions[i].version}).appendTo(content_model_version_combo);
     }
 };
-
-
-$(".form-body").on("change", ".content_model", function () { // When the content model combo's value changes, populate the content model versions into the content_model_version combo box.
-    populate_content_model_versions();
-});
 
 $("#file").on('change', function (ev) {
     var timestamp = new Date().toISOString();
@@ -108,6 +101,9 @@ var activate_populate_form = function (data) {
     $("[name=format]").val(file_extension);
 };
 
+$(".form-body").on("change", ".content_model", function () { // When the content model combo's value changes, populate the content model versions into the content_model_version combo box.
+    populate_content_model_versions();
+});
 
 var get_prop = function (url, what) {
     if (typeof url === 'undefined' || url.length === 0) {
@@ -139,6 +135,7 @@ var render_forms = function (value) {
         $(".form-body").html(Mustache.render(ngds.structured_form_template, structured_form));
         position_file_uploader("#field-url");
         populate_content_models();
+//        jQuery(".content_model").select2();
     }
 
     if (value === "unstructured") {
@@ -161,12 +158,12 @@ var render_forms = function (value) {
     if (value === "data-service" || value === "unstructured" || value === "structured") {
         responsibilified = new ngds.responsible_party();
         responsibilified.responsibilify({
-            'rs_name': '#distributor_name',
-            'rs_email': '#distributor_email',
-            'rs_fake': '#distributor_fake',
-            'rs': '#distributor',
-            'slug_container': '.distributor-tag'
-        }, function (dict) {
+                                            'rs_name': '#distributor_name',
+                                            'rs_email': '#distributor_email',
+                                            'rs_fake': '#distributor_fake',
+                                            'rs': '#distributor',
+                                            'slug_container': '.distributor-tag'
+                                        }, function (dict) {
             $("[name='distributor_name']").val(dict['name']);
             $("[name='distributor_email']").val(dict['email']);
         });
@@ -193,19 +190,19 @@ $('input[name="resource_format"]').on('change', function (ev) {
 
 $("#go-metadata").click(function () {
     $.ajax({
-        'url': '/ngds/contribute/validate_resource',
-        'data': $(".dataset-form").serializeArray(),
-        'success': function (response) {
-            if (response.success === true) {
-                $(".dataset-form").append($("<input/>", {'type': 'hidden', 'name': 'save', 'value': 'go-metadata'}));
-                // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
-                $(".dataset-form").submit();
-            }
-            else {
-                ngds.publish('Notifications.received', response);
-            }
-        }
-    });
+               'url': '/ngds/contribute/validate_resource',
+               'data': $(".dataset-form").serializeArray(),
+               'success': function (response) {
+                   if (response.success === true) {
+                       $(".dataset-form").append($("<input/>", {'type': 'hidden', 'name': 'save', 'value': 'go-metadata'}));
+                       // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
+                       $(".dataset-form").submit();
+                   }
+                   else {
+                       ngds.publish('Notifications.received', response);
+                   }
+               }
+           });
 });
 
 
@@ -214,4 +211,3 @@ if (typeof continuation !== 'undefined') {
         $("[name=" + continuation['field'] + "]").val(continuation['value']);
     }
 }
-

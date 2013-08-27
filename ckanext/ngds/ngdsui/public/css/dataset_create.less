@@ -28,17 +28,6 @@
   }
 }
 
-//.first-stage, .middle-stage, .last-stage {
-//	display:table-cell;
-//	font-size:14px;
-//	font-family:Arial;
-//	font-weight:bold;
-//	width:100px;
-//	height:35px;
-//	padding-top:15px;
-//	padding-bottom:0px;
-//}
-
 .toolbar {
   margin-left: 20px;
 }
@@ -48,7 +37,7 @@
 }
 
 .stages {
-  font-size:16px;
+  font-size: 16px;
   border-width: 0px;
   width: 870px;
   display: table;
@@ -61,12 +50,10 @@
 
   li span, li.last .highlight {
     font-weight: normal;
-    border-radius:10px 10px 0px 0px;
+    border-radius: 10px 10px 0px 0px;
   }
 
   li, li:after, li:before {
-//    border-radius: 0px;
-//    -webkit-border-radius: 0px !important;
     border-width: 0px !important;
     background-color: white;
     border: 1px solid grey;
@@ -74,11 +61,11 @@
     color: black;
 
     button {
-      border-radius:10px 10px 0px 0px;
+      border-radius: 10px 10px 0px 0px;
     }
 
-    button,span {
-      font-weight:bold;
+    button, span {
+      font-weight: bold;
     }
 
     button.highlight, span.highlight {
@@ -87,8 +74,8 @@
 
     .highlight {
       padding: 0;
-      font-size:16px;
-      text-align:center;
+      font-size: 16px;
+      text-align: center;
     }
 
   }
@@ -101,7 +88,7 @@
 
   li.complete .highlight {
     background-color: #206b82;
-    color:white;
+    color: white;
     border: 2px solid grey;
     border-top: 2px solid grey;
   }
@@ -134,11 +121,11 @@
 
   .main-controls {
     position: relative;
-    border:2px solid #206b82;
-    padding:7px;
-    margin-left:30px;
-    margin-bottom:35px;
-    width:905px;
+    border: 2px solid #206b82;
+    padding: 7px;
+    margin-left: 30px;
+    margin-bottom: 35px;
+    width: 905px;
 
     .radio-section {
       position: relative;
@@ -147,11 +134,11 @@
       padding-left: 80px;
 
       label:after {
-        content:"";
+        content: "";
       }
 
       input[type="radio"] {
-        height:15px;
+        height: 15px;
       }
     }
   }
@@ -169,19 +156,19 @@
       margin-bottom: 25px;
 
       .select2-container .select2-choice {
-        width: 660px;
+        width: 730px;
         display: inline-block;
       }
 
       margin-top: 20px;
 
       input[type='text'], select, textarea {
-        width: 650px;
+        width: 720px;
         background-color: #edeef0;
       }
 
       select {
-        width: 670px;
+        width: 735px;
       }
 
       input[type="text"].small {
@@ -194,14 +181,51 @@
 
       .sp-label {
         display: inline-block;
-        width: 150px;
+        width: 180px;
         margin-right: 10px;
         text-align: right;
       }
 
       div.add-responsible-party {
-        margin-left: 200px;
+        margin-left: 210px;
         margin-top: 20px;
+        width: 670px;
+        padding: 15px 0px 15px 25px;
+        border: 1px dotted #206b82;
+        border-radius: 10px;
+
+        h4 {
+          margin-top: 0px;
+          border-bottom: 1px dotted black;
+          width: 96%;
+          margin-bottom: 15px;
+        }
+
+        label {
+          margin-right: 10px;
+          margin-left: 20px;
+
+          &:first-of-type {
+            margin-left: 0px;
+            margin-right: 10px;
+          }
+        }
+
+        input {
+          background-color: #edeef0;
+        }
+
+        button {
+          .ngds-button(23px);
+
+          margin-left: 20px;
+          margin-right: 10px;
+
+          &:last-of-type {
+            margin-left: 10px;
+          }
+        }
+
       }
 
       .description-label-div {
@@ -233,7 +257,7 @@
     margin-top: 50px;
     text-align: center;
     border-top: none;
-    padding-left:100px;
+    padding-left: 100px;
 
     button {
       margin-left: 125px;
@@ -249,15 +273,15 @@
     }
 
     .btn {
-      margin-left:200px;
+      margin-left: 200px;
     }
   }
 }
 
 #bbox-map {
   height: 300px;
-  width: 660px;
-  margin-left: 165px;
+  width: 735px;
+  margin-left: 195px;
 }
 
 .resource-upload-field {
@@ -265,9 +289,9 @@
   display: none;
 
   label.radio.inline {
-    color:white;
-    padding-left:0px;
-    padding-top:0px;
+    color: white;
+    padding-left: 0px;
+    padding-top: 0px;
   }
 
 }
@@ -289,9 +313,9 @@
     .dataset-form {
       width: 980px;
       border: 1px solid #dadada;
-      border-top-right-radius:10px;
-      border-top-left-radius:10px;
-      border-top:0px;
+      border-top-right-radius: 10px;
+      border-top-left-radius: 10px;
+      border-top: 0px;
 
       .input-group {
         input {
@@ -299,7 +323,7 @@
         }
 
         textarea {
-         width:720px;
+          width: 720px;
         }
         select {
           width: 735px;

@@ -8,7 +8,9 @@ var map = new L.Map('bbox-map', {layers:[base], center: new L.LatLng(34.1618, -1
 var drawControl = new L.Control.Draw({
 	position: 'topright',
 	polyline: false,
-	circle: false
+	circle: false,
+    polygon:false,
+    marker:false
 });
 map.addControl(drawControl);
 
@@ -20,12 +22,12 @@ map.on('draw:poly-created', function(e) {
 	geojson = getGeoJSON("Polygon", e.poly._latlngs);
 	writeGeoJson(geojson);
 });
-map.on('draw:rectangle-created', function (e) {
-	drawnItems.clearLayers();
-	drawnItems.addLayer(e.rect);
-	geojson = getGeoJSON("Polygon", e.rect._latlngs);
-	writeGeoJson(geojson);
-});
+//map.on('draw:rectangle-created', function (e) {
+//	drawnItems.clearLayers();
+//	drawnItems.addLayer(e.rect);
+//	geojson = getGeoJSON("Polygon", e.rect._latlngs);
+//	writeGeoJson(geojson);
+//});
 map.on('draw:marker-created', function (e) {
 	drawnItems.clearLayers();
 	drawnItems.addLayer(e.marker);

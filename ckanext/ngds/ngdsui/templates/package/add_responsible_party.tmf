@@ -1,6 +1,7 @@
 <script>
 {% raw %}
 ngds.add_responsible_party_template = "<div class='add-responsible-party{{#class}} {{class}}{{/class}}'>\
+<h4>Create {{responsible_party_type}}</h4>\
 {{#responsible_parties}}\
 {{#label}}\
 <label class='{{class}}'>{{label}}</label>\

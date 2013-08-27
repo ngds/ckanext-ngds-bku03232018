@@ -114,6 +114,7 @@ ngds.responsible_party = function() {
 
 			 var responsible_parties = {
 			 	'class':rs_c_form,
+                 'responsible_party_type':rs_token,
 			    'responsible_parties':[
 			      {
 			        'label':'Name',				        
