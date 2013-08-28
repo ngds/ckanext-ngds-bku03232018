@@ -214,24 +214,26 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
     @classmethod
     def license_2_license_id(self, license_title, logger=None):
-        # import is here, as it creates a dependency on ckan, which
-        # many importers won't want
+        """
+        """
+
+        # import is here, as it creates a dependency on ckan, which many importers won't want
         from ckan.model.license import LicenseRegister
-        #print "license_title: ",license_title
         licenses = LicenseRegister()
-        #print "licenses: ",licenses
         license_obj = licenses.get(license_title)
-        #print "license_obj: ",license_obj
+
         if license_obj:
             return u'%s' % license_obj.id
         else:
-            #print "license_title: ",license_title
-            #logger('Warning: No license name matches \'%s\'. Ignoring license.' % license_title)
+            log.warn('Warning: No license name matches %s. Ignoring license.' % license_title)
             return u''
 
     @classmethod
     def responsible_party_2_id(self,name,email):
-        from ckan.model import ResponsibleParty 
+        """
+        """
+
+        from ckan.model import ResponsibleParty
 
         resparty = ResponsibleParty()
 
@@ -250,6 +252,10 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
     @classmethod
     def validate_SD(self,model_type,sdValue):
+        """
+
+        """
+
         #Call Model's validate method which will compare the sd value against the Standing data table.
         from ckanext.ngds.env import ckan_model
 
@@ -264,9 +270,11 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
     @classmethod
     def validate_responsible_party(cls, field_name, email_string):
-        from ckanext.ngds.env import ckan_model
+        """
 
-        #res_party = ckan_model.ResponsibleParty()
+        """
+
+        from ckanext.ngds.env import ckan_model
 
         email_list = [x.strip() for x in str(email_string).split(',') if x.strip()]
 
@@ -309,10 +317,8 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
             {'name':'wikipedia',
              'resources':[{'url':'http://static.wikipedia.org/'}]}
         '''
-        #import ckan.forms
-        standard_fields = model.Package.get_fields()
 
-        #print "Standar Fields: ", standard_fields
+        standard_fields = model.Package.get_fields()
 
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():

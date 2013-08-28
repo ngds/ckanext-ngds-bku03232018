@@ -117,8 +117,12 @@
                     {% for field in fields_grouped %}
                       <span class="facet">{{ c.facet_titles.get(field) or h.get_field_title(field) }}:</span>
                       {% for value in fields_grouped[field] %}
+                          {% if g.central %}
+                             <a href="{{ h.remove_url_param(field, value=value, replace=None,controller='package', action='search')}}" class="remove" title="{{ _('Remove') }}">
+                          {% else %}
+                            <a href="{{ h.remove_url_param(field, value=value, replace=None,controller='organization', action='read',extras=dict(id=default_group)) }}" class="remove" title="{{ _('Remove') }}">
+                          {% endif %}
 
-                      <a href="{{ h.remove_url_param(field, value=value, replace=None,controller='organization', action='read',extras=dict(id=default_group)) }}" class="remove" title="{{ _('Remove') }}">
                         <span class="filtered ">
                           {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
                             {{ c.translated_fields[(field,value)] }}

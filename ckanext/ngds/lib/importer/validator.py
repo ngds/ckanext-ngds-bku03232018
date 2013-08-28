@@ -1,4 +1,8 @@
-import ckanext.ngds.lib.importer.helper as import_helper
+"""
+Validates the bulk upload template file for the structure and basic data validation (like mandatory fields, referenced
+fields and date field)
+"""
+
 import ckanext.ngds.lib.importer.importer as ngds_importer
 import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
@@ -146,7 +150,3 @@ class NGDSValidator(object):
                 match = re.match('resource-(\d+)-upload_file', title)
                 if match:
                     self.upload_file_pos.append((col_index,title))
-
-        #print "mandatory_keys_pos Field positions:",self.mandatory_keys_pos
-        #print "date Field positions:",self.date_field_pos
-        #print "Upload file Field positions:",self.upload_file_pos

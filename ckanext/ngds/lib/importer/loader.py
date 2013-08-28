@@ -1,3 +1,8 @@
+"""
+Handles the functionality of updating/merging the resource details as part of Bulk Upload process. Updates dict value with
+respect to the existing and new field values populated for a particular resource.
+"""
+
 import copy
 import ckanext.importlib.loader as loader
 from ckanext.importlib.loader import LoaderError
@@ -8,10 +13,20 @@ import os
 log = __import__("logging").getLogger(__name__)
 
 class ResourceLoader(loader.ResourceSeriesLoader):
+    """
+    Loader finds package based on a specified field and checks to see
+    if most fields (listed in field_keys_to_expect_invariant) match the
+    pkg_dict. Loader then inserts the resources in the pkg_dict into
+    the package and updates any fields that have changed (e.g. last_updated).
+    It checks to see if the particular resource is already in the package
+    by a custom resource ID which is contained in the description field,
+    as a word containing the given prefix.
+    """
 
     def __init__(self, ckanclient,field_keys_to_find_pkg_by,resource_dir=None):
         super(ResourceLoader, self).__init__(ckanclient,field_keys_to_find_pkg_by)
         self.resource_dir = resource_dir
+
 
 
     def _write_package(self, pkg_dict, existing_pkg_name, existing_pkg=None):
@@ -25,16 +40,23 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         '''
         try:
             pkg_dict = self._update_resource(pkg_dict)
-        except LoaderError:
-            log.error(e)
+        except LoaderError, ex:
+            log.error(ex)
             raise
         except Exception, e:
             log.error(e)
-            raise LoaderError('Could not update resources Exception: %s'% e)
+            raise LoaderError('Could not update resources Exception: %s' % e)
 
-        super(ResourceLoader, self)._write_package(pkg_dict,existing_pkg_name,existing_pkg)
+        super(ResourceLoader, self)._write_package(pkg_dict, existing_pkg_name, existing_pkg)
 
     def _update_resource(self, pkg_dict):
+
+        """
+        Updates the resource dictionary with uploaded File URL and content model's valid URI and versions.
+        If a resource is defined with file to be uploaded in 'upload_file' field then that file is uploaded in CKAN and
+        the URL of the file is updated in resource dictionary. If the content_model is defined then content model URI
+        and versions are retrieved and updated in the resource dict.
+        """
 
         if pkg_dict.get('resources') is None:
             return pkg_dict
@@ -76,12 +98,9 @@ class ResourceLoader(loader.ResourceSeriesLoader):
 
 
     def _merge_resources(self, existing_pkg, pkg):
-        '''Takes an existing_pkg and merges in resources from the pkg.
-        '''
-        #log.info("..Merging resources into %s" % existing_pkg["name"])
-        #log.debug("....Existing resources:\n%s" % pformat(existing_pkg["resources"]))
-        #log.debug("....New resources:\n%s" % pformat(pkg["resources"]))
-        #log.info("Entering NGDS merge");
+        """
+        Takes an existing_pkg and merges in resources from the pkg.
+        """
 
         if existing_pkg["resources"] == [] :
             log.info("As existing resources are empty passing the package resource as new resources.")
@@ -126,13 +145,19 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         return merged_dict    
 
     def _get_resource_id(self, res):
-        #print "Inside NGDS Resource Loader"
-        #print "Resource URL ",res.get('name')
+        """
+        Currently resource name is considered as an unique id (resource id) to determine whether that resource already
+        exists in that package.
+        """
+
         return res.get('name')
 
     def validate_resource(self, resource_dict):
+        """
+        Calls the validate resource action to check whether constructed resource is valid. If not valid then raises
+        validation failure exception.
+        """
 
-        print "Inside resource validation"
         validation_response = toolkit.get_action("validate_resource")(None, resource_dict)
 
         validation_status = validation_response['success']
@@ -146,6 +171,9 @@ class ResourceLoader(loader.ResourceSeriesLoader):
 
 
     def validate_content_model(self, content_model, version):
+        """
+        Calls content model validation action.
+        """
 
         #Validatation method needs to be called.
         cm_dict = {'content_model':content_model,'version':version}

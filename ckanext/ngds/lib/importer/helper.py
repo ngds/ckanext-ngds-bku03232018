@@ -6,14 +6,15 @@ log = __import__("logging").getLogger(__name__)
 
 BUCKET = config.get('ckan.storage.bucket', 'default')
 
-def upload_file_return_path(file_name=None,file_path=None):
+def upload_file_return_path(file_name=None, file_path=None):
     """
+    Loads the input file into Pairtree system by creating unique directory name based on the current timestamp values.
+    Reads the file and calls Pairtree storage to load the file into the server for the bulk upload process.
+    """
+    log.debug("file_name:%s, file_path: %s" % (file_name, file_path))
 
-    """
-    print "file_name %s " % file_name
-    print "file_path %s " % file_path
     if file_name is None or file_path is None:
-        print "Either file_name or file_path is None"
+        log.error("Either file_name or file_path is None")
         return None
     utc_time = datetime.datetime.utcnow()
 
@@ -39,12 +40,17 @@ def upload_file_return_path(file_name=None,file_path=None):
     #uploaded_file_url = h.url_for('storage_file',label=label,qualified=True)
     uploaded_file_url = ofs.get_url(bucket_id,label)
 
-    log.info("uploaded_file_url: %s" % uploaded_file_url)
+    log.debug("uploaded_file_url: %s" % uploaded_file_url)
 
     return uploaded_file_url
 
 
 def delete_files(file_path, files_to_delete=None, ignore_files=None):
+    """
+    Deletes the files from the disk. If the bulk upload fails initial upload validation then uploaded files should be
+    deleted from the server. This function deletes the files under the provided file path and ignore any file if it
+    is part of the ignore file list.
+    """
 
     import os
     os.chdir(file_path)    
