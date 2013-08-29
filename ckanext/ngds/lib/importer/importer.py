@@ -1,3 +1,6 @@
+"""
+Responsible for handling bulk-upload process. Loads all the data required for
+"""
 from sqlalchemy.util import OrderedDict
 
 import ckan.model as model
@@ -46,6 +49,10 @@ class BulkUploader(object):
 
 
     def _loadclientconfig(self,config_path):
+        """
+        Loads the client config file which contains the details about server and api key for accessing the server
+        functions.
+        """
         import ConfigParser
         import os
         import urlparse
@@ -77,7 +84,10 @@ class BulkUploader(object):
 
     
     def _get_ckanclient(self):
-        #from ckanclient import CkanClient
+        """
+        Returns NGDS Ckan client.
+        """
+
         from ckanext.ngds.lib.client import NgdsCkanClient
 
         testclient = NgdsCkanClient(base_location=self.url, api_key=self.api_key)
@@ -113,7 +123,11 @@ class BulkUploader(object):
 
 
     def importpackagedata(self,bulk_upload_id,file_path=None,resource_dir=None,ckanclient=None):
-        #print "Entered Import Record Client:",file_path
+        """
+        This is an entry point for bulk upload of one record(bulk uploaded template). Loads the package details as
+        dict from xls file and loads them into CKAN. Each successfully loaded pacakges are referenced against bulk upload
+        record for tracking.
+        """
         from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
         from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
 
@@ -141,6 +155,9 @@ class BulkUploader(object):
                 raise
     
     def _create_bulk_upload_package(self,bulk_upload_id, package_name, package_title):
+        """
+        Creates DB entry in 'bulk_upload_package' table for linking bulk upload and uploaded package.
+        """
         log.debug("Create Bulk Upload Package: bid: %s pname: %s  ptitle: %s" % (bulk_upload_id, package_name, package_title))
         data = {'bulk_upload_id': bulk_upload_id, 'package_name': package_name, 'package_title': package_title}
         data_dict = {'model': 'BulkUpload_Package'}
@@ -231,6 +248,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
     @classmethod
     def responsible_party_2_id(self,name,email):
         """
+        TODO: Need
         """
 
         from ckan.model import ResponsibleParty
@@ -239,7 +257,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
 
         foundparties = (resparty.find(email)).all()
 
-        numberofResParties = len(foundparties)
+        numberofResParties = lenNee(foundparties)
 
         if numberofResParties == 0:
             raise Exception("Data Error: No responsible party is found with the given name %s and email %s " % (name,email))
@@ -253,7 +271,8 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
     @classmethod
     def validate_SD(self,model_type,sdValue):
         """
-
+        Validates whether any referenced data field exists in the Standing Data (Reference base table) table. If not
+        raises Exception.
         """
 
         #Call Model's validate method which will compare the sd value against the Standing data table.
@@ -271,7 +290,9 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
     @classmethod
     def validate_responsible_party(cls, field_name, email_string):
         """
-
+        Validates whether the input responsible party details already exists in the system.(Authors, maintainer and
+        distributor are considered as Responsible Parties). Authors is a multi-valued field, hence separated by comma.
+        If doesn't exist then raises validation Exception, otherwise returns the responsible party details as Json.
         """
 
         from ckanext.ngds.env import ckan_model
