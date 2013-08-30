@@ -1,5 +1,13 @@
 """
-Responsible for handling bulk-upload process. Loads all the data required for
+Responsible for handling bulk-upload process. Loads the data from xls file to a dictionary and calls loader process to
+create the pacakge in CKAN.
+
+As part of import from xls, all the fields which has the referenced data (predefined list of values for a field) are
+ validated and replaced with the valid keys expected by the system.
+
+Any user related information is loaded as Json in the combination of Name and Email of the user field( Author,Maintainer
+and Distributor).
+
 """
 from sqlalchemy.util import OrderedDict
 
@@ -168,9 +176,9 @@ class BulkUploader(object):
 
 
 class SpreadsheetDataRecords(DataRecords):
-    '''Takes SpreadsheetData and converts it its titles and
+    """Takes SpreadsheetData and converts it its titles and
     data records. Handles title rows and filters out rows of rubbish.
-    '''
+    """
     def __init__(self, spreadsheet_data, essential_title):
         assert isinstance(spreadsheet_data, spreadsheet_importer.SpreadsheetData), spreadsheet_data
         self._data = spreadsheet_data
@@ -178,6 +186,9 @@ class SpreadsheetDataRecords(DataRecords):
         self._first_record_row = self.find_first_record_row(self.last_titles_row_index + 1)     
 
     def find_titles(self, essential_title):
+        """
+        Finds the title row based on mandatory title field.These title values are the actual keys of the metadata.
+        """
         row_index = 0
         titles = []
         essential_title_lower = essential_title.lower()
@@ -192,6 +203,9 @@ class SpreadsheetDataRecords(DataRecords):
             row_index += 1
 
     def find_first_record_row(self, row_index_to_start_looking):
+        """
+        Finds the first record row based on the title row index.If no records found then raises exception.
+        """
         row_index = row_index_to_start_looking
         while True:
             if row_index >= self._data.get_num_rows():
@@ -207,7 +221,7 @@ class SpreadsheetDataRecords(DataRecords):
 
     @property
     def records(self):
-        '''Returns each record as a dict.'''
+        """Returns each record as a dict."""
         for row_index in range(self._first_record_row, self._data.get_num_rows()):
             row = self._data.get_row(row_index)
             row_has_content = False
@@ -232,6 +246,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
     @classmethod
     def license_2_license_id(self, license_title, logger=None):
         """
+        Gets the license ID based on the license description value. If doesn't exist then return empty.
         """
 
         # import is here, as it creates a dependency on ckan, which many importers won't want
@@ -248,7 +263,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
     @classmethod
     def responsible_party_2_id(self,name,email):
         """
-        TODO: Need
+        TODO: Need to remove this function.
         """
 
         from ckan.model import ResponsibleParty

@@ -4,6 +4,9 @@ from ckan.model import Session, Package
 from geoalchemy import WKTSpatialElement
 
 def get_package_ids_in_poly(coords,db_srid):
+	"""
+	TODO: This needs to be removed as spatial backend is changed to Solr.
+	"""
 	poly_template_str = ''
 	x = coords
 	i=0
