@@ -81,13 +81,22 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                             'tag': 'p',
                             'attributes': {
                                 'class': 'published',
-                                'text': "Published " + new Date(results[i]['metadata_created']).toLocaleDateString()
+                                'text': "Published " + (function (date_obj) {
+                                    var date = date_obj.getUTCDate();
+                                    var month = date_obj.getUTCMonth()+1;
+                                    var year = date_obj.getFullYear();
+                                    return ([month,date,year].join("/"));
+                                })(new Date(results[i]['metadata_created']))
                             }
                         }
                     ]
                 }
             ]
         };
+        if (i === 1) {
+            x = new Date(results[i]['metadata_created']);
+        }
+
         var dataset_resources = {
             'tag': 'div',
             'attributes': {
@@ -178,7 +187,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                                                        });
     }
     $('.results').before(reader);
-    x = $(".results").jScrollPane({contentWidth: '0px'});
 
     var inc = inc || (inc = 0);
     $(".wms").click(function (ev) {

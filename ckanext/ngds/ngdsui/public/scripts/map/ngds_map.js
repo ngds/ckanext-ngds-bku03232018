@@ -415,7 +415,6 @@ ngds.Map = {
 //            ngds.util.svg_crispify_post_process();
 
         geoJSONRepresentation.bindPopup(popup);
-        x = geoJSONRepresentation;
         this.add_to_layer([geoJSONRepresentation], 'geojson');
     },
     // Exposes a set of utility functions to work with the map.
