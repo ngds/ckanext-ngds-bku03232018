@@ -128,6 +128,7 @@ ngds.util.clear_map_state = function () {
     $(".results-text").remove();
     ngds.Map.zoom_handler.clear_listeners();
     ngds.Map.clear_layer('geojson');
+    ngds.util.state['map_features'] = []
 };
 
 ngds.util.get_n_chars = function (words_str, num_chars) {

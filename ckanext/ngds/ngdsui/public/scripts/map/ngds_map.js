@@ -73,27 +73,27 @@ ngds.Map = {
         }}); // Geo JSON Layer where we'll display all our features.
 
         var _drawControl = new L.Control.Draw({
-                                                  position: 'topleft',
-                                                  polyline: false,
-                                                  circle: false,
-                                                  marker: false,
-                                                  polygon: true
-                                              });
+            position: 'topleft',
+            polyline: false,
+            circle: false,
+            marker: false,
+            polygon: true
+        });
         map.addControl(_drawControl);
         var _drawnItems = ngds.Map.drawnItems = new L.LayerGroup();
         map.addLayer(_drawnItems);
 
 
         var zoom = new L.Control.Zoom({
-                                          'position': 'topright'
-                                      });
+            'position': 'topright'
+        });
 
         map.addControl(zoom);
 
         L.control.fullscreen({
-                                 position: 'topright',
-                                 title: 'Show me the fullscreen !'
-                             }).addTo(map);
+            position: 'topright',
+            title: 'Show me the fullscreen !'
+        }).addTo(map);
 
         this.layers = {
             'geojson': _geoJSONLayer,
@@ -143,45 +143,44 @@ ngds.Map = {
         map.addLayer(_geoJSONLayer);
 
         var placeMarker_single = L.Icon.Label.extend({
-                                                         options: {
-                                                             iconUrl: '',
-                                                             shadowUrl: null,
-                                                             iconSize: new L.Point(36, 36),
-                                                             iconAnchor: new L.Point(0, 1),
-                                                             labelAnchor: new L.Point(0, 0),
-                                                             wrapperAnchor: new L.Point(0, 13),
-                                                             labelClassName: 'placeMarks-label'
-                                                         }
-                                                     });
+            options: {
+                iconUrl: '',
+                shadowUrl: null,
+                iconSize: new L.Point(36, 36),
+                iconAnchor: new L.Point(0, 1),
+                labelAnchor: new L.Point(0, 0),
+                wrapperAnchor: new L.Point(0, 13),
+                labelClassName: 'placeMarks-label'
+            }
+        });
         var placeMarker_double = L.Icon.Label.extend({
-                                                         options: {
-                                                             iconUrl: '',
-                                                             shadowUrl: null,
-                                                             iconSize: new L.Point(36, 36),
-                                                             iconAnchor: new L.Point(0, 1),
-                                                             labelAnchor: new L.Point(5, 5),
-                                                             wrapperAnchor: new L.Point(12, 13),
-                                                             labelClassName: 'placeMarks-label'
-                                                         }
-                                                     });
+            options: {
+                iconUrl: '',
+                shadowUrl: null,
+                iconSize: new L.Point(36, 36),
+                iconAnchor: new L.Point(0, 1),
+                labelAnchor: new L.Point(5, 5),
+                wrapperAnchor: new L.Point(12, 13),
+                labelClassName: 'placeMarks-label'
+            }
+        });
         placeMarker_triple = L.Icon.Label.extend({
-                                                     options: {
-                                                         iconUrl: '',
-                                                         shadowUrl: null,
-                                                         iconSize: new L.Point(25, 41),
-                                                         iconAnchor: new L.Point(0, 0),
-                                                         labelAnchor: new L.Point(0, 0),
-                                                         wrapperAnchor: new L.Point(13, 41),
-                                                         labelClassName: 'placeMarks-label',
-                                                         popupAnchor: new L.Point(0, -33)
-                                                     }
-                                                 });
+            options: {
+                iconUrl: '',
+                shadowUrl: null,
+                iconSize: new L.Point(25, 41),
+                iconAnchor: new L.Point(0, 0),
+                labelAnchor: new L.Point(0, 0),
+                wrapperAnchor: new L.Point(13, 41),
+                labelClassName: 'placeMarks-label',
+                popupAnchor: new L.Point(0, -33)
+            }
+        });
         new L.Control.GeoSearch({
-                                    provider: new L.GeoSearch.Provider.OpenStreetMap(),
-                                    position: 'topright'
-                                }).addTo(map);
-        // this.initialize_controls();
-        // this.initialize_map_search();
+            provider: new L.GeoSearch.Provider.OpenStreetMap(),
+            position: 'topright'
+        }).addTo(map);
+
         ngds.publish("Map.loaded", { });
     },
     initialize_controls: function () {
@@ -224,10 +223,6 @@ ngds.Map = {
     ],
     map_search: function () {
         var me = this;
-        // this.removeZoomEventListeners();0
-        // this.bind_zoom_listeners();
-
-        // this.clear_layer('geojson');
         geoj = me.get_layer('drawnItems');
 
         var query = $("#map-query").val();
@@ -252,7 +247,6 @@ ngds.Map = {
                     $('.lmarker-' + label).css("height", "45px");
                     var span_elem = $('.lmarker-' + label).next();
                     span_elem.css("font-size", "14pt");
-                    // span_margin=span_elem.css("margin-left");
                     span_elem.css("margin-left", "2px");
                 }, function () { // fadeout
                     $('.lmarker-' + label).css("width", "25px");
@@ -312,7 +306,7 @@ ngds.Map = {
                             ngds.Map.state.shapes_map[shape_index].setStyle({weight: ngds.Map.state.shapes_map[shape_index].orig_weight, color: ngds.Map.state.shapes_map[shape_index].orig_color});
                         }
                     }
-                    // ngds.Map.state.sha=[];
+
                     // End of Reset steps
                     $('.result-' + label).css('background-color', '#dadada');
                     var shape = ngds.Map.state.shapes_map[label];
@@ -368,7 +362,6 @@ ngds.Map = {
             var dataset = ngds.ckandataset(result);
             var feature = dataset.getGeoJSON();
             var popup = dataset.map.getPopupHTML();
-
         }
         catch (e) {
             return;
@@ -411,11 +404,26 @@ ngds.Map = {
                 return marker;
             }
         });
-
-//            ngds.util.svg_crispify_post_process();
-
+        x = geoJSONRepresentation;
         geoJSONRepresentation.bindPopup(popup);
         this.add_to_layer([geoJSONRepresentation], 'geojson');
+
+        var perimeter = new ngds.Map.BoundingBox().store_raw(geoJSONRepresentation.getBounds()).get_perimeter();
+
+        var map_features = ngds.util.state['map_features'];
+        var i = 0;
+        for (i = 0; i <= map_features.length; i++) {
+            if (i === map_features.length) {
+                break;
+            }
+            if (perimeter < new ngds.Map.BoundingBox().store_raw(map_features[i].getBounds()).get_perimeter()) {
+                break;
+            }
+        }
+        map_features.splice(i, 0, geoJSONRepresentation);
+        for (var i = map_features.length - 1; i > -1; i--) {
+            map_features[i].bringToFront();
+        }
     },
     // Exposes a set of utility functions to work with the map.
     utils: {

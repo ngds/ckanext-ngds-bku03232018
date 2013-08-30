@@ -93,9 +93,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 }
             ]
         };
-        if (i === 1) {
-            x = new Date(results[i]['metadata_created']);
-        }
 
         var dataset_resources = {
             'tag': 'div',
@@ -187,6 +184,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                                                        });
     }
     $('.results').before(reader);
+    $(".results").jScrollPane({contentWidth: '0px'});
 
     var inc = inc || (inc = 0);
     $(".wms").click(function (ev) {
