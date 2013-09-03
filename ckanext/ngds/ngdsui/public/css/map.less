@@ -27,7 +27,7 @@
     padding: 0 10px;
 
     &:first-of-type {
-      margin-left:0px;
+      margin-left: 0px;
     }
   }
 
@@ -60,7 +60,7 @@
     margin-bottom: 0px;
     overflow: auto;
     height: 550px;
-    padding-bottom:0px;
+    padding-bottom: 0px;
 
     scrollbar-face-color: #000000;
     scrollbar-shadow-color: #2D2C4D;
@@ -382,4 +382,23 @@ div.red-marker:after {
 
 .leaflet-popup-pane .leaflet-popup a.leaflet-popup-close-button {
   color: black;
+}
+
+.leaflet-control-hidden {
+  width: 20px;
+  height: 50px;
+  background-color: transparent;
+  text-align: center;
+
+  .wrapper {
+    text-align:center;
+    background-color:transparent;
+
+    a {
+      display: block;
+      height: 15px;
+      width: 15px;
+      background-image: url(/vendor/Leaflet.Fullscreen/icon-fullscreen.png);
+    }
+  }
 }

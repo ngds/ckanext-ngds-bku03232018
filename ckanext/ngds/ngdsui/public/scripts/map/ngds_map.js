@@ -79,6 +79,7 @@ ngds.Map = {
             marker: false,
             polygon: true
         });
+
         map.addControl(_drawControl);
         var _drawnItems = ngds.Map.drawnItems = new L.LayerGroup();
         map.addLayer(_drawnItems);
@@ -94,6 +95,9 @@ ngds.Map = {
             position: 'topright',
             title: 'Show me the fullscreen !'
         }).addTo(map);
+
+        ngds.Map.mgr = new L.Control.Hidden();
+        ngds.Map.mgr.addTo(map);
 
         this.layers = {
             'geojson': _geoJSONLayer,
