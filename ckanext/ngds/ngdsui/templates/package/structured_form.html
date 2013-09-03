@@ -2,15 +2,15 @@
 <div class="gen structured-form">
       
       <div class="input-group">
-        <div class="sp-label"><label for="url">Link to resource</label></div>
+        <div class="sp-label"><label for="url">{{_('Link to resource')}}</label></div>
           <input type="text" name="url" id="url" class="structured-input"></input>
       <div class="input-group">
-        <div class="sp-label"><label for="name">Name</label></div>
+        <div class="sp-label"><label for="name">{{_('Name')}}</label></div>
         <input type="text" name="name" id="name" class="structured-input"></input>
       </div>
 
       <div class="input-group">
-        <div class="sp-label"><label for="content-model">Content Model</label></div>
+        <div class="sp-label"><label for="content-model">{{_('Content Model')}}</label></div>
         <select name="content_model" id="content_model" class="structured-input">
           <option value="None">None</option>
         </select>
@@ -23,12 +23,12 @@
       </div> -->
 
        <div class="input-group">
-        <div class="sp-label description-label-div"><label for="description">Description</label></div>
+        <div class="sp-label description-label-div"><label for="description">{{_('Description')}}</label></div>
         <textarea rows="4" cols="1" name="description" id="description" class="structured-input"></textarea>
       </div>
 
        <div class="input-group">
-        <div class="sp-label"><label for="format">Format</label></div>
+        <div class="sp-label"><label for="format">{{_('Format')}}</label></div>
         <input type="text" name="format" id="format" class="structured-input"></input>
       </div>
       <input type="hidden" name="id" value=""></input>
@@ -39,8 +39,8 @@
       {% endif %}
     </div> 
     <div class="form-actions">
-    <button type="submit" name="save" value="go-dataset">Previous Page</button>
-    <button type="submit" name="save" value="go-dataset">Save and Add Another</button>
-    <button type="submit" name="save" value="go-metadata">Additional Metadata</button>
+    <button type="submit" name="save" value="go-dataset">{{_('Previous Page')}}</button>
+    <button type="submit" name="save" value="go-dataset">{{_('Save and Add Another')}}</button>
+    <button type="submit" name="save" value="go-metadata">{{_('Additional Metadata')}}</button>
 </div>
   </div>

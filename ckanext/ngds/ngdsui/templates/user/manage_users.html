@@ -6,7 +6,7 @@
     <h2>{{_('USER MANAGEMENT')}}</h2>
     <table id="manage-users-table">
         <thead>
-            <tr class="heading"><th>Name</th><th>Username</th><th>Email</th><th>Role</th></tr>
+            <tr class="heading"><th>{{_('Name')}}</th><th>{{_('Username')}}</th><th>{{_('Email')}}</th><th>{{_('Role')}}</th></tr>
         </thead>
         <tbody>
         {% for user_id,user_name,email, role in c.members %}

@@ -31,7 +31,7 @@ def dispatch(context, data_dict):
     elif request_model == "DocumentIndex":
         controller = DocumentIndexController(context)
     else:
-        raise toolkit.ValidationError({}, "Please supply a 'model' attribute in the POST body. Value can be one of: BulkUpload")
+        raise toolkit.ValidationError({}, "Please supply a 'model' attribute in the POST body. Value can be one of: BulkUpload,BulkUpload_Package,StandingData,UserSearch,DocumentIndex")
     
     # execute method inspects POST body and runs the correct functions
     return controller.execute(data_dict)

@@ -11,7 +11,9 @@ and Distributor).
 """
 from sqlalchemy.util import OrderedDict
 
-import ckan.model as model
+#import ckan.model as model
+from ckan.plugins import toolkit
+from ckanext.ngds.env import ckan_model
 from ckanext.importlib.importer import *
 import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
@@ -73,7 +75,7 @@ class BulkUploader(object):
                 #print "self.url: ",self.url
                 if self.url =='':
                         #print "API URL is None so can't proceed further"
-                        raise Exception ("Unable to find API URL or URL is empty")
+                        raise Exception(toolkit._("Unable to find API URL or URL is empty"))
                 self.parsed = urlparse.urlparse(self.url)
                 newparsed = list(self.parsed)
                 self.netloc = self.parsed.netloc            
@@ -82,13 +84,13 @@ class BulkUploader(object):
                     self.api_key = cfgparser.get(section, 'api_key', '')                
                     if self.api_key =='':
                         #print "API URL is None so can't proceed further"
-                        raise Exception ("Unable to find API key or API key is empty.")                        
+                        raise Exception(toolkit._("Unable to find API key or API key is empty."))
             else:                        
-                raise Exception ("Unable to find API URL or URL is empty")
+                raise Exception(toolkit._("Unable to find API URL or URL is empty"))
 
         else:
             #print "Unable to find the client configuration file."
-            raise Exception ("Unable to find the client config file.")
+            raise Exception(toolkit._("Unable to find the client config file."))
 
     
     def _get_ckanclient(self):
@@ -109,7 +111,7 @@ class BulkUploader(object):
         """        
         import os
         log.debug("entering execute_bulk_upload")
-        query = model.BulkUpload.search("VALID")
+        query = ckan_model.BulkUpload.search("VALID")
 
         for bulk_upload_record in query.all():
 
@@ -171,7 +173,7 @@ class BulkUploader(object):
         data_dict = {'model': 'BulkUpload_Package'}
         data_dict['data'] = data
         data_dict['process'] = 'create'
-        context = {'model': model, 'session': model.Session}   
+        context = {'model': ckan_model, 'session': ckan_model.Session}
         trans_dispatch(context, data_dict)
 
 
@@ -194,7 +196,7 @@ class SpreadsheetDataRecords(DataRecords):
         essential_title_lower = essential_title.lower()
         while True:
             if row_index >= self._data.get_num_rows():
-                raise ImportException('Could not find title row')
+                raise ImportException(toolkit._('Could not find title row'))
             row = self._data.get_row(row_index)
             if essential_title in row or essential_title_lower in row:
                 for row_val in row:
@@ -209,7 +211,7 @@ class SpreadsheetDataRecords(DataRecords):
         row_index = row_index_to_start_looking
         while True:
             if row_index >= self._data.get_num_rows():
-                raise ImportException('Could not find first record row')
+                raise ImportException(toolkit._('Could not find first record row'))
             row = self._data.get_row(row_index)
 
             if not (u'<< Datasets Displayed Below' in row or\
@@ -266,19 +268,17 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         TODO: Need to remove this function.
         """
 
-        from ckan.model import ResponsibleParty
-
-        resparty = ResponsibleParty()
+        resparty = ckan_model.ResponsibleParty()
 
         foundparties = (resparty.find(email)).all()
 
-        numberofResParties = lenNee(foundparties)
+        numberofResParties = len(foundparties)
 
         if numberofResParties == 0:
-            raise Exception("Data Error: No responsible party is found with the given name %s and email %s " % (name,email))
+            raise Exception(toolkit._("Data Error: No responsible party is found with the given name %s and email %s ") % (name, email))
             #Need to add this person into Responsible Party details.
         elif numberofResParties > 1:
-            raise Exception("Data Error: More than one responsible party is found with the given name %s and email %s " % (name,email))
+            raise Exception(toolkit._("Data Error: More than one responsible party is found with the given name %s and email %s ") % (name, email))
         else:
             log.debug("Found Party ID: %s",numberofResParties[0].id)
             return numberofResParties[0].id
@@ -291,14 +291,13 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         """
 
         #Call Model's validate method which will compare the sd value against the Standing data table.
-        from ckanext.ngds.env import ckan_model
 
         sdObject = ckan_model.StandingData()
 
         validated_value = sdObject.validate(model_type, sdValue)
 
         if validated_value is None:
-            raise Exception("Data Error: No Standing data matching the input - %s for the type - %s" % (sdValue,model_type)) 
+            raise Exception(toolkit._("Data Error: No Standing data matching the input - %s for the type - %s") % (sdValue,model_type))
         else:
             return validated_value
 
@@ -315,7 +314,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
         email_list = [x.strip() for x in str(email_string).split(',') if x.strip()]
 
         if len(email_list) > 1 and field_name.lower() != 'authors':
-            raise Exception("Data Error: %s can not have more than one person" % field_name)
+            raise Exception(toolkit._("Data Error: %s can not have more than one person") % field_name)
 
         party_list = []
 
@@ -329,7 +328,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                 user_dict['email'] = returned_party[0].email
                 party_list.append(user_dict)
             else:
-                raise Exception("Responsible party with email: %s not found in the system. Please add either manually or use loader script." % email)
+                raise Exception(toolkit._("Responsible party with email: %s not found in the system. Please add either manually or use loader script.") % email)
 
         import json
         if field_name.lower() == 'authors':
@@ -354,7 +353,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
              'resources':[{'url':'http://static.wikipedia.org/'}]}
         '''
 
-        standard_fields = model.Package.get_fields()
+        standard_fields = ckan_model.Package.get_fields()
 
         pkg_fs_dict = OrderedDict()
         for title, cell in pkg_xl_dict.items():
@@ -396,7 +395,7 @@ class NGDSPackageImporter(spreadsheet_importer.SpreadsheetPackageImporter):
                         num_new_resources = 1 + res_index - len(resources)
                         for i in range(num_new_resources):
                             blank_dict = OrderedDict()
-                            for blank_field in model.Resource.get_columns(extra_columns=False):
+                            for blank_field in ckan_model.Resource.get_columns(extra_columns=False):
                                 blank_dict[blank_field] = u''
                             pkg_fs_dict['resources'].append(blank_dict)
 

@@ -1,6 +1,11 @@
 import ckanext.ngds.contentmodel.model.contentmodels
 import datetime
 
+import ckan.plugins.toolkit as toolkit
+import logging
+
+log = logging.getLogger(__name__)
+
 def isNumber(s):
     """
     Checking if a String is a Number
@@ -32,7 +37,7 @@ def isDate_Long(s):
         timestamp = datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
         return True
     except ValueError as e:
-        print e
+        log.error(e)
         pass
     return False
 # def isDate_Long(s)
@@ -42,7 +47,7 @@ def isDate_Short(s):
         timestamp = datetime.datetime.strptime(s, "%Y-%m-%d")
         return True
     except ValueError as e:
-        print e
+        log.error(e)
         pass
     return False
 # def isDate_Short(s)
@@ -60,7 +65,7 @@ class Error_Message:
     row = 0
     col = 0
     Types = enum('columnNameDoesntExist', 'nonOptionalCellEmpty', 'integerCellViolation', 'numericCellViolation', 'dateCellViolation', 'columnNameOptionalFalseMissing', 'systemError')    
-    def __init__(self, row, col, Types, messge):
+    def __init__(self, row, col, Types, message):
         self.row = row
         self.col = col
         self.errorType = Types
@@ -88,7 +93,7 @@ class ContentModel_FieldInfoCell(object):
 # class ContentModel_FieldInfoCell(object)
 
 def validate_header(fieldModelList, dataHeaderList, dataListList):
-    print "about to start header checking"
+    log.debug("about to start header checking")
     
     validation_messages = []
     # build link between dataHeaderList and fieldInfoList
@@ -99,38 +104,38 @@ def validate_header(fieldModelList, dataHeaderList, dataListList):
             index = [i for i, field in enumerate(fieldModelList) if field.name == header]
             linkToFieldInfoFromHeader.append(index[0])
         except:
-            msg = "header: %s could NOT be found in the field_info" %(header)
+            msg = toolkit._("header: %s could NOT be found in the field_info") % header
             print msg
             validation_messages.append({'row':0, 'col':0, 'errorType': 'columnNameDoesntExist', 'message':msg})
-    print "linkToFieldInfoFromHeader"
-    print linkToFieldInfoFromHeader
-    print "about to finish header checking"
+
+    log.debug("about to finish header checking. linkToFieldInfoFromHeader: %s" % linkToFieldInfoFromHeader)
+
     return validation_messages
 # def validate_header(fieldModelList, dataHeaderList, dataListList)
 
 def validate_detectMissingColumn(fieldModelList, dataHeaderList):
-    print "about to start missing columns checking"
+    log.debug("about to start missing columns checking")
     
     validation_messages = []
     for field in fieldModelList:
-        print field.name, field.optional
+        #print field.name, field.optional
         if field.optional == False:
             try:
                 index = [i for i, header in enumerate(dataHeaderList) if field.name == header]
                 if len(index) == 0:
-                    msg = "header: %s could NOT be found in the CSV file" %(field.name)
-                    print msg
+                    msg = toolkit._("header: %s could NOT be found in the CSV file") % field.name
+                    log.error(msg)
                     validation_messages.append({'row':0, 'col':0, 'errorType': 'columnNameDoesntExist', 'message':msg})
             except:
-                msg = "header: %s could NOT be found in the CSV file" %(field.name)
-                print msg
+                msg = toolkit._("header: %s could NOT be found in the CSV file") % field.name
+                log.error(msg)
                 validation_messages.append({'row':0, 'col':0, 'errorType': 'columnNameDoesntExist', 'message':msg})
-    print "about to finish missing columns checking"
+    log.debug("about to finish missing columns checking")
     return validation_messages
 # def validate_detectMissingColumn(fieldModelList, dataHeaderList):
 
 def validate_existence(fieldModelList, dataHeaderList, dataListList):
-    print "about to start field existence checking"
+    log.debug("about to start field existence checking")
     
     validation_messages = []
     # build link between dataHeaderList and fieldInfoList
@@ -150,29 +155,28 @@ def validate_existence(fieldModelList, dataHeaderList, dataListList):
                 OptionalFalseIndex.append(i)
         except:
             pass
-    print "OptionalFalseIndex:"
-    print OptionalFalseIndex
+    log.debug("OptionalFalseIndex: %s" % OptionalFalseIndex)
     
     for jd in xrange(len(dataListList)):
         for i in xrange(len(OptionalFalseIndex)):
             data = dataListList[jd][OptionalFalseIndex[i]]
             if (len(data)==0) or (data.isspace()):
                 if   len(data) == 0:
-                    msg = "cell (%d,%d): null (field %s) is defined as optional false" %(jd+2, i+1,       dataHeaderList[OptionalFalseIndex[i]])
+                    msg = toolkit._("cell (%d,%d): null (field %s) is defined as optional false") % (jd+2, i+1, dataHeaderList[OptionalFalseIndex[i]])
                 elif data.isspace():
-                    msg = "cell (%d,%d): '%s' (field %s) is defined as optional false" %(jd+2, i+1, data, dataHeaderList[OptionalFalseIndex[i]])
+                    msg = toolkit._("cell (%d,%d): '%s' (field %s) is defined as optional false") % (jd+2, i+1, data, dataHeaderList[OptionalFalseIndex[i]])
                 print msg
                 validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'nonOptionalCellEmpty', 'message':msg})
 
         if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             break
 
-    print "about to finish field existence checking"
+    log.debug("about to finish field existence checking")
     return validation_messages
 # def validate_existence(fieldModelList, dataHeaderList, dataListList)
 
 def validate_numericType(fieldModelList, dataHeaderList, dataListList):
-    print "about to start numeric data type checking"
+    log.debug("about to start numeric data type checking")
     
     validation_messages = []
     # build link between dataHeaderList and fieldInfoList
@@ -195,10 +199,8 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
                 DoubleTypeIndex.append(i)
         except:
             pass
-    print "IntTypeIndex:"
-    print IntTypeIndex
-    print "DoubleTypeIndex:"
-    print DoubleTypeIndex
+
+    log.debug("IntTypeIndex: %s and DoubleTypeIndex: %s" % (IntTypeIndex, DoubleTypeIndex))
     
     for jd in xrange(len(dataListList)):
         # check the int type
@@ -206,8 +208,8 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
             data = dataListList[jd][IntTypeIndex[i]]
             if isInteger(data) == False:
                 if len(data) > 0:
-                    msg = "cell (%d,%d): %s (field %s) is expected to be an Integer"   %(jd+2, i+1, data, dataHeaderList[IntTypeIndex[i]])
-                    print msg
+                    msg = toolkit._("cell (%d,%d): %s (field %s) is expected to be an Integer") % (jd+2, i+1, data, dataHeaderList[IntTypeIndex[i]])
+                    log.debug(msg)
                     validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'integerCellViolation', 'message':msg})
 
         # check the double type
@@ -215,19 +217,19 @@ def validate_numericType(fieldModelList, dataHeaderList, dataListList):
             data = dataListList[jd][DoubleTypeIndex[i]]
             if isNumber(data) == False:
                 if len(data) > 0:
-                    msg = "cell (%d,%d): %s (field %s) is expected to be a Numeric"   %(jd+2, i+1, data, dataHeaderList[DoubleTypeIndex[i]])
-                    print msg
+                    msg = toolkit._("cell (%d,%d): %s (field %s) is expected to be a Numeric") % (jd+2, i+1, data, dataHeaderList[DoubleTypeIndex[i]])
+                    log.debug(msg)
                     validation_messages.append({'row':jd+2, 'col':i+1, 'errorType': 'numericCellViolation', 'message':msg})
 
         if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             break
 
-    print "about to finish field numeric checking"
+    log.debug("about to finish field numeric checking")
     return validation_messages
 # def validate_numericType(fieldModelList, dataHeaderList, dataListList)
 
 def validate_dateType(fieldModelList, dataHeaderList, dataListList):
-    print "about to start date data type checking"
+    log.debug("about to start date data type checking")
     
     validation_messages = []
     # build link between dataHeaderList and fieldInfoList
@@ -247,8 +249,7 @@ def validate_dateType(fieldModelList, dataHeaderList, dataListList):
                 DateTypeIndex.append(i)
         except:
             pass
-    print "DateTypeIndex:"
-    print DateTypeIndex
+    log.debug("DateTypeIndex: %s " % DateTypeIndex)
 
     for jd in xrange(len(dataListList)):
         # check the int type
@@ -256,14 +257,14 @@ def validate_dateType(fieldModelList, dataHeaderList, dataListList):
             data = dataListList[jd][DateTypeIndex[i]]
             if isDate(data) == False:
                 if len(data) > 0:
-                    msg = "cell (%d,%d): %s (field %s) is expected to be a ISO 1861 Format datetime"   %(jd+2, DateTypeIndex[i]+1, data, dataHeaderList[DateTypeIndex[i]])
+                    msg = toolkit._("cell (%d,%d): %s (field %s) is expected to be a ISO 1861 Format datetime") % (jd+2, DateTypeIndex[i]+1, data, dataHeaderList[DateTypeIndex[i]])
                     print msg
                     validation_messages.append({'row':jd+2, 'col':DateTypeIndex[i]+1, 'errorType': 'dateCellViolation', 'message':msg})
             
         if len(validation_messages) > ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
             break
 
-    print "about to finish field datetime checking"
+    log.debug("about to finish field datetime checking")
     return validation_messages
 # def validate_dateType(fieldModelList, dataHeaderList, dataListList)
 

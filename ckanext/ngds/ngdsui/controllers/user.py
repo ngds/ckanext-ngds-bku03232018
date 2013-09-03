@@ -2,19 +2,16 @@
 Manage rendering of user-management pages, creation of users and roles, management of users and roles, and functionality for the system administrator.
 """
 from ckan.lib.base import *
-from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
+from ckan.lib.navl.dictization_functions import unflatten
 from ckan.lib.base import (request,
                            render,
                            model,
                            abort, h, g, c)
 from ckan.logic import get_action, check_access
-from ckan.logic import (tuplize_dict,
-                        clean_dict,
-                        parse_params,
-                        flatten_to_string_key)
-from pylons import config
+from ckan.logic import (tuplize_dict, clean_dict, parse_params)
+
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
-from ckan.logic import NotFound, NotAuthorized, ValidationError
+from ckan.logic import NotAuthorized
 from ckanext.ngds.ngdsui.misc import helpers
 
 

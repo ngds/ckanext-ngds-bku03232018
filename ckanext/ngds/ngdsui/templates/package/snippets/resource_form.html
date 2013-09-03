@@ -41,13 +41,13 @@
         &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-structured" class="resource_type" name="resource_format" value="structured"/>
           {% endif %}
 
-        <label for="resource_type-structured" id="resource_type-structured-label">Structured resource</label><br>
+        <label for="resource_type-structured" id="resource_type-structured-label">{{ _('Structured resource') }}</label><br>
           {% if data['resource_format'] %}
           &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" />
           {% else %}
           &nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="resource_type-unstructured" class="resource_type" name="resource_format" value="unstructured" />
           {% endif %}
-        <label for="resource_type-unstructured" id="resource_type-unstructured-label">Unstructured resource</label>
+        <label for="resource_type-unstructured" id="resource_type-unstructured-label">{{ _('Unstructured resource') }}</label>
       </div>
 
       <div class="radio-section">
@@ -56,7 +56,7 @@
         {% else %}
           <input type="radio" id="data-service" name="resource_format" value="data-service" />
         {% endif %}
-        <label for="data-service">Link to a data service</label>
+        <label for="data-service">{{ _('Link to a data service') }}</label>
       </div>
 
       <div class="radio-section">
@@ -65,7 +65,7 @@
          {% else %}
          <input type="radio" id="offline-resource" name="resource_format" value="offline-resource" />
           {% endif %}
-        <label for="offline-resource">Offline resource</label>
+        <label for="offline-resource">{{ _('Offline resource') }}</label>
       </div>
       {% if data['id'] %}
         <input type="hidden" name="id" value="{{data['id']}}" />
@@ -91,10 +91,10 @@
     {% endblock %}
     
         {% block previous_button %}
-        <button type="submit" name="save" value="go-dataset">Previous Page</button>
+        <button type="submit" name="save" value="go-dataset">{{ _('Previous Page') }}</button>
         {% endblock %}
         {% block again_button %}
-        <button type="submit" name="save" value="again">Save and Add Another</button>
+        <button type="submit" name="save" value="again">{{ _('Save and Add Another') }}</button>
         {% endblock %}
         <button type="button" class="{% block pull_right %}{% endblock %}" id="go-metadata">{% block save_button_text %}{{ _('Next: Additional Metadata') }}{% endblock %}</button>
         <!-- <button type="button" name="save" value="go-metadata">Additional Metadata</button> -->

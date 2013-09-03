@@ -42,14 +42,14 @@ class Layer(object):
             })
         else:
             # The resource cannot be spatialized
-            raise Exception("Only CSV and Shapefile data can be spatialized")
+            raise Exception(toolkit._("Only CSV and Shapefile data can be spatialized"))
 
         self.data = cls(**kwargs)
 
         # Spatialize
         if not self.data.publish():
             # Spatialization failed
-            raise Exception("Spatialization failed.")
+            raise Exception(toolkit._("Spatialization failed."))
     '''
     def returnGeomExtent(self):
         url = self.file_resource["url"]
@@ -116,7 +116,7 @@ class Layer(object):
             )
 
             if not 200 <= response_headers.status < 300:
-                raise Exception("Geoserver layer creation failed: %i -- %s" % (response_headers.status, response))
+                raise Exception(toolkit._("Geoserver layer creation failed: %i -- %s") % (response_headers.status, response))
 
             layer = self.geoserver.get_layer(self.name)
 

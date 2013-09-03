@@ -1,7 +1,11 @@
 from ckanext.ngds.env import ckan_model
 from ckan.plugins import toolkit
 from ckan.logic import NotFound
+
 def is_spatialized(resource):
+    """
+    Checks whether given resource is already spatialized. If spatialized returns True otherwise False.
+    """
     spatialized = False
     resource_id = resource['id']
     package_id=ckan_model.Resource.get(resource_id).resource_group.package_id

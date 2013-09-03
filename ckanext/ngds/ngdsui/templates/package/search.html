@@ -21,7 +21,7 @@
             <fieldset>
                 <span class=" search-giant">
                   <input type="text" class="search" name="q" value="{{ c.q }}" autocomplete="off" placeholder="Search...">
-                  <button type="submit" value="Search">Submit</button>
+                  <button type="submit" value="Search">{{_('Submit')}}</button>
                 </span>
             </fieldset>
         
@@ -54,7 +54,7 @@
             {{ h.snippet('snippets/sort_by.html', sort=c.sort_by_selected) }}
           </div>   
           <div id="date-filter">
-              <label >Date Range</label>
+              <label >{{_('Date Range')}}</label>
               <input type="text"  id="from-date"/>
               <label >to</label>
               <input type="text"  id="to-date"/>
@@ -64,7 +64,7 @@
           {% if c.user %}
           <div id="save-block">
              <div id="dialog-form" title="Save Search">
-                <label for="search_name">Name</label>
+                <label for="search_name">{{_('Name')}}</label>
                 <input type="text" id="search_name" class="text ui-widget-content ui-corner-all" />
              </div>
             <div id="save-list">

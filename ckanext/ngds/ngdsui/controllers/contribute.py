@@ -14,13 +14,10 @@ from pylons import config
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 import ckanext.ngds.lib.importer.helper as import_helper
 from ckan.controllers.package import PackageController
-from ckan.controllers.storage import StorageController, StorageAPIController
 from pylons.decorators import jsonify
-import json
 import os
 import shutil
 import zipfile
-import os.path
 from ckan.plugins import toolkit
 import ckanext.ngds.lib.importer.validator as ngdsvalidator
 from ckanext.ngds.ngdsui.misc.helpers import process_resource_docs_to_index
@@ -90,7 +87,7 @@ class ContributeController(NGDSBaseController):
 
         if datasetfile == "":
             #raise Exception (_("Data file can't be empty."))
-            abort(500, _("Data file can't be empty."))
+            abort(500, toolkit._("Data file can't be empty."))
 
         datafilename = datasetfile.filename
 
@@ -147,10 +144,10 @@ class ContributeController(NGDSBaseController):
                                                     resource_list=resource_list)
             validator.validate()
             status = "VALID"
-            h.flash_notice(_('Files Uploaded Successfully.'), allow_html=True)
+            h.flash_notice(toolkit._('Files Uploaded Successfully.'), allow_html=True)
         except Exception, e:
             err_msg = e.__str__()
-            h.flash_error(_('Uploaded files are invalid.: "%s" ' % err_msg), allow_html=True)
+            h.flash_error(toolkit._('Uploaded files are invalid.: %s ') % err_msg, allow_html=True)
             status = "INVALID"
 
         return status, err_msg
@@ -220,7 +217,7 @@ class ContributeController(NGDSBaseController):
         try:
             check_access('package_create', context, None)
         except NotAuthorized, error:
-            err_str = _('User %s not authorized to access bulk uploads') % c.user
+            err_str = toolkit._('User %s not authorized to access bulk uploads') % c.user
             #abort(401,error.__str__())    
             abort(401, err_str)
 
@@ -245,7 +242,7 @@ class ContributeController(NGDSBaseController):
         try:
             check_access('package_create', context, None)
         except NotAuthorized, error:
-            err_str = _('User %s not authorized to access bulk uploads') % c.user
+            err_str = toolkit._('User %s not authorized to access bulk uploads') % c.user
             #abort(401,error.__str__())    
             abort(401, err_str)
 
@@ -275,7 +272,7 @@ class ContributeController(NGDSBaseController):
         bulkLoader = BulkUploader()
         bulkLoader.execute_bulk_upload()
 
-        h.flash_notice(_('Initiated Bulk Upload process and it is running in the background.'), allow_html=True)
+        h.flash_notice(toolkit._('Initiated Bulk Upload process and it is running in the background.'), allow_html=True)
         url = h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController',
                         action='bulkupload_list')
         redirect(url)
@@ -309,10 +306,8 @@ class ContributeController(NGDSBaseController):
         result = toolkit.get_action('validate_dataset_metadata')(None, data)
         vars = {"data": data}
         if result['success'] == True:
-            print "id  : ", data["pkg_name"]
             return PackageController().new_metadata(id=data['pkg_name'])
         else:
-            print "In the else part .. oh oh oh"
             vars["errors"] = result["errors"]
             return render('package/new_package_metadata.html', extra_vars=vars)
 

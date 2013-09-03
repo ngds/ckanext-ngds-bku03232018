@@ -20,7 +20,7 @@ import ckan.lib.dictization.model_dictize as model_dictize
 from ckanext.ngds.ngdsui.misc import helpers
 
 from pylons.decorators import jsonify
-from ckan.lib.base import config
+
 import ckan.rating as rating
 
 class HomeController(NGDSBaseController):
@@ -46,7 +46,6 @@ class HomeController(NGDSBaseController):
 
 
         c.image_files = helpers.get_home_images()
-        print "image_files: ", c.image_files
 
         return render('home/index_ngds.html')
 

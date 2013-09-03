@@ -5,11 +5,14 @@ fields and date field)
 
 import ckanext.ngds.lib.importer.importer as ngds_importer
 import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
+from ckan.plugins import toolkit
 
 referenced_keys = ('category','status','topic','protocol')
 
 date_keys = ('publication_date')
 mandatory_keys = ('name','title')
+
+log = __import__("logging").getLogger(__name__)
 
 class BasicLogger:
     def __init__(self):
@@ -62,7 +65,7 @@ class NGDSValidator(object):
         validates the value of each cell to check whether it is valid date format.  
         If one of the fields are not valid date format then throws exception.
         """
-        print "validating date fields."
+        log.debug("validating date fields.")
         import datetime
         import xlrd
 
@@ -81,7 +84,7 @@ class NGDSValidator(object):
                         date_tuple = xlrd.xldate_as_tuple(cell, self.xl_data._book.datemode)
                         value = datetime.date(*date_tuple[:3])
             except Exception, e:
-                raise Exception("Invalid date value: '%s' for the field: %s" % (cell, title))
+                raise Exception(toolkit._("Invalid date value: '%s' for the field: %s") % (cell, title))
 
     def _validate_mandatory_field(self):
 
@@ -89,12 +92,12 @@ class NGDSValidator(object):
         Iterates through the list of mandatory columns and if any of the records missing 
         the value then throws exception.
         """
-        print "validating mandatory fields."
+        log.debug("validating mandatory fields.")
         for col_index,title in self.mandatory_keys_pos:
             mandatory_column = self.xl_data.sheet.col_values(col_index,
                 start_rowx=self.first_record_index)
             if not all(cell for cell in mandatory_column):
-                raise Exception("Mandatory field '%s' can't be empty." % title)
+                raise Exception(toolkit._("Mandatory field '%s' can't be empty.") % title)
 
     def _validate_resources_tobe_uploaded(self):
 
@@ -103,7 +106,7 @@ class NGDSValidator(object):
         resources are referenced against the package. If not throws an exception.
         """
 
-        print "validating the resources to be uploaded."
+        log.debug("validating the resources to be uploaded.")
 
         upload_field_list = []
         for col_index,title in self.upload_file_pos:
@@ -115,14 +118,14 @@ class NGDSValidator(object):
         if self._resource_list:
             for resource in self._resource_list:
                 if resource not in upload_field_list:
-                    raise Exception("Uploaded resource %s is not referenced against any dataset."%resource)
+                    raise Exception(toolkit._("Uploaded resource %s is not referenced against any dataset.") % resource)
                     
             if len(upload_field_list) > len(self._resource_list):
-                raise Exception("Referenced resources are not uploaded.")                    
+                raise Exception(toolkit._("Referenced resources are not uploaded."))
 
         else:
             if len(upload_field_list) > 0 :
-                raise Exception("Referenced resources are not uploaded.")
+                raise Exception(toolkit._("Referenced resources are not uploaded."))
         
     def find_column_pos(self):
         """

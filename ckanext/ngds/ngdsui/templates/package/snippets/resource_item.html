@@ -23,9 +23,9 @@
     {% if h.is_plugin_enabled('geoserver') %}
       {% if h.is_ogc_publishable(res.id) %}
         {% if h.is_spatialized(res)==True %}
-         <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">Unpublish as OGC</button>
+         <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }}">{{ _('Unpublish as OGC') }}</button>
         {% else %}
-           <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish as OGC</button>
+           <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">{{ _('Publish as OGC') }}</button>
         {% endif %}
       {% endif %}
     {% endif %}

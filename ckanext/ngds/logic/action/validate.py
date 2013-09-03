@@ -3,6 +3,7 @@ from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty
 import ast
 from ckan.model import meta
 from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
+from ckan.plugins import toolkit
 
 
 def validate_dataset_metadata(context, data):
@@ -16,7 +17,6 @@ def validate_dataset_metadata(context, data):
     check_existence(data, errors)
 
     if len(errors) > 0:
-        print "errors present"
         return {
             "success": False,
             'errors': errors,
@@ -62,14 +62,14 @@ def validate_structured_resource(data):
     if not data['url'] or len(data['url']) < 3:
         errors.append({
             'field': 'url',
-            'message': 'Resource URL is a mandatory parameter',
+            'message': toolkit._('Resource URL is a mandatory parameter'),
             'ref': 'form_validation'
         })
 
     if 'name' not in data or len(data['name']) == 0:
         errors.append({
             'field': 'name',
-            'message': 'Name must be non-empty',
+            'message': toolkit._('Name must be non-empty'),
             'ref': 'form_validation'
         })
     url = data['url']
@@ -92,13 +92,13 @@ def validate_structured_resource(data):
             'success': False,
             'messages': cm_validation_results['messages'],
             'ref': 'content_model_validation_error',
-            'display': 'Content Model Validation Errors'
+            'display': toolkit._('Content Model Validation Errors')
         }
 
     if len(errors) > 0:
         return {
             'success': False,
-            'display': 'Validation Errors',
+            'display': toolkit._('Validation Errors'),
             'type': 'resource_form_validation_error',
             'messages': errors
         }
@@ -115,19 +115,19 @@ def validate_unstructured_resource(data):
     if 'url' not in data or len(data['url']) < 3:
         errors.append({
             'field': 'url',
-            'message': 'Resource URL is a mandatory parameter'
+            'message': toolkit._('Resource URL is a mandatory parameter')
         })
 
     if 'name' not in data or len(data['name']) == 0:
         errors.append({
             'field': 'name',
-            'message': 'Name must be non-empty'
+            'message': toolkit._('Name must be non-empty')
         })
 
     if len(errors) > 0:
         return {
             'success': False,
-            'display': 'Validation Errors',
+            'display': toolkit._('Validation Errors'),
             'type': 'resource_form_validation_error',
             'messages': errors
         }
@@ -144,30 +144,30 @@ def validate_data_service(data):
     if 'url' not in data or len(data['url']) < 3:
         errors.append({
             'field': 'url',
-            'message': 'Resource URL is a mandatory parameter'
+            'message': toolkit._('Resource URL is a mandatory parameter')
         })
 
     if 'name' not in data or len(data['name']) == 0:
         errors.append({
             'field': 'name',
-            'message': 'Name must be non-empty'
+            'message': toolkit._('Name must be non-empty')
         })
 
     if 'protocol' not in data or len(data['protocol']) == 0:
         errors.append({
             'field': 'protocol',
-            'message': 'Protocol must be non-empty'
+            'message': toolkit._('Protocol must be non-empty')
         })
 
     if 'layer' not in data or len(data['layer']) == 0:
         errors.append({
             'field': 'layer',
-            'message': 'Layer must be non-empty'
+            'message': toolkit._('Layer must be non-empty')
         })
 
     if len(errors) > 0:
         return {
-            'display': 'Validation Errors',
+            'display': toolkit._('Validation Errors'),
             'type': 'resource_form_validation_error',
             'success': False,
             'messages': errors
@@ -185,18 +185,18 @@ def validate_offline_resource(data):
     if 'name' not in data or len(data['name']) == 0:
         errors.append({
             'field': 'name',
-            'message': 'Name must be non-empty'
+            'message': toolkit._('Name must be non-empty')
         })
 
     if 'ordering_procedure' not in data or len(data['ordering_procedure']) == 0:
         errors.append({
             'field': 'ordering_procedure',
-            'message': 'Ordering Procedure must be non-empty'
+            'message': toolkit._('Ordering Procedure must be non-empty')
         })
 
     if len(errors) > 0:
         return {
-            'display': 'Validation Errors',
+            'display': toolkit._('Validation Errors'),
             'type': 'resource_form_validation_error',
             'success': False,
             'messages': errors
@@ -209,7 +209,7 @@ def validate_offline_resource(data):
 
 def check_existence(data, collector):
     if not "extras" in data:
-        collector["extras"] = "No extras specified"
+        collector["extras"] = toolkit._("No extras specified")
         if 'spatial' in data['extras']:
             if data['extras']['spatial'] == "" or data['extras']['spatial'] == None or data['extras'][
                 'spatial'] == "null":
@@ -217,16 +217,16 @@ def check_existence(data, collector):
         return collector
 
     if not is_valid_maintainer(data):
-        collector['maintainer'] = "Maintainer must be specified"
+        collector['maintainer'] = toolkit._("Maintainer must be specified")
 
     if not valid_extra("uri", data['extras'], lambdafn=lambda val: len(val) > 4):
-        collector['uri'] = "URI must be specified"
+        collector['uri'] = toolkit._("URI must be specified")
 
     if not valid_extra("status", data['extras'], lambdafn=lambda val: val in ["Completed", "Ongoing", "Deprecated"]):
-        collector['status'] = "Status must be specified"
+        collector['status'] = toolkit._("Status must be specified")
 
     if not is_valid_authors_list(data):
-        collector['authors'] = "At least one author must be specified"
+        collector['authors'] = toolkit._("At least one author must be specified")
 
     return collector
 
@@ -240,7 +240,7 @@ def get_extra(key, extras):
 
 def valid_extra(key, extras, lambdafn):
     extra = get_extra(key, extras)
-    print "Got extra", extra
+
     if extra == None or extra["value"] == "" or extra["value"] == None:
         return False
 
@@ -266,11 +266,8 @@ def is_valid_authors_list(payload):
         authors = ast.literal_eval(get_extra("authors", payload["extras"])["value"])
         for author in authors:
             if not responsible_party_exists(author["email"]):
-                print "returning false"
                 return False
-        print "returning true"
         return True
-    print "returning false end"
     return False
 
 
@@ -278,7 +275,6 @@ def responsible_party_exists(email):
     try:
         responsible_party = meta.Session.query(ResponsibleParty).filter(ResponsibleParty.email == email)
         if responsible_party.first().email == email:
-            print "party exists"
             return True
     except Exception as e:
         pass

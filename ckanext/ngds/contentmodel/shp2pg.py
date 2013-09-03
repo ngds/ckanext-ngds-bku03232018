@@ -14,6 +14,9 @@ from ckan.logic import (tuplize_dict, clean_dict, parse_params, flatten_to_strin
 from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
 from ckan.lib.base import (request, render, BaseController, model, abort, h, g, c)
 
+import logging
+log = logging.getLogger(__name__)
+
 class ZipfileHandler:
 	"""Handles zipfiles."""
 
@@ -22,17 +25,17 @@ class ZipfileHandler:
 	def __init__(self, inputZip):
 		if (zipfile.is_zipfile(inputZip)):
 			self.zipfile = inputZip
-			print "Path is a .zip directory."
+			log.debug("Path is a .zip directory.")
 		else:
-			print "ERROR: Not a .zip file"
+			log.error("ERROR: Not a .zip file")
 			sys.exit(1)
 
 	def Unzip(self):
 		unZippedDir = self.zipfile[:-4]+"_UNZIPPED"
 		with zipfile.ZipFile(self.zipfile) as zf:
-			print "Extracting .zip directory"
+			log.debug("Extracting .zip directory")
 			zf.extractall(unZippedDir)
-			print "Completed extracting .zip directory"
+			log.debug("Completed extracting .zip directory")
 
 	def directoryCheck(self):
 		valid = []
@@ -52,13 +55,13 @@ class ZipfileHandler:
 				else:
 					invalid.append(f)
 			if len(valid) != 3:
-				print "ERROR: Missing a required filetype ('.shp', '.shx', '.dbf')-- ABORTING"
+				log.error("ERROR: Missing a required filetype ('.shp', '.shx', '.dbf')-- ABORTING")
 				sys.exit(1)
 			if len(invalid) != 0:
-				print "ERROR: One or more invalid filetype(s) were found in .zip directory-- ABORTING"
+				log.error("ERROR: One or more invalid filetype(s) were found in .zip directory-- ABORTING")
 				sys.exit(1)
 			else:
-				print "Shapefile is a valid dataset."
+				log.debug("Shapefile is a valid dataset.")
 
 
 class ShapefileToPostGIS:
@@ -85,7 +88,8 @@ class ShapefileToPostGIS:
 		os.chdir(searchDir)
 		for shp in glob.glob("*.shp"):
 			self.shapefile = shp
-		print self.shapefile
+
+		log.debug(self.shapefile)
 
 	def fields(self, uri):
 		url = "http://schemas.usgin.org/contentmodels.json"
@@ -108,10 +112,10 @@ class ShapefileToPostGIS:
 		outputDB = outputDriver.Open("PG: host=" + self.host + " port=5432 dbname=" + self.dbname +" user=" + self.user +" password=" + self.password)
 
 		if outputDB is None:
-			print "Could not open the database or GDAL is not correctly installed."
+			log.error("Could not open the database or GDAL is not correctly installed.")
 			sys.exit(1)
 		else:
-			print "Successfully connected to the database!"
+			log.debug("Successfully connected to the database!")
 
 		options = ["OVERWRITE=YES"]
 

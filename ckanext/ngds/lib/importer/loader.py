@@ -67,14 +67,13 @@ class ResourceLoader(loader.ResourceSeriesLoader):
 
             if resource.get('upload_file'):
                 try:
-                    #file_path = self.resource_dir+resource['upload_file']
-                    file_path = os.path.join(self.resource_dir,resource['upload_file'])
-                    #print "File to be uploaded: ",file_path
-                    uploaded_file_url,dummy = self.ckanclient.upload_file(file_path)
-                    #print "In Update Resource: uploaded_file_url: ", uploaded_file_url
-                    resource['url']=uploaded_file_url
+
+                    file_path = os.path.join(self.resource_dir, resource['upload_file'])
+
+                    uploaded_file_url, dummy = self.ckanclient.upload_file(file_path)
+
+                    resource['url'] = uploaded_file_url
                     del resource['upload_file']
-                    log.debug("After processing: %s", resource)
 
                     if resource.get('content_model'):
                         log.debug("Inside content_model....")
@@ -84,13 +83,13 @@ class ResourceLoader(loader.ResourceSeriesLoader):
                 except CkanApiNotAuthorizedError:
                     raise
                 except CkanApiError:
-                    raise LoaderError('Error (%s) uploading file over API: %s' % (self.ckanclient.last_status,self.ckanclient.last_message))
+                    raise LoaderError(toolkit._('Error (%s) uploading file over API: %s') % (self.ckanclient.last_status,self.ckanclient.last_message))
                 except Exception, e:
                     print "Error Accessing:", e
                     raise
             else:
                 if resource.get('content_model') or resource.get('content_model_version'):
-                    raise LoaderError("Content Model referenced but no file referenced for upload. Package Title: %s" % pkg_dict.get('title'))
+                    raise LoaderError(toolkit._("Content Model referenced but no file referenced for upload. Package Title: %s") % pkg_dict.get('title'))
 
             self.validate_resource(resource)
 
@@ -167,7 +166,7 @@ class ResourceLoader(loader.ResourceSeriesLoader):
         else:
             error_msg = '\n'.join(map(str, validation_response['messages']))
 
-            raise LoaderError("Resource validation Failed due to : %s" % error_msg)
+            raise LoaderError(toolkit._("Resource validation Failed due to : %s") % error_msg)
 
 
     def validate_content_model(self, content_model, version):

@@ -57,7 +57,7 @@ class Shapefile(object):
                     if len([ext for ext in extensions if ext in optional]) == len(extensions) - len(required):
                         return True
 
-        raise Exception("Not a valid shapefile")
+        raise Exception(toolkit._("Not a valid shapefile"))
 
     def unzip(self):
         """Unzip the shapefile into a pre-determined directory next to it"""

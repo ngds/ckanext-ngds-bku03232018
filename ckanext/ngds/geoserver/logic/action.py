@@ -1,13 +1,9 @@
 import logging
 import ckan.logic as logic
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
-from ckanext.ngds.geoserver.model.Datastored import Datastored
-from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 from ckanext.ngds.geoserver.model.Layer import Layer
 from ckan.plugins import toolkit
 from ckanext.ngds.env import ckan_model
-
-from geoserver.catalog import Catalog
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -30,8 +26,13 @@ def layer_exists(context, data_dict):
         return True
 
 def publish(context, data_dict):
-    # Gather inputs
+    """
+    Publishes the resource details as Geoserver layer based on the input details.
+    If the layer creation is successful then returns "Success" msg, otherwise raises an Exception.
 
+    """
+
+    # Gather inputs
     resource_id = data_dict.get("resource_id", None)
     layer_name = data_dict.get("layer_name", resource_id)
     username = context.get("user", None)
@@ -43,7 +44,7 @@ def publish(context, data_dict):
 
     # Check that you have everything you need
     if None in [resource_id, layer_name, username, package_id]:
-        raise Exception("Not enough information to publish resource")
+        raise Exception(toolkit._("Not enough information to publish resource"))
 
     # Publish a layer
     def pub():
@@ -58,7 +59,7 @@ def publish(context, data_dict):
 
     # Confirm that everything went according to plan
     if l is None:
-        raise Exception("Layer generation failed")
+        raise Exception(toolkit._("Layer generation failed"))
     else:
         # csv content should be spatialized or a shapefile uploaded, Geoserver updated, resources appended.
         #  l should be a Layer instance. Return whatever you wish to
@@ -66,7 +67,8 @@ def publish(context, data_dict):
 
 def unpublish(context,data_dict):
     """
-
+    Un-publishes the geoserver layer based on the resource identifier. Retrieves the geoserver layer name and package
+     identifier to construct layer and remove it.
     """
     resource_id = data_dict.get("resource_id")
     # layer_name = data_dict.get("layer_name")
@@ -82,7 +84,6 @@ def unpublish(context,data_dict):
     geoserver = Geoserver.from_ckan_config()
 
     package_id = ckan_model.Resource.get(resource_id).resource_group.package_id
-    print "here"
     # package = ckan_model.Package.get(package_id)
 
     # for resource in package.resources:
@@ -102,7 +103,6 @@ def unpublish(context,data_dict):
 
     layer = unpub()
 
-    print "next here"
     layer.remove()
-    print "finished"
+
     return True

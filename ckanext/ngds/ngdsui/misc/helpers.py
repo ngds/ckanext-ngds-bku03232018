@@ -10,7 +10,6 @@ import ckan.rating as rating
 DataError = dictization_functions.DataError
 from pylons import config, jsonify
 import ckan.logic as logic
-from operator import itemgetter
 
 from ckanext.ngds.env import ckan_model
 
@@ -23,7 +22,7 @@ import logging
 import ckan.plugins as p
 import json
 
-_ = p.toolkit._
+from ckan.plugins import toolkit
 
 try:
     from collections import OrderedDict # 2.7
@@ -119,18 +118,18 @@ def rating_text(count):
     Returns the text to be displayed for a given rating value
     """
     if count == 1:
-        return "Rate as very poor?"
+        return toolkit._("Rate as very poor?")
     else:
         if count == 2:
-            return "Rate as poor?"
+            return toolkit._("Rate as poor?")
         else:
             if count == 3:
-                return "Rate as fair?"
+                return toolkit._("Rate as fair?")
             else:
                 if count == 4:
-                    return "Rate as good?"
+                    return toolkit._("Rate as good?")
                 else:
-                    return "Rate as very good?"
+                    return toolkit._("Rate as very good?")
 
 
 def get_language(id):
@@ -138,7 +137,6 @@ def get_language(id):
     Returns the language name for a given language id.
     """
     if id:
-        print "got id : " + id
         try:
             id_int = int(id)
         except(ValueError):
@@ -215,7 +213,7 @@ def load_ngds_facets():
         if g.loaded_facets:
             return g.loaded_facets
     except AttributeError:
-        print "facets are yet to be loaded from the config."
+        log.info("facets are yet to be loaded from the config.")
 
 
     # Read the facet config file path from application config file (developement.ini)
@@ -278,7 +276,7 @@ def read_facet(facet_struc, facet_list):
     #If the metadatafield exists in the facet then add it to the list.
     if facet_struc.get("metadatafield"):
         facet_list.append(
-            (facet_struc['metadatafield'], _(facet_struc.get("facet") or facet_struc.get("display_name"))))
+            (facet_struc['metadatafield'], toolkit._(facet_struc.get("facet") or facet_struc.get("display_name"))))
 
     #If subfacet exists then iterate through entire structure to find the remaining facets.
     if facet_struc.get("subfacet"):
@@ -415,11 +413,7 @@ def is_string_field(field_name):
 def get_field_title(field_name):
     field_dict = {'publication_date': 'Publication Date', 'metadata_created': 'Created Date'}
 
-    print "Field Name:", field_name
-
     x = field_dict.get(field_name)
-
-    print "Title:", x
 
     return x
 

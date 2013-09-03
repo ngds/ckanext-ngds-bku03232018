@@ -1,22 +1,18 @@
 import urllib2, simplejson
 import logging
-import pylons
 import ckan.logic as logic
 import ckan.plugins as p
-import sqlalchemy
 
-import json
-
-from pylons import config
+from ckan.plugins import toolkit
 
 import csv
 import ckanext.ngds.contentmodel.model.contentmodels
 
-from ContentModel_Utilities   import *
-
+from ContentModel_Utilities import *
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
+
 
 @logic.side_effect_free
 def contentmodel_refreshCache(context, data_dict):
@@ -151,41 +147,41 @@ def contentmodel_checkFile(context, data_dict):
     cm_version = _get_or_bust(data_dict, 'cm_version')
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
     
-    print "input URL: " + cm_resource_url
+    log.debug("input URL: " + cm_resource_url)
     modified_resource_url = cm_resource_url.replace("%3A", ":")
     truncated_url = modified_resource_url.split("/storage/f/")[1]
-    print "real  URL: " + truncated_url
+    log.debug("real  URL: " + truncated_url)
     csv_filename_withfile = get_url_for_file(truncated_url)
     
     validation_msg = []
     
     if csv_filename_withfile is None:
-        msg = "can NOT find the full path from the resources from %s" %(cm_resource_url)
+        msg = toolkit._("Can't find the full path of the resources from %s" % cm_resource_url)
         validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
     else:
-        print "filename full path: "  + csv_filename_withfile
+        log.info("filename full path: %s " % csv_filename_withfile)
     
-    print "about to start schema reading"
+    log.debug("about to start schema reading")
     user_schema = contentmodel_get(context, data_dict)
     # print user_schema
     fieldModelList = []
     field_info_list = user_schema['field_info']
     for field_info in field_info_list:
         if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
-            print "found a undefined field: " + str(field_info)  
+            log.debug("found a undefined field: %s" % str(field_info))
             continue
         else: 
             fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
-    print fieldModelList
-    print "finish schema reading, find " + str(len(fieldModelList)) + " field information"  
-    
-    print "about to start CSV reading"
+
+    log.debug(fieldModelList)
+    log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
+
     dataHeaderList = []
     dataListList = []
     if len(validation_msg) == 0:
         try:
             csv_filename = csv_filename_withfile.split("file://")[1]
-            print "csv_filename: %s" %(csv_filename)
+            log.debug("csv_filename: %s" % csv_filename)
             csv_reader = csv.reader(open(csv_filename, "rbU"))
             header = csv_reader.next()
             dataHeaderList = [x.strip() for x in header]
@@ -194,14 +190,14 @@ def contentmodel_checkFile(context, data_dict):
                 new_row = [x.strip() for x in row]
                 dataListList.append(new_row)
         except csv.Error as e:
-            msg = "csv.Error file %s, line %d: %s" %(csv_filename, csv_reader.line_num, e)
+            msg = toolkit._("csv.Error file %s, line %d: %s") % (csv_filename, csv_reader.line_num, e)
             validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
         except IOError as e:
-            msg = "IOError file %s, %s" %(csv_filename, e)
+            msg = toolkit._("IOError file %s, %s") % (csv_filename, e)
             validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
-    print "load %d headers" %(len(dataHeaderList))
-    print "load %d row records" %(len(dataListList))
-    print "about to finish CSV reading"
+    log.debug("load %d headers" % (len(dataHeaderList)))
+    log.debug("load %d row records" % (len(dataListList)))
+    log.debug("about to finish CSV reading")
 
     if len(validation_msg) == 0:
         if ckanext.ngds.contentmodel.model.contentmodels.checkfile_checkheader == True:
@@ -231,10 +227,10 @@ def contentmodel_checkFile(context, data_dict):
             if len(validation_dateType_messages) > 0:
                 validation_msg.extend(validation_dateType_messages)
         
-        print "validation detailed error message", len(validation_msg)
+        log.debug("validation detailed error message", len(validation_msg))
         # print validation_msg
 
-    print 'validation last step'
+    log.debug('validation last step')
     # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
         return {"valid": True, "messages": "Okay"}
@@ -268,7 +264,7 @@ def contentmodel_checkBulkFile(context,cm_dict):
     schema = [rec for rec in ckanext.ngds.contentmodel.model.contentmodels.contentmodels if rec['title'].strip().lower() == str(title).strip().lower()]
 
     if schema.__len__() != 1:
-        raise Exception(" Invalid content model: %s" % title)
+        raise Exception(toolkit._("Invalid content model: %s") % title)
 
     # schema is a list with a single entry
     content_model = schema[0]
@@ -281,15 +277,15 @@ def contentmodel_checkBulkFile(context,cm_dict):
             version_uri = c_version['uri']
 
     if not versionExists:
-        raise Exception(" Invalid content model version. Content Model: %s ,version: %s" % (title,version))
-
+        raise Exception(toolkit._("Invalid content model version. Content Model: %s ,version: %s") % (title,version))
 
     return content_model['uri'], version_uri
 
 
 def create_contentmodel_table(context, data_dict):
     """
-
+    This will create a table for a specific content model and version. Created table will be used for consolidating
+    all content model specific data so that further representations can be done.
     """
 
     cm_uri = _get_or_bust(data_dict, 'cm_uri')
@@ -329,6 +325,9 @@ def create_contentmodel_table(context, data_dict):
 
 
 def get_sqlalchemy_datatype(cm_datatype):
+    """
+    Returns the sqlalchemy datatype for a content model field based on data type defined in the content model spec.
+    """
     from sqlalchemy import types
     data_type = {
         'int':types.Integer,
@@ -346,6 +345,10 @@ def get_sqlalchemy_datatype(cm_datatype):
     return sqlalchemyType
 
 def get_contentmodel_name(cm_schema):
+    """
+    Gets the content model name based on the schema. Replaces the spaces in the content model name so that it can be
+    used as a table name.
+    """
     cm_name = "test"
 
     uri = cm_schema['uri']
@@ -365,7 +368,5 @@ def get_contentmodel_name(cm_schema):
 
     import re
     cm_name = re.sub('[%s]' % ''.join(chars), '_', model_name)
-
-    #print "cm_name:", cm_name
 
     return cm_name

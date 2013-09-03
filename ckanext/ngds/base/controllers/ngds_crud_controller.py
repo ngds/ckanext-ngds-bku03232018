@@ -1,5 +1,6 @@
 from ckan.plugins.toolkit import toolkit
 
+
 class NgdsCrudController():
     """Base class for NGDS CRUD API controllers. Subclasses must set self.model during __init__"""
     model = None # This must be set during sub-class __init__
@@ -16,21 +17,21 @@ class NgdsCrudController():
             return self.add(data)
         elif process == "read":
             if data.get("id", None) == None: # 400 if there is no ID given                
-                raise toolkit.ValidationError({}, "No ID was given.")
+                raise toolkit.ValidationError({}, toolkit._("No ID was given."))
             else:
                 return self.read(data) # Dispatch to the read function
         elif process == "update":            
             if data.get("id", None) == None: # 400 if there is no ID given                
-                raise toolkit.ValidationError({}, "No ID was given.")
+                raise toolkit.ValidationError({}, toolkit._("No ID was given."))
             else:
                 return self.update(data) # Dispatch to the update function
         elif process == "delete":            
             if data.get("id", None) == None: # 400 if there is no ID given                
-                raise toolkit.ValidationError({}, "No ID was given.")
+                raise toolkit.ValidationError({}, toolkit._("No ID was given."))
             else:
                 return self.delete(data) # Dispatch to the delete function
         else: # 400 if the request didn't contain an appropriate process            
-            raise toolkit.ValidationError({}, "Please supply a 'process' attribute in the POST body. Value can be one of: create, read, update, delete")
+            raise toolkit.ValidationError({}, toolkit._("Please supply a 'process' attribute in the POST body. Value can be one of: create, read, update, delete"))
     
     def valid_data(self, data):
         """Check if the data contains valid information to generate a model instance"""
@@ -49,7 +50,7 @@ class NgdsCrudController():
             instance.save() # Automatically commits, save() defined by ckan.model.domain_object:DomainObject
             return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
         else: # 400 if the data is not valid
-            raise toolkit.ValidationError({}, "Please supply a 'data' attribute containing the appropriate content for a %s instance." % self.model.__name__)
+            raise toolkit.ValidationError({}, toolkit._("Please supply a 'data' attribute containing the appropriate content for a %s instance.") % self.model.__name__)
 
     def add(self, data):
         """Save a new object to the database"""
@@ -58,7 +59,7 @@ class NgdsCrudController():
             instance.add() # No Commit.
             return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
         else: # 400 if the data is not valid
-            raise toolkit.ValidationError({}, "Please supply a 'data' attribute containing the appropriate content for a %s instance." % self.model.__name__)
+            raise toolkit.ValidationError({}, toolkit._("Please supply a 'data' attribute containing the appropriate content for a %s instance.") % self.model.__name__)
             
     def read(self, data):
         """Read an object from the database"""        
@@ -88,7 +89,7 @@ class NgdsCrudController():
                 instance.save() # Done with the loop, save the instance to update the object
                 return instance.as_dict() # Return it
             else: # Update does not produce a valid object, 400
-                raise toolkit.ValidationError({}, "The content supplied in the 'data' attribute would create an invalid %s instance." % self.model.__name__)
+                raise toolkit.ValidationError({}, toolkit._("The content supplied in the 'data' attribute would create an invalid %s instance.") % self.model.__name__)
         else: # ID did not correspond to an existing object, 400
             raise toolkit.ObjectNotFound()
         

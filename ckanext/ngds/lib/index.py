@@ -48,8 +48,6 @@ class FullTextIndexer:
 
                 index_id = results[0]['index_id']
 
-                print "index_id: ", index_id
-
                 file_content = conn._extract_content(file_path)
 
                 data_dict[file_index_field] = file_content

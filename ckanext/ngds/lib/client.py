@@ -55,8 +55,6 @@ class NgdsCkanClient(CkanClient):
 
         res = requests.post(url,data={'key':file_key},files={'file': (os.path.basename(file_key), open(file_path, 'rb'))}, headers=headers)
 
-        print "File Upload self.base_netloc: ",self.base_netloc
-
         errcode = res.status_code
         errmsg = ''
 

@@ -1,7 +1,14 @@
+"""
+Contains all authorization functions related to content model functionality
+"""
+
 import ckan.plugins as p
 
 
 def _datastore_auth(context, data_dict):
+    """
+    Auth function which checks the resource update access for allowing user to access functionality.
+    """
     if not 'id' in data_dict:
         data_dict['id'] = data_dict.get('resource_id')
     user = context.get('user')
