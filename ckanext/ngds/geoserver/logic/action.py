@@ -72,16 +72,21 @@ def unpublish(context,data_dict):
     """
     resource_id = data_dict.get("resource_id")
     # layer_name = data_dict.get("layer_name")
-    layer_name = "NGDS:"+resource_id
+
     username =  context.get('user')
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
     geoserver_layer_name = file_resource.get("geoserver_layer_name")
+    geoserver = Geoserver.from_ckan_config()
+
+    #layer_name = "NGDS:"+resource_id
+    #Take the workspace name from geoserver.
+    layer_name = geoserver.default_workspace().name + ":" + resource_id
 
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)
         # layer_name = resource.get('layer_name')
 
-    geoserver = Geoserver.from_ckan_config()
+
 
     package_id = ckan_model.Resource.get(resource_id).resource_group.package_id
     # package = ckan_model.Package.get(package_id)
