@@ -9,6 +9,7 @@ CKAN_i18n_DIR=`grep 'CKAN_i18n_DIR=' merge.cfg | awk -F"=" '{print $2}'` #Ckan D
 file_list="file_list.txt" #Temp file used to merge messages.
 
 home_pyenv=`grep 'home_pyenv=' merge.cfg | awk -F"=" '{print $2}'` #Python env
+ngds_home=`grep 'ngds_home=' merge.cfg | awk -F"=" '{print $2}'` #Python env
 
 LOCALES=`ls -l --time-style="long-iso" $NGDS_i18n_DIR | egrep '^d' | awk '{print $8}'`
 
@@ -27,6 +28,10 @@ echo  "Processing messages of locale: ${locale}"
 		then
 		echo "Creating backup of NGDS messages to ngds_bak.po"
 		cp $ngds_po $backup_po
+		if [ "$locale" = "en" ]
+			then
+			locale="en_GB"
+		fi
 		ckan_po="$CKAN_i18n_DIR/$locale/LC_MESSAGES/ckan.po"
 		echo  "Merging with CKAN's locale: ${locale}"
 	fi
@@ -36,5 +41,8 @@ $ckan_po" > $file_list
 
 msgcat --use-first -f $file_list -o $output_po
 done
+cd $ngds_home
+python setup.py compile_catalog
+cd -
 #Remove the temp file
 /bin/rm $file_list

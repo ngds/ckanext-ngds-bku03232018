@@ -1,17 +1,18 @@
-# Translations template for ckanext-ngds.
+# English translations for ckanext-ngds.
 # Copyright (C) 2013 ORGANIZATION
-# This file is distributed under the same license as the ckanext-ngds project.
+# This file is distributed under the same license as the ckanext-ngds
+# project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-ngds 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-09-04 17:55-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2013-09-04 17:56-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,16 +26,16 @@ msgstr ""
 
 #: ckanext/ngds/base/controllers/ngds_crud_controller.py:34
 msgid ""
-"Please supply a 'process' attribute in the POST body. Value can be one of: "
-"create, read, update, delete"
+"Please supply a 'process' attribute in the POST body. Value can be one "
+"of: create, read, update, delete"
 msgstr ""
 
 #: ckanext/ngds/base/controllers/ngds_crud_controller.py:53
 #: ckanext/ngds/base/controllers/ngds_crud_controller.py:62
 #, python-format
 msgid ""
-"Please supply a 'data' attribute containing the appropriate content for a %s "
-"instance."
+"Please supply a 'data' attribute containing the appropriate content for a"
+" %s instance."
 msgstr ""
 
 #: ckanext/ngds/base/controllers/ngds_crud_controller.py:92
@@ -178,14 +179,16 @@ msgstr ""
 
 #: ckanext/ngds/lib/importer/importer.py:278
 #, python-format
-msgid "Data Error: No responsible party is found with the given name %s and email %s "
+msgid ""
+"Data Error: No responsible party is found with the given name %s and "
+"email %s "
 msgstr ""
 
 #: ckanext/ngds/lib/importer/importer.py:281
 #, python-format
 msgid ""
-"Data Error: More than one responsible party is found with the given name %s "
-"and email %s "
+"Data Error: More than one responsible party is found with the given name "
+"%s and email %s "
 msgstr ""
 
 #: ckanext/ngds/lib/importer/importer.py:300
@@ -201,8 +204,8 @@ msgstr ""
 #: ckanext/ngds/lib/importer/importer.py:331
 #, python-format
 msgid ""
-"Responsible party with email: %s not found in the system. Please add either "
-"manually or use loader script."
+"Responsible party with email: %s not found in the system. Please add "
+"either manually or use loader script."
 msgstr ""
 
 #: ckanext/ngds/lib/importer/loader.py:86
@@ -212,7 +215,9 @@ msgstr ""
 
 #: ckanext/ngds/lib/importer/loader.py:92
 #, python-format
-msgid "Content Model referenced but no file referenced for upload. Package Title: %s"
+msgid ""
+"Content Model referenced but no file referenced for upload. Package "
+"Title: %s"
 msgstr ""
 
 #: ckanext/ngds/lib/importer/loader.py:169
@@ -616,8 +621,8 @@ msgstr ""
 
 #: ckanext/ngds/ngdsui/templates/contribute/contribute_central.html:4
 msgid ""
-"If you are interested in contributing data to NGDS, you can either go to any "
-"of the existing nodes or set up a node by yourself."
+"If you are interested in contributing data to NGDS, you can either go to "
+"any of the existing nodes or set up a node by yourself."
 msgstr ""
 
 #: ckanext/ngds/ngdsui/templates/contribute/contribute_central.html:7
@@ -650,8 +655,8 @@ msgstr ""
 
 #: ckanext/ngds/ngdsui/templates/contribute/contribute_node.html:20
 msgid ""
-"Recommended for submissions with less than 20 files, several large files, or "
-"those with a wide variety of files."
+"Recommended for submissions with less than 20 files, several large files,"
+" or those with a wide variety of files."
 msgstr ""
 
 #: ckanext/ngds/ngdsui/templates/contribute/contribute_node.html:36
@@ -660,8 +665,8 @@ msgstr ""
 
 #: ckanext/ngds/ngdsui/templates/contribute/contribute_node.html:37
 msgid ""
-"Recommended for submissions with lots of smaller files all associated with a "
-"single project or task."
+"Recommended for submissions with lots of smaller files all associated "
+"with a single project or task."
 msgstr ""
 
 #: ckanext/ngds/ngdsui/templates/home/index_ngds.html:11
