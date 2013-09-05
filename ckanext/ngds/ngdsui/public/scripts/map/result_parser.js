@@ -29,11 +29,11 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 wms_mapping[results[i].id] = wms_mapping[results[i].id] || ( wms_mapping[results[i].id] = [ ] );
                 var layer_name = resource.layer_name;
                 wms_mapping[results[i].id].push({
-                                                    'id': resource.id,
-                                                    'url': resource.url.split('?')[0],
-                                                    'layer': layer_name,
-                                                    'name': resource.description
-                                                });
+                    'id': resource.id,
+                    'url': resource.url.split('?')[0],
+                    'layer': layer_name,
+                    'name': resource.description
+                });
             }
         }
 
@@ -52,15 +52,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                         'text': ngds.util.get_n_chars(results[i]['title'], 30)
                     },
                     'children': [
-//                        {
-//                            'tag': 'a',
-//                            'attributes': {
-//                                'class': 'description',
-//                                'href': ['/dataset', results[i]['name']].join('/'),
-//                                'target': '_blank',
-////                                'text': ngds.util.get_n_chars(results[i]['title'], 30)
-//                            }
-//                        }
                     ]
 
                 },
@@ -83,10 +74,26 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                                 'class': 'published',
                                 'text': "Published " + (function (date_obj) {
                                     var date = date_obj.getUTCDate();
-                                    var month = date_obj.getUTCMonth()+1;
+                                    var month = date_obj.getUTCMonth() + 1;
                                     var year = date_obj.getFullYear();
-                                    return ([month,date,year].join("/"));
+                                    return ([month, date, year].join("/"));
                                 })(new Date(results[i]['metadata_created']))
+                            }
+                        }
+                    ]
+                },
+                {
+                    'tag': 'div',
+                    'attributes': {
+                        'class': 'visibility-toggler'
+                    },
+                    'children': [
+                        {
+                            'tag': 'button',
+                            'attributes': {
+                                'text': "T",
+                                'class': 'visible',
+                                'data-seq': seq.current()
                             }
                         }
                     ]
@@ -104,13 +111,13 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         if (is_wms_present === true) {
             dataset_resources.children = [];
             dataset_resources.children.push({
-                                                'tag': 'button',
-                                                'attributes': {
-                                                    'class': 'wms ngds-slug',
-                                                    'text': 'WMS',
-                                                    'id': results[i].id
-                                                }
-                                            });
+                'tag': 'button',
+                'attributes': {
+                    'class': 'wms ngds-slug',
+                    'text': 'WMS',
+                    'id': results[i].id
+                }
+            });
         }
         skeleton.children.push(dataset_resources);
         var shaped_loop_scope = ngds.ckandataset(results[i]).get_feature_type()['type'];
@@ -161,32 +168,33 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         var dom_node = ngds.util.dom_element_constructor(skeleton);
         $('.results').append(dom_node);
         var reader = ngds.util.dom_element_constructor({
-                                                           'tag': 'div',
-                                                           'attributes': {
-                                                               'class': 'results-text'
-                                                           },
-                                                           'children': [
-                                                               {
-                                                                   'tag': 'p',
-                                                                   'attributes': {
-                                                                       'text': 'Found ' + count + " results" + (function (count, query) {
+            'tag': 'div',
+            'attributes': {
+                'class': 'results-text'
+            },
+            'children': [
+                {
+                    'tag': 'p',
+                    'attributes': {
+                        'text': 'Found ' + count + " results" + (function (count, query) {
 
-                                                                           if (query !== "" && typeof query !== "undefined") {
-                                                                               return " for \"" + query + "\""
-                                                                           } else {
-                                                                               return "";
-                                                                           }
-                                                                       })(count, query),
-                                                                       'class': 'reader'
-                                                                   }
-                                                               }
-                                                           ]
-                                                       });
+                            if (query !== "" && typeof query !== "undefined") {
+                                return " for \"" + query + "\""
+                            } else {
+                                return "";
+                            }
+                        })(count, query),
+                        'class': 'reader'
+                    }
+                }
+            ]
+        });
     }
     $('.results').before(reader);
     $(".results").jScrollPane({contentWidth: '0px'});
 
     var inc = inc || (inc = 0);
+
     $(".wms").click(function (ev) {
         var id = ev.currentTarget.id;
         var label_prefix = '';
@@ -211,6 +219,28 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             ngds.Map.map.addLayer(layer_to_add);
         }
         alert("The Web Map Services you requested have been added to the map.");
+    });
+
+    $(".visibility-toggler button").click(function (ev) {
+        ev.stopPropagation();
+        var seq = Number($(ev.target).attr('data-seq'));
+        if (typeof ngds.util.state['hidden_t'] === "undefined") {
+            ngds.util.state['hidden_t'] = {};
+        }
+        var hidden_map = ngds.util.state['hidden_t'];
+        if (typeof ngds.util.state['hidden_t'][seq] === "undefined") {
+            ngds.util.state['hidden_t'][seq] = ngds.layer_map[seq];
+            ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[seq]);
+            $(ev.target).addClass("toggled");
+        }
+        else {
+            ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[seq]);
+            ngds.Map.sort_geojson_layers(ngds.layer_map[seq]);
+            delete ngds.util.state['hidden_t'][seq];
+            $(ev.target).removeClass("toggled");
+        }
+
+
     });
 
 };

@@ -6,22 +6,22 @@ var populate_content_models = function () {
 
         };
         $.ajax({ // Fetch content models.
-                   url: '/api/action/contentmodel_list_short',
-                   type: 'POST',
-                   data: JSON.stringify({
-                                            dummy: 'appendix' // Ckan needs something in the body or the request is not accepted.
-                                        }),
-                   success: function (response) {
-                       for (var i = 0; i < response.result.length; i++) {
-                           content_models[response.result[i].uri] = response.result[i];
-                       }
+            url: '/api/action/contentmodel_list_short',
+            type: 'POST',
+            data: JSON.stringify({
+                dummy: 'appendix' // Ckan needs something in the body or the request is not accepted.
+            }),
+            success: function (response) {
+                for (var i = 0; i < response.result.length; i++) {
+                    content_models[response.result[i].uri] = response.result[i];
+                }
 
-                       options.push($('<option/>', {value: 'none', text: 'None'}).appendTo(content_model_combo));
-                       for (var val in content_models) {
-                           options.push($('<option/>', {value: val, text: content_models[val].title}).appendTo(content_model_combo));
-                       }
-                   }
-               });
+                options.push($('<option/>', {value: 'none', text: 'None'}).appendTo(content_model_combo));
+                for (var val in content_models) {
+                    options.push($('<option/>', {value: val, text: content_models[val].title}).appendTo(content_model_combo));
+                }
+            }
+        });
         return;
     }
 
@@ -158,12 +158,12 @@ var render_forms = function (value) {
     if (value === "data-service" || value === "unstructured" || value === "structured") {
         responsibilified = new ngds.responsible_party();
         responsibilified.responsibilify({
-                                            'rs_name': '#distributor_name',
-                                            'rs_email': '#distributor_email',
-                                            'rs_fake': '#distributor_fake',
-                                            'rs': '#distributor',
-                                            'slug_container': '.distributor-tag'
-                                        }, function (dict) {
+            'rs_name': '#distributor_name',
+            'rs_email': '#distributor_email',
+            'rs_fake': '#distributor_fake',
+            'rs': '#distributor',
+            'slug_container': '.distributor-tag'
+        }, function (dict) {
             $("[name='distributor_name']").val(dict['name']);
             $("[name='distributor_email']").val(dict['email']);
         });
@@ -190,19 +190,19 @@ $('input[name="resource_format"]').on('change', function (ev) {
 
 $("#go-metadata").click(function () {
     $.ajax({
-               'url': '/ngds/contribute/validate_resource',
-               'data': $(".dataset-form").serializeArray(),
-               'success': function (response) {
-                   if (response.success === true) {
-                       $(".dataset-form").append($("<input/>", {'type': 'hidden', 'name': 'save', 'value': 'go-metadata'}));
-                       // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
-                       $(".dataset-form").submit();
-                   }
-                   else {
-                       ngds.publish('Notifications.received', response);
-                   }
-               }
-           });
+        'url': '/ngds/contribute/validate_resource',
+        'data': $(".dataset-form").serializeArray(),
+        'success': function (response) {
+            if (response.success === true) {
+                $(".dataset-form").append($("<input/>", {'type': 'hidden', 'name': 'save', 'value': 'go-metadata'}));
+                // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
+                $(".dataset-form").submit();
+            }
+            else {
+                ngds.publish('Notifications.received', response);
+            }
+        }
+    });
 });
 
 

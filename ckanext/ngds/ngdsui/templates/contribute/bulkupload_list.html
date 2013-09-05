@@ -8,7 +8,7 @@
 
         {% if c.userobj.sysadmin %}
         <form method="post" action="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='execute_bulkupload') }}">
-            <p style="margin-left:15px;margin-top:15px;margin-bottom:15px; align:right; border:1px solid #F8F8F8; padding:5px; width:50%;text-align: center;">To initiate bulk uploader process manually click here: {{h.submit('submit', 'Execute')}}</p>
+            <p style="margin-left:15px;margin-top:15px;margin-bottom:15px; align:right; border:1px solid #F8F8F8; padding:5px; width:50%;text-align: center;">{{ _('To initiate bulk uploader process manually click here') }}: {{h.submit('submit', 'Execute')}}</p>
         </form>
         {% endif %}
 
@@ -99,13 +99,13 @@
                     </tr>
                     {% endfor%}
                 {% else %}
-				    <tr> <td colspan="3">None of the Packages created/updated as part of this upload.</td></tr>
+				    <tr> <td colspan="3">{{ _('None of the Packages created/updated as part of this upload') }}</td></tr>
 			    {% endif %}
             </tbody>
         </table>
 <!--    <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}" >Go back</a>-->
 
-    <div id="upload-list"><p><a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}"><button>Click here</button></a> to go back to the list of bulk uploaded files.<p></div>
+    <div id="upload-list"><p><a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='bulkupload_list') }}"><button>{{ _('Click here') }}</button></a> {{ _(' to go back to the list of bulk uploaded files') }}<p></div>
 
 	{% endif %}
 

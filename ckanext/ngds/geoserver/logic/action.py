@@ -69,20 +69,34 @@ def unpublish(context,data_dict):
      identifier to construct layer and remove it.
     """
     resource_id = data_dict.get("resource_id")
+<<<<<<< HEAD
     layer_name = data_dict.get("layer_name")
     layer_name = "NGDS:"+resource_id
+=======
+    # layer_name = data_dict.get("layer_name")
+
+>>>>>>> 46a1d49743f886c0526894edb921cf75a978a16d
     username =  context.get('user')
     geoserver_layer_name = data_dict.get("gs_lyr_name", None)
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
+<<<<<<< HEAD
 
     print "GEOSERVER LAYER NAME"
     print geoserver_layer_name
+=======
+    geoserver_layer_name = file_resource.get("geoserver_layer_name")
+    geoserver = Geoserver.from_ckan_config()
+
+    #layer_name = "NGDS:"+resource_id
+    #Take the workspace name from geoserver.
+    layer_name = geoserver.default_workspace().name + ":" + resource_id
+>>>>>>> 46a1d49743f886c0526894edb921cf75a978a16d
 
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)
         # layer_name = resource.get('layer_name')
 
-    geoserver = Geoserver.from_ckan_config()
+
 
     package_id = ckan_model.Resource.get(resource_id).resource_group.package_id
     # package = ckan_model.Package.get(package_id)

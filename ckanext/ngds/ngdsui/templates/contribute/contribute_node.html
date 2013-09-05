@@ -3,7 +3,7 @@
     <span>{{ _('Submit existing datasets to share with community') }}</span>
     <div id="upload-table">
 
-      <div id="upload-title">Choose one upload method</div>
+      <div id="upload-title">{{ _('Choose one upload method') }}</div>
 
         {% if h.check_access('package_create') %}
             <a href="/ngds/contribute/dataset/new">
@@ -16,8 +16,8 @@
                         <img src="/assets/individual_upload.png">
                     </div>
                     <div class="text-block">
-                        <p class="title">Individual Upload</p>
-                        <p>* Recommended for submissions with less than 20 files, several large files, or those with a wide variety of files.</p>
+                        <p class="title">{{ _('Individual Upload') }}</p>
+                        <p>* {{ _('Recommended for submissions with less than 20 files, several large files, or those with a wide variety of files.') }}</p>
                     </div>
                 </div>
              </a>
@@ -33,8 +33,8 @@
                         <img src="/assets/bulk_upload.png">
                     </div>
                     <div class="text-block">
-                        <p class="title">Bulk Upload</p>
-                        <p>* Recommended for submissions with lots of smaller files all associated with a single project or task.</p>
+                        <p class="title">{{ _('Bulk Upload') }}</p>
+                        <p>* {{ _('Recommended for submissions with lots of smaller files all associated with a single project or task.') }}</p>
                     </div>
                 </div>
              </a>
