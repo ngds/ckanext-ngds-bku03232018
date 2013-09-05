@@ -28,6 +28,11 @@ ngds.Map = {
             zoomControl: false
         });
 
+        var loadingControl = L.Control.loading({
+            separate: true,
+            position: 'topleft'
+        });
+
         var nerc_wms = new L.TileLayer.EsriImageExports(nerc_url, {
             layers: "42"
         });
@@ -90,6 +95,7 @@ ngds.Map = {
         });
 
         map.addControl(zoom);
+        map.addControl(loadingControl);
 
         L.control.fullscreen({
             position: 'topright',

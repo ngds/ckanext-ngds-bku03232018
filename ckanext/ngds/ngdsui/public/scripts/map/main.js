@@ -56,11 +56,11 @@ if (typeof ngds.Map !== 'undefined') {
         var query = $("#map-query").val();
         ngds.util.clear_map_state();
         ngds.pager.go_to({
-                             'page': 1,
-                             'action': ngds.ckanlib.package_search,
-                             'rows': ngds.config['number_of_rows'],
-                             'q': query
-                         });
+            'page': 1,
+            'action': ngds.ckanlib.package_search,
+            'rows': ngds.config['number_of_rows'],
+            'q': query
+        });
         ngds.publish('Map.expander.toggle', {
             'no_toggle': true
         });
@@ -107,11 +107,26 @@ if (typeof ngds.Map !== 'undefined') {
         ngds.util.clear_map_state();
         ngds.Map.zoom_handler.clear_listeners();
         ngds.pager.go_to({
-                             'page': data['page'],
-                             'action': ngds.ckanlib.package_search,
-                             'rows': 10
-                         });
+            'page': data['page'],
+            'action': ngds.ckanlib.package_search,
+            'rows': 10
+        });
     });
+})();
+
+
+(function subscribe_data_loading() {
+    ngds.subscribe('data-loading', function (msg, data) {
+        console.log("data loading");
+        ngds.Map.map.fireEvent('dataloading');
+    });
+})();
+
+(function subscribe_data_loaded() {
+    ngds.subscribe('data-loaded', function (msg, data) {
+        console.log("data load");
+        ngds.Map.map.fireEvent('dataload');
+    })
 })();
 
 

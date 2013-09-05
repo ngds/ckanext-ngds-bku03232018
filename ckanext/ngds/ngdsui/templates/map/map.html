@@ -51,11 +51,12 @@
 {% endblock %}
 <link rel="stylesheet" href="/vendor/leaflet0.6.2/leaflet.css"/>
 <!-- <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" /> -->
-<link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css"/>
-<link rel="stylesheet" href="/vendor/iconlabel/leaflet.iconlabel.css"/>
-<link rel="stylesheet" href="/vendor/jscrollpane/jquery.jscrollpane.css"/>
-<link rel="stylesheet" href="/vendor/Leaflet.Fullscreen/Control.FullScreen.css"/>
-<link rel="stylesheet" href="/vendor/Leaflet.Label/leaflet.label.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/leaflet-draw/leaflet.draw.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/iconlabel/leaflet.iconlabel.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/jscrollpane/jquery.jscrollpane.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Fullscreen/Control.FullScreen.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Label/leaflet.label.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Loading/Control.Loading.css"/>
 
 {% endblock %}
 {% block scripts %}
@@ -73,6 +74,7 @@
 <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
 <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
 <script type="text/javascript" src="/vendor/Leaflet.Label/leaflet.label.js"></script>
+<script type="text/javascript" src="/vendor/Leaflet.Loading/Control.Loading.min.js"></script>
 
 {% if h.is_development() %}
 
