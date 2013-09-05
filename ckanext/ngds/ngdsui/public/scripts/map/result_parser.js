@@ -231,11 +231,13 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         if (typeof ngds.util.state['hidden_t'][seq] === "undefined") {
             ngds.util.state['hidden_t'][seq] = ngds.layer_map[seq];
             ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[seq]);
+            $(ev.target).addClass("toggled");
         }
         else {
             ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[seq]);
             ngds.Map.sort_geojson_layers(ngds.layer_map[seq]);
             delete ngds.util.state['hidden_t'][seq];
+            $(ev.target).removeClass("toggled");
         }
 
 

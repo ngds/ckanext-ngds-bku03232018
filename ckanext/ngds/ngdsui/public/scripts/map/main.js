@@ -117,14 +117,12 @@ if (typeof ngds.Map !== 'undefined') {
 
 (function subscribe_data_loading() {
     ngds.subscribe('data-loading', function (msg, data) {
-        console.log("data loading");
         ngds.Map.map.fireEvent('dataloading');
     });
 })();
 
 (function subscribe_data_loaded() {
     ngds.subscribe('data-loaded', function (msg, data) {
-        console.log("data load");
         ngds.Map.map.fireEvent('dataload');
     })
 })();

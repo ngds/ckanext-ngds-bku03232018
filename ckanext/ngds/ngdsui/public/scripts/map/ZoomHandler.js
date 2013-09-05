@@ -61,7 +61,6 @@ var zoom_handler = ngds.Map.zoom_handler = function (layer) {
 };
 
 zoom_handler.clear_listeners = function () { // Unregister the zoom event handlers from the previous page.
-    console.log("")
     if (typeof ngds.Map.handlers !== 'undefined') {
         for (var i = 0; i < ngds.Map.handlers.length; i++) {
             ngds.Map.map.off('zoomend', ngds.Map.handlers[i]);
