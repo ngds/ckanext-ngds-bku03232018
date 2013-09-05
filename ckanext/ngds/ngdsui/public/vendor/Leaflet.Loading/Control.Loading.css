@@ -5,12 +5,17 @@
 
 .leaflet-control-loading,
 .leaflet-control-zoom a.leaflet-control-loading {
+    background-color:white !important;
     display: none;
 }
 
 .leaflet-bar {
     box-shadow: none;
-    background: transparent;
+    background: transparent !important;
+}
+
+.leaflet-bar a {
+    background-color: #366D96 !important;
 }
 
 .leaflet-control-loading.is-loading,

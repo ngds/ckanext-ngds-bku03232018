@@ -132,6 +132,48 @@ ngds.ckanlib = {
                 throw "Expected a callback function.";
             }
         })();
+
+        var location = null;
+
+        var p_m1 = parameter_obj['q'].match(/ near /);
+        var p_m2 = parameter_obj['q'].match(/^near /);
+        var token = null;
+        var proximity_matched = false;
+        if (p_m1 !== null || p_m2 !== null) {
+            proximity_matched = true;
+        }
+
+        if (p_m1 !== null) {
+            token = " near ";
+        }
+        else {
+            token = "near ";
+        }
+
+        if (proximity_matched === true) {
+            var sp_str = parameter_obj['q'].split(token);
+            location = sp_str[1];
+            var query = parameter_obj['q'] = sp_str[0];
+            var osm_provider = new L.GeoSearch.Provider.OpenStreetMap();
+            var g_url = osm_provider.GetServiceUrl(location);
+            $.getJSON(g_url, function (data) {
+                    var transform = ngds.ckanlib.coordinate_transform;
+                    ngds.ckanlib.package_search({
+                            q: query,
+                            extras: {
+                                ext_bbox: transform(data[0]['boundingbox'][0]) + "," + transform(data[0]['boundingbox'][1]) + "," + transform(data[0]['boundingbox'][2]) + "," + transform(data[0]['boundingbox'][3])
+                            }
+
+                        }, function (response) {
+                            return callback(response);
+                        }
+                    )
+                    ;
+                }
+            )
+            ;
+            return;
+        }
         ngds.publish("data-loading", {});
         var url = '/api/action/package_search';
         var type = 'POST';
@@ -155,6 +197,17 @@ ngds.ckanlib = {
             }
         });
 
+    },
+    coordinate_transform: function (coordinate) {
+        var c = Number(coordinate);
+        var t = 0;
+        if (c < 0) {
+            t = -(Math.abs(c) + 2);
+        }
+        else {
+            t = c + 2;
+        }
+        return t;
     },
     get_responsible_party: function (id, callback) {
         (function () {

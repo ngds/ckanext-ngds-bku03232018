@@ -184,10 +184,12 @@ ngds.Map = {
                 popupAnchor: new L.Point(0, -33)
             }
         });
-        new L.Control.GeoSearch({
+        var geosearch = ngds.Map.geosearch = new L.Control.GeoSearch({
             provider: new L.GeoSearch.Provider.OpenStreetMap(),
             position: 'topright'
-        }).addTo(map);
+        });
+
+        geosearch.addTo(map);
 
         ngds.publish("Map.loaded", { });
     },

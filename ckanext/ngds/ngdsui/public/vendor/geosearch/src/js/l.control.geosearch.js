@@ -30,7 +30,7 @@ L.Control.GeoSearch = L.Control.extend({
         this._config = {
             'country': options.country || '',
             'provider': options.provider,
-            
+
             'searchLabel': options.searchLabel || 'search for address...',
             'notFoundMessage' : options.notFoundMessage || 'Sorry, that address could not be found.',
             'messageHideDelay': options.messageHideDelay || 3000,
@@ -75,8 +75,9 @@ L.Control.GeoSearch = L.Control.extend({
 
         return this._container;
     },
-    
+
     geosearch: function (qry) {
+        console.log(qry);
         try {
             var provider = this._config.provider;
 
@@ -128,7 +129,7 @@ L.Control.GeoSearch = L.Control.extend({
             .fadeIn('slow').delay(this._config.messageHideDelay).fadeOut('slow',
                     function () { $(this).html(''); });
     },
-    
+
     _onKeyUp: function (e) {
         var escapeKey = 27;
         var enterKey = 13;
