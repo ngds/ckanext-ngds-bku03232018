@@ -115,6 +115,15 @@
         color: grey;
       }
 
+      .visibility-toggler {
+        position: absolute;
+        right: 20px;
+        button {
+          .ngds-button(23px);
+        }
+
+      }
+
       .notes {
         font-weight: bold;
         margin-bottom: 0px;
@@ -284,8 +293,8 @@
 }
 
 div.red-box {
-  width: 25px;
-  height: 25px;
+  width: 17px;
+  height: 17px;
   margin: 5px 10px 10px 10px;
   background-color: #319FD2;
   float: left;
@@ -324,6 +333,7 @@ div.red-marker:after {
   border: 1px solid grey;
   border-radius: 0px 0px 0px 0px;
   background-color: #F1F1F1;
+  opacity: 0.90;
 
   strong {
     display: block;
@@ -382,23 +392,4 @@ div.red-marker:after {
 
 .leaflet-popup-pane .leaflet-popup a.leaflet-popup-close-button {
   color: black;
-}
-
-.leaflet-control-hidden {
-  width: 20px;
-  height: 50px;
-  background-color: transparent;
-  text-align: center;
-
-  .wrapper {
-    text-align:center;
-    background-color:transparent;
-
-    a {
-      display: block;
-      height: 15px;
-      width: 15px;
-      background-image: url(/vendor/Leaflet.Fullscreen/icon-fullscreen.png);
-    }
-  }
 }

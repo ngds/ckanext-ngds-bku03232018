@@ -170,7 +170,7 @@ ngds.util.state = {
 };
 
 ngds.util.rotate_color = function () {
-    var colors = ["#FF85BC", "#FFBA85", "#FFCB26", "#FFFF66", "#78E78E", "#0099FF", "#8AFFBF", "#3333FF", "#28362C"];
+    var colors = ["#9ACB57", "#A39AC9", "#F36A50", "#B84693", "#FDD63C", "#414687", "#0091A9"];
 
     if (typeof ngds.util.state['rotate_color'] === "undefined" || ngds.util.state === null) {
         ngds.util.state['rotate_color'] = {};

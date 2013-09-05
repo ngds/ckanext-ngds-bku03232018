@@ -30,16 +30,27 @@ var zoom_handler = ngds.Map.zoom_handler = function (layer) {
         var bbox_minx = bbox._southWest.lng;
         var bbox_maxy = bbox._northEast.lat;
         var bbox_maxx = bbox._northEast.lng;
+
+        var id_map = _.map(ngds.util.state['hidden_t'], function (value) {
+            return value._leaflet_id;
+        });
+
         if ((bbox_minx < map_minx) && (bbox_maxx > map_maxx) && (bbox_miny < map_miny) && (bbox_maxy > map_maxy) && layer._shown === true) {
+            if (_.contains(id_map, layer._leaflet_id) === true) {
+                return;
+            }
             layer._shown = false;
             ngds.log("Hiding layer : " + layer, layer);
-//            ngds.Map.mgr.hide(layer);
+
+
             ngds.Map.get_layer('geojson').removeLayer(layer);
 
         }
         else if ((bbox_minx > map_minx) || (bbox_maxx < map_maxx) || (bbox_miny > map_miny) || (bbox_maxy < map_maxy) && layer._shown === false) {
+            if (_.contains(id_map, layer._leaflet_id) === true) {
+                return;
+            }
             ngds.log("Showing layer : " + layer, layer);
-//            ngds.Map.mgr.unhide(layer);
             ngds.Map.get_layer('geojson').addLayer(layer);
             layer._shown = true;
         }
@@ -50,6 +61,7 @@ var zoom_handler = ngds.Map.zoom_handler = function (layer) {
 };
 
 zoom_handler.clear_listeners = function () { // Unregister the zoom event handlers from the previous page.
+    console.log("")
     if (typeof ngds.Map.handlers !== 'undefined') {
         for (var i = 0; i < ngds.Map.handlers.length; i++) {
             ngds.Map.map.off('zoomend', ngds.Map.handlers[i]);

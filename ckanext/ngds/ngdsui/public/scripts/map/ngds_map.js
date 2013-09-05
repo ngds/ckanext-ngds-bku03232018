@@ -96,8 +96,6 @@ ngds.Map = {
             title: 'Show me the fullscreen !'
         }).addTo(map);
 
-        ngds.Map.mgr = new L.Control.Hidden();
-        ngds.Map.mgr.addTo(map);
 
         this.layers = {
             'geojson': _geoJSONLayer,
@@ -387,6 +385,7 @@ ngds.Map = {
                         return 'Feature';
                     }
                 })(layer);
+                ngds.Map.add_to_layer([layer], 'geojson');
                 ngds.publish('Map.add_feature', {
                     'feature': layer,
                     'seq_id': options['seq'],
@@ -408,11 +407,13 @@ ngds.Map = {
                 return marker;
             }
         });
-        x = geoJSONRepresentation;
+
         geoJSONRepresentation.bindPopup(popup);
         this.add_to_layer([geoJSONRepresentation], 'geojson');
-
-        var perimeter = new ngds.Map.BoundingBox().store_raw(geoJSONRepresentation.getBounds()).get_perimeter();
+        this.sort_geojson_layers(geoJSONRepresentation);
+    },
+    sort_geojson_layers: function (layer) {
+        var perimeter = new ngds.Map.BoundingBox().store_raw(layer.getBounds()).get_perimeter();
 
         var map_features = ngds.util.state['map_features'];
         var i = 0;
@@ -424,7 +425,7 @@ ngds.Map = {
                 break;
             }
         }
-        map_features.splice(i, 0, geoJSONRepresentation);
+        map_features.splice(i, 0, layer);
         for (var i = map_features.length - 1; i > -1; i--) {
             map_features[i].bringToFront();
         }
