@@ -32,7 +32,6 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
     //
     // Returns nothing.
     loadPreviewDialog: function (resourceData) {
-      console.log(resourceData);
       var self = this;
 
       function showError(msg){

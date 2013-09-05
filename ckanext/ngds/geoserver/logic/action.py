@@ -29,7 +29,6 @@ def publish(context, data_dict):
     """
     Publishes the resource details as Geoserver layer based on the input details.
     If the layer creation is successful then returns "Success" msg, otherwise raises an Exception.
-
     """
 
     # Gather inputs
@@ -39,8 +38,7 @@ def publish(context, data_dict):
     package_id = data_dict.get("package_id", None)
     lat_field = data_dict.get("col_latitude", None)
     lng_field = data_dict.get("col_longitude", None)
-    file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
-    geoserver_layer_name = file_resource.get("geoserver_layer_name")
+    geoserver_layer_name = data_dict.get("gs_lyr_name", None)
 
     # Check that you have everything you need
     if None in [resource_id, layer_name, username, package_id]:
@@ -71,11 +69,14 @@ def unpublish(context,data_dict):
      identifier to construct layer and remove it.
     """
     resource_id = data_dict.get("resource_id")
-    # layer_name = data_dict.get("layer_name")
+    layer_name = data_dict.get("layer_name")
     layer_name = "NGDS:"+resource_id
     username =  context.get('user')
+    geoserver_layer_name = data_dict.get("gs_lyr_name", None)
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
-    geoserver_layer_name = file_resource.get("geoserver_layer_name")
+
+    print "GEOSERVER LAYER NAME"
+    print geoserver_layer_name
 
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)

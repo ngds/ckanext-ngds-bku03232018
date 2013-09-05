@@ -45,18 +45,6 @@ class GMLtoReclineJS():
         data = data_dict
         base_url = data["resource"]["url"]
         url = base_url.split("?")[0]
-        '''
-        layer_name = data["resource"]["layer_name"]
-        bbox = data["resource"]["geom_extent"]
-        dataStore = self.getWorkSpace(data)
-        url = base_url
-        url += "/" + dataStore.lower() + "/"
-        url += "wms?service=WMS&version=1.1.0&request=GetMap&layers="
-        url += layer_name.lower()
-        url += "&styles=&bbox="
-        url += bbox
-        url += "&width=512&height=439&srs=EPSG:4326&format=image%2Fpng"
-        '''
         return url
 
     def getGML(self, url):
