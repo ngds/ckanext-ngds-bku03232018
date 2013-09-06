@@ -5,6 +5,7 @@ from ckan.plugins import ITemplateHelpers, IRoutes, IResourcePreview
 import ckanext.ngds.geoserver.logic.action as action
 import ckanext.ngds.geoserver.model.GMLtoReclineJSON as recline
 import ckanext.datastore.logic.auth as auth
+import ckanext.datastore.logic.action as ds_action
 from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 import ckan.logic as logic
 import ckanext.ngds.geoserver.misc.helpers as helpers

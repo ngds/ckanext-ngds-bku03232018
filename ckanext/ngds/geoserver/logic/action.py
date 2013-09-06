@@ -75,9 +75,6 @@ def unpublish(context,data_dict):
     geoserver_layer_name = data_dict.get("gs_lyr_name", None)
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
 
-    print "GEOSERVER LAYER NAME"
-    print geoserver_layer_name
-
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)
         # layer_name = resource.get('layer_name')

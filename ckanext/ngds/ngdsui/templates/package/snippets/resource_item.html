@@ -60,14 +60,15 @@
 {% include 'package/resource_form_template.tmf' %}
 
 <script>
-var populate_lat_lng_fields = function (dom_marker) {
+var populate_lat_lng_fields = function (dom_marker, field_list) {
     var marker = dom_marker;
+    var fields = field_list;
     var lat_lng_field_struct = {
         'form': [
             {
                 'label': 'Latitude Field',
                 'name': 'lat_field_name',
-                'tag': 'input',
+                'tag': 'select',
                 'top_classes': function () {
                     return 'lat_field_marker'
                 },
@@ -79,7 +80,7 @@ var populate_lat_lng_fields = function (dom_marker) {
             {
                 'label': 'Longitude Field',
                 'name': 'lng_field_name',
-                'tag': 'input',
+                'tag': 'select',
                 'top_classes': function () {
                     return 'lng_field_marker'
                 },
@@ -93,6 +94,23 @@ var populate_lat_lng_fields = function (dom_marker) {
     $(".lat_field_name").remove();
     $(".lng_field_name").remove();
     marker.after(Mustache.render(ngds.structured_form_template, lat_lng_field_struct));
+
+    var select_lat = document.getElementById("lat_field_marker");
+    var select_lon = document.getElementById("lng_field_marker");
+    populate_drop_down_list(select_lat, fields);
+    populate_drop_down_list(select_lon, fields);
+};
+
+var populate_drop_down_list = function(dom_element, field_list) {
+    var fields = field_list;
+    var select = dom_element;
+    for(var i = 0; i < fields.length; i++){
+        var field = fields[i];
+        var el = document.createElement("option");
+        el.textContent = field;
+        el.value = field;
+        select.appendChild(el);
+    }
 };
 
 var populate_geoserver_layer_name = function (dom_marker) {
@@ -141,6 +159,41 @@ var publish_as_ogc = function(gs_lyr_name, resource_id, package_id, lat_field, l
     });
 };
 
+var make_datastore_search_url = function() {
+    var res_url = ("{{ res.url }}");
+    var res_url_split =  (res_url.split("/storage"))[0];
+    var datastore_url = res_url_split + "/api/3/action/datastore_search";
+    return datastore_url;
+};
+
+var get_csv_fields = function() {
+    var field_list;
+    $.ajax({
+        url:make_datastore_search_url(),
+        data:{"resource_id":("{{ res.id }}")},
+        dataType:"jsonp",
+        success: field_list = function(data){
+            callback(data);
+        }
+    });
+};
+
+var make_field_list = function(data){
+    var field_list = [];
+    var index;
+    var fields = data.result.fields;
+    for (index = 0; index < fields.length; ++index){
+        field_list.push(fields[index]['id']);
+    }
+    return field_list;
+};
+
+var callback = function(data){
+    var field_list = make_field_list(data);
+    var latlng_marker = $("#gs_lyr_name_input");
+    populate_lat_lng_fields(latlng_marker, field_list);
+};
+
 $(document).ready(function() {
   if((window.spatialize_handler===null || typeof window.spatialize_handler==='undefined') && ($(".spatialize").length>0)) {
         window.spatialize_handler = 'defined';
@@ -149,10 +202,9 @@ $(document).ready(function() {
         $(".spatialize").click(function(){
             populate_geoserver_layer_name(lyr_name_marker);
         if (resource_format === "CSV"){
-            var latlng_marker = $("#gs_lyr_name_input");
-            populate_lat_lng_fields(latlng_marker);
+            get_csv_fields();
             $(".enter_gs_lyr_name").remove();
-            $("#lng_field_marker").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
+            $("#gs_lyr_name_input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
         } else {
             $(".enter_gs_lyr_name").remove();
             $("#gs_lyr_name_input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
