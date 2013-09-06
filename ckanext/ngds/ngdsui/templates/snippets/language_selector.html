@@ -1,7 +1,7 @@
 {% set current_url = request.environ.CKAN_CURRENT_URL %}
 {% set current_lang = request.environ.CKAN_LANG %}
 <form class="form-inline form-select lang-selecter" action="{% url_for controller='util', action='redirect' %}" data-module="select-switch" method="POST">
-  <label for="field-lang-select"><img src="/assets/language_selector.png"/></label>
+  <img id="lang-select-image" src="/assets/language_selector.png"/>
   <!-- <select id="field-lang-select" name="url" data-module="autocomplete" data-module-dropdown-class="lang-dropdown" data-module-container-class="lang-container"> -->
   <select id="field-lang-select" name="url" data-module="autocomplete" data-module-dropdown-class="lang-dropdown" data-module-container-class="lang-container" >  	
     {% for locale in h.get_available_locales() %}

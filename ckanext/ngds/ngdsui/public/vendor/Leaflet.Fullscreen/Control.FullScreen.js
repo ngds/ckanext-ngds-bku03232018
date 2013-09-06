@@ -1,29 +1,24 @@
 L.Control.FullScreen = L.Control.extend({
 	options: {
 		position: 'topleft',
-		title: 'Full Screen'
+		title: 'Full Screen',
+		forceSeparateButton: false
 	},
 	
 	onAdd: function (map) {
 		// Do nothing if we can't
 		if (!fullScreenApi.supportsFullScreen)
-			return map.zoomControl._container;
+			return map.zoomControl ? map.zoomControl._container : L.DomUtil.create('div', '');
 		
-		var containerClass = 'leaflet-control-zoom', className, container;
+		var className = 'leaflet-control-zoom-fullscreen', container;
 		
-		if(map.zoomControl) {
+		if(map.zoomControl && !this.options.forceSeparateButton) {
 			container = map.zoomControl._container;
-			className = '-fullscreen leaflet-bar-part leaflet-bar-part-bottom last';
-			// Update class of the zoom out button (Leaflet v0.5)
-			if (map.zoomControl._zoomOutButton) {
-				L.DomUtil.removeClass(map.zoomControl._zoomOutButton, 'leaflet-bar-part-bottom');
-			}
 		} else {
-			container = L.DomUtil.create('div', containerClass);
-			className = '-fullscreen';
+			container = L.DomUtil.create('div', 'leaflet-bar');
 		}
 		
-		this._createButton(this.options.title, containerClass + className, container, this.toogleFullScreen, map);
+		this._createButton(this.options.title, className, container, this.toogleFullScreen, map);
 
 		return container;
 	},
@@ -70,16 +65,16 @@ L.Control.FullScreen = L.Control.extend({
 	},
 	
 	_handleEscKey: function () {
-		
-		if(!fullScreenApi.isFullScreen(this)){
-			fullScreenApi.cancelFullScreen();			
+		if(!fullScreenApi.isFullScreen(this) && !this._exitFired){
+			this.fire('exitFullscreen');
+			this._exitFired = true;
 		}
 	}
 });
 
 L.Map.addInitHook(function () {
 	if (this.options.fullscreenControl) {
-		this.fullscreenControl = L.control.fullscreen();
+		this.fullscreenControl = L.control.fullscreen(this.options.fullscreenControlOptions);
 		this.addControl(this.fullscreenControl);
 	}
 });
@@ -140,74 +135,22 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 			}
 		}
 		fullScreenApi.requestFullScreen = function(el) {
-			ngds.publish("Map.size_changed",{
-				'fullscreen':true
-			});
-
-			ngds.Map.state['map-container-height']=$("#map-container").css("height");
-			if(typeof $("#content-container")[0].webkitRequestFullScreen!=='undefined') {
-				$("#content-container")[0].webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-			}
-			if(typeof $("#content-container")[0].mozRequestFullScreen!=='undefined') {
-				$("#content-container")[0].mozRequestFullScreen();
-			}
-			fullsc = '';
-			setTimeout(function() {
-				var ch = $("#content-container").css("height");
-				$("#map-container").css("height","100%");
-				// ngds.Map.state["orig_results_height"] = $(".results").css("height");
-				// ngds.Map.state['orig_jspContainer_height'] = $(".jspContainer").css("height");
-				// ngds.Map.state['orig_jspTrack_height'] = $(".jsptrack").css("height");
-				// ngds.Map.state['orig_jspDrag_height'] = $(".jspDrag").css("height");
-				
-				// $(".results").addClass("large");
-				
-				// $(".jspContainer").css("height","700px");
-				
-				// $(".jspTrack").css("height","700px");
-				
-				// $(".jspDrag").css("height","500px");
-				ngds.Map.map.invalidateSize();
-
-
-				
-
-				fullsc = true;
-
-			},100);
-
-			return true;
-			// return (this.prefix === '') ? el.requestFullscreen() : el[this.prefix + 'RequestFullScreen']();
+			return (this.prefix === '') ? el.requestFullscreen() : el[this.prefix + 'RequestFullScreen']();
 		}
 		fullScreenApi.cancelFullScreen = function(el) {
-			ngds.publish("Map.size_changed",{
-				'fullscreen':false
-			});
-			(this.prefix === '') ? document.exitFullscreen() : document[this.prefix + 'CancelFullScreen']();
-			setTimeout(function() {
-						$("#map-container").css("height","700px");
-			// $(".jspDrag").css("height",ngds.Map.state['orig_jspDrag_height']);
-			// $(".jspTrack").css("height",ngds.Map.state['orig_jspTrack_height']);
-			// $(".jspContainer").css("height",ngds.Map.state['orig_jspContainer_height']);
-			// $(".results").removeClass("large");
-			
-			},100);
-			return true;
+			return (this.prefix === '') ? document.exitFullscreen() : document[this.prefix + 'CancelFullScreen']();
 		}		
 	}
 
 	// jQuery plugin
 	if (typeof jQuery != 'undefined') {
 		jQuery.fn.requestFullScreen = function() {
-			i=0;
+	
 			return this.each(function() {
 				var el = jQuery(this);
 				if (fullScreenApi.supportsFullScreen) {
-					i++;
 					fullScreenApi.requestFullScreen(el);
-					// fullScreenApi.requestFullScreen($(".map-search-results"));
 				}
-
 			});
 		};
 	}
