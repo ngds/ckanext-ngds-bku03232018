@@ -161,10 +161,10 @@ ngds.ckanlib = {
                     var transform_neg = ngds.ckanlib.transform_neg;
                     var transform_pos = ngds.ckanlib.transform_pos;
 
-                    var t0 = transform_neg(data[0]['boundingbox'][0]);
-                    var t1 = transform_pos(data[0]['boundingbox'][1]);
-                    var t2 = transform_neg(data[0]['boundingbox'][2]);
-                    var t3 = transform_pos(data[0]['boundingbox'][3]);
+                    var t0 = Math.min(transform_neg(data[0]['boundingbox'][0]), transform_pos(data[0]['boundingbox'][1]));
+                    var t1 = Math.max(transform_neg(data[0]['boundingbox'][0]), transform_pos(data[0]['boundingbox'][1]));
+                    var t2 = Math.min(transform_neg(data[0]['boundingbox'][2]), transform_pos(data[0]['boundingbox'][3]));
+                    var t3 = Math.max(transform_neg(data[0]['boundingbox'][2]), transform_pos(data[0]['boundingbox'][3]));
 
                     var transformed_bbox = t2 + "," +
                         t0 + "," +
@@ -174,15 +174,9 @@ ngds.ckanlib = {
                     new L.rectangle([
                         [t0, t2],
                         [t1, t3]
-                    ],{'color':'black'}).addTo(ngds.Map.geoJSONLayer);
-
-                    ngds.ckanlib.package_search({
-                            q: query,
-                            extras: {
-                                ext_bbox: transformed_bbox
-                            }
-
-                        }, function (response) {
+                    ], {'color': 'black'}).addTo(ngds.Map.geoJSONLayer);
+                    parameter_obj['extras']['ext_bbox'] = transformed_bbox;
+                    ngds.ckanlib.package_search(parameter_obj, function (response) {
                             return callback(response);
                         }
 
