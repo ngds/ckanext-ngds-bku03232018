@@ -158,14 +158,23 @@ ngds.ckanlib = {
             var g_url = osm_provider.GetServiceUrl(location);
 
             $.getJSON(g_url, function (data) {
-                    var transform = ngds.ckanlib.coordinate_transform;
+                    var transform_neg = ngds.ckanlib.transform_neg;
+                    var transform_pos = ngds.ckanlib.transform_pos;
 
-                    var transformed_bbox = transform(data[0]['boundingbox'][0]) + "," +
-                        transform(data[0]['boundingbox'][1]) + "," +
-                        transform(data[0]['boundingbox'][2]) + "," +
-                        transform(data[0]['boundingbox'][3]);
+                    var t0 = transform_neg(data[0]['boundingbox'][0]);
+                    var t1 = transform_pos(data[0]['boundingbox'][1]);
+                    var t2 = transform_neg(data[0]['boundingbox'][2]);
+                    var t3 = transform_pos(data[0]['boundingbox'][3]);
 
-//                    new L.rectangle([]);
+                    var transformed_bbox = t2 + "," +
+                        t0 + "," +
+                        t3 + "," +
+                        t1;
+
+                    new L.rectangle([
+                        [t0, t2],
+                        [t1, t3]
+                    ],{'color':'black'}).addTo(ngds.Map.geoJSONLayer);
 
                     ngds.ckanlib.package_search({
                             q: query,
@@ -176,6 +185,7 @@ ngds.ckanlib = {
                         }, function (response) {
                             return callback(response);
                         }
+
                     )
                     ;
                 }
@@ -207,7 +217,18 @@ ngds.ckanlib = {
         });
 
     },
-    coordinate_transform: function (coordinate) {
+    transform_neg: function (coordinate) {
+        var c = Number(coordinate);
+        var t = 0;
+        if (c < 0) {
+            t = -(Math.abs(c) - 2);
+        }
+        else {
+            t = c - 2;
+        }
+        return t;
+    },
+    transform_pos: function (coordinate) {
         var c = Number(coordinate);
         var t = 0;
         if (c < 0) {
