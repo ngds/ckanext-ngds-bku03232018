@@ -156,12 +156,21 @@ ngds.ckanlib = {
             var query = parameter_obj['q'] = sp_str[0];
             var osm_provider = new L.GeoSearch.Provider.OpenStreetMap();
             var g_url = osm_provider.GetServiceUrl(location);
+
             $.getJSON(g_url, function (data) {
                     var transform = ngds.ckanlib.coordinate_transform;
+
+                    var transformed_bbox = transform(data[0]['boundingbox'][0]) + "," +
+                        transform(data[0]['boundingbox'][1]) + "," +
+                        transform(data[0]['boundingbox'][2]) + "," +
+                        transform(data[0]['boundingbox'][3]);
+
+//                    new L.rectangle([]);
+
                     ngds.ckanlib.package_search({
                             q: query,
                             extras: {
-                                ext_bbox: transform(data[0]['boundingbox'][0]) + "," + transform(data[0]['boundingbox'][1]) + "," + transform(data[0]['boundingbox'][2]) + "," + transform(data[0]['boundingbox'][3])
+                                ext_bbox: transformed_bbox
                             }
 
                         }, function (response) {
