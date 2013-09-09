@@ -433,6 +433,7 @@ ngds.Map = {
                 break;
             }
         }
+
         map_features.splice(i, 0, layer);
         for (var i = map_features.length - 1; i > -1; i--) {
             map_features[i].bringToFront();

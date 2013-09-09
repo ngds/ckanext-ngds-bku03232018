@@ -5,6 +5,20 @@
   left: 10px;
   z-index: 4000;
 
+  .visibility-toggler {
+    position: absolute;
+    right: 20px;
+    button {
+      .ngds-button(20px);
+      padding-top: 0px;
+    }
+
+    button.toggled {
+      color: black;
+    }
+
+  }
+
   .jspVerticalBar {
     right: 2px;
     width: 5px;
@@ -36,7 +50,8 @@
     background-color: white;
     opacity: 0.9;
     width: 310px;
-    height: 30px;
+    height: 40px;
+    line-height: 0.9em;
   }
 
   .reader {
@@ -45,6 +60,8 @@
     margin-left: 15px;
     font-size: 12px;
     color: grey;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
   }
 
   .results, .pager {
@@ -59,7 +76,7 @@
     opacity: 0.9;
     margin-bottom: 0px;
     overflow: auto;
-    height: 550px;
+    height: 540px;
     padding-bottom: 0px;
 
     scrollbar-face-color: #000000;
@@ -113,20 +130,6 @@
 
       .published {
         color: grey;
-      }
-
-      .visibility-toggler {
-        position: absolute;
-        right: 20px;
-        button {
-          .ngds-button(20px);
-          padding-top: 0px;
-        }
-
-        button.toggled {
-          color: black;
-        }
-
       }
 
       .notes {
@@ -276,15 +279,15 @@
 
 .leaflet-control {
   background-color: #366D96 !important;
-  color:white;
+  color: white;
 
   label {
-    color:white;
+    color: white;
   }
 }
 
 .leaflet-container a {
-//  color:white !important;
+  //  color:white !important;
 }
 
 .leaflet-control-fullscreen {

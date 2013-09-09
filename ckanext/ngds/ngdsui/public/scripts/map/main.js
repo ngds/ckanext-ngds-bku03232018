@@ -9,7 +9,7 @@ ngds.config = {
 };
 
 if (typeof ngds.Search !== 'undefined') {
-    ngds.pager = new ngds.Search();
+//    ngds.pager = new ngds.Search();
 }
 
 
@@ -49,6 +49,7 @@ if (typeof ngds.Map !== 'undefined') {
     ngds.Map.initialize();
 
     ngds.Map.top_level_search = function () {
+        ngds.pager = new ngds.Search();
         ngds.publish('Map.search_initiated', {
 
         });
@@ -61,9 +62,7 @@ if (typeof ngds.Map !== 'undefined') {
             'rows': ngds.config['number_of_rows'],
             'q': query
         });
-        ngds.publish('Map.expander.toggle', {
-            'no_toggle': true
-        });
+
     };
 }
 

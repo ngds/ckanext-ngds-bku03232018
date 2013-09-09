@@ -168,27 +168,69 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         var dom_node = ngds.util.dom_element_constructor(skeleton);
         $('.results').append(dom_node);
         var reader = ngds.util.dom_element_constructor({
-            'tag': 'div',
-            'attributes': {
-                'class': 'results-text'
-            },
-            'children': [
-                {
-                    'tag': 'p',
+                    'tag': 'div',
                     'attributes': {
-                        'text': 'Found ' + count + " results" + (function (count, query) {
+                        'class': 'results-text'
+                    },
+                    'children': [
+                        {
+                            'tag': 'p',
+                            'attributes': {
+                                'text': 'Found ' + count + (function (count) {
+                                    if (Number(count) < 2) {
+                                        return " result";
+                                    }
+                                    return " results";
+                                }(count)) + (function (count, query) {
 
-                            if (query !== "" && typeof query !== "undefined") {
-                                return " for \"" + query + "\""
-                            } else {
-                                return "";
+                                    if (query !== "") {
+                                        if (query !== "" && query.match(/near/) !== null) {
+                                            var sp = [];
+                                            if (query.match(/ near /) !== null) {
+                                                sp = query.split(" near ");
+                                            }
+                                            else {
+                                                sp = query.split("near ");
+                                            }
+                                            if (sp[0] === "") {
+                                                return " near " + sp[1];
+                                            }
+                                            else {
+                                                return " for \"" + sp[0] + "\"" + " near " + sp[1];
+                                            }
+                                        }
+                                        if (query !== "") {
+                                            return " for \"" + query + "\""
+                                        }
+                                    } else {
+                                        return "";
+                                    }
+                                })
+                                    (count, query),
+                                'class': 'reader'
                             }
-                        })(count, query),
-                        'class': 'reader'
-                    }
+                        },
+                        {
+                            'tag': 'div',
+                            'attributes': {
+                                'class': 'visibility-toggler'
+                            },
+                            'children': [
+                                {
+                                    'tag': 'button',
+                                    'attributes': {
+                                        'class': 'visible',
+                                        'text': 'T',
+                                        'data-seq': 0
+                                    }
+                                }
+                            ]
+
+                        }
+                    ]
                 }
-            ]
-        });
+            )
+            ;
     }
     $('.results').before(reader);
     $(".results").jScrollPane({contentWidth: '0px'});
@@ -228,6 +270,42 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             ngds.util.state['hidden_t'] = {};
         }
         var hidden_map = ngds.util.state['hidden_t'];
+
+        // Show/hide All.
+
+        if (typeof ngds.util.state['hidden_t'][seq] === "undefined" && seq === 0) {
+            ngds.util.state['hidden_t'][seq] = ngds.layer_map;
+            for (var item_key in ngds.layer_map) {
+                ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[item_key]);
+                $(ev.target).addClass("toggled");
+            }
+            ngds.util.state['map_features'] = [];
+            return;
+        }
+
+        else if (seq === 0) {
+            for (var item_key in ngds.layer_map) {
+                console.log("Working with : ", item_key);
+                ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[item_key]);
+                ngds.Map.sort_geojson_layers(ngds.layer_map[item_key]);
+            }
+            for (var item_h_key in ngds.util.state['hidden_t']) {
+                if (item_h_key === 0) {
+                    continue;
+                }
+                $("[data-seq=" + item_h_key + "]").removeClass("toggled");
+                delete ngds.util.state['hidden_t'][item_h_key];
+            }
+            delete ngds.util.state['hidden_t']
+            $(ev.target).removeClass("toggled");
+        }
+
+        // Show/hide All.
+
+        if (seq === 0) {
+            return;
+        }
+
         if (typeof ngds.util.state['hidden_t'][seq] === "undefined") {
             ngds.util.state['hidden_t'][seq] = ngds.layer_map[seq];
             ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[seq]);
@@ -242,7 +320,11 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
 
     });
+    ngds.publish('Map.expander.toggle', {
+        'no_toggle': true
+    });
 
-};
+}
+;
 
 ngds.subscribe('Map.results_received', ngds.render_search_results);

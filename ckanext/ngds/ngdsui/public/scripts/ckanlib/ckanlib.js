@@ -156,7 +156,7 @@ ngds.ckanlib = {
             var query = parameter_obj['q'] = sp_str[0];
             var osm_provider = new L.GeoSearch.Provider.OpenStreetMap();
             var g_url = osm_provider.GetServiceUrl(location);
-
+            ngds.publish("data-loading", {});
             $.getJSON(g_url, function (data) {
                     var transform_neg = ngds.ckanlib.transform_neg;
                     var transform_pos = ngds.ckanlib.transform_pos;
@@ -177,6 +177,7 @@ ngds.ckanlib = {
                     ], {'color': 'black'}).addTo(ngds.Map.geoJSONLayer);
                     parameter_obj['extras']['ext_bbox'] = transformed_bbox;
                     ngds.ckanlib.package_search(parameter_obj, function (response) {
+                            ngds.publish("data-loaded", {});
                             return callback(response);
                         }
 
@@ -215,7 +216,7 @@ ngds.ckanlib = {
         var c = Number(coordinate);
         var t = 0;
         if (c < 0) {
-            t = -(Math.abs(c) - 2);
+            t = -(Math.abs(c) + 2);
         }
         else {
             t = c - 2;
@@ -226,7 +227,7 @@ ngds.ckanlib = {
         var c = Number(coordinate);
         var t = 0;
         if (c < 0) {
-            t = -(Math.abs(c) + 2);
+            t = -(Math.abs(c) - 2);
         }
         else {
             t = c + 2;

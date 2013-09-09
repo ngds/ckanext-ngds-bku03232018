@@ -23,7 +23,7 @@ ngds.Search = function () {
     var me = this;
     var pager_div = $(".search-results-page-nums");
 
-    var go_to = function (params) {
+    var go_to = function (params,callback) {
         var q = '';
         var rows = params['rows'];
         var action = params['action'];
@@ -111,7 +111,6 @@ ngds.Search = function () {
                                                                    }
                                                                }));
         });
-
     };
 
     return {

@@ -31,6 +31,10 @@ var zoom_handler = ngds.Map.zoom_handler = function (layer) {
         var bbox_maxy = bbox._northEast.lat;
         var bbox_maxx = bbox._northEast.lng;
 
+        if (typeof ngds.util.state['hidden_t'] !== 'undefined' && typeof ngds.util.state['hidden_t'][0] !== 'undefined') {
+            return;
+        }
+
         var id_map = _.map(ngds.util.state['hidden_t'], function (value) {
             return value._leaflet_id;
         });
