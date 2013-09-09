@@ -49,6 +49,9 @@ if (typeof ngds.Map !== 'undefined') {
     ngds.Map.initialize();
 
     ngds.Map.top_level_search = function () {
+        ngds.publish('Map.expander.toggle', {
+
+        });
         ngds.pager = new ngds.Search();
         ngds.publish('Map.search_initiated', {
 
@@ -340,7 +343,7 @@ if (typeof ngds.Map !== 'undefined') {
     ngds.subscribe('Map.expander.toggle', function (topic, data) {
         var no_toggle = data['no_toggle'] || false;
 
-        if (operation === 'contract' && no_toggle === false) {
+        if (operation === 'contract' || no_toggle === false) {
             operation = 'expand';
             $(".results").hide();
             $(".search-results-pagination").hide();

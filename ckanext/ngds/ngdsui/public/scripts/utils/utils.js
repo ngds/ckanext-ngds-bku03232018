@@ -4,6 +4,9 @@ ngds.util.dom_element_constructor = function (payload) {
     var parent = $('<' + payload['tag'] + '/>', payload['attributes']);
     if (typeof payload['children'] !== 'undefined') {
         for (var i = 0; i < payload['children'].length; i++) {
+            if (typeof payload['children'][i] === 'undefined') {
+                continue;
+            }
             if (payload['children'][i]['priority'] === 1) {
                 parent.prepend(ngds.util.dom_element_constructor(payload['children'][i]));
             }

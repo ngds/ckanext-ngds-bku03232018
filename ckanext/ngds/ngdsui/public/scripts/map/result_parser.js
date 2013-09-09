@@ -167,56 +167,61 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
         var dom_node = ngds.util.dom_element_constructor(skeleton);
         $('.results').append(dom_node);
-        var reader = ngds.util.dom_element_constructor({
+
+    }
+    var reader = ngds.util.dom_element_constructor({
+            'tag': 'div',
+            'attributes': {
+                'class': 'results-text'
+            },
+            'children': [
+                {
+                    'tag': 'p',
+                    'attributes': {
+                        'text': 'Found ' + count + (function (count) {
+                            if (Number(count) === 1) {
+                                return " result";
+                            }
+                            return " results";
+                        }(count)) + (function (count, query) {
+
+                            if (query !== "") {
+                                if (query !== "" && query.match(/near/) !== null) {
+                                    var sp = [];
+                                    if (query.match(/ near /) !== null) {
+                                        sp = query.split(" near ");
+                                    }
+                                    else {
+                                        sp = query.split("near ");
+                                    }
+                                    if (sp[0] === "") {
+                                        return " near " + sp[1];
+                                    }
+                                    else {
+                                        return " for \"" + sp[0] + "\"" + " near " + sp[1];
+                                    }
+                                }
+                                if (query !== "") {
+                                    return " for \"" + query + "\""
+                                }
+                            } else {
+                                return "";
+                            }
+                        })
+                            (count, query),
+                        'class': 'reader'
+                    }
+                },
+                {
                     'tag': 'div',
                     'attributes': {
-                        'class': 'results-text'
+                        'class': 'visibility-toggler'
                     },
                     'children': [
-                        {
-                            'tag': 'p',
-                            'attributes': {
-                                'text': 'Found ' + count + (function (count) {
-                                    if (Number(count) < 2) {
-                                        return " result";
-                                    }
-                                    return " results";
-                                }(count)) + (function (count, query) {
-
-                                    if (query !== "") {
-                                        if (query !== "" && query.match(/near/) !== null) {
-                                            var sp = [];
-                                            if (query.match(/ near /) !== null) {
-                                                sp = query.split(" near ");
-                                            }
-                                            else {
-                                                sp = query.split("near ");
-                                            }
-                                            if (sp[0] === "") {
-                                                return " near " + sp[1];
-                                            }
-                                            else {
-                                                return " for \"" + sp[0] + "\"" + " near " + sp[1];
-                                            }
-                                        }
-                                        if (query !== "") {
-                                            return " for \"" + query + "\""
-                                        }
-                                    } else {
-                                        return "";
-                                    }
-                                })
-                                    (count, query),
-                                'class': 'reader'
-                            }
-                        },
-                        {
-                            'tag': 'div',
-                            'attributes': {
-                                'class': 'visibility-toggler'
-                            },
-                            'children': [
-                                {
+                        (function (count) {
+                            console.log(count);
+                            if (Number(count) !== 0) {
+                                return {
                                     'tag': 'button',
                                     'attributes': {
                                         'class': 'visible',
@@ -224,14 +229,16 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                                         'data-seq': 0
                                     }
                                 }
-                            ]
+                                return;
+                            }
+                        })(count)
 
-                        }
                     ]
+
                 }
-            )
-            ;
-    }
+            ]
+        }
+    );
     $('.results').before(reader);
     $(".results").jScrollPane({contentWidth: '0px'});
 
