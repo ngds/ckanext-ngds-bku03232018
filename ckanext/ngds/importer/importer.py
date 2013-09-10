@@ -17,7 +17,7 @@ from ckanext.ngds.env import ckan_model
 from ckanext.importlib.importer import *
 import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 
-import ckanext.ngds.lib.importer.helper as import_helper
+import ckanext.ngds.importer.helper as import_helper
 from pylons import config
 #the following needs to be revisted and removed...
 from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
@@ -138,11 +138,11 @@ class BulkUploader(object):
         dict from xls file and loads them into CKAN. Each successfully loaded pacakges are referenced against bulk upload
         record for tracking.
         """
-        from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
-        from ckan.logic import (tuplize_dict,clean_dict,parse_params,flatten_to_string_key)
+        from ckan.lib.navl.dictization_functions import unflatten
+        from ckan.logic import (tuplize_dict,clean_dict  )
 
         
-        from ckanext.ngds.lib.importer.loader import ResourceLoader
+        from ckanext.ngds.importer.loader import ResourceLoader
 
         if ckanclient is None:
             ckanclient = self._get_ckanclient()

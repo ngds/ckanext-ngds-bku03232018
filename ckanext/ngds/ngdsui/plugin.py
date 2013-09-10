@@ -30,6 +30,8 @@ class NgdsuiPlugin(SingletonPlugin):
         Load ckan's authorization module and update the default role with NGDS specific roles.
         """
 
+        #helpers.get_contributors_list()
+
         def _trans_role_datasteward():
             return ('Data Steward')
 

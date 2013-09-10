@@ -25,7 +25,11 @@
 				</div>
 			</div>
 
-			<!--<div id="data-contributors-container">-->
+            {% if g.contributors_list %}
+			<div id="data-contributors-container">
+                {% for contributor in g.contributors_list%}
+                    <p><span><a href="{{contributor.url}}"><img src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></p>
+                {% endfor %}
 				<!--<p><span>AZGS</span></p>-->
 				<!--<p><span>SMU</span></p>-->
 				<!--<p><span>EGI</span></p>-->
@@ -35,7 +39,8 @@
 				<!--<p><span>SCR</span></p>-->
 				<!--<p><span>SCR</span></p>-->
 				<!--<p><span>SCR</span></p>-->
-			<!--</div>-->
+			</div>
+            {% endif %}
 		</div>
 		</div>
 	<div class="postface">

@@ -1,0 +1,23 @@
+[
+    {
+        "name":"Association of American State Geologists",
+        "abbreviation":"AASG",
+        "logo_path":"gray-logo_aasg_color.png",
+        "url":"http://www.stategeologists.org/",
+        "is_gold":"true"
+    },
+    {
+        "name":"Southern Methodist University",
+        "abbreviation":"SMU",
+        "logo_path":"gray-logo_smu-wordmark.png",
+        "url":"http://smu.edu/geothermal/",
+        "is_gold":"true"
+    },
+    {
+        "name":"U. S. Geological Survey",
+        "abbreviation":"USGS",
+        "logo_path":"gray-logo_usgs.png",
+        "url":"http://energy.usgs.gov/OtherEnergy/Geothermal.aspx",
+        "is_gold":"true"
+    }
+]
