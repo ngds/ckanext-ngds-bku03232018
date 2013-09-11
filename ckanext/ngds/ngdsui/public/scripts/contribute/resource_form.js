@@ -89,6 +89,7 @@ var populate_form = function (data) {
     }
 };
 
+/*
 var activate_populate_form = function (data) {
     render_forms(data['resource_format']);
     populate_form(data);
@@ -100,11 +101,13 @@ var activate_populate_form = function (data) {
     $("[name=name]").val(name);
     $("[name=format]").val(file_extension);
 };
+*/
 
 $(".form-body").on("change", ".content_model", function () { // When the content model combo's value changes, populate the content model versions into the content_model_version combo box.
     populate_content_model_versions();
 });
 
+/*
 var get_prop = function (url, what) {
     if (typeof url === 'undefined' || url.length === 0) {
         return '';
@@ -118,6 +121,7 @@ var get_prop = function (url, what) {
     }
 };
 
+*/
 
 position_file_uploader();
 var render_forms = function (value) {
@@ -169,6 +173,8 @@ var render_forms = function (value) {
         });
     }
 };
+
+
 $('input[name="resource_format"]').on('change', function (ev) {
     var id = ev.currentTarget.id;
     var value = "";
@@ -187,6 +193,7 @@ $('input[name="resource_format"]').on('change', function (ev) {
 
     render_forms(value);
 });
+
 
 $("#go-metadata").click(function () {
     $.ajax({
