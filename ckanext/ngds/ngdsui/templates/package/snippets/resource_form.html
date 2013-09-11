@@ -122,7 +122,7 @@ $(document).ready(function() {
    {% set dist = data['distributor'] %}
     {% endif %}
 
-   
+
    // data="{{data|replace(data['distributor'],'')}}";
    data = ngds.util.parse_raw_json("{{data|replace(data.distributor,'')|replace('None','\"\"')|replace('False','false')|replace('True','true')}}");
    data['distributor'] = distributor;

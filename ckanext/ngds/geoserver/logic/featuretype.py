@@ -74,6 +74,7 @@ class SqlFeatureTypeDef:
         resource_id = data_dict['resource_id']
         col_latitude =  data_dict['col_longitude']
         col_longitude =  data_dict['col_latitude']
+
        
         query = sqlalchemy.text("SELECT MIN(\"" +col_latitude+"\"), MAX(\""+col_latitude+"\")"+
                 ", MIN(\""+col_longitude+"\"), MAX(\""+col_longitude+"\")"+

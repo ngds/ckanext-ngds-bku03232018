@@ -25,6 +25,44 @@ class Datastored(object):
         if not self.connection_url:
             raise ValueError(toolkit._("Expected datastore write url to be configured in development.ini"))
 
+    def clean_fields(self, connection, field_list):
+        """
+        CSV files can have spaces in column names, which will carry over into PostGIS tables.  Geoserver can not handle
+        spaces in field names because they will generate namespace errors in XML, which renders the OGC service as
+        invalid.  This function looks for column names with spaces and replaces those spaces with underscores.
+        """
+        for item in field_list:
+            dirty = item['id']
+            clean = dirty.replace(" ","_")
+            if dirty != clean:
+                sql = 'ALTER TABLE "{res_id}" RENAME COLUMN "{old_val}" TO {new_val}'.format(
+                    res_id=self.resource_id,
+                    old_val=item['id'],
+                    new_val=dirty.replace(" ","_")
+                )
+                trans = connection.begin()
+                connection.execute(sql)
+                trans.commit()
+            else:
+                pass
+
+    def dirty_fields(self, connection, field_list):
+        for item in field_list:
+            dirty = item['id']
+            clean = dirty.replace(" ","_")
+            if dirty != clean:
+                sql = 'ALTER TABLE "{res_id}" RENAME COLUMN "{old_val}" TO {new_val}'.format(
+                    res_id=self.resource_id,
+                    old_val=item['id'],
+                    new_val=dirty.replace("_"," ")
+                )
+                trans = connection.begin()
+                connection.execute(sql)
+                trans.commit()
+            else:
+                pass
+
+
     def publish(self):
         """
         Checks and generates the 'Geometry' column in the table for Geoserver to work on.
@@ -40,6 +78,7 @@ class Datastored(object):
         try:
             # This will fail with a ProgrammingError if the table does not exist
             fields = db._get_fields({"connection": connection}, conn_params)
+
         except ProgrammingError as ex:
             raise toolkit.ObjectNotFound(toolkit._("Resource not found in datastore database"))
 
@@ -47,6 +86,8 @@ class Datastored(object):
         if not True in { col['id'] == self.geo_col for col in fields }:
             # ... append one
             fields.append({'id': self.geo_col, 'type': u'geometry'})
+
+            self.clean_fields(connection, fields)
 
             # SQL to create the geometry column
             sql = "SELECT AddGeometryColumn('public', '%s', '%s', 4326, 'GEOMETRY', 2)" % (self.resource_id, self.geo_col)
