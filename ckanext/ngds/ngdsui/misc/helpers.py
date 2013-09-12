@@ -721,25 +721,28 @@ def get_contributors_list():
 
     :return:List of contributors as dictionary
     """
+    try:
+        if g.contributors_list:
+            log.debug("Contributors list is already loaded.")
+    except AttributeError:
+        contributors_config = config.get('ngds.contributors_config')
 
-    contributors_config = config.get('ngds.contributors_config')
+        #Open the json config file and load it as dict.
+        with open(contributors_config, 'r') as json_file:
+            import json
+            from pprint import pprint
 
-    #Open the json config file and load it as dict.
-    with open(contributors_config, 'r') as json_file:
-        import json
-        from pprint import pprint
+            contributors_list = json.load(json_file)
+            image_direcotry = config.get('ngds.home_images_dir', 'assets')
 
-        contributors_list = json.load(json_file)
-        image_direcotry = config.get('ngds.home_images_dir', 'assets')
+            prepend_str = "/" + image_direcotry + "/"
 
-        prepend_str = "/" + image_direcotry + "/"
+            for contributor in contributors_list:
+                contributor['logo_path'] = prepend_str + contributor.get("logo_path")
+                #contributors_list.append(contributor)
 
-        for contributor in contributors_list:
-            contributor['logo_path'] = prepend_str + contributor.get("logo_path")
-            #contributors_list.append(contributor)
+        print "contributors_list: ",contributors_list
 
-    print "contributors_list: ",contributors_list
+        g.contributors_list = contributors_list
 
-    #g.contributors_list = contributors_list
-
-    return contributors_list
+    return g.contributors_list

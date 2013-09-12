@@ -151,22 +151,22 @@ class NgdsuiPlugin(SingletonPlugin):
 
         user_controller = "ckanext.ngds.ngdsui.controllers.user:UserController"
 
-        map.connect("manage_users","/ngds/users",controller=user_controller,action="manage_users")
-        map.connect("member_new","/ngds/member_new",controller=user_controller,action="member_new")
-        map.connect("logout_page","/user/logged_out_redirect",controller=user_controller,action="logged_out_page")
-        map.connect("validate_resource","/ngds/contribute/validate_resource",controller=contribute_controller,action="validate_resource")
-        map.connect("additional_metadata","/ngds/contribute/additional_metadata",controller=contribute_controller,action="additional_metadata")
-        map.connect("new_metadata","/ngds/contribute/new_metadata",controller=contribute_controller,action="new_metadata")
+        map.connect("manage_users", "/ngds/users", controller=user_controller, action="manage_users")
+        map.connect("member_new", "/ngds/member_new", controller=user_controller, action="member_new")
+        map.connect("logout_page", "/user/logged_out_redirect", controller=user_controller, action="logged_out_page")
+        map.connect("validate_resource", "/ngds/contribute/validate_resource", controller=contribute_controller, action="validate_resource")
+        map.connect("additional_metadata", "/ngds/contribute/additional_metadata", controller=contribute_controller, action="additional_metadata")
+        map.connect("new_metadata", "/ngds/contribute/new_metadata", controller=contribute_controller, action="new_metadata")
 
-        map.connect("execute_fulltext_indexer","/ngds/execute_fulltext_indexer",controller=contribute_controller,action="execute_fulltext_indexer")
+        map.connect("execute_fulltext_indexer", "/ngds/execute_fulltext_indexer", controller=contribute_controller, action="execute_fulltext_indexer")
 
         #Footer URLS
-        map.connect("partners","/ngds/partners",controller=home_controller,action="render_partners")
-        map.connect("data","/ngds/data",controller=home_controller,action="render_data")
-        map.connect("history","/ngds/history",controller=home_controller,action="render_history")
-        map.connect("new_to_ngds","/ngds/new_to_ngds",controller=home_controller,action="render_new_to_ngds")
-        map.connect("faq","/ngds/faq",controller=home_controller,action="render_faq")
-
+        map.connect("partners", "/ngds/partners", controller=home_controller, action="render_partners")
+        map.connect("data", "/ngds/data", controller=home_controller, action="render_data")
+        map.connect("history", "/ngds/history", controller=home_controller, action="render_history")
+        map.connect("new_to_ngds", "/ngds/new_to_ngds", controller=home_controller, action="render_new_to_ngds")
+        map.connect("faq", "/ngds/faq", controller=home_controller, action="render_faq")
+        map.connect("contributors_list", "/ngds/contributors_list", controller=home_controller, action="render_contributors")
 
         return map
 
@@ -176,9 +176,9 @@ class NgdsuiPlugin(SingletonPlugin):
         """
         Register the templates directory with ckan so that Jinja can find them.
         """
-        toolkit.add_template_directory(config,'templates')
+        toolkit.add_template_directory(config, 'templates')
         #Static files are to be served up from here. Otherwise, pylons will try and decode content in here and will fail.
-        toolkit.add_public_directory(config,'public')
+        toolkit.add_public_directory(config, 'public')
 
         self.customize_ckan_for_ngds()
 
