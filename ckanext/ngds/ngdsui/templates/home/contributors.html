@@ -5,15 +5,20 @@
 
 <h2>{{_('Data Contributors')}}</h2>
 
-{% if g.contributors_list %}
+{% set contributors_list=h.get_contributors_list() %}
+
+{% if contributors_list %}
 <div>
     <ul>
-    {% set c_i=0 %}
-    {% for contributor in g.contributors_list if contributor.is_gold=='true' %}
-        {% set c_i=c_i+1 %}
-        {% if c_i<7 %}
+        <h5>{{_('Primary Contributors')}}</h5>
+    {% for contributor in contributors_list if contributor.is_gold=='true' %}
         <li><span><a href="{{contributor.url}}" target="_blank"><img src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></li>
-        {% endif %}
+    {% endfor %}
+    </ul>
+    <ul>
+        <h5>{{_('Other Contributors')}}</h5>
+    {% for contributor in contributors_list if not contributor.is_gold=='true' %}
+        <li><span><a href="{{contributor.url}}" target="_blank"><img src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></li>
     {% endfor %}
     </ul>
 </div>

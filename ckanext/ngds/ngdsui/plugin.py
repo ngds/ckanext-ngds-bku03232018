@@ -248,7 +248,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_rating_details':helpers.get_rating_details,
             'get_top_5_harvest_sources':helpers.get_top_5_harvest_sources,
             'get_home_images':helpers.get_home_images,
-            'get_filtered_items':helpers.get_filtered_items
+            'get_filtered_items':helpers.get_filtered_items,
+            'get_contributors_list':helpers.get_contributors_list
         }
 
     implements(IPackageController, inherit=True)
