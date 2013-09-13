@@ -82,7 +82,7 @@ ngds.Map = {
             polyline: false,
             circle: false,
             marker: false,
-            polygon: true
+            polygon: false
         });
 
         map.addControl(_drawControl);
@@ -90,7 +90,7 @@ ngds.Map = {
         map.addLayer(_drawnItems);
 
 
-        var zoom = new L.Control.Zoom({
+        var zoom = new ngds.Zoom({
             'position': 'topright'
         });
 
@@ -366,6 +366,7 @@ ngds.Map = {
                 me.add_raw_result_to_geojson_layer(response.result);
             });
         });
+
     },
     add_raw_result_to_geojson_layer: function (result, options) { // Expects response.result, not response. Seq id passed in.
         try {
@@ -419,10 +420,13 @@ ngds.Map = {
         geoJSONRepresentation.bindPopup(popup);
         this.add_to_layer([geoJSONRepresentation], 'geojson');
         this.sort_geojson_layers(geoJSONRepresentation);
+
     },
     sort_geojson_layers: function (layer) {
         var perimeter = new ngds.Map.BoundingBox().store_raw(layer.getBounds()).get_perimeter();
-
+        if (typeof ngds.util.state['map_features'] === 'undefined') {
+            ngds.util.state['map_features'] = [];
+        }
         var map_features = ngds.util.state['map_features'];
         var i = 0;
         for (i = 0; i <= map_features.length; i++) {

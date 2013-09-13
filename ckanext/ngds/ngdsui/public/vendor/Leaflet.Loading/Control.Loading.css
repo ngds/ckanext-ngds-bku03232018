@@ -15,7 +15,7 @@
 }
 
 .leaflet-bar a {
-    background-color: #366D96 !important;
+    /*background-color: #366D96 !important;*/
 }
 
 .leaflet-control-loading.is-loading,

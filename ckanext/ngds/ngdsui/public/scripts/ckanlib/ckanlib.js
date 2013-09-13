@@ -119,6 +119,7 @@ ngds.ckanlib = {
      *	Input : Parameter object with keys that make sense. Currently the only one that makes sense is 'extras'. And a callback.
      */
     package_search: function (parameter_obj, callback) {
+        console.log(parameter_obj);
         // Validate inputs.
         (function () {
             if (parameter_obj !== null && typeof parameter_obj !== 'undefined') {

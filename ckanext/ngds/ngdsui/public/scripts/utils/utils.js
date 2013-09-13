@@ -98,25 +98,27 @@ ngds.util.apply_feature_default_styles = function (feature, tag_index) {
         span_elem.css("margin-left", "0px");
     }
     else {
-        feature.setStyle({weight: 1, color: "black", fillColor: ngds.util.state['colorify'][tag_index], dashArray: "", opacity: 1, fillOpacity: 0.5});
+        feature.setStyle({weight: 1, color: ngds.util.state['colorify'][tag_index], fillColor: ngds.util.state['colorify'][tag_index], dashArray: "", opacity: 0.7, fillOpacity: 0.5});
 //        ngds.util.svg_crispify_post_process();
     }
 };
 
 ngds.util.apply_feature_active_styles = function (feature, tag_index) {
     var type = feature.layer.feature.geometry.type;
-    $('.result-' + tag_index).css('background-color', '#DDE9ED');
+//    $('.result-' + tag_index).css('background-color', '#DDE9ED');
+    $(".result-" + tag_index).addClass("selected");
     if (type === 'Point') {
         $('.lmarker-' + tag_index).attr("src", "/images/marker-red.png");
     }
     else {
-        feature.layer.setStyle({weight: 3, color: "red", fillColor: "red", fillOpacity: 0.2, opacity: 1, dashArray: "5, 10"});
+        feature.layer.setStyle({weight: 3, color: "red", fillColor: "red", fillOpacity: 0.2, opacity: 1, dashArray: ""});
 //        ngds.util.svg_crispify_post_process();
     }
 };
 
 ngds.util.reset_result_styles = function () {
-    $('.result').css('background-color', '#fff');
+//    $('.result').css('background-color', '#efefef');
+    $(".result").removeClass("selected");
 };
 
 ngds.util.svg_crispify_post_process = function () {
@@ -130,8 +132,13 @@ ngds.util.clear_map_state = function () {
     $(".search-results-page-nums").empty();
     $(".results-text").remove();
     ngds.Map.zoom_handler.clear_listeners();
+    ngds.layer_map = {};
     ngds.Map.clear_layer('geojson');
     ngds.util.state['map_features'] = []
+    for (var prom_index in ngds.util.state['prominence']) {
+        ngds.Map.map.removeLayer(ngds.util.state['prominence'][prom_index]);
+    }
+    ngds.util.state['prominence'] = {};
 
 };
 
@@ -174,7 +181,7 @@ ngds.util.state = {
 };
 
 ngds.util.rotate_color = function () {
-    var colors = ["#9ACB57", "#A39AC9", "#F36A50", "#B84693", "#FDD63C", "#414687", "#0091A9"];
+    var colors = ["#f26a50", "#99ca57", "#a299c8", "#b74692", "#fcd53c", "#414686", "#0090A8", "#f6879f", "#177abe", "#4a3134", "#bd0331"];
 
     if (typeof ngds.util.state['rotate_color'] === "undefined" || ngds.util.state === null) {
         ngds.util.state['rotate_color'] = {};
@@ -188,4 +195,47 @@ ngds.util.rotate_color = function () {
     ngds.util.state['rotate_color']['index'] = ngds.util.state['rotate_color']['index'] + 1;
 
     return colors[ngds.util.state['rotate_color']['index']];
+};
+
+ngds.util.make_prominent = function () {
+
+    if (typeof ngds.util.state['prominence'] === 'undefined') {
+        ngds.util.state['prominence'] = {};
+    }
+    var prominence_state = ngds.util.state['prominence'];
+
+    for (var layer_index in ngds.layer_map) {
+        if (typeof prominence_state[layer_index] === 'undefined') {
+            var layer = ngds.layer_map[layer_index];
+            var layer_bounds = layer.getBounds();
+            var prominence = ngds.util.compute_prominence(layer);
+
+            if (prominence > 24000) {
+                var center = new L.LatLng((layer_bounds._northEast.lat + layer_bounds._southWest.lat) / 2, (layer_bounds._northEast.lng + layer_bounds._southWest.lng) / 2);
+                var circleMarker = new L.CircleMarker(center, {weight: 3, color: "green", fillColor: "green", fillOpacity: 0, opacity: 1, dashArray: "5,5"});
+                circleMarker.setRadius(20);
+                ngds.Map.map.addLayer(circleMarker);
+                prominence_state[layer_index] = circleMarker;
+            }
+
+        }
+        else {
+            var layer = ngds.layer_map[layer_index];
+            if (ngds.util.compute_prominence(layer) < 24000) {
+                ngds.Map.map.removeLayer(prominence_state[layer_index]);
+                delete prominence_state[layer_index];
+            }
+
+        }
+
+    }
+};
+
+ngds.util.compute_prominence = function (layer) {
+    var map_bounds = ngds.Map.map.getBounds();
+    var map_area = (map_bounds._northEast.lat - map_bounds._southWest.lat) * (map_bounds._northEast.lng - map_bounds._southWest.lng );
+    var layer_bounds = layer.getBounds();
+    var layer_area = (layer_bounds._northEast.lat - layer_bounds._southWest.lat) * (layer_bounds._northEast.lng - layer_bounds._southWest.lng );
+    return (map_area / layer_area);
+
 };

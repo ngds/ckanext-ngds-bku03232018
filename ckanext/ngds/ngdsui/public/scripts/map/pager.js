@@ -2,6 +2,7 @@ ngds.Search = function () {
     var package_extras = '';
 
     ngds.subscribe('Map.area_selected', function (msg, data) {
+        console.log(data);
         if (data['type'] === 'rectangle') {
             bbox = new ngds.Map.BoundingBox();
             bbox.construct_from_leaflet_shape(data['feature']['rect']);
@@ -23,7 +24,7 @@ ngds.Search = function () {
     var me = this;
     var pager_div = $(".search-results-page-nums");
 
-    var go_to = function (params,callback) {
+    var go_to = function (params, callback) {
         var q = '';
         var rows = params['rows'];
         var action = params['action'];
@@ -40,7 +41,9 @@ ngds.Search = function () {
         }
         ngds.Map.current_query = me._q;
         ngds.log("Searching for term : " + q + ", rows : " + rows + ", page : " + page + " start : " + start);
-        if (package_extras === '') {
+        console.log(package_extras);
+
+        if (package_extras === "") {
             var southWest = new L.LatLng(-90, -180),
                 northEast = new L.LatLng(90, 180),
                 bounds = new L.LatLngBounds(southWest, northEast);
@@ -51,12 +54,15 @@ ngds.Search = function () {
             };
         }
 
+//        console.log(action);
+//        console.log(package_extras);
+
         action({
-                   'rows': rows,
-                   'q': q,
-                   'start': start,
-                   'extras': package_extras
-               }, function (response) {
+            'rows': rows,
+            'q': q,
+            'start': start,
+            'extras': package_extras
+        }, function (response) {
             ngds.publish('Map.results_received', {
                 'results': response.result.results,
                 'query': ngds.Map.current_query,
@@ -68,33 +74,33 @@ ngds.Search = function () {
             var dots_added = false;
 
             pager_div.append(ngds.util.dom_element_constructor({
-                                                                   'tag': 'a',
-                                                                   'attributes': {
-                                                                       'class': 'page-num',
-                                                                       'text': '<'
-                                                                   }
-                                                               }));
+                'tag': 'a',
+                'attributes': {
+                    'class': 'page-num',
+                    'text': '<'
+                }
+            }));
 
             for (var i = 1; i < num_pages + 1; i++) {
                 if ((i !== cur_page && i !== 1 && i !== num_pages) && (i < cur_page - 1 || i > cur_page + 1)) {
                     if (dots_added === false)
                         pager_div.append(ngds.util.dom_element_constructor({
-                                                                               'tag': 'a',
-                                                                               'attributes': {
-                                                                                   'class': 'page-num',
-                                                                                   'text': '...'
-                                                                               }
-                                                                           }));
+                            'tag': 'a',
+                            'attributes': {
+                                'class': 'page-num',
+                                'text': '...'
+                            }
+                        }));
                     dots_added = true;
                     continue;
                 }
                 var a_to_append = ngds.util.dom_element_constructor({
-                                                                        'tag': 'a',
-                                                                        'attributes': {
-                                                                            'class': 'page-num',
-                                                                            'text': i
-                                                                        }
-                                                                    });
+                    'tag': 'a',
+                    'attributes': {
+                        'class': 'page-num',
+                        'text': i
+                    }
+                });
 
                 pager_div.append(a_to_append);
 
@@ -104,12 +110,12 @@ ngds.Search = function () {
                 }
             }
             pager_div.append(ngds.util.dom_element_constructor({
-                                                                   'tag': 'a',
-                                                                   'attributes': {
-                                                                       'class': 'page-num',
-                                                                       'text': '>'
-                                                                   }
-                                                               }));
+                'tag': 'a',
+                'attributes': {
+                    'class': 'page-num',
+                    'text': '>'
+                }
+            }));
         });
     };
 
