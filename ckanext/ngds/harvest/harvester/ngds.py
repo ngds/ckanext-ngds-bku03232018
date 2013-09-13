@@ -28,37 +28,46 @@ class NgdsHarvester(CSWHarvester):
         package_dict = super(NgdsHarvester, self).get_package_dict(iso_values, harvest_object)
 
         # Then lets customize the package_dict further
+        extras = package_dict['extras']
 
         # Published or unpublished
         package_dict['private'] = False
 
         # Maintainer
         maintainer = {"key": "maintainer", "value": json.dumps([{"name": "from XML", "email": "from XML"}])}
+        extras.append(maintainer)
 
         # Any otherID
         other_id = {"key": "other_id", "value": "from XML"}
+        extras.append(other_id)
 
         # The data type
         data_type = {"key": "data_type", "value": "from XML"}
+        extras.append(data_type)
 
         # Pub date
         publication_date = {"key": "publication_date", "value": "from XML"}
+        extras.append(publication_date)
 
         # Authors
         authors = {"key": "authors", "value": json.dumps([{"name": "from XML", "email": "from XML"}])}
+        extras.append(authors)
 
         # Quality
         quality = {"key": "quality", "value": "from XML"}
+        extras.append(quality)
 
         # Lineage
         lineage = {"key": "lineage", "value": "from XML"}
+        extras.append(lineage)
 
         # Status
         status = {"key": "status", "value": "from XML"}
+        extras.append(status)
 
         # Facets
         # Need info on how these should look
-        
+
         # Resources
         for res in package_dict.get('resources',[]):
             res['protocol'] = res.get('resource_locator_protocol', '')
@@ -73,6 +82,6 @@ class NgdsHarvester(CSWHarvester):
 
             res['layer'] = "get this from XML"
 
-        # And lastly, make sure to return the dict
+        # When finished, be sure to return the dict
         return package_dict
 
