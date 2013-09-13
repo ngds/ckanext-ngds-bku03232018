@@ -47,7 +47,7 @@ setup(
 	metadata=ckanext.ngds.metadata.plugin:MetadataPlugin
 	
 	# NGDS Harvest plugin
-	ngdsharvest=ckanext.ngds.harvest.plugin:NgdsHarvestPlugin
+	ngds_harvester=ckanext.ngds.harvest.harvester.ngds:NgdsHarvester
 
 	# NGDS UI plugin.
 	ngdsui=ckanext.ngds.ngdsui.plugin:NgdsuiPlugin
