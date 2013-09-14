@@ -7,7 +7,7 @@ L.FullScreen = L.Control.extend({
 
     onAdd: function (map) {
         var container = L.DomUtil.create('div', 'leaflet-control-fullscreen-container');
-        this._createButton(this.options.title, 'leaflet-control-fullscreen', container, this.fullscreen, this);
+        this._createButton(this.options.title, 'leaflet-control-fullscreen', container, this.full_screen, this);
         return container;
     },
 
@@ -31,19 +31,56 @@ L.FullScreen = L.Control.extend({
     set_state: function (val) {
         this.fs_state = val;
     },
-    fullscreen: function () {
+    request_fs: function (el) {
+        if (typeof el.webkitRequestFullScreen !== 'undefined') {
+            el.webkitRequestFullScreen();
+            return;
+        }
+        if (typeof el.mozRequestFullScreen !== 'undefined') {
+            el.mozRequestFullScreen();
+            return;
+        }
+    },
+    cancel_fs: function () {
+        if (typeof document.webkitCancelFullScreen !== 'undefined') {
+            document.webkitCancelFullScreen();
+            return;
+        }
+        if (typeof document.mozCancelFullScreen !== 'undefined') {
+            document.mozCancelFullScreen();
+            return;
+        }
+    },
+    is_full_screen: function () {
+        if (typeof el.webkitRequestFullScreen !== 'undefined') {
+            return document.webkitIsFullScreen;
+        }
+        if (typeof el.mozRequestFullScreen !== 'undefined') {
+            return document.mozIsFullScreen;
+        }
+    },
+    full_screen: function () {
         this.fs = this.get_state();
         if (this.fs === true) {
-            document.webkitCancelFullScreen();
+            this.cancel_fs();
             $("#map-container").removeClass("fullscreen");
             ngds.Map.map.invalidateSize();
             this.set_state(false);
         }
         else {
-            $("#content-container")[0].webkitRequestFullScreen();
+            this.request_fs($("#content-container")[0]);
             $("#map-container").addClass("fullscreen");
             ngds.Map.map.invalidateSize();
             this.set_state(true);
+            var me = this;
+            var key = setInterval(function () {
+                if (document.webkitIsFullScreen === false) {
+                    me.set_state(false);
+                    $("#map-container").removeClass("fullscreen");
+                    ngds.Map.map.invalidateSize();
+                    clearInterval(key);
+                }
+            }, 500);
         }
     }
 });

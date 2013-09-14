@@ -89,6 +89,12 @@ ngds.Map = {
         var _drawnItems = ngds.Map.drawnItems = new L.LayerGroup();
         map.addLayer(_drawnItems);
 
+        var geosearch = ngds.Map.geosearch = new L.Control.GeoSearch({
+            provider: new L.GeoSearch.Provider.OpenStreetMap(),
+            position: 'topright'
+        });
+
+        geosearch.addTo(map);
 
         var zoom = new ngds.Zoom({
             'position': 'topright'
@@ -98,9 +104,9 @@ ngds.Map = {
         map.addControl(rect_clear);
 
         var fs = new L.FullScreen();
-        map.addControl(fs);
 
         map.addControl(zoom);
+        map.addControl(fs);
         map.addControl(loadingControl);
 
 //        L.control.fullscreen({
@@ -190,12 +196,6 @@ ngds.Map = {
                 popupAnchor: new L.Point(0, -33)
             }
         });
-        var geosearch = ngds.Map.geosearch = new L.Control.GeoSearch({
-            provider: new L.GeoSearch.Provider.OpenStreetMap(),
-            position: 'topright'
-        });
-
-        geosearch.addTo(map);
 
         ngds.publish("Map.loaded", { });
     },
