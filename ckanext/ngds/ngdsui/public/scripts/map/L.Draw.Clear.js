@@ -24,6 +24,5 @@ L.Clear = L.Control.extend({
     clearRectangle: function () {
         ngds.Map.get_layer('drawnItems').clearLayers();
         ngds.publish('Map.clear_rect', {});
-        $("#content-container")[0].webkitRequestFullScreen();
     }
 });
