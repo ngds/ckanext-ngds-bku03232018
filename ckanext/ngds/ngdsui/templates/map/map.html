@@ -54,7 +54,7 @@
 <link rel="stylesheet" type="text/css" href="/vendor/leaflet-draw/leaflet.draw.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/iconlabel/leaflet.iconlabel.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/jscrollpane/jquery.jscrollpane.css"/>
-<link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Fullscreen/Control.FullScreen.css"/>
+<!--<link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Fullscreen/Control.FullScreen.css"/>-->
 <link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Label/leaflet.label.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Loading/Control.Loading.css"/>
 
@@ -70,7 +70,7 @@
 <script type="text/javascript" src="/vendor/jscrollpane/jquery.jscrollpane.min.js"></script>
 <script type="text/javascript" src="/vendor/jscrollpane/jquery.mousewheel.js"></script>
 <script type="text/javascript" src="/vendor/jscrollpane/mwheelIntent.js"></script>
-<script type="text/javascript" src="/vendor/Leaflet.Fullscreen/Control.FullScreen.js"></script>
+<!--<script type="text/javascript" src="/vendor/Leaflet.Fullscreen/Control.FullScreen.js"></script>-->
 <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
 <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
 <script type="text/javascript" src="/vendor/Leaflet.Label/leaflet.label.js"></script>
@@ -79,14 +79,16 @@
 {% if h.is_development() %}
 
 <script type="text/javascript" src="/scripts/scripts.js"></script>
+<script type="text/javascript" src="/scripts/map/L.Draw.Clear.js"></script>
+<script type="text/javascript" src="/scripts/map/L.FullScreen.js"></script>
 <script type="text/javascript" src="/scripts/map/ngds_zoom.js"></script>
 <script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
+<script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
 <script type="text/javascript" src="/scripts/map/pager.js"></script>
 <script type="text/javascript" src="/scripts/map/main.js"></script>
 <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
 <script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
 <script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
-<script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
 <script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
 <script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
 <script type="text/javascript" src="/scripts/map/result_parser.js"></script>

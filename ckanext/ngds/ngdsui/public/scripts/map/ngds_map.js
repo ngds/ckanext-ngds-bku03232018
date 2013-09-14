@@ -94,13 +94,19 @@ ngds.Map = {
             'position': 'topright'
         });
 
+        var rect_clear = new L.Clear();
+        map.addControl(rect_clear);
+
+        var fs = new L.FullScreen();
+        map.addControl(fs);
+
         map.addControl(zoom);
         map.addControl(loadingControl);
 
-        L.control.fullscreen({
-            position: 'topright',
-            title: 'Show me the fullscreen !'
-        }).addTo(map);
+//        L.control.fullscreen({
+//            position: 'topright',
+//            title: 'Show me the fullscreen !'
+//        }).addTo(map);
 
 
         this.layers = {

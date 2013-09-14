@@ -346,7 +346,7 @@ if (typeof ngds.Map !== 'undefined') {
 
 ngds.subscribe('Map.results_rendered', function (topic, data) {
     $(".visibility-managed").show();
-    $(".results").jScrollPane({contentWidth: '0px'});
+    $(".results").jScrollPane({contentWidth: '0px',hideFocus:true});
 });
 
 ngds.subscribe('Map.results_hide', function (topic, data) {
@@ -377,17 +377,17 @@ $(document).ready(function () {
 
 (function () {
     if (typeof ngds.Map !== 'undefined') {
-        ngds.Map.map.on('enterFullscreen', function () {
-            ngds.publish("Map.size_changed", {
-                'fullscreen': true
-            });
-        });
-
-        ngds.Map.map.on('exitFullscreen', function () {
-            ngds.publish("Map.size_changed", {
-                'fullscreen': false
-            });
-        });
+//        ngds.Map.map.on('enterFullscreen', function () {
+//            ngds.publish("Map.size_changed", {
+//                'fullscreen': true
+//            });
+//        });
+//
+//        ngds.Map.map.on('exitFullscreen', function () {
+//            ngds.publish("Map.size_changed", {
+//                'fullscreen': false
+//            });
+//        });
     }
 
     ngds.subscribe('Map.size_changed', function (topic, data) {

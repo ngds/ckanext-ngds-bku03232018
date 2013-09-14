@@ -89,8 +89,10 @@
 
     div.reader {
       margin-top: 25px;
+      margin-left: 5px;
       p {
         margin-top: 0px;
+        margin-left: 5px;
       }
     }
 
@@ -390,27 +392,64 @@
   }
 }
 
+.leaflet-control-rectangle-clear-container {
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  margin-top: 0px !important;
+
+  .leaflet-control-rectangle-clear {
+    background-image: url(/assets/map_draw_rect.png) !important;
+    width: 26px;
+    height: 25px;
+    background-position: 50% 50%;
+    display: block;
+  }
+
+}
+
+.leaflet-control-fullscreen-container {
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  margin-top: 0px !important;
+
+  .leaflet-control-fullscreen {
+    background-image: url(/assets/map_fullscreen.png) !important;
+    width: 26px;
+    height: 25px;
+    background-position: 50% 50%;
+    display: block;
+  }
+}
+
 .leaflet-control-layers {
+  background-color: @left-pane-back !important;
 
   a {
     background-image: url(/assets/layer_selector.png) !important;
-    width: 33px !important;
-    height: 25px !important;
+    width: 24px !important;
+    height: 23px !important;
   }
 
 }
 
 .leaflet-control-layers-expanded {
+  background-color: @left-pane-back !important;
   border: 1px solid grey;
   border-radius: 0px;
   border-top: 4px solid #236393;
-  background-color: #efefef;
   padding: 0;
+
+  .leaflet-control-layers-separator {
+    border: none;
+  }
 
   form {
 
     label {
       padding: 0px 10px 0px 10px;
+      border-bottom: 1px dotted grey;
     }
 
     input {
@@ -461,14 +500,24 @@ div.red-marker:after {
   margin-left: 320px;
 }
 
+.fullscreen {
+  height: 100% !important;
+}
+
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
   box-shadow: 0 2px 2px #4F4D4E !important;
+  background: #efefef !important;
 }
 
 .leaflet-popup-tip {
   border-radius: 0px;
   border: 1px solid black;
   margin-top: -1px
+}
+
+.leaflet-popup-close-button {
+  z-index: 999;
+  color: #efefef;
 }
 
 .leaflet-popup-content-wrapper {

@@ -307,6 +307,11 @@ p {
   height: @height;
 }
 
+.ngds-button() {
+  .btn;
+  .btn-primary;
+}
+
 .ngds-button(@width,@height) {
   /*	.ngds-button-common;
       width:@width;
@@ -461,5 +466,17 @@ input[type="radio"] {
 
   .breadcrumb {
     font-size: 15px;
+  }
+}
+
+.module {
+
+  h2.module-heading {
+    background-color: #206b82;
+    color: white;
+  }
+
+  .btn {
+    .ngds-button();
   }
 }
