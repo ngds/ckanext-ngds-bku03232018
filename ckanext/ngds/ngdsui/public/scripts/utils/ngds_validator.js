@@ -1,6 +1,6 @@
 /**
  * @author - Vivek
- * This is a bunch of awesomeness. This function validates HTML form fields dynamically and is purely based on information that is put into the HTML itself
+ * This function validates HTML form fields dynamically and is purely based on information that is put into the HTML itself
  * in 'data-' custom tags. The following attributes on an input element are needed -
  *
  * data-validate - A marker attribute with no value. It indicates to the validator function that it should be validated.
