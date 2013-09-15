@@ -7,13 +7,14 @@ ngds.add_responsible_party_template = "<div class='add-responsible-party{{#class
 <label class='{{class}}'>{{label}}</label>\
 <input name={{name}} type='{{type}}' class='small {{class}}' {{#id}}id={{id}}{{/id}}></input>\
 {{/label}}\
+{{/responsible_parties}}\
+<div>\
+{{#responsible_parties}}\
 {{#button}}\
 <button type='button' class='{{class}}' class='small' id='{{id}}''>{{button}}</button>\
 {{/button}}\
-{{#span}}\
-<span id='{{span}}' class='{{class}}' style='{{style}}'></span>\
-{{/span}}\
 {{/responsible_parties}}\
+</div>\
 </div>";
 {% endraw %}
 </script>
