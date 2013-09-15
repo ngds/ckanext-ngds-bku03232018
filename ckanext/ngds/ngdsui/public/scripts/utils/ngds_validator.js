@@ -74,27 +74,34 @@ ngds.validator = (function () {
                     validation_begin_bound = Number(rules[3]);
                 }
 
-                console.log(maxlength_rule, minlength_rule);
+
                 var keystrokes = 0;
-                $(this).on('input', function () {
-                        keystrokes = keystrokes + 1;
-                        var cur_val = $(this).val();
-
-                        if (keystrokes >= validation_begin_bound) {
-                            $(this).parents().children().filter(".error-block").remove();
-                            if (regex_validate(cur_val) === false) {
-                                $(this).after($("<div/>", {"class": "error-block", "text": $(this).attr("data-validate-regex-msg")}));
-                            }
-                            if (cur_val.length > maxlength_rule) {
-                                $(this).after($("<div/>", {"class": "error-block", "text": $(this).attr("data-validate-maxlen-msg")}));
-                            }
-                            if (cur_val.length < minlength_rule) {
-                                $(this).after($("<div/>", {"class": "error-block", "text": $(this).attr("data-validate-minlen-msg")}));
-                            }
-                        }
-
+                var me = this;
+                var vfn = function () {
+                    keystrokes = keystrokes + 1;
+                    var cur_val = $(me).val();
+                    if (typeof $(me).attr('data-validate-ext') !== 'undefined') {
+                        ngds.validator['vmap'][$(me).attr('data-validate-ext')]();
                     }
-                );
+                    if (keystrokes >= validation_begin_bound) {
+                        $(me).parents().children().filter(".error-block").remove();
+                        if (regex_validate(cur_val) === false) {
+                            $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-regex-msg")}));
+                        }
+                        if (cur_val.length > maxlength_rule) {
+                            $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-maxlen-msg")}));
+                        }
+                        if (cur_val.length < minlength_rule) {
+                            $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-minlen-msg")}));
+                        }
+                    }
+
+                };
+
+                var vmap = ngds.validator['vmap'] || (ngds.validator['vmap'] = { });
+                vmap[this.name] = vfn;
+
+                $(this).on('input', vfn);
             });
 
         };

@@ -231,7 +231,8 @@ if (typeof ngds.Map !== 'undefined') {
 
 (function setup_styler_for_features() {
     /*
-     *	This is really where all the events on features are bound regardless of how they are initiated. No events should directly be bound on features except through
+     *	This is really where all the events on features are bound regardless of how they are initiated. No event listeners should
+     *	directly be bound on features except through
      *	here. This lets us use our own events as a forwarding mechanism that lead to these functions below.
      *
      *
@@ -346,7 +347,7 @@ if (typeof ngds.Map !== 'undefined') {
 
 ngds.subscribe('Map.results_rendered', function (topic, data) {
     $(".visibility-managed").show();
-    $(".results").jScrollPane({contentWidth: '0px',hideFocus:true});
+    $(".results").jScrollPane({contentWidth: '0px', hideFocus: true});
 });
 
 ngds.subscribe('Map.results_hide', function (topic, data) {
@@ -369,27 +370,7 @@ $(document).ready(function () {
     });
 });
 
-
-//ngds.publish('Map.expander.toggle', {
-//    // Empty payload
-//});
-
-
 (function () {
-    if (typeof ngds.Map !== 'undefined') {
-//        ngds.Map.map.on('enterFullscreen', function () {
-//            ngds.publish("Map.size_changed", {
-//                'fullscreen': true
-//            });
-//        });
-//
-//        ngds.Map.map.on('exitFullscreen', function () {
-//            ngds.publish("Map.size_changed", {
-//                'fullscreen': false
-//            });
-//        });
-    }
-
     ngds.subscribe('Map.size_changed', function (topic, data) {
         if (data['fullscreen'] === true) {
             ngds.Map.state['map-search-results-left'] = $(".map-search-results").css('left');
@@ -412,6 +393,3 @@ ngds.Map.map.on('zoomend', ngds.util.make_prominent);
 ngds.subscribe('Map.layer_added', function () {
     ngds.util.make_prominent();
 });
-/*
- TODO - We need a way to call ngds.util.make_prominent as soon as results are inserted into the map, but this seems elusive.
- */

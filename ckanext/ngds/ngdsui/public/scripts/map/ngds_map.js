@@ -109,12 +109,6 @@ ngds.Map = {
         map.addControl(fs);
         map.addControl(loadingControl);
 
-//        L.control.fullscreen({
-//            position: 'topright',
-//            title: 'Show me the fullscreen !'
-//        }).addTo(map);
-
-
         this.layers = {
             'geojson': _geoJSONLayer,
             'drawnItems': _drawnItems,
