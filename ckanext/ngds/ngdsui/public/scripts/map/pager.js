@@ -60,25 +60,10 @@ ngds.Search = function () {
         }
         ngds.Map.current_query = me._q;
         ngds.log("Searching for term : " + q + ", rows : " + rows + ", page : " + page + " start : " + start);
-        console.log(package_extras);
 
         var package_extras = {
             'ext_bbox': ngds.util.state['drawn_rectangle'].get()
         };
-
-//        if (package_extras === "") {
-//            var southWest = new L.LatLng(-90, -180),
-//                northEast = new L.LatLng(90, 180),
-//                bounds = new L.LatLngBounds(southWest, northEast);
-//            bbox = new ngds.Map.BoundingBox();
-//            bbox.store_raw(bounds);
-//            package_extras = {
-//                'ext_bbox': bbox.get_bbox_array().join(',')
-//            };
-//        }
-
-//        console.log(action);
-//        console.log(package_extras);
 
         action({
             'rows': rows,

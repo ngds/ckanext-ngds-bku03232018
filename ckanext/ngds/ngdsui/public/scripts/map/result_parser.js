@@ -313,7 +313,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                     continue;
                 }
                 $("[data-seq=" + item_h_key + "]").removeClass("toggled");
-                console.log("HEre");
                 delete ngds.util.state['hidden_t'][item_h_key];
             }
             delete ngds.util.state['hidden_t']

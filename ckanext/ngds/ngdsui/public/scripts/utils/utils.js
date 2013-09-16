@@ -205,6 +205,24 @@ ngds.util.make_prominent = function () {
     var prominence_state = ngds.util.state['prominence'];
 
     for (var layer_index in ngds.layer_map) {
+        if (typeof ngds.util.state['hidden_t'] !== 'undefined' &&
+            typeof ngds.util.state['hidden_t'][layer_index] !== 'undefined') {
+            if (typeof prominence_state[layer_index] !== 'undefined') {
+                ngds.Map.map.removeLayer(prominence_state[layer_index]);
+                delete prominence_state[layer_index];
+            }
+            continue;
+        }
+
+        if (typeof ngds.util.state['hidden_t'] !== 'undefined' &&
+            typeof ngds.util.state['hidden_t'][0] !== 'undefined') {
+            for (var layer_index in ngds.util.state['prominence']) {
+                ngds.Map.map.removeLayer(prominence_state[layer_index]);
+                delete prominence_state[layer_index];
+            }
+            return;
+        }
+
         if (typeof prominence_state[layer_index] === 'undefined') {
             var layer = ngds.layer_map[layer_index];
             var layer_bounds = layer.getBounds();
