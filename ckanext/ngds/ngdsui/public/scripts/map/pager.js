@@ -8,6 +8,7 @@ ngds.util.state['drawn_rectangle'] = (function () {
 
     ngds.subscribe('Map.area_selected', function (msg, data) {
         if (data['type'] === 'rectangle') {
+            $("#map-query").val("");
             bbox = new ngds.Map.BoundingBox();
             bbox.construct_from_leaflet_shape(data['feature']['rect']);
             package_extras = {
@@ -17,6 +18,7 @@ ngds.util.state['drawn_rectangle'] = (function () {
     });
 
     ngds.subscribe('Map.clear_rect', function (msg, data) {
+        ngds.Map.clear_layer('drawnItems');
         bbox = null;
     });
 

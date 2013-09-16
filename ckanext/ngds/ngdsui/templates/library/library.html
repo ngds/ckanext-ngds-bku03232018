@@ -3,34 +3,34 @@
 {% set default_group = h.get_default_group() %}
 {% block content %}
 
-	<div id="library-search-container">
-		<h1>Would you like to...</h1>
-		<!-- Accordion menu goes here -->
+<div id="library-search-container">
+    <h1>Would you like to...</h1>
+    <!-- Accordion menu goes here -->
 
-		
-		<div class="library-search-pre">
-			<p>or</p>
-		</div>
 
-		<div class="library-search-bar">
-			<p>Search</p>
-			{% if g.central %}
-			<form action="{% url_for controller='package', action='search' %}" method="get"> 
-			{% else %}
-			<form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">   
-			  {% endif %}
+    <div class="library-search-pre">
+        <p>or</p>
+    </div>
 
-				<fieldset>
-					<input type="text" name="q"/>
-					<input type="submit" value="Go"/>
-				</fieldset>
-			</form>
-		</div>
+    <div class="library-search-bar">
+        <p>Search</p>
+        {% if g.central %}
+        <form action="{% url_for controller='package', action='search' %}" method="get">
+            {% else %}
+            <form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
+                {% endif %}
 
-		<div class="library-search-accordion-header">
-		<div class="library-search-browse-header"><p>Browse</p></div>	
-			{% include "/snippets/search_accordion.html" %}
-		</div>
-	</div> <!-- End library search container -->
+                <fieldset>
+                    <input type="text" name="q"/>
+                    <input type="submit" value="Go"/>
+                </fieldset>
+            </form>
+    </div>
+
+    <div class="library-search-accordion-header">
+        <div class="library-search-browse-header"><p>Browse</p></div>
+        {% include "/snippets/search_accordion.html" %}
+    </div>
+</div> <!-- End library search container -->
 
 {% endblock %}

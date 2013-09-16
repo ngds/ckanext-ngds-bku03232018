@@ -174,7 +174,7 @@ ngds.ckanlib = {
                     new L.rectangle([
                         [t0, t2],
                         [t1, t3]
-                    ], {color: 'green', dashArray: "5,5", weight: "1", opacity: 1, fillOpacity: 0.2}).addTo(ngds.Map.geoJSONLayer);
+                    ], {color: 'green', dashArray: "5,5", weight: "3", opacity: 1, fillOpacity: 0}).addTo(ngds.Map.geoJSONLayer);
                     parameter_obj['extras']['ext_bbox'] = transformed_bbox;
                     ngds.ckanlib.package_search(parameter_obj, function (response) {
                             ngds.publish("data-loaded", {});

@@ -11,14 +11,17 @@
 
 <div style="position:absolute; ">
     <div class="map-search dialog-small-map">
-        <form action="javascript:ngds.Map.top_level_search()">
+        <form class="simple-input" action="javascript:ngds.Map.top_level_search()">
             <fieldset>
-                {% if c.query %}
-                <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona" value="{{ c.query }}"/>
-                {% else %}
-                <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"/>
-                {% endif %}
-                <input id="map-search" type="button" value="Go"/>
+                <div class="field">
+                    {% if c.query %}
+                    <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"
+                           value="{{ c.query }}"/>
+                    {% else %}
+                    <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"/>
+                    {% endif %}
+                    <button id="map-search" type="button" value="GO" class="btn-search"></button>
+                </div>
             </fieldset>
         </form>
         <div class="map-search-results">

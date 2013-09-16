@@ -93,7 +93,8 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                             'attributes': {
 //                                'text': "T",
                                 'class': 'visible',
-                                'data-seq': seq.current()
+                                'data-seq': seq.current(),
+                                'title': 'Hide/Show this result on the map'
                             }
                         }
                     ]
@@ -192,7 +193,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                                             'tag': 'button',
                                             'attributes': {
                                                 'class': 'visible',
-//                                        'text': 'T',
+                                                'title': 'Hide/Show all results on the map.',
                                                 'data-seq': 0
                                             }
                                         }

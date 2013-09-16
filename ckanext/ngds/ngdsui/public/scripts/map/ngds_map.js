@@ -112,9 +112,7 @@ ngds.Map = {
         this.layers = {
             'geojson': _geoJSONLayer,
             'drawnItems': _drawnItems,
-            'powergrid': powergrid_wms,
             'soil': soil,
-            //	'water':water_wms,
             'land': land,
             'topography': topography,
             'nerc': nerc_wms,
@@ -122,7 +120,6 @@ ngds.Map = {
             'counties': counties_wms,
             'weather': weather_wms
         };
-        // this.initialize_controls();
 
         var baseMaps = {
             "Terrain": base,
@@ -131,7 +128,6 @@ ngds.Map = {
         };
 
         overlayMaps = {
-            "Power Grid": powergrid_wms,
             "Search Results": _geoJSONLayer,
             "SMU Wells": wells,
             'USBLM Urban Areas, Counties': land,
@@ -139,7 +135,6 @@ ngds.Map = {
             'Geothermal Potential': geothermal_potential_wms,
             'US County Boundaries': counties_wms,
             'NEXRAD Weather': weather_wms
-            // "ngds":ngds_layer
         };
 
         layer_control = new L.control.layers(baseMaps, overlayMaps, {autoZIndex: true});

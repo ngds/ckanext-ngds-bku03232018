@@ -67,6 +67,10 @@ if (typeof ngds.Map !== 'undefined') {
         });
 
     };
+
+    $("#map-query").on("change", function () {
+        ngds.publish("Map.clear_rect", {});
+    });
 }
 
 (function publish_pager_advance() {
@@ -137,7 +141,6 @@ if (typeof ngds.Map !== 'undefined') {
     ngds.Map.map.on('draw:rectangle-created', function (e) {
         ngds.Map.clear_layer('drawnItems');
         ngds.Map.add_to_layer([e.rect], 'drawnItems');
-        console.log("publishing");
         ngds.publish("Map.area_selected", {
             'type': 'rectangle',
             'feature': e
