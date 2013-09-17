@@ -91,7 +91,8 @@ ngds.Map = {
 
         var geosearch = ngds.Map.geosearch = new L.Control.GeoSearch({
             provider: new L.GeoSearch.Provider.OpenStreetMap(),
-            position: 'topright'
+            position: 'topright',
+            searchLabel:'Locate an address'
         });
 
         geosearch.addTo(map);

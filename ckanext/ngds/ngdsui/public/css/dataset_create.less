@@ -203,6 +203,7 @@
         padding: 15px 0px 15px 25px;
         border: 1px dotted #206b82;
         border-radius: 10px;
+        display: block;
 
         h4 {
           margin-top: 0px;
@@ -211,24 +212,9 @@
           margin-bottom: 15px;
         }
 
-        label {
-          margin-right: 10px;
-          margin-left: 20px;
-
-          &:first-of-type {
-            margin-left: 0px;
-            margin-right: 10px;
-          }
-        }
-
-        input {
-          background-color: #edeef0;
-        }
-
         div {
-          margin-top:15px;
-          margin-right:205px;
-          text-align:right;
+          text-align: center;
+
           button {
             .ngds-button();
 
@@ -238,7 +224,42 @@
             &:last-of-type {
               margin-left: 10px;
             }
+
+            &:first-of-type {
+              margin-left: 80px;
+              margin-right: 70px;
+            }
           }
+        }
+
+        div.tab {
+          display: table;
+          border-style: separate;
+          border-spacing: 0em 1em;
+
+          div {
+            display: table-row;
+
+            label {
+              margin-right: 10px;
+              margin-left: 20px;
+              display: table-cell;
+              text-align: right;
+              padding-right: 50px;
+              width: 110px;
+
+              &:first-of-type {
+                margin-right: 10px;
+              }
+            }
+
+            input {
+              background-color: #edeef0;
+              display: table-cell;
+              width: 440px;
+            }
+          }
+
         }
 
       }
