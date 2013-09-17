@@ -75,7 +75,7 @@ ngds.validator = (function () {
                 }
 
 
-                var keystrokes = 0;
+                var keystrokes = 1;
                 var me = this;
                 var vfn = function () {
                     keystrokes = keystrokes + 1;
@@ -88,10 +88,10 @@ ngds.validator = (function () {
                         if (regex_validate(cur_val) === false) {
                             $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-regex-msg")}));
                         }
-                        if (cur_val.length > maxlength_rule) {
+                        if (maxlength_rule !== -1 && cur_val.length > maxlength_rule) {
                             $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-maxlen-msg")}));
                         }
-                        if (cur_val.length < minlength_rule) {
+                        if (minlength_rule !== -1 && cur_val.length < minlength_rule) {
                             $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-minlen-msg")}));
                         }
                     }
@@ -105,6 +105,12 @@ ngds.validator = (function () {
             });
 
         };
+
+
+        ngds.subscribe('Forms.reinitialize', function () {
+            console.log("Reinitializing");
+            me.setup_fields();
+        });
 
         this.initialize = function () {
             me.setup_fields();
@@ -123,6 +129,7 @@ ngds.validator = (function () {
             validator_instance = new _validator();
             validator_instance.initialize();
         }
+        return validator_instance;
     };
 
     return {

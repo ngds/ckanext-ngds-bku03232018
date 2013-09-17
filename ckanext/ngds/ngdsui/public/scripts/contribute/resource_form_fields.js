@@ -1,231 +1,555 @@
-var structured_form = {
-    'form': [
-        {
-            'label': 'Resource URL',
-            'name': 'url',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text id=field-url';
-            },
-            'title': 'A URL for this resource or upload a file'
-        },
-        {
-            'label': 'Name',
-            'name': 'name',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
-            },
-            'title': 'A name for this resource'
-        },
-        {
-            'label': 'Content Model',
-            'name': 'content_model_uri',
-            'top_classes': function () {
-                return "content_model_marker";
-            },
-            'tag': 'select',
-            'class': function () {
-                return 'content_model';
-            },
-            'additional': function () {
-                return 'data-module=autocomplete';
-            },
-            'title': 'A content model that this resource conforms to'
-        },
-        {
-            'label': 'Description',
-            'name': 'description',
-            'tag': 'textarea',
-            'id': function () {
-                return 'id=description';
-            },
-            'additional': function () {
-                return 'rows=4 cols=1'
-            },
-            'classes': function () {
-                return 'description-label-div';
-            },
-            'title': 'Describe this resource'
-        },
-        {
-            'label': 'Distributor',
-            'top_classes': function () {
-                return "distributor";
-            },
-            'id': 'distributor_fake',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
-            },
-            'additional_content': function () {
-                return '<div class="distributor-tag retreived-tags""></div>';
-            },
-            'title': 'The distributor for this resource'
-        },
-        {
-            'label': 'Format',
-            'name': 'format',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
-            },
-            'title': 'The file format of this resource'
-        }
-    ],
-    'custom': [
-        {
-            'tag': 'input',
-            'name': 'distributor',
-            'id': 'distributor',
-            'type': 'hidden'
-        },
-        {
-            'tag': 'input',
-            'id': 'distributor_name',
-            'type': 'hidden'
-        },
-        {
-            'tag': 'input',
-            'id': 'distributor_email',
-            'type': 'hidden'
-        }
-    ]
-};
+var form_generator = function (form) {
 
-var unstructured_form = {
-    'form': [
-        {
-            'label': 'Resource URL',
-            'name': 'url',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text id=field-url';
-            },
-            'title': 'A URL for this resource or upload a file'
-        },
-        {
-            'label': 'Name',
-            'name': 'name',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
-            },
-            'title': 'A name for this resource'
-        },
-        {
-            'label': 'Description',
-            'name': 'description',
-            'tag': 'textarea',
-            'id': function () {
-                return 'id=description';
-            },
-            'additional': function () {
-                return 'rows=4 cols=1'
-            },
-            'classes': function () {
-                return 'description-label-div';
-            },
-            'title': 'Describe this resource'
-        },
-        {
-            'label': 'Distributor',
-            'top_classes': function () {
-                return "distributor";
-            },
-            'class': function () {
-                return "distributor-fake";
-            },
-            'tag': 'input',
-            'id': 'distributor_fake',
-            'additional': function () {
-                return 'type=text';
-            },
-            'additional_content': function () {
-                return '<div class="distributor-tag retreived-tags""></div>';
-            },
-            'title': 'The distributor for this resource'
-        },
-        {
-            'label': 'Format',
-            'name': 'format',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
-            },
-            'title': 'The file format of this resource'
+    var input_groups = [];
+    var final_inputs = {
+        'tag': 'div',
+        'attributes': {
+            'class': 'form-body'
         }
-    ],
-    'custom': [
-        {
-            'tag': 'input',
-            'name': 'distributor',
-            'id': 'distributor',
-            'type': 'hidden'
-        },
-        {
-            'tag': 'input',
-            'id': 'distributor_name',
-            'type': 'hidden'
-        },
-        {
-            'tag': 'input',
-            'id': 'distributor_email',
-            'type': 'hidden'
+    };
+
+
+    for (var i = 0; i < form.length; i++) {
+        var item = form[i];
+
+        var input_group = {
+            'tag': 'div',
+            'attributes': {
+                'class': (function (item) {
+                    if (typeof item['div_classes'] !== 'undefined') {
+                        return 'input-group ' + item['div_classes'].join(" ");
+                    }
+                    return 'input-group';
+                })(item)
+            }
+
+        };
+
+        var sp_label = {
+            'tag': 'div',
+            'attributes': {
+                'class': (function (item) {
+                    if (typeof item['label_div_classes'] !== 'undefined') {
+                        return 'sp-label ' + item['label_div_classes'].join(" ");
+                    }
+                    return 'sp-label';
+                })(item)
+            },
+            'children': [
+                {
+                    'tag': 'label',
+                    'attributes': {
+                        'text': item['label']
+                    }
+                }
+            ]
+        };
+
+        var inputs = item['inputs'];
+
+        input_group['children'] = [sp_label];
+        for (var j = 0; j < inputs.length; j++) {
+            input_group['children'].push(inputs[j]);
         }
-    ]
+
+        input_groups.push(input_group);
+
+    }
+    final_inputs['children'] = input_groups;
+    return ngds.util.dom_element_constructor(final_inputs);
 };
 
 
-var offline_resource_form = {
-    'form': [
-        {
-            'label': 'Resource URL',
-            'name': 'url',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text id=field-url';
+ngds.form = {};
+
+ngds.form.structured_form_fields = [
+    {
+        'label': 'Resource URL',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Eg. http://example.com/myresource.txt or upload a file instead',
+                    'id': 'field-url',
+                    'name': 'url',
+                    'class': 'structured-input',
+                    'title': 'A URL for this resource or upload a file'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Name',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Eg. Well Log Headers',
+                    'name': 'name',
+                    'class': 'structured-input',
+                    'title': 'A name for this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Content Model',
+        'div_classes': ['content_model_marker'],
+        'inputs': [
+            {
+                'tag': 'select',
+                'attributes': {
+                    'data-module': 'autocomplete',
+                    'name': 'content_model_uri',
+                    'class': 'structured-input content_model',
+                    'title': 'A content model pertaining to this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Description',
+        'label_div_classes': ['description-label-div'],
+        'inputs': [
+            {
+                'tag': 'textarea',
+                'attributes': {
+                    'rows': '4',
+                    'placeholder': 'Eg. A description of this resource.',
+                    'cols': '1',
+                    'name': 'description',
+                    'id': 'description',
+                    'class': 'structured_input',
+                    'title': 'Describe this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Distributor',
+        'div_classes': ['distributor'],
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Begin typing a distributor\'s name and suggestions will be made. Create one by clicking on the + icon to the right.',
+                    'id': 'distributor_fake',
+                    'class': 'structured-input',
+                    'title': 'The distributor for this resource'
+                }
             },
-            'title': 'A URL for this resource or upload a file'
-        },
-        {
-            'label': 'Name',
-            'name': 'name',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor',
+                    'name': 'distributor'
+                }
             },
-            'title': 'A name for this resource'
-        },
-        {
-            'label': 'Description',
-            'name': 'description',
-            'tag': 'textarea',
-            'id': function () {
-                return 'id=description';
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor_name'
+                }
             },
-            'additional': function () {
-                return 'rows=4 cols=1'
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor_email'
+                }
             },
-            'classes': function () {
-                return 'description-label-div';
+            {
+                'tag': 'div',
+                'attributes': {
+                    'class': 'distributor-tag retreived-tags'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Format',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Eg. csv',
+                    'name': 'format',
+                    'class': 'structured-input',
+                    'title': 'The file format of this resource'
+                }
+            }
+        ]
+    }
+];
+
+ngds.form.unstructured_form_fields = [
+    {
+        'label': 'Resource URL',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Eg. http://example.com/myresource.txt or upload a file instead',
+                    'id': 'field-url',
+                    'name': 'url',
+                    'class': 'structured-input',
+                    'title': 'A URL for this resource or upload a file'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Name',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'name': 'name',
+                    'placeholder': 'Eg. Well Log Headers',
+                    'class': 'structured-input',
+                    'title': 'A name for this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Description',
+        'label_div_classes': ['description-label-div'],
+        'inputs': [
+            {
+                'tag': 'textarea',
+                'attributes': {
+                    'rows': '4',
+                    'cols': '1',
+                    'name': 'description',
+                    'placeholder': 'Eg. A description of this resource.',
+                    'id': 'description',
+                    'class': 'structured_input',
+                    'title': 'Describe this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Distributor',
+        'div_classes': ['distributor'],
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Begin typing a distributor\'s name and suggestions will be made. Create one by clicking on the + icon to the right.',
+                    'id': 'distributor_fake',
+                    'class': 'structured-input',
+                    'title': 'The distributor for this resource'
+                }
             },
-            'title': 'Describe this resource'
-        },
-        {
-            'label': 'Ordering Procedure',
-            'name': 'ordering_procedure',
-            'tag': 'textarea',
-            'additional': function () {
-                return 'rows=4 cols=1'
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor',
+                    'name': 'distributor'
+                }
             },
-            'classes': function () {
-                return 'description-label-div';
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor_name'
+                }
             },
-            'title': 'How this resource can be obtained'
-        }
-    ]
-};
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor_email'
+                }
+            },
+            {
+                'tag': 'div',
+                'attributes': {
+                    'class': 'distributor-tag retreived-tags'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Format',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Eg. csv',
+                    'name': 'format',
+                    'class': 'structured-input',
+                    'title': 'The file format of this resource'
+                }
+            }
+        ]
+    }
+];
+
+ngds.form.offline_form_fields = [
+    {
+        'label': 'Resource URL',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Eg. http://example.com/myresource.txt or upload a file instead',
+                    'id': 'field-url',
+                    'name': 'url',
+                    'class': 'structured-input',
+                    'title': 'A URL for this resource or upload a file'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Name',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'name': 'name',
+                    'placeholder': 'Eg. Well Log Headers',
+                    'class': 'structured-input',
+                    'title': 'A name for this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Description',
+        'label_div_classes': ['description-label-div'],
+        'inputs': [
+            {
+                'tag': 'textarea',
+                'attributes': {
+                    'rows': '4',
+                    'cols': '1',
+                    'name': 'description',
+                    'placeholder': 'Eg. A description of this resource.',
+                    'id': 'description',
+                    'class': 'structured_input',
+                    'title': 'Describe this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Ordering Procedure',
+        'label_div_classes': ['description-label-div'],
+        'inputs': [
+            {
+                'tag': 'textarea',
+                'attributes': {
+                    'rows': '4',
+                    'cols': '1',
+                    'name': 'ordering_procedure',
+                    'class': 'structured_input',
+                    'title': 'How can one go about obtaining this resource?',
+                    'placeholder': 'Indicate how a person can go about obtaining this resource.'
+                }
+            }
+        ]
+    }
+
+];
+
+
+ngds.form.data_service_form_fields = [
+    {
+        'label': 'Resource URL',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Eg. http://example.com/myresource.txt or upload a file instead',
+                    'id': 'field-url',
+                    'name': 'url',
+                    'class': 'structured-input',
+                    'title': 'A URL for this resource or upload a file'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Name',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Eg. Well Log Headers',
+                    'name': 'name',
+                    'class': 'structured-input',
+                    'title': 'A name for this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Description',
+        'label_div_classes': ['description-label-div'],
+        'inputs': [
+            {
+                'tag': 'textarea',
+                'attributes': {
+                    'rows': '4',
+                    'cols': '1',
+                    'placeholder': 'Eg. A description of this resource.',
+                    'name': 'description',
+                    'id': 'description',
+                    'class': 'structured_input',
+                    'title': 'Describe this resource'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Distributor',
+        'div_classes': ['distributor'],
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'id': 'distributor_fake',
+                    'placeholder': 'Begin typing a distributor\'s name and suggestions will be made. Create one by clicking on the + icon to the right.',
+                    'class': 'structured-input',
+                    'title': 'The distributor for this resource'
+                }
+            },
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor',
+                    'name': 'distributor'
+                }
+            },
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor_name'
+                }
+            },
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor_email'
+                }
+            },
+            {
+                'tag': 'div',
+                'attributes': {
+                    'class': 'distributor-tag retreived-tags'
+                }
+            }
+        ]
+    },
+    {
+        'label': 'Protocol',
+        'inputs': [
+            {
+                'tag': 'select',
+                'attributes': {
+                    'name': 'protocol',
+                    'class': 'structured-input',
+                    'title': 'What protocol is used to access this resource?'
+                }, 'children': [
+                {
+                    'tag': 'option',
+                    'attributes': {
+                        'value': 'wms',
+                        'text': 'WMS'
+                    }
+                },
+                {
+                    'tag': 'option',
+                    'attributes': {
+                        'value': 'wfs',
+                        'text': 'WFS'
+                    }
+                },
+                {
+                    'tag': 'option',
+                    'attributes': {
+                        'value': 'wcs',
+                        'text': 'WCS'
+                    }
+                },
+                {
+                    'tag': 'option',
+                    'attributes': {
+                        'value': 'esri_map_service',
+                        'text': 'ESRI Map Service'
+                    }
+                },
+                {
+                    'tag': 'option',
+                    'attributes': {
+                        'value': 'csw',
+                        'text': 'CSW'
+                    }
+                },
+                {
+                    'tag': 'option',
+                    'attributes': {
+                        'value': 'sos',
+                        'text': 'SOS'
+                    }
+                },
+                {
+                    'tag': 'option',
+                    'attributes': {
+                        'value': 'opendap',
+                        'text': 'Open DAP'
+                    }
+                },
+                {
+                    'tag': 'option',
+                    'attributes': {
+                        'value': 'other',
+                        'text': 'Other'
+                    }
+                }
+            ]
+            }
+        ]
+    },
+    {
+        'label': 'Layer',
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'A layer name that can be used to access this resource using the protocol selected above. Eg. A Geoserver WMS layer.',
+                    'name': 'layer',
+                    'class': 'structured-input',
+                    'title': 'Layer name if any for this resource'
+                }
+            }
+        ]
+    }
+];
 
 
 var position_file_uploader = function (selector) {
@@ -246,132 +570,9 @@ var position_file_uploader = function (selector) {
 };
 
 
-var link_data_service_form = {
-    'form': [
-        {
-            'label': 'Resource URL',
-            'name': 'url',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text id=field-url';
-            },
-            'title': 'A URL for this resource or upload a file'
-        },
-        {
-            'label': 'Name',
-            'name': 'name',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
-            },
-            'title': 'A name for this resource'
-        },
-        {
-            'label': 'Description',
-            'name': 'description',
-            'tag': 'textarea',
-            'id': function () {
-                return 'id=description';
-            },
-            'additional': function () {
-                return 'rows=4 cols=1'
-            },
-            'classes': function () {
-                return 'description-label-div';
-            },
-            'title': 'Describe this resource'
-        },
-        {
-            'label': 'Distributor',
-            'top_classes': function () {
-                return "distributor";
-            },
-            'id': 'distributor_fake',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
-            },
-            'additional_content': function () {
-                return '<div class="distributor-tag retreived-tags""></div>';
-            },
-            'title': 'The distributor for this resource'
-        },
-        {
-            'label': 'Protocol',
-            'name': 'protocol',
-            'tag': 'select',
-            'additional': function () {
-                return 'type=text';
-            },
-            'title': 'What protocol is used to access this resource?',
-            'dnt': "someval",
-            'options': [
-                {
-                    'label': 'WMS',
-                    'value': 'wms'
-                },
-                {
-                    'label': 'WFS',
-                    'value': 'wfs'
-                },
-                {
-                    'label': 'WCS',
-                    'value': 'wcs'
-                },
-                {
-                    'label': 'ESRI Map Service',
-                    'value': 'esri_map_service'
-                },
-                {
-                    'label': 'CSW',
-                    'value': 'csw'
-                },
-                {
-                    'label': 'SOS',
-                    'value': 'sos'
-                },
-                {
-                    'label': 'Open DAP',
-                    'value': 'opendap'
-                },
-                {
-                    'label': 'Other',
-                    'value': 'other'
-                }
-            ]
-        },
-        {
-            'label': 'Layer',
-            'name': 'layer',
-            'tag': 'input',
-            'additional': function () {
-                return 'type=text';
-            },
-            'title': 'Layer name if any for this resource'
-        }
-    ],
-    'custom': [
-        {
-            'tag': 'input',
-            'name': 'distributor',
-            'id': 'distributor',
-            'type': 'hidden'
-        },
-        {
-            'tag': 'input',
-            'id': 'distributor_name',
-            'type': 'hidden'
-        },
-        {
-            'tag': 'input',
-            'id': 'distributor_email',
-            'type': 'hidden'
-        }
-    ]
-};
-$(document).tooltip({
-    position: {
-        at: 'right top+5',
-        collision: 'none'
-    }
-});
+//$(document).tooltip({
+//    position: {
+//        at: 'right top+5',
+//        collision: 'none'
+//    }
+//});
