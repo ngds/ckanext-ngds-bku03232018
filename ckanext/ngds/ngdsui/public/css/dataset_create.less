@@ -298,13 +298,31 @@
   }
 
   .resource-edit-form {
-    input[type='text'], textarea, .select2-container .select2-choice {
-      width: 620px !important;
+
+    .form-body {
+
+      .input-group {
+        select {
+          width: 635px;
+        }
+
+        input[type='text'], textarea, .select2-container .select2-choice {
+          width: 620px;
+        }
+
+        div.add-responsible-party {
+          width: 585px;
+
+          .tab {
+            input {
+              width: 350px;
+            }
+          }
+        }
+
+      }
     }
 
-    .input-group select {
-      width: 635px;
-    }
   }
 
   .form-actions {

@@ -569,10 +569,3 @@ var position_file_uploader = function (selector) {
     file_upload.show();
 };
 
-
-//$(document).tooltip({
-//    position: {
-//        at: 'right top+5',
-//        collision: 'none'
-//    }
-//});

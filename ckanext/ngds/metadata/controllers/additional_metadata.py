@@ -37,6 +37,7 @@ class ResponsiblePartyController(NgdsCrudController):
         """Find the right model for this class"""
         self.model = context['model'].ResponsibleParty
 
+
 class Responsible_Parties_UI(base.BaseController):
     @jsonp.jsonpify
     def get_responsible_parties(self):

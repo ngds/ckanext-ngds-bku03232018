@@ -111,6 +111,7 @@ ngds.responsible_party = function () {
             var rs_c_ph = rs_token + "_c_ph";
             var rs_c_street = rs_token + "_c_street";
             var rs_c_state = rs_token + "_c_state";
+            var rs_c_city = rs_token + "_c_city";
             var rs_c_zip = rs_token + "_c_zip";
             var rs_c_country = rs_token + "_c_country";
             var rs_c_create_button = rs_token + "_c_create_button";
@@ -157,6 +158,13 @@ ngds.responsible_party = function () {
                         'class': rs_c_form
                     },
                     {
+                        'label': 'City',
+                        'type': 'text',
+                        'id': rs_c_city,
+                        'name': rs_token + 'city',
+                        'class': rs_c_form
+                    },
+                    {
                         'label': 'State',
                         'type': 'text',
                         'id': rs_c_state,
@@ -197,6 +205,7 @@ ngds.responsible_party = function () {
             var rs_c_org_jq = $("#" + rs_c_org);
             var rs_c_ph_jq = $("#" + rs_c_ph);
             var rs_c_street_jq = $("#" + rs_c_street);
+            var rs_c_city_jq = $("#" + rs_c_city);
             var rs_c_state_jq = $("#" + rs_c_state);
             var rs_c_zip_jq = $("#" + rs_c_zip);
             var rs_c_country_jq = $("#" + rs_c_country);
@@ -218,6 +227,7 @@ ngds.responsible_party = function () {
                             'organization': rs_c_org_jq.val(),
                             'phone': rs_c_ph_jq.val(),
                             'street': rs_c_street_jq.val(),
+                            'city': rs_c_city_jq.val(),
                             'state': rs_c_state_jq.val(),
                             'zip': rs_c_zip_jq.val(),
                             'country': rs_c_country_jq.val()
@@ -225,6 +235,7 @@ ngds.responsible_party = function () {
                         }
                     }),
                     'success': function (response) {
+                        console.log(response);
                         me.slugify(response.result);
                         me.rs_create_anch.show();
                         rs_c_form_jq.remove();
