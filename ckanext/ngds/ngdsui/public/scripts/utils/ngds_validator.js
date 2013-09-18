@@ -108,7 +108,6 @@ ngds.validator = (function () {
 
 
         ngds.subscribe('Forms.reinitialize', function () {
-            console.log("Reinitializing");
             me.setup_fields();
         });
 
