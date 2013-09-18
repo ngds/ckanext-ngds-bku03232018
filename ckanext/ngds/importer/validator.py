@@ -3,7 +3,7 @@ Validates the bulk upload template file for the structure and basic data validat
 fields and date field)
 """
 
-import ckanext.ngds.lib.importer.importer as ngds_importer
+import ckanext.ngds.importer.importer as ngds_importer
 import ckanext.importlib.spreadsheet_importer as spreadsheet_importer
 from ckan.plugins import toolkit
 
