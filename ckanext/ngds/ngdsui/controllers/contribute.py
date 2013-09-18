@@ -29,10 +29,14 @@ class ContributeController(NGDSBaseController):
         """
         This function renders the contribute landing page for a node-in-a-box and the harvest page for the central node.
         """
+        if not c.user:
+            h.redirect_to(controller='user',
+                              action='login', came_from=h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController',action='index'))
+
         if g.central:
             #TODO: Need to change this to point the correct controller
             url = h.url_for_static(controller='ckanext.harvest.controllers.view:ViewController')
-            redirect(url)
+            h.redirect_to(url)
         else:
             return render('contribute/contribute.html')
 

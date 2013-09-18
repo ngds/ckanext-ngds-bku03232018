@@ -1,6 +1,6 @@
 /**
  * @author - Vivek
- * This is a bunch of awesomeness. This function validates HTML form fields dynamically and is purely based on information that is put into the HTML itself
+ * This function validates HTML form fields dynamically and is purely based on information that is put into the HTML itself
  * in 'data-' custom tags. The following attributes on an input element are needed -
  *
  * data-validate - A marker attribute with no value. It indicates to the validator function that it should be validated.
@@ -74,30 +74,42 @@ ngds.validator = (function () {
                     validation_begin_bound = Number(rules[3]);
                 }
 
-                console.log(maxlength_rule, minlength_rule);
-                var keystrokes = 0;
-                $(this).on('input', function () {
-                        keystrokes = keystrokes + 1;
-                        var cur_val = $(this).val();
 
-                        if (keystrokes >= validation_begin_bound) {
-                            $(this).parents().children().filter(".error-block").remove();
-                            if (regex_validate(cur_val) === false) {
-                                $(this).after($("<div/>", {"class": "error-block", "text": $(this).attr("data-validate-regex-msg")}));
-                            }
-                            if (cur_val.length > maxlength_rule) {
-                                $(this).after($("<div/>", {"class": "error-block", "text": $(this).attr("data-validate-maxlen-msg")}));
-                            }
-                            if (cur_val.length < minlength_rule) {
-                                $(this).after($("<div/>", {"class": "error-block", "text": $(this).attr("data-validate-minlen-msg")}));
-                            }
-                        }
-
+                var keystrokes = 1;
+                var me = this;
+                var vfn = function () {
+                    keystrokes = keystrokes + 1;
+                    var cur_val = $(me).val();
+                    if (typeof $(me).attr('data-validate-ext') !== 'undefined') {
+                        ngds.validator['vmap'][$(me).attr('data-validate-ext')]();
                     }
-                );
+                    if (keystrokes >= validation_begin_bound) {
+                        $(me).parents().children().filter(".error-block").remove();
+                        if (regex_validate(cur_val) === false) {
+                            $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-regex-msg")}));
+                        }
+                        if (maxlength_rule !== -1 && cur_val.length > maxlength_rule) {
+                            $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-maxlen-msg")}));
+                        }
+                        if (minlength_rule !== -1 && cur_val.length < minlength_rule) {
+                            $(me).after($("<div/>", {"class": "error-block", "text": $(me).attr("data-validate-minlen-msg")}));
+                        }
+                    }
+
+                };
+
+                var vmap = ngds.validator['vmap'] || (ngds.validator['vmap'] = { });
+                vmap[this.name] = vfn;
+
+                $(this).on('input', vfn);
             });
 
         };
+
+
+        ngds.subscribe('Forms.reinitialize', function () {
+            me.setup_fields();
+        });
 
         this.initialize = function () {
             me.setup_fields();
@@ -116,6 +128,7 @@ ngds.validator = (function () {
             validator_instance = new _validator();
             validator_instance.initialize();
         }
+        return validator_instance;
     };
 
     return {
