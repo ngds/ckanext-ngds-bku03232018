@@ -46,7 +46,10 @@ ngds.layer_map = { // A mapping table to map ngds result ids(dom) to leaflet ids
 })();
 
 if (typeof ngds.Map !== 'undefined') {
-    ngds.Map.initialize();
+    $(document).ready(function () {
+        ngds.Map.initialize();
+    });
+
 
     ngds.Map.top_level_search = function () {
         ngds.publish('Map.expander.toggle', {
@@ -137,25 +140,27 @@ if (typeof ngds.Map !== 'undefined') {
 
 
 if (typeof ngds.Map !== 'undefined') {
+    $(document).ready(function () {
+        ngds.Map.map.on('draw:rectangle-created', function (e) {
+            ngds.Map.clear_layer('drawnItems');
+            ngds.Map.add_to_layer([e.rect], 'drawnItems');
+            ngds.publish("Map.area_selected", {
+                'type': 'rectangle',
+                'feature': e
+            });
+        });
 
-    ngds.Map.map.on('draw:rectangle-created', function (e) {
-        ngds.Map.clear_layer('drawnItems');
-        ngds.Map.add_to_layer([e.rect], 'drawnItems');
-        ngds.publish("Map.area_selected", {
-            'type': 'rectangle',
-            'feature': e
+        ngds.Map.map.on('draw:poly-created', function (e) {
+            ngds.Map.clear_layer('drawnItems');
+            ngds.Map.add_to_layer([e.poly], 'drawnItems');
+
+            ngds.publish("Map.area_selected", {
+                'type': 'polygon',
+                'feature': e
+            });
         });
     });
 
-    ngds.Map.map.on('draw:poly-created', function (e) {
-        ngds.Map.clear_layer('drawnItems');
-        ngds.Map.add_to_layer([e.poly], 'drawnItems');
-
-        ngds.publish("Map.area_selected", {
-            'type': 'polygon',
-            'feature': e
-        });
-    });
 }
 
 
@@ -391,8 +396,10 @@ $(document).ready(function () {
     });
 })();
 
+$(document).ready(function () {
+    ngds.Map.map.on('zoomend', ngds.util.make_prominent);
+});
 
-ngds.Map.map.on('zoomend', ngds.util.make_prominent);
 ngds.subscribe('Map.layer_added', function () {
     ngds.util.make_prominent();
 });
