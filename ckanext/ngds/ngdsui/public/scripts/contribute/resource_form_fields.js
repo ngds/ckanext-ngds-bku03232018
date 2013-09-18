@@ -101,7 +101,7 @@ ngds.form.structured_form_fields = [
             {
                 'tag': 'select',
                 'attributes': {
-                    'data-module': 'autocomplete',
+//                    'data-module': 'autocomplete',
                     'name': 'content_model_uri',
                     'class': 'structured-input content_model',
                     'title': 'A content model pertaining to this resource'

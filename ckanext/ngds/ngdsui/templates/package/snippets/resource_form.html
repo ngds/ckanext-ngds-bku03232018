@@ -12,10 +12,23 @@
 <script>
 {% if data %}
     resource_location = window.location.origin+"{{data['resource_location']}}";
+    ngds.util.state['edit_mode']=true;
 {% endif %}
+    var content_models = {};
+    var content_models_raw = [{% for item in h.get_content_models() %}{ "uri":"{{item['uri']}}","versions":"{{item['versions']}}","title":"{{item['title']}}" },{% endfor %}];
+    for(var index in content_models_raw) {
+        content_models[content_models_raw[index]['uri']] = {
+            'versions':ngds.util.parse_raw_json(content_models_raw[index]['versions']),
+            'title':content_models_raw[index]['title']
+        };
+    }
 </script>
 
+{% if data %}
+<form class="dataset-form dataset-resource-form form-horizontal resource-edit-form" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
+{% else %}
 <form class="dataset-form dataset-resource-form form-horizontal" action="/dataset/new_resource/{{pkg_name}}" method="post" data-module="resource-form basic-form">
+{% endif %}
   <div data-module="resource-upload-field"></div>
   <ol class="stages stage-2">
     <li class="first-stage complete">
@@ -89,7 +102,7 @@
         {% endif %}
       {% endif %}
     {% endblock %}
-    
+
         {% block previous_button %}
         <button type="submit" name="save" value="go-dataset">{{ _('Previous Page') }}</button>
         {% endblock %}
@@ -98,7 +111,7 @@
         {% endblock %}
         <button type="button" class="{% block pull_right %}{% endblock %}" id="go-metadata">{% block save_button_text %}{{ _('Next: Additional Metadata') }}{% endblock %}</button>
         <!-- <button type="button" name="save" value="go-metadata">Additional Metadata</button> -->
-    
+
     </div>
 </form>
 
@@ -122,8 +135,6 @@ $(document).ready(function() {
    {% set dist = data['distributor'] %}
     {% endif %}
 
-   
-   // data="{{data|replace(data['distributor'],'')}}";
    data = ngds.util.parse_raw_json("{{data|replace(data.distributor,'')|replace('None','\"\"')|replace('False','false')|replace('True','true')}}");
    data['distributor'] = distributor;
 
@@ -131,9 +142,14 @@ $(document).ready(function() {
    if(typeof distributor !== 'undefined' && distributor!==null && distributor !== "") {
        $("#distributor_name").val(distributor.name);
        $("#distributor_email").val(distributor.email);
-       // console.log($("#distributor_name").val());
      }
-   responsibilified.slugify();
+        if(typeof responsibilified !=='undefined') {
+            responsibilified.slugify();
+        }
+        if (ngds.util.state['edit_mode'] === true && typeof data['content_model_version']!=='undefined') {
+                populate_content_model_versions();
+                $("[name=content_model_version]").val(data['content_model_version']);
+        }
   {% endif %}
 })();
 });

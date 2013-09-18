@@ -713,3 +713,6 @@ def get_filtered_items(request_params):
             else:
                 fields_grouped[param].append(value)
     return fields_grouped
+
+def get_content_models():
+    return logic.get_action('contentmodel_list_short')()
