@@ -50,14 +50,21 @@
 
   .wms {
     .ngds-tag;
-    background-color: #206b82;
+    background-color: @ngds-blue;
     color: white;
     height: 20px;
     font-size: 12px;
     padding: 0 10px;
+    box-shadow: none;
+    border: 0px;
 
     &:first-of-type {
       margin-left: 0px;
+    }
+
+    &:hover {
+      box-shadow: none;
+      border: 0px;
     }
   }
 
