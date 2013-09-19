@@ -17,7 +17,7 @@ class APICommand(CkanCommand):
         self._load_config()
         cmd = self.args[0]
         if cmd == "import":
-            from ckanext.ngds.lib.importer.importer import BulkUploader
+            from ckanext.ngds.importer.importer import BulkUploader
             bulkLoader = BulkUploader()
             bulkLoader.execute_bulk_upload()
         elif cmd == "doc-index":

@@ -26,10 +26,6 @@ class NgdsTables(CkanCommand):
         from ckanext.ngds.metadata.model.additional_metadata import db_setup as setup_metadata_tables
         setup_metadata_tables()
         
-        # Setup harvesting tables
-        from ckanext.ngds.harvest.model.harvest_node import db_setup as setup_harvest_tables
-        setup_harvest_tables()
-        
         # Setup CSW table
         from ckanext.ngds.csw.model.csw_records import db_setup as setup_csw_tables
         setup_csw_tables()

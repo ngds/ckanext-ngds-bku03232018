@@ -1,9 +1,10 @@
-from ckanext.ngds.lib.importer.importer import BulkUploader
-from ckanext.ngds.tests.ngds_test_case import NgdsTestCase
-
 import os
 
 from nose.tools import *
+
+from ckanext.ngds.importer.importer import BulkUploader
+from ckanext.ngds.tests.ngds_test_case import NgdsTestCase
+
 
 class ImporterTestCase(NgdsTestCase):
 

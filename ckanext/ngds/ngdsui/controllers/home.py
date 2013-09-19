@@ -46,6 +46,7 @@ class HomeController(NGDSBaseController):
 
 
         c.image_files = helpers.get_home_images()
+        helpers.get_contributors_list()
 
         return render('home/index_ngds.html')
 
@@ -165,3 +166,9 @@ class HomeController(NGDSBaseController):
         This function is responsible for rendering the About page via the template defined at templates/info/master/about_master.html
         """
         return render('info/master/about_master.html')
+
+    def render_contributors(self):
+        """
+        This function is responsible for rendering the About page via the template defined at templates/info/master/about_master.html
+        """
+        return render('home/contributors.html')

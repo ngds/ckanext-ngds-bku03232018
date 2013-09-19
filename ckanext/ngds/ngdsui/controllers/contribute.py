@@ -3,21 +3,23 @@ This controller class is responsible at a high level for managing the dataset an
 rendering of the bulk upload page and dataset and resource validation.
 """
 
+import os
+import shutil
+import zipfile
+
+from pylons import config
+from pylons.decorators import jsonify
+
 from ckan.lib.base import *
-from ckan.lib.navl.dictization_functions import DataError, unflatten, validate
+from ckan.lib.navl.dictization_functions import unflatten
 from ckan.lib.base import (request,
                            render,
                            model,
                            abort, h, g, c)
-from ckan.logic import (tuplize_dict, clean_dict, parse_params, flatten_to_string_key, get_action, check_access, NotAuthorized)
-from pylons import config
+from ckan.logic import (tuplize_dict, clean_dict, parse_params, get_action, check_access, NotAuthorized)
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
-import ckanext.ngds.lib.importer.helper as import_helper
+import ckanext.ngds.importer.helper as import_helper
 from ckan.controllers.package import PackageController
-from pylons.decorators import jsonify
-import os
-import shutil
-import zipfile
 from ckan.plugins import toolkit
 import ckanext.ngds.lib.importer.validator as ngdsvalidator
 from ckanext.ngds.ngdsui.misc.helpers import process_resource_docs_to_index
@@ -271,7 +273,7 @@ class ContributeController(NGDSBaseController):
         except NotAuthorized, error:
             abort(401, error.__str__())
 
-        from ckanext.ngds.lib.importer.importer import BulkUploader
+        from ckanext.ngds.importer.importer import BulkUploader
 
         bulkLoader = BulkUploader()
         bulkLoader.execute_bulk_upload()

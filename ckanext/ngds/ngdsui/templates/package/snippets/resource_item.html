@@ -102,14 +102,11 @@ var populate_lat_lng_fields = function (dom_marker, field_list) {
 };
 
 var populate_drop_down_list = function(dom_element, field_list) {
-    var fields = field_list;
-    var select = dom_element;
-    for(var i = 0; i < fields.length; i++){
-        var field = fields[i];
-        var el = document.createElement("option");
-        el.textContent = field;
-        el.value = field;
-        select.appendChild(el);
+    fields = field_list;
+    dom_ele = dom_element;
+
+    for(var val in fields) {
+        $("<option />", {value: fields[val], text: fields[val]}).appendTo(dom_ele);
     }
 };
 
@@ -201,27 +198,24 @@ $(document).ready(function() {
         var lyr_name_marker = $(".resource-item");
         $(".spatialize").click(function(){
             populate_geoserver_layer_name(lyr_name_marker);
-        if (resource_format === "CSV"){
-            get_csv_fields();
-            $(".enter_gs_lyr_name").remove();
-            $("#gs_lyr_name_input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
-        } else {
-            $(".enter_gs_lyr_name").remove();
-            $("#gs_lyr_name_input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
-        }
+            if (resource_format === "CSV"){
+                get_csv_fields();
+                $(".enter_gs_lyr_name").remove();
+                $("#gs_lyr_name_input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
+            } else {
+                $(".enter_gs_lyr_name").remove();
+                $("#gs_lyr_name_input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
+            }
 
-        var lyr_name = $("#gs_lyr_name_input");
-        var lat_field = $("#lat_field_marker");
-        var lng_field = $("#lng_field_marker");
-        $(".enter_gs_lyr_name").click(function(ev) {
-            var params = ev.currentTarget.value.split(",");
-            var resource_id = params[0];
-            var package_id = params[1];
-            var lyr_name_val = lyr_name.val();
-            var lat_field_val = lat_field.val();
-            var lng_field_val = lng_field.val();
+            $(".enter_gs_lyr_name").click(function(ev) {
+                var params = ev.currentTarget.value.split(",");
+                var resource_id = params[0];
+                var package_id = params[1];
+                var lyr_name_val = $("#gs_lyr_name_input").val();
+                var lat_field_val = $("#lat_field_marker").val();
+                var lng_field_val = $("#lng_field_marker").val();
 
-            publish_as_ogc(lyr_name_val, resource_id, package_id, lat_field_val, lng_field_val);
+                publish_as_ogc(lyr_name_val, resource_id, package_id, lat_field_val, lng_field_val);
         });
 
         });

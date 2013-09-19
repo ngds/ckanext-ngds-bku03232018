@@ -25,9 +25,6 @@ class Layer(object):
         self.package_id = package_id
         self.resource_id = resource_id
 
-        print "LAYER"
-        print self.file_resource
-
         # Spatialize it
         url = self.file_resource["url"]
         kwargs = {"resource_id": self.file_resource["id"]}
@@ -50,14 +47,7 @@ class Layer(object):
         if not self.data.publish():
             # Spatialization failed
             raise Exception(toolkit._("Spatialization failed."))
-    '''
-    def returnGeomExtent(self):
-        url = self.file_resource["url"]
-        if url.endswith('.zip'):
-            return self.data.ogr_source_info()
-        else:
-            pass
-    '''
+
     def create(self):
         """
         Creates the new layer to Geoserver and then creates the resources in Package(CKAN).
