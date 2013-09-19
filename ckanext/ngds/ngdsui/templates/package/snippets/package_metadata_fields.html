@@ -34,7 +34,7 @@
   {% endif %}
   <input type="hidden" name="author" value="{{ data.author }}"/>
   <input type="hidden" name="author_email" value="{{ data.author_email }}"/>
-
+{% if h.check_access('publish_dataset') %}
   <div class="input-group">
     <div class="sp-label"><label>{{_('Visibility')}}</label></div>
       <select id="field-private" name="private">
@@ -42,7 +42,7 @@
         <option value="False" {% if data.private==False%}selected{% endif %}>{{_('Public')}}</option>
       </select>
   </div>
-
+{% endif %}
   <div class="input-group">
     <div class="sp-label"><label>{{_('Dataset Extent')}}</label></div>
       <div id="bbox-map"></div>
