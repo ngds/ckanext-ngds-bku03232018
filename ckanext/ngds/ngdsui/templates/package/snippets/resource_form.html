@@ -12,7 +12,9 @@
 <script>
 {% if data %}
     resource_location = window.location.origin+"{{data['resource_location']}}";
-    ngds.util.state['edit_mode']=true;
+    ngds.util.state['edit_mode'] = true;
+{% else %}
+    ngds.util.state['edit_mode'] = false;
 {% endif %}
     var content_models = {};
     var content_models_raw = [{% for item in h.get_content_models() %}{ "uri":"{{item['uri']}}","versions":"{{item['versions']}}","title":"{{item['title']}}" },{% endfor %}];

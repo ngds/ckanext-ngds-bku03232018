@@ -59,6 +59,83 @@ var form_generator = function (form) {
     return ngds.util.dom_element_constructor(final_inputs);
 };
 
+ngds.rs_generator = function (fields, cls, party_type) {
+
+    var form_items = [];
+    var buttons = [];
+    for (var field_index in fields) {
+        var field = fields[field_index];
+
+        if (typeof field['button'] !== 'undefined') {
+            var button = {
+                'tag': 'button',
+                'attributes': {
+                    'type': 'button',
+                    'class': field['class'],
+                    'id': field['id'],
+                    'text': field['button']
+                }
+            };
+            buttons.push(button);
+            continue;
+        }
+
+        var form_item = {
+            'tag': 'div',
+            'children': [
+                {
+                    'tag': 'label',
+                    'attributes': {
+                        'class': field['label_class'],
+                        'text': field['label']
+                    }
+                },
+                {
+                    'tag': 'input',
+                    'attributes': {
+                        'name': field['input_name'],
+                        'type': 'text',
+                        'class': 'small ' + field['input_class'],
+                        'id': field['input_id']
+                    }
+                }
+            ]
+        };
+        form_items.push(form_item);
+    }
+
+    var pre_dom_rs = {
+        'tag': 'div',
+        'attributes': {
+            'class': 'add-responsible-party ' + cls
+        },
+        children: [
+            {
+                'tag': 'h4',
+                'attributes': {
+                    'text': 'Create ' + party_type
+                }
+            },
+            {
+                'tag': 'div',
+                'attributes': {
+                    'class': 'tab'
+                },
+                'children':form_items
+            },
+            {
+                'tag':'div',
+                'attributes':{
+                    'class':'rsactions'
+                },
+                'children':buttons
+            }
+        ]
+    };
+
+    return ngds.util.dom_element_constructor(pre_dom_rs);
+};
+
 
 ngds.form = {};
 

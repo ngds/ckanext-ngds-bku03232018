@@ -117,7 +117,9 @@ var render_forms = function (value) {
         if (value === "unstructured") {
             $("#resource_type-unstructured").prop("checked", true);
             $(".form-body").replaceWith(form_generator(ngds.form.unstructured_form_fields));
-            position_file_uploader("#field-url");
+            if (ngds.util.state['edit_mode'] !== true) {
+                position_file_uploader("#field-url");
+            }
         }
 
         if (value === "offline-resource") {

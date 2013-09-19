@@ -118,88 +118,84 @@ ngds.responsible_party = function () {
             var rs_c_cancel_button = rs_token + "_c_cancel_button";
             var rs_c_form = rs_token + "_c_form";
 
-            var responsible_parties = {
-                'class': rs_c_form,
-                'responsible_party_type': rs_token,
-                'responsible_parties': [
-                    {
-                        'label': 'Name',
-                        'type': 'text',
-                        'name': rs_c_name,
-                        'id': rs_c_name,
-                        'class': rs_c_form
-                    },
-                    {
-                        'label': 'Email',
-                        'type': 'text',
-                        'name': rs_c_name,
-                        'id': rs_c_email,
-                        'class': rs_c_form
-                    },
-                    {
-                        'label': 'Organization',
-                        'type': 'text',
-                        'name': rs_token + 'org',
-                        'id': rs_c_org,
-                        'class': rs_c_form
-                    },
-                    {
-                        'label': 'Phone',
-                        'type': 'text',
-                        'id': rs_c_ph,
-                        'name': rs_token + 'ph',
-                        'class': rs_c_form
-                    },
-                    {
-                        'label': 'Street',
-                        'type': 'text',
-                        'id': rs_c_street,
-                        'name': rs_token + 'street',
-                        'class': rs_c_form
-                    },
-                    {
-                        'label': 'City',
-                        'type': 'text',
-                        'id': rs_c_city,
-                        'name': rs_token + 'city',
-                        'class': rs_c_form
-                    },
-                    {
-                        'label': 'State',
-                        'type': 'text',
-                        'id': rs_c_state,
-                        'name': rs_token + 'state',
-                        'class': rs_c_form
-                    },
-                    {
-                        'label': 'Zip',
-                        'type': 'text',
-                        'id': rs_c_zip,
-                        'name': rs_token + 'zip',
-                        'class': rs_c_form
-                    },
-                    {
-                        'label': 'Country',
-                        'type': 'text',
-                        'name': rs_token + 'country',
-                        'id': rs_c_country,
-                        'class': rs_c_form
-                    },
-                    {
-                        'button': 'Create',
-                        'id': rs_c_create_button,
-                        'class': rs_c_form
-                    },
-                    {
-                        'button': 'Cancel',
-                        'id': rs_c_cancel_button,
-                        'class': rs_c_form
-                    }
-                ]
-            };
+            var fields = [
+                {
+                    'label': 'Name',
+                    'label_class': rs_c_form,
+                    'input_name': rs_c_name,
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_name
+                },
+                {
+                    'label': 'Email',
+                    'label_class': rs_c_form,
+                    'input_name': rs_c_email,
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_email
+                },
+                {
+                    'label': 'Organization',
+                    'label_class': rs_c_form,
+                    'input_name': rs_token + 'org',
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_org
+                },
+                {
+                    'label': 'Phone',
+                    'label_class': rs_c_form,
+                    'input_name': rs_token + 'ph',
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_ph
+                },
+                {
+                    'label': 'Street',
+                    'label_class': rs_c_form,
+                    'input_name': rs_token + 'street',
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_street
+                },
+                {
+                    'label': 'City',
+                    'label_class': rs_c_form,
+                    'input_name': rs_token + 'city',
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_city
+                },
+                {
+                    'label': 'State',
+                    'label_class': rs_c_form,
+                    'input_name': rs_token + 'state',
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_state
+                },
+                {
+                    'label': 'Zip',
+                    'label_class': rs_c_form,
+                    'input_name': rs_token + 'zip',
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_zip
+                },
+                {
+                    'label': 'Country',
+                    'label_class': rs_c_form,
+                    'input_name': rs_token + '-country',
+                    'input_class': rs_c_form,
+                    'input_id': rs_c_country
+                },
+                {
+                    'button': 'Create',
+                    'id': rs_c_create_button,
+                    'class': rs_c_form
+                },
+                {
+                    'button': 'Cancel',
+                    'id': rs_c_cancel_button,
+                    'class': rs_c_form
+                }
+            ];
 
-            me.rs_create_anch.after(Mustache.render(ngds.add_responsible_party_template, responsible_parties));
-
+//            me.rs_create_anch.after(Mustache.render(ngds.add_responsible_party_template, responsible_parties));
+            me.rs_create_anch.after(ngds.rs_generator(fields,rs_c_form, rs_token));
             var rs_c_name_jq = $("#" + rs_c_name);
             var rs_c_email_jq = $("#" + rs_c_email);
             var rs_c_org_jq = $("#" + rs_c_org);
@@ -212,9 +208,8 @@ ngds.responsible_party = function () {
 
             var rs_c_create_button_jq = $("#" + rs_c_create_button);
             var rs_c_cancel_button_jq = $("#" + rs_c_cancel_button);
-            var rs_c_form_jq = $("." + rs_c_form);
-
             rs_c_create_button_jq.on('click', function () {
+
                 $.ajax({
                     'url': '/api/action/additional_metadata',
                     'type': 'POST',
@@ -239,15 +234,21 @@ ngds.responsible_party = function () {
                         me.slugify(response.result);
                         me.rs_create_anch.show();
                         rs_c_form_jq.remove();
+                    },
+                    'error': function () {
+                        $(".add-responsible-party .tab").after($("<div/>", {"class": "error-block", "text": "Invalid form entries"}));
                     }
                 });
+
+
             });
+
+            var rs_c_form_jq = $("." + rs_c_form);
 
             rs_c_cancel_button_jq.on('click', function (ev) {
                 rs_c_form_jq.remove();
                 me.rs_create_anch.show();
             });
-
 
         });
 
