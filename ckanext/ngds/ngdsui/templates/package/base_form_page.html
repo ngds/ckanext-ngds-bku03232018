@@ -65,4 +65,9 @@
     </div>
 </div>
 
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="/scripts/utils/ngds_validator.js"></script>
+{% endblock %}
+
 {% endblock %}

@@ -2,26 +2,10 @@ var populate_content_models = function () {
     var content_model_combo = $(".content_model");
     if (typeof options === 'undefined') {
         options = [];
-        content_models = {
-
-        };
-        $.ajax({ // Fetch content models.
-            url: '/api/action/contentmodel_list_short',
-            type: 'POST',
-            data: JSON.stringify({
-                dummy: 'appendix' // Ckan needs something in the body or the request is not accepted.
-            }),
-            success: function (response) {
-                for (var i = 0; i < response.result.length; i++) {
-                    content_models[response.result[i].uri] = response.result[i];
-                }
-
-                options.push($('<option/>', {value: 'none', text: 'None'}).appendTo(content_model_combo));
-                for (var val in content_models) {
-                    options.push($('<option/>', {value: val, text: content_models[val].title}).appendTo(content_model_combo));
-                }
-            }
-        });
+        options.push($('<option/>', {value: 'none', text: 'None'}).appendTo(content_model_combo));
+        for (var val in content_models) {
+            options.push($('<option/>', {value: val, text: content_models[val].title}).appendTo(content_model_combo));
+        }
         return;
     }
 
@@ -40,21 +24,22 @@ var populate_content_model_versions = function () {
 
     $('.content_model_version_marker').remove();
 
-    var content_model_version_struct = {
-        'form': [
-            {
-                'label': 'Version',
-                'name': 'content_model_version',
-                'top_classes': function () {
-                    return 'content_model_version_marker';
-                },
-                'tag': 'select',
-                'class': function () {
-                    return 'content_model_version';
+    var content_model_version_struct = [
+        {
+            'label': 'Version',
+            'div_classes': ['content_model_version_marker'],
+            'inputs': [
+                {
+                    'tag': 'select',
+                    'attributes': {
+                        'class': 'structured-input content_model_version',
+                        'name': 'content_model_version'
+                    }
                 }
-            }
-        ]};
-    content_model_combo.after(Mustache.render(ngds.structured_form_template, content_model_version_struct));
+            ]
+        }
+    ];
+    content_model_combo.after(form_generator(content_model_version_struct));
 
     var content_model_version_combo = $(".content_model_version");
     var content_model_selected = content_model_combo.val();
@@ -77,10 +62,6 @@ $("#file").on('change', function (ev) {
 var populate_form = function (data) {
     for (property in data) {
         if ($("[name=" + property + "]").length > 0) {
-            // if(property==='url') {
-            //      $("[name="+property+"]").val('http://'+window.location.host+'/storage/f/'+data[property]);
-            //      continue;
-            //  }
             if (property === 'distributor') {
 
             }
@@ -89,11 +70,9 @@ var populate_form = function (data) {
     }
 };
 
-/*
 var activate_populate_form = function (data) {
     render_forms(data['resource_format']);
     populate_form(data);
-    // $("[name=resource_type]").prop("disabled",true);
     $("#resource_type-selection").prop("disabled", true);
     $("input[type=radio]").prop("disabled", true);
     var name = get_prop($("#field-url").val(), 'name');
@@ -101,13 +80,7 @@ var activate_populate_form = function (data) {
     $("[name=name]").val(name);
     $("[name=format]").val(file_extension);
 };
-*/
 
-$(".form-body").on("change", ".content_model", function () { // When the content model combo's value changes, populate the content model versions into the content_model_version combo box.
-    populate_content_model_versions();
-});
-
-/*
 var get_prop = function (url, what) {
     if (typeof url === 'undefined' || url.length === 0) {
         return '';
@@ -121,60 +94,62 @@ var get_prop = function (url, what) {
     }
 };
 
-*/
 
 position_file_uploader();
 var render_forms = function (value) {
-    $(".form-body").empty();
+        $(".form-body").empty();
+        if (value === 'structured' || value === 'unstructured') {
+            $("[name=upload_type_selection]").prop("checked", true);
+        }
+        else {
+            $("[name=upload_type_selection]").prop("checked", false);
+        }
+        if (value === "structured") {
+            $("#resource_type-structured").prop("checked", true);
+            $(".form-body").replaceWith(form_generator(ngds.form.structured_form_fields));
+            position_file_uploader("#field-url");
+            populate_content_models();
+            $(".form-body").on("change", ".content_model", function () { // When the content model combo's value changes, populate the content model versions into the content_model_version combo box.
+                populate_content_model_versions();
+            });
+        }
 
+        if (value === "unstructured") {
+            $("#resource_type-unstructured").prop("checked", true);
+            $(".form-body").replaceWith(form_generator(ngds.form.unstructured_form_fields));
+            if (ngds.util.state['edit_mode'] !== true) {
+                position_file_uploader("#field-url");
+            }
+        }
 
-    if (value === 'structured' || value === 'unstructured') {
-        $("[name=upload_type_selection]").prop("checked", true);
+        if (value === "offline-resource") {
+            $("#offline-resource").prop("checked", true);
+            $(".form-body").replaceWith(form_generator(ngds.form.offline_form_fields));
+            position_file_uploader();
+        }
+
+        if (value === "data-service") {
+            $(".form-body").replaceWith(form_generator(ngds.form.data_service_form_fields));
+            position_file_uploader();
+        }
+
+        if (value === "data-service" || value === "unstructured" || value === "structured") {
+            responsibilified = new ngds.responsible_party();
+            responsibilified.responsibilify({
+                'rs_name': '#distributor_name',
+                'rs_email': '#distributor_email',
+                'rs_fake': '#distributor_fake',
+                'rs': '#distributor',
+                'slug_container': '.distributor-tag'
+            }, function (dict) {
+                $("[name='distributor_name']").val(dict['name']);
+                $("[name='distributor_email']").val(dict['email']);
+            });
+        }
+
+        ngds.publish("Forms.reinitialize", {});
     }
-    else {
-        $("[name=upload_type_selection]").prop("checked", false);
-    }
-    if (value === "structured") {
-        $("#resource_type-structured").prop("checked", true);
-        $(".form-body").html(Mustache.render(ngds.structured_form_template, structured_form));
-        position_file_uploader("#field-url");
-        populate_content_models();
-//        jQuery(".content_model").select2();
-    }
-
-    if (value === "unstructured") {
-        $("#resource_type-unstructured").prop("checked", true);
-        $(".form-body").html(Mustache.render(ngds.structured_form_template, unstructured_form));
-        position_file_uploader("#field-url");
-    }
-
-    if (value === "offline-resource") {
-        $("#offline-resource").prop("checked", true);
-        $(".form-body").html(Mustache.render(ngds.structured_form_template, offline_resource_form));
-        position_file_uploader();
-    }
-
-    if (value === "data-service") {
-        $(".form-body").html(Mustache.render(ngds.structured_form_template, link_data_service_form));
-        position_file_uploader();
-    }
-
-    if (value === "data-service" || value === "unstructured" || value === "structured") {
-        responsibilified = new ngds.responsible_party();
-        responsibilified.responsibilify({
-            'rs_name': '#distributor_name',
-            'rs_email': '#distributor_email',
-            'rs_fake': '#distributor_fake',
-            'rs': '#distributor',
-            'slug_container': '.distributor-tag'
-        }, function (dict) {
-            $("[name='distributor_name']").val(dict['name']);
-            $("[name='distributor_email']").val(dict['email']);
-        });
-    }
-};
-
-
+    ;
 $('input[name="resource_format"]').on('change', function (ev) {
     var id = ev.currentTarget.id;
     var value = "";
@@ -194,7 +169,6 @@ $('input[name="resource_format"]').on('change', function (ev) {
     render_forms(value);
 });
 
-
 $("#go-metadata").click(function () {
     $.ajax({
         'url': '/ngds/contribute/validate_resource',
@@ -202,7 +176,6 @@ $("#go-metadata").click(function () {
         'success': function (response) {
             if (response.success === true) {
                 $(".dataset-form").append($("<input/>", {'type': 'hidden', 'name': 'save', 'value': 'go-metadata'}));
-                // $(".dataset-form").append($("<input/>",{'type':'hidden','name':'id','value':''}));
                 $(".dataset-form").submit();
             }
             else {

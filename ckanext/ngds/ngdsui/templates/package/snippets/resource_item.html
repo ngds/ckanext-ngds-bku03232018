@@ -20,6 +20,8 @@
       {{ _('Explore') }}
       <span class="caret"></span>
     </a>
+
+    {% if h.check_access('package_create') and not g.central %}
     {% if h.is_plugin_enabled('geoserver') %}
       {% if h.is_ogc_publishable(res.id) %}
         {% if h.is_spatialized(res)==True %}
@@ -28,6 +30,7 @@
            <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">{{ _('Publish as OGC') }}</button>
         {% endif %}
       {% endif %}
+    {% endif %}
     {% endif %}
     <ul class="dropdown-menu">
       {% block resource_item_explore_links %}

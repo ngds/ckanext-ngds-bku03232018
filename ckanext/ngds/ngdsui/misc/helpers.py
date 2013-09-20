@@ -564,7 +564,7 @@ def process_resource_docs_to_index():
 
     docs_to_index = get_docs_to_index('NEW')
 
-    from ckanext.ngds.lib.index import FullTextIndexer
+    from ckanext.ngds.indexer.index import FullTextIndexer
 
     text_indexer = FullTextIndexer()
     site_id = config.get('ckan.site_id', 'default')
@@ -713,3 +713,40 @@ def get_filtered_items(request_params):
             else:
                 fields_grouped[param].append(value)
     return fields_grouped
+
+def get_content_models():
+    return logic.get_action('contentmodel_list_short')()
+
+
+def get_contributors_list():
+    """
+    Returns the contributors configured in the configuration.
+
+    :return:List of contributors as dictionary
+    """
+    try:
+        if g.contributors_list:
+            log.debug("Contributors list is already loaded.")
+    except AttributeError:
+        contributors_config = config.get('ngds.contributors_config')
+
+        #Open the json config file and load it as dict.
+        with open(contributors_config, 'r') as json_file:
+            import json
+            from pprint import pprint
+
+            contributors_list = json.load(json_file)
+            image_direcotry = config.get('ngds.home_images_dir', 'assets')
+
+            prepend_str = "/" + image_direcotry + "/"
+
+            for contributor in contributors_list:
+                contributor['logo_path'] = prepend_str + contributor.get("logo_path")
+                #contributors_list.append(contributor)
+
+        print "contributors_list: ",contributors_list
+
+        g.contributors_list = contributors_list
+
+    return g.contributors_list
+

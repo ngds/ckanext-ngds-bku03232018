@@ -48,6 +48,7 @@ class NgdsCrudController():
         if self.valid_data(data):
             instance = self.model(**data)
             instance.save() # Automatically commits, save() defined by ckan.model.domain_object:DomainObject
+            print instance.as_dict()
             return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
         else: # 400 if the data is not valid
             raise toolkit.ValidationError({}, toolkit._("Please supply a 'data' attribute containing the appropriate content for a %s instance.") % self.model.__name__)

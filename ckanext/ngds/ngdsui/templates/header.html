@@ -82,8 +82,8 @@
 							<a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index' %}">
 							{% endif %}
 							{% if active_tab == "contribute" %} <span class="active main-nav-span last borders"> {% else %} <span class="main-nav-span last borders"> {% endif %}
-								<span class="main-menu-item">{% if g.central and  h.check_access('manage_users') %} {{ _('HARVEST') }} {% else %} {{ _('CONTRIBUTE') }} {% endif %}</span>
-								<span class="main-menu-text">{% if g.central and  h.check_access('manage_users') %} {{ _('Harvesting nodes & synchronizing nodes') }} {% else %} {{ _('Share data with NGDS') }} {% endif %}</span>
+								<span class="main-menu-item">{% if g.central %} {{ _('HARVEST') }} {% else %} {{ _('CONTRIBUTE') }} {% endif %}</span>
+								<span class="main-menu-text">{% if g.central %} {{ _('Harvesting nodes & synchronizing nodes') }} {% else %} {{ _('Share data with NGDS') }} {% endif %}</span>
 							</span>
 						</a>
 					</nav>

@@ -46,7 +46,10 @@ ngds.layer_map = { // A mapping table to map ngds result ids(dom) to leaflet ids
 })();
 
 if (typeof ngds.Map !== 'undefined') {
-    ngds.Map.initialize();
+    $(document).ready(function () {
+        ngds.Map.initialize();
+    });
+
 
     ngds.Map.top_level_search = function () {
         ngds.publish('Map.expander.toggle', {
@@ -67,6 +70,10 @@ if (typeof ngds.Map !== 'undefined') {
         });
 
     };
+
+    $("#map-query").on("change", function () {
+        ngds.publish("Map.clear_rect", {});
+    });
 }
 
 (function publish_pager_advance() {
@@ -119,38 +126,41 @@ if (typeof ngds.Map !== 'undefined') {
 
 (function subscribe_data_loading() {
     ngds.subscribe('data-loading', function (msg, data) {
+        ngds.publish('Map.results_hide', {});
         ngds.Map.map.fireEvent('dataloading');
     });
 })();
 
 (function subscribe_data_loaded() {
     ngds.subscribe('data-loaded', function (msg, data) {
+        ngds.publish('Map.results_rendered', {});
         ngds.Map.map.fireEvent('dataload');
     })
 })();
 
 
 if (typeof ngds.Map !== 'undefined') {
+    $(document).ready(function () {
+        ngds.Map.map.on('draw:rectangle-created', function (e) {
+            ngds.Map.clear_layer('drawnItems');
+            ngds.Map.add_to_layer([e.rect], 'drawnItems');
+            ngds.publish("Map.area_selected", {
+                'type': 'rectangle',
+                'feature': e
+            });
+        });
 
-    ngds.Map.map.on('draw:rectangle-created', function (e) {
-        ngds.Map.clear_layer('drawnItems');
-        ngds.Map.add_to_layer([e.rect], 'drawnItems');
+        ngds.Map.map.on('draw:poly-created', function (e) {
+            ngds.Map.clear_layer('drawnItems');
+            ngds.Map.add_to_layer([e.poly], 'drawnItems');
 
-        ngds.publish("Map.area_selected", {
-            'type': 'rectangle',
-            'feature': e
+            ngds.publish("Map.area_selected", {
+                'type': 'polygon',
+                'feature': e
+            });
         });
     });
 
-    ngds.Map.map.on('draw:poly-created', function (e) {
-        ngds.Map.clear_layer('drawnItems');
-        ngds.Map.add_to_layer([e.poly], 'drawnItems');
-
-        ngds.publish("Map.area_selected", {
-            'type': 'polygon',
-            'feature': e
-        });
-    });
 }
 
 
@@ -229,12 +239,16 @@ if (typeof ngds.Map !== 'undefined') {
 
 (function setup_styler_for_features() {
     /*
-     *	This is really where all the events on features are bound regardless of how they are initiated. No events should directly be bound on features except through
+     *	This is really where all the events on features are bound regardless of how they are initiated. No event listeners should
+     *	directly be bound on features except through
      *	here. This lets us use our own events as a forwarding mechanism that lead to these functions below.
      *
      *
      */
     ngds.subscribe('Layer.mouseover', function (topic, data) {
+        if (typeof data['Layer'] === 'undefined' || typeof data['Layer'].layer === 'undefined') {
+            return;
+        }
         var is_active = data['Layer'].layer.is_active || null;
         if (is_active === null || is_active === false) {
             ngds.util.apply_feature_hover_styles(data['Layer'].layer, data['tag_index'])
@@ -242,6 +256,9 @@ if (typeof ngds.Map !== 'undefined') {
     });
 
     ngds.subscribe('Layer.mouseout', function (topic, data) {
+        if (typeof data['Layer'] === 'undefined' || typeof data['Layer'].layer === 'undefined') {
+            return;
+        }
         var is_active = data['Layer'].layer.is_active || null;
         if (is_active === null || is_active === false) {
             ngds.util.apply_feature_default_styles(data['Layer'].layer, data['tag_index']);
@@ -249,6 +266,9 @@ if (typeof ngds.Map !== 'undefined') {
     });
 
     ngds.subscribe('Layer.click', function (topic, data) {
+        if (typeof data['Layer'] === 'undefined' || typeof data['Layer'].layer === 'undefined') {
+            return;
+        }
         ngds.util.reset_result_styles();
         for (var l in ngds.layer_map) {
             ngds.util.apply_feature_default_styles(ngds.layer_map[l], l);
@@ -298,11 +318,14 @@ if (typeof ngds.Map !== 'undefined') {
     ngds.subscribe('Map.add_feature', function (topic, data) {
         var feature = data['feature'];
         ngds.layer_map[data['seq_id']] = feature;
+
         ngds.util.apply_feature_default_styles(feature, data['seq_id']);
         ngds.feature_event_manager[feature._leaflet_id] = {
             'Layer': feature,
             'seq_id': data['seq_id']
         };
+
+        ngds.publish('Map.layer_added', {});
 
         feature.on('mouseover', function (feature) {
 
@@ -330,58 +353,32 @@ if (typeof ngds.Map !== 'undefined') {
 })();
 
 
-(function publish_map_search_results_expanded() {
-    $(".map-expander").on('click', null, function () {
-        ngds.publish("Map.expander.toggle", {
-            // Empty payload
-        });
-    });
-})();
-
-(function subscribe_map_search_results_expanded() {
-    var operation = 'contract';
-    ngds.subscribe('Map.expander.toggle', function (topic, data) {
-        var no_toggle = data['no_toggle'] || false;
-
-        if (operation === 'contract' || no_toggle === false) {
-            operation = 'expand';
-            $(".results").hide();
-            $(".search-results-pagination").hide();
-            $(".search-results-pagination").addClass("no-padding");
-            $(".results-text").hide();
-            $(".map-expander").css("top", "80px");
-        }
-        else {
-            operation = 'contract';
-            $(".results").show();
-            $(".results-text").show();
-            $(".search-results-pagination").show();
-            $(".search-results-pagination").removeClass("no-padding");
-            $(".map-expander").css("top", "0px");
-        }
-    });
-})();
-
-ngds.publish('Map.expander.toggle', {
-    // Empty payload
+ngds.subscribe('Map.results_rendered', function (topic, data) {
+    $(".visibility-managed").show();
+    $(".results").jScrollPane({contentWidth: '0px', hideFocus: true});
 });
 
+ngds.subscribe('Map.results_hide', function (topic, data) {
+    $(".visibility-managed").hide();
+});
+
+$(document).ready(function () {
+    var state = false;
+    $(".map-expander").on("click", function () {
+
+        if (state === false) {
+            $(".visibility-managed").hide();
+            state = true;
+        }
+        else {
+            $(".visibility-managed").show();
+            state = false;
+        }
+
+    });
+});
 
 (function () {
-    if (typeof ngds.Map !== 'undefined') {
-        ngds.Map.map.on('enterFullscreen', function () {
-            ngds.publish("Map.size_changed", {
-                'fullscreen': true
-            });
-        });
-
-        ngds.Map.map.on('exitFullscreen', function () {
-            ngds.publish("Map.size_changed", {
-                'fullscreen': false
-            });
-        });
-    }
-
     ngds.subscribe('Map.size_changed', function (topic, data) {
         if (data['fullscreen'] === true) {
             ngds.Map.state['map-search-results-left'] = $(".map-search-results").css('left');
@@ -398,3 +395,11 @@ ngds.publish('Map.expander.toggle', {
         }
     });
 })();
+
+$(document).ready(function () {
+    ngds.Map.map.on('zoomend', ngds.util.make_prominent);
+});
+
+ngds.subscribe('Map.layer_added', function () {
+    ngds.util.make_prominent();
+});

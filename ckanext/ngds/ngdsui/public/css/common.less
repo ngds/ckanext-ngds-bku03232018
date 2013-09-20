@@ -1,3 +1,11 @@
+@ngds-blue: #476276;
+@ngds-highlight: #9fb2bc;
+
+.btn, .module .btn {
+  background-image: linear-gradient(to bottom, #476276, #085871) !important;
+  .ngds-button();
+}
+
 .datepicker-styles {
 
   .ui-widget-header {
@@ -307,6 +315,11 @@ p {
   height: @height;
 }
 
+.ngds-button() {
+  .btn;
+  .btn-primary;
+}
+
 .ngds-button(@width,@height) {
   /*	.ngds-button-common;
       width:@width;
@@ -434,7 +447,11 @@ input[type="radio"] {
   margin-top: 0px;
 
   .module-heading {
-    background-color: #efefef;
+    background-color: @ngds-blue;
+  }
+
+  li.active a.active {
+    background-color: @ngds-highlight;
   }
 
   .page-header {
@@ -461,5 +478,18 @@ input[type="radio"] {
 
   .breadcrumb {
     font-size: 15px;
+  }
+}
+
+.module {
+
+  h2.module-heading {
+    background-color: @ngds-blue;
+    color: white;
+  }
+
+  .btn {
+    background-image: linear-gradient(to bottom, #476276, #085871);
+    .ngds-button();
   }
 }

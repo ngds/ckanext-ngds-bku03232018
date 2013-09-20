@@ -1,12 +1,11 @@
-import ConfigParser
+from configobj import ConfigObj
+import sys
 import os
+import argparse
 
 # Add .ini parameters that should be set here as (key, value)
 params_to_set = [
-    ("geoserver.rest_url", "http://localhost:8080/geoserver/rest"),
-    ("geoserver.workspace_name", "ngds"),
-    ("geoserver.workspace_uri", "http://localhost:5000/ngds"),
-    ("ckan.extra_resource_fields", "parent_resource distributor layer_name content_model_version content_model_uri"),
+    ("ckan.extra_resource_fields", "parent_resource distributor layer_name content_model_version content_model_uri","Extra Resources fields"),
     ("ngds.csw.title", "NGDS CSW"),
     ("ngds.csw.abstract", "NGDS is awesome"),
     ("ngds.csw.keywords", "ngds, csw, ogc, catalog"),
@@ -30,30 +29,54 @@ params_to_set = [
     ("ngds.csw.contact.instructions", "During hours of service"),
     ("ngds.csw.contact.role", "pointOfContact"),
     ("ngds.facets_config", "/home/ubuntu/ckanenv/src/ckanext-ngds/facet-config.json"),
-    ("ngds.default_group_name", "public"),
-    ("ngds.deployment", "node"),
-    ("ngds_resources_dir", "/home/ubuntu/ckanenv/src/ckanext-ngds/ckanext/ngds/base/resources"),
-    ("ngds.home_images_dir", "assets"),
-    ("ngds.home_images_config_path", "/home/ngds/pyenv2/src/ckanext-ngds/home_images.cfg")
+    ("ngds.default_group_name", "public"),    
+    ("ngds.resources_dir", "/home/ubuntu/ckanenv/src/ckanext-ngds/ckanext/ngds/base/resources"),
+    ("ngds.contributors_config", "/home/ngds/pyenv2/src/ckanext-ngds/contributors_config.json"),
+    ("extra_public_paths", "/home/ngds/extrapublic/"),
+    ("ckan.i18n_directory", "/home/ngds/pyenv2/src/ckanext-ngds")
 ]
 
-# This builds the config file
-cwd = os.getcwd()
-ckan_dir = os.path.abspath(os.path.join(cwd, "..", "..", "ckan"))
-config_file = os.path.join(ckan_dir, "development.ini")
+node_params = [
+    ("ngds.deployment", "node"),
+    ("ngds.full_text_indexing", "true"),
+    ("geoserver.rest_url", "http://localhost:8080/geoserver/rest","This is Geoserver rest URL"),
+    ("geoserver.workspace_name", "ngds","Geoserver Workspace Name"),
+    ("geoserver.workspace_uri", "http://localhost:5000/ngds","Geoserver Workspace URI"),
+    ("ngds.bulk_upload_dir", "/home/ngds/work/bulkupload/"),
+    ("ngds.client_config_file", "/home/ngds/pyenv2/src/ckanext-ngds/ckanclient.cfg")    
+]
 
-if not os.path.exists(config_file):
-    print "Could not find development.ini"
+central_params = [
+    ("ngds.deployment", "central"),
+    ("ngds.home_images_dir", "assets"),
+    ("ngds.logo_text", "CONTRIBUTING GEOTHERMAL DATA"),
+    ("ngds.home_images_config_path", "/home/ngds/pyenv2/src/ckanext-ngds/home_images.cfg")    
+]
 
+parser = argparse.ArgumentParser(description='Load NGDS configuration properties')
+parser.add_argument('-f','--filename', help='Config File to be updated(Full file Path)', required=True)
+parser.add_argument('-d','--deployment', help='Deployment type of NGDS. node/central', required=True)
+args = parser.parse_args()
+
+
+if not os.path.exists(args.filename):
+    print "Could not find config file: %s" % args.filename
 else:
-    config = ConfigParser.RawConfigParser()
-    config.read(config_file)
-
-    print config.sections()
+    config = ConfigObj(args.filename)
 
     for param in params_to_set:
-        config.set("app:main", param[0], param[1])
+        config["app:main"][param[0]] = param[1]
+        config["app:main"].comments[param[0]] = ["","# %s"%param[2]] if len(param)>2 else []
 
-    with open(os.path.join(ckan_dir, "ngds.ini"), "w") as new_config:
-        config.write(new_config)
+    deployment_params = []
 
+    if args.deployment.lower() == 'central':
+        deployment_params = central_params
+    else:
+        deployment_params = node_params
+
+    for param in deployment_params:
+        config["app:main"][param[0]] = param[1]
+        config["app:main"].comments[param[0]] = ["","# %s"%param[2]] if len(param)>2 else []
+
+    config.write()

@@ -1,7 +1,8 @@
-import ckanext.ngds.lib.importer.validator as ngdsvalidator
+import os
 
 from nose.tools import *
-import os
+
+import ckanext.ngds.importer.validator as ngdsvalidator
 
 
 # Use this method to initialize the database

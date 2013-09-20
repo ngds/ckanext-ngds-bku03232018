@@ -33,7 +33,7 @@ from ckan import model
 
 from ckan.model import meta
 
-from sqlalchemy import types, Column, Table, func , ForeignKey
+from sqlalchemy import types, Column, Table, func , ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.sql.expression import or_ 
 
@@ -55,6 +55,9 @@ class ResponsibleParty(NgdsDataObject):
     """
     
     def __init__(self, name, email, **kwargs):
+        if email=="":
+            raise Exception
+
         self.name = name
         self.email = email
         self.organization = kwargs.get('organization', None)
@@ -158,7 +161,8 @@ def define_tables():
         Column("state", types.UnicodeText),
         Column("city", types.UnicodeText),
         Column("zip", types.UnicodeText),
-        Column("country", types.UnicodeText)
+        Column("country", types.UnicodeText),
+        UniqueConstraint('email')
     )
     
     languages = Table(

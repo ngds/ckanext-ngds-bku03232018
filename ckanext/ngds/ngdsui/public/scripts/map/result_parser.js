@@ -5,7 +5,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
     var query = result['query'];
     ngds.log("Received " + count + " results : " + results, results);
     $(".results").remove();
-    var clazz = "results";
+    var clazz = "results visibility-managed";
     ngds.util.state['colorify'] = {
 //    Colors for different map search results.
     };
@@ -91,9 +91,10 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                         {
                             'tag': 'button',
                             'attributes': {
-                                'text': "T",
+//                                'text': "T",
                                 'class': 'visible',
-                                'data-seq': seq.current()
+                                'data-seq': seq.current(),
+                                'title': 'Hide/Show this result on the map'
                             }
                         }
                     ]
@@ -172,75 +173,88 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
     var reader = ngds.util.dom_element_constructor({
             'tag': 'div',
             'attributes': {
-                'class': 'results-text'
+                'class': 'results-text visibility-managed'
             },
             'children': [
-                {
-                    'tag': 'p',
+                {   'tag': 'div',
                     'attributes': {
-                        'text': 'Found ' + count + (function (count) {
-                            if (Number(count) === 1) {
-                                return " result";
-                            }
-                            return " results";
-                        }(count)) + (function (count, query) {
+                        'class': 'search-tools'
+                    },
+                    'children': [
+                        {
+                            'tag': 'div',
+                            'attributes': {
+                                'class': 'visibility-toggler'
+                            },
+                            'children': [
+                                (function (count) {
+                                    if (Number(count) !== 0) {
+                                        return {
+                                            'tag': 'button',
+                                            'attributes': {
+                                                'class': 'visible',
+                                                'title': 'Hide/Show all results on the map.',
+                                                'data-seq': 0
+                                            }
+                                        }
+                                        return;
+                                    }
+                                })(count)
 
-                            if (query !== "") {
-                                if (query !== "" && query.match(/near/) !== null) {
-                                    var sp = [];
-                                    if (query.match(/ near /) !== null) {
-                                        sp = query.split(" near ");
-                                    }
-                                    else {
-                                        sp = query.split("near ");
-                                    }
-                                    if (sp[0] === "") {
-                                        return " near " + sp[1];
-                                    }
-                                    else {
-                                        return " for \"" + sp[0] + "\"" + " near " + sp[1];
-                                    }
-                                }
-                                if (query !== "") {
-                                    return " for \"" + query + "\""
-                                }
-                            } else {
-                                return "";
-                            }
-                        })
-                            (count, query),
-                        'class': 'reader'
-                    }
-                },
+                            ]
+
+                        }
+                    ]},
                 {
                     'tag': 'div',
                     'attributes': {
-                        'class': 'visibility-toggler'
+                        'class': 'reader'
                     },
                     'children': [
-                        (function (count) {
-                            console.log(count);
-                            if (Number(count) !== 0) {
-                                return {
-                                    'tag': 'button',
-                                    'attributes': {
-                                        'class': 'visible',
-                                        'text': 'T',
-                                        'data-seq': 0
+                        {
+                            'tag': 'p',
+                            'attributes': {
+                                'text': 'Found ' + count + (function (count) {
+                                    if (Number(count) === 1) {
+                                        return " result";
                                     }
-                                }
-                                return;
+                                    return " results";
+                                }(count)) + (function (count, query) {
+
+                                    if (query !== "") {
+                                        if (query !== "" && query.match(/near/) !== null) {
+                                            var sp = [];
+                                            if (query.match(/ near /) !== null) {
+                                                sp = query.split(" near ");
+                                            }
+                                            else {
+                                                sp = query.split("near ");
+                                            }
+                                            if (sp[0] === "") {
+                                                return " near " + sp[1];
+                                            }
+                                            else {
+                                                return " for \"" + sp[0] + "\"" + " near " + sp[1];
+                                            }
+                                        }
+                                        if (query !== "") {
+                                            return " for \"" + query + "\""
+                                        }
+                                    } else {
+                                        return "";
+                                    }
+                                })
+                                    (count, query),
+                                'class': 'reader'
                             }
-                        })(count)
-
+                        }
                     ]
-
                 }
+
             ]
         }
     );
     $('.results').before(reader);
-    $(".results").jScrollPane({contentWidth: '0px'});
 
     var inc = inc || (inc = 0);
 
@@ -292,7 +306,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
         else if (seq === 0) {
             for (var item_key in ngds.layer_map) {
-                console.log("Working with : ", item_key);
                 ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[item_key]);
                 ngds.Map.sort_geojson_layers(ngds.layer_map[item_key]);
             }
@@ -327,10 +340,9 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
 
     });
-    ngds.publish('Map.expander.toggle', {
-        'no_toggle': true
-    });
+    ngds.publish('Map.results_rendered', {
 
+    });
 }
 ;
 

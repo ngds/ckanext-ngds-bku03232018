@@ -82,33 +82,38 @@ ngds.Map = {
             polyline: false,
             circle: false,
             marker: false,
-            polygon: true
+            polygon: false
         });
 
         map.addControl(_drawControl);
         var _drawnItems = ngds.Map.drawnItems = new L.LayerGroup();
         map.addLayer(_drawnItems);
 
+        var geosearch = ngds.Map.geosearch = new L.Control.GeoSearch({
+            provider: new L.GeoSearch.Provider.OpenStreetMap(),
+            position: 'topright',
+            searchLabel:'Locate an address'
+        });
 
-        var zoom = new L.Control.Zoom({
+        geosearch.addTo(map);
+
+        var zoom = new ngds.Zoom({
             'position': 'topright'
         });
 
+        var rect_clear = new L.Clear();
+        map.addControl(rect_clear);
+
+        var fs = new L.FullScreen();
+
         map.addControl(zoom);
+        map.addControl(fs);
         map.addControl(loadingControl);
-
-        L.control.fullscreen({
-            position: 'topright',
-            title: 'Show me the fullscreen !'
-        }).addTo(map);
-
 
         this.layers = {
             'geojson': _geoJSONLayer,
             'drawnItems': _drawnItems,
-            'powergrid': powergrid_wms,
             'soil': soil,
-            //	'water':water_wms,
             'land': land,
             'topography': topography,
             'nerc': nerc_wms,
@@ -116,7 +121,6 @@ ngds.Map = {
             'counties': counties_wms,
             'weather': weather_wms
         };
-        // this.initialize_controls();
 
         var baseMaps = {
             "Terrain": base,
@@ -125,7 +129,6 @@ ngds.Map = {
         };
 
         overlayMaps = {
-            "Power Grid": powergrid_wms,
             "Search Results": _geoJSONLayer,
             "SMU Wells": wells,
             'USBLM Urban Areas, Counties': land,
@@ -133,7 +136,6 @@ ngds.Map = {
             'Geothermal Potential': geothermal_potential_wms,
             'US County Boundaries': counties_wms,
             'NEXRAD Weather': weather_wms
-            // "ngds":ngds_layer
         };
 
         layer_control = new L.control.layers(baseMaps, overlayMaps, {autoZIndex: true});
@@ -184,12 +186,6 @@ ngds.Map = {
                 popupAnchor: new L.Point(0, -33)
             }
         });
-        var geosearch = ngds.Map.geosearch = new L.Control.GeoSearch({
-            provider: new L.GeoSearch.Provider.OpenStreetMap(),
-            position: 'topright'
-        });
-
-        geosearch.addTo(map);
 
         ngds.publish("Map.loaded", { });
     },
@@ -366,6 +362,7 @@ ngds.Map = {
                 me.add_raw_result_to_geojson_layer(response.result);
             });
         });
+
     },
     add_raw_result_to_geojson_layer: function (result, options) { // Expects response.result, not response. Seq id passed in.
         try {
@@ -419,10 +416,13 @@ ngds.Map = {
         geoJSONRepresentation.bindPopup(popup);
         this.add_to_layer([geoJSONRepresentation], 'geojson');
         this.sort_geojson_layers(geoJSONRepresentation);
+
     },
     sort_geojson_layers: function (layer) {
         var perimeter = new ngds.Map.BoundingBox().store_raw(layer.getBounds()).get_perimeter();
-
+        if (typeof ngds.util.state['map_features'] === 'undefined') {
+            ngds.util.state['map_features'] = [];
+        }
         var map_features = ngds.util.state['map_features'];
         var i = 0;
         for (i = 0; i <= map_features.length; i++) {
