@@ -322,8 +322,11 @@
                             <gmd:description>
                                 <gco:CharacterString>
                                     {{ resource.description }}
-                                    {% if resource.layer_name %}
-                                    Look the following layer within the service: {{ resource.layer_name }}
+                                    {% if resource.layer_name and resource.protocol == "OGC:WMS" %}
+                                    parameters: { "layers": "{{ resource.layer_name }}" }.
+                                    {% endif %}
+                                    {% if resource.layer_name and resource.protocol == "OGC:WFS" %}
+                                    parameters: { "featureTypes": "{{ resource.layer_name }}" }.
                                     {% endif %}
                                 </gco:CharacterString>
                             </gmd:description>

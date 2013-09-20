@@ -1,27 +1,23 @@
-from ckanext.spatial.model import ISOElement, MappedXmlDocument
+from ckanext.spatial.model import ISOElement, ISODocument, ISOResponsibleParty
 
-class NgdsXmlMapping(MappedXmlDocument):
+class NgdsXmlMapping(ISODocument):
     """
     Inherits from ckanext.spatial.model.MappedXmlDocument.
     ckanext.spatial.model.ISODocument is a similar example
 
     - Invoke with `my_ngds_mapping = NgdsXmlMapping(xml_str=None, xml_tree=None)`
-    - Then get values by `my_ngds_mapping.get_values()`
+    - Then get values by `my_ngds_mapping.read_values()`
     """
 
     elements = [
         # Maintainer
-        ISOElement(
-            name="maintainer-name",
-            search_paths="gmd:contact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString/text()",
-            multiplicity="0..1", # "*", "1..*", "1" are other options
+        ISOResponsibleParty(
+            name="maintainer",
+            search_paths=[
+                "gmd:contact/gmd:CI_ResponsibleParty"
+            ],
+            multiplicity="1"
         ),
-        ISOElement(
-            name="maintainer-email",
-            search_paths="gmd:contact/gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString/text()",
-            multiplicity="0..1", # "*", "1..*", "1" are other options
-        ),
-
         # Other ID
         ISOElement(
             name="other_id",
@@ -43,11 +39,13 @@ class NgdsXmlMapping(MappedXmlDocument):
             multiplicity="0..1", # "*", "1..*", "1" are other options
         ),
 
-        # Authors <<<
-        ISOElement(
-            name="",
-            search_paths="gmd:dataSetURI/gco:CharacterString/text()",
-            multiplicity="0..1", # "*", "1..*", "1" are other options
+        # Authors
+        ISOResponsibleParty(
+            name="authors",
+            search_paths=[
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty"
+            ],
+            multiplicity="*"
         ),
 
         # Quality <<<
@@ -71,3 +69,6 @@ class NgdsXmlMapping(MappedXmlDocument):
             multiplicity="0..1", # "*", "1..*", "1" are other options
         )
     ]
+
+    def infer_values(self, values):
+        return values

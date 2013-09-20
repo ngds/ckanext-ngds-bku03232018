@@ -74,6 +74,9 @@ def iso_metadata(context, data_dict):
             p["additional"]["datasetUri"] = config.get("ckan.site_url", "http://default.ngds.com").rstrip("/") + \
                 "/dataset/%s" % p["name"]
 
+        # ---- Any other identifiers
+        p['additional']['other_id'] = json.loads(p['additional'].get('other_id', '[]'))
+
         # ---- Load the authors
         authors = p["additional"].get("authors", None)
         try:
