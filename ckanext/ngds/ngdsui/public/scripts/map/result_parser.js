@@ -170,6 +170,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         $('.results').append(dom_node);
 
     }
+
     var reader = ngds.util.dom_element_constructor({
             'tag': 'div',
             'attributes': {
