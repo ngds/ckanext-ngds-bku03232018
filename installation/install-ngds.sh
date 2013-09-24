@@ -8,7 +8,7 @@
 #     written to $LOGFILE via redirection ('&>>$LOGFILE')
 
 this_script=`basename $0`
-MYUSERID=`whoami`
+MYUSERID=ngds
 
 
 #
@@ -102,10 +102,11 @@ function setup_env() {
     GEOSERVER_CATALINA_BASE=$APPS_ETC/tomcat/geoserver
 
     SOLR_LIB=$APPS_LIB/solr
+    GEOSERVER_LIB=$APPS_LIB/geoserver
     NGDS_SCRIPTS=$APPS_ETC/ngds/scripts
-    sudo mkdir -p $SOLR_LIB $SOLR_CATALINA_BASE $NGDS_SCRIPTS
-    sudo chown -R $MYUSERID:$MYUSERID $SOLR_LIB $NGDS_SCRIPTS    
-    sudo chown -R $MYUSERID:$MYUSERID $SOLR_CATALINA_BASE
+    sudo mkdir -p $SOLR_LIB $SOLR_CATALINA_BASE $GEOSERVER_CATALINA_BASE $NGDS_SCRIPTS $GEOSERVER_LIB
+    sudo chown -R $MYUSERID:$MYUSERID $SOLR_LIB $NGDS_SCRIPTS $GEOSERVER_LIB
+    sudo chown -R $MYUSERID:$MYUSERID $SOLR_CATALINA_BASE $GEOSERVER_CATALINA_BASE
 }
 
 function check_downloads() {
@@ -750,47 +751,66 @@ EOF
 sudo chmod 755 $NGDS_SCRIPTS/solr-server.sh
 }
 
-function setup_envfor_solr() {
-    JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-i386 # your java
-    JRE_HOME=/usr/lib/jvm/java-1.7.0-openjdk-i386/jre # your jre
-    CATALINA_BASE=$SOLR_CATALINA_BASE
 
-    export JAVA_HOME
-    export JRE_HOME
-    export CATALINA_HOME
-    export CATALINA_BASE
+function setup_geoserver() {
 
-    export CATALINA_OPTS="-server -Xms22m -Xmx40m" # for tomcat7 server
-    export SOLR_HOME=$SOLR_LIB/example/solr
+    mkdir $GEOSERVER_CATALINA_BASE/conf $GEOSERVER_CATALINA_BASE/logs $GEOSERVER_CATALINA_BASE/temp $GEOSERVER_CATALINA_BASE/webapps $GEOSERVER_CATALINA_BASE/work
 
-    export JAVA_OPTS="-Dsolr.data.dir=$SOLR_HOME"
-    export JAVA_OPTS="$JAVA_OPTS -Dsolr.solr.home=$SOLR_HOME"
-    export JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration=$SOLR_HOME/log4j.properties"
+    cp $CATALINA_HOME/conf/server.xml $GEOSERVER_CATALINA_BASE/conf/server.xml
+    cp $CATALINA_HOME/conf/web.xml $GEOSERVER_CATALINA_BASE/conf
 
-    PATH=$PATH:$JAVA_HOME:$JRE_HOME:$CATALINA_HOME/bin
-    export PATH    
+    run_or_die apt-get -y install unzip
 
-    $CATALINA_HOME/bin/catalina.sh stop
-    $CATALINA_HOME/bin/catalina.sh start
-    
-    until [ "`curl --silent --show-error --connect-timeout 1 -I http://localhost:8983 | grep 'Coyote'`" != "" ];
-    do
-      echo --- sleeping for 10 seconds
-      sleep 10
-    done
+    run_or_die wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip -P $TEMPDIR
+    #run_or_die cp /home/ngds/Downloads/geoserver-2.4.0-war.zip $TEMPDIR
+    pushd $TEMPDIR
+    run_or_die unzip geoserver-2.4.0-war.zip -d geoserver
+    pushd geoserver
 
-    $CATALINA_HOME/bin/catalina.sh stop
+    cp geoserver.war $GEOSERVER_CATALINA_BASE/webapps
+
+    run_or_die unzip geoserver.war "data/*" -d $GEOSERVER_LIB
+    popd
+    popd    
+
+    run_or_die create_geoserver_script
 }
 
+function create_geoserver_script() {
 
-function run() {
-    setup_env
-    mv $SOLR_LIB/example/solr/collection1/conf/schema.xml $SOLR_LIB/example/solr/collection1/conf/schema.xml.bak
-    cp $APPS_SRC/ckanext-ngds/installation/schema.xml $SOLR_LIB/example/solr/collection1/conf/schema.xml
+JAVA_HOME=/usr/lib/jvm/java-6-openjdk # your java
+JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre # your jre
+
+cat > $NGDS_SCRIPTS/geoserver.sh <<EOF
+#!/bin/bash
+
+export JAVA_HOME=$JAVA_HOME
+export JRE_HOME=$JRE_HOME
+export CATALINA_HOME=$CATALINA_HOME
+export CATALINA_BASE=$GEOSERVER_CATALINA_BASE
+export GEOSERVER_DATA_DIR=$GEOSERVER_LIB/data
+#export GEOSERVER_LOG_LOCATION=$GEOSERVER_LIB/data/logs/geoserver.log
+
+export CATALINA_OPTS=" -server -Xms256m -Xmx512m "
+export CATALINA_OPTS=" \$CATALINA_OPTS -DGEOSERVER_DATA_DIR=\$GEOSERVER_DATA_DIR "
+#export CATALINA_OPTS=" \$CATALINA_OPTS -DGEOSERVER_LOG_LOCATION=\$GEOSERVER_LOG_LOCATION" 
+
+PATH=\$PATH:\$JAVA_HOME:\$JRE_HOME:\$CATALINA_HOME/bin:\$GEOSERVER_DATA_DIR
+export PATH    
+
+$CATALINA_HOME/bin/catalina.sh "\$@"
+EOF
+sudo chmod 755 $NGDS_SCRIPTS/geoserver.sh
 }
 
 
 function run1() {
+    setup_env
+    setup_geoserver
+}
+
+
+function run() {
 
     setup_env
 
@@ -818,6 +838,8 @@ function run1() {
     get_tomcat
     
     setup_solr
+
+    setup_geoserver
 }
 
 
@@ -874,31 +896,7 @@ run 2>&1 | tee ${LOGFILE}
 
 function review_and_remove() {
     # Based on Ryan's https://github.com/ngds/dev-info/wiki/Ryan-Installs-ckanext-ngds
-    # Install NGDS-specific parts
-    run_or_die apt-get -y install tomcat6
-    run_or_die apt-get -y install unzip
-    run_or_die apt-get -y install rabbitmq-server
-    run_or_die apt-get -y install gdal-bin
-    run_or_die apt-get -y install build-essential
-
-
-    # Install geoserver
-    run_or_die wget -O $TEMPDIR/geoserver-2.3.3-war.zip http://downloads.sourceforge.net/geoserver/geoserver-2.3.3-war.zip
-    # TODO
-    # We are not currently handling the case where geoserver.war is already
-    # installed.  This is important because webapps/geoserver/data contains
-    # the layer, datastore, and workspace details that GeoServer uses.
-    # Overwriting these will destroy that data, and those layer will have to
-    # be recreated.  It is not clear whether overwriting the war file but 
-    # not deleting the geoserver directory will harm the data.
-    # TODO
-    # Do we need to rm -rf /var/lib/tomcat6/webapps/geoserver as part of this
-    # operation?
-    run_or_die unzip -d /var/lib/tomcat6/webapps $TEMPDIR/geoserver-2.3.3-war.zip geoserver.war
-    # TODO
-    # Configure admin login credentials for GeoServer
-
-
+    echo "Inside review_and_remove"   
 
     #
     #
@@ -907,16 +905,16 @@ function review_and_remove() {
     # Try factoring these out into a separate script so that
     # we can call sudo once and run that script as postgres.
     # Also include the above DB commands run as postgres.
-    run_or_die sudo -u postgres createuser -S -D -R -P $pg_id_for_ckan
-    run_or_die sudo -u postgres createuser -s -P ckan_tester
-    run_or_die sudo -u postgres createuser -S -D -R -P datastore_reader
-    run_or_die sudo -u postgres createuser -S -D -R -P datastore_writer
-    run_or_die sudo -u postgres createuser -S -D -R -P datastore_test_reader
-    run_or_die sudo -u postgres createuser -S -d -R -P datastore_test_writer
-    run_or_die sudo -u createdb -E utf8 -O $pg_id_for_ckan -T template_postgis ckan_main
-    run_or_die sudo -u createdb -E utf8 -O ckan_tester -T template_postgis ckan_test
-    run_or_die sudo -u createdb -E utf8 -O datastore_writer -T template_postgis datastore
-    run_or_die sudo -u createdb -E utf8 -O datastore_test_writer -T template_postgis datastore_test    
+    # run_or_die sudo -u postgres createuser -S -D -R -P $pg_id_for_ckan
+    # run_or_die sudo -u postgres createuser -s -P ckan_tester
+    # run_or_die sudo -u postgres createuser -S -D -R -P datastore_reader
+    # run_or_die sudo -u postgres createuser -S -D -R -P datastore_writer
+    # run_or_die sudo -u postgres createuser -S -D -R -P datastore_test_reader
+    # run_or_die sudo -u postgres createuser -S -d -R -P datastore_test_writer
+    # run_or_die sudo -u createdb -E utf8 -O $pg_id_for_ckan -T template_postgis ckan_main
+    # run_or_die sudo -u createdb -E utf8 -O ckan_tester -T template_postgis ckan_test
+    # run_or_die sudo -u createdb -E utf8 -O datastore_writer -T template_postgis datastore
+    # run_or_die sudo -u createdb -E utf8 -O datastore_test_writer -T template_postgis datastore_test    
 }
 
 #
