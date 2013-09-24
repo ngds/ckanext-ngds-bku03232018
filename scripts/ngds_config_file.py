@@ -33,6 +33,7 @@ params_to_set = [
     ("ngds.resources_dir", "/home/ubuntu/ckanenv/src/ckanext-ngds/ckanext/ngds/base/resources"),
     ("ngds.contributors_config", "/home/ngds/pyenv2/src/ckanext-ngds/contributors_config.json"),
     ("extra_public_paths", "/home/ngds/extrapublic/"),
+    ("solr_url", "http://localhost:8983/solr"),
     ("ckan.i18n_directory", "/home/ngds/pyenv2/src/ckanext-ngds")
 ]
 
