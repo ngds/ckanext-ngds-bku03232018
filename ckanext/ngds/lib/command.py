@@ -8,6 +8,7 @@ class APICommand(CkanCommand):
 
     ngdsapi import           - alias of initiating Bulk Upload process
     ngdsapi doc-index        - Initiating Full-text Indexing process
+    ngdsapi compile_client_scripts  -   Minifies javascript resources and compiles project less files to css files
 
     """
     summary = "General Command"
