@@ -749,6 +749,7 @@ export PATH
 $CATALINA_HOME/bin/catalina.sh "\$@"
 EOF
 sudo chmod 755 $NGDS_SCRIPTS/solr-server.sh
+$NGDS_SCRIPTS/solr-server.sh start
 }
 
 
@@ -801,6 +802,7 @@ export PATH
 $CATALINA_HOME/bin/catalina.sh "\$@"
 EOF
 sudo chmod 755 $NGDS_SCRIPTS/geoserver.sh
+$NGDS_SCRIPTS/geoserver.sh start
 }
 
 
