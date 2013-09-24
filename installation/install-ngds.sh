@@ -27,8 +27,8 @@ function configure_properties() {
     CATALINA_HOME=/usr/share/tomcat
     
     #Github Account Details
-    GIT_UNAME=prahadeesh
-    GIT_PWD=Praha232
+    GIT_UNAME=
+    GIT_PWD=
 
     ## The following properties can be left as it is for trying out this script.
     
@@ -739,8 +739,8 @@ export CATALINA_OPTS="-server -Xms22m -Xmx40m"
 export SOLR_HOME=$SOLR_HOME
 
 export JAVA_OPTS="-Dsolr.data.dir=\$SOLR_HOME"
-export JAVA_OPTS="$JAVA_OPTS -Dsolr.solr.home=\$SOLR_HOME"
-export JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration=\$SOLR_HOME/log4j.properties"
+export JAVA_OPTS="\$JAVA_OPTS -Dsolr.solr.home=\$SOLR_HOME"
+export JAVA_OPTS="\$JAVA_OPTS -Dlog4j.configuration=\$SOLR_HOME/log4j.properties"
 
 PATH=\$PATH:\$JAVA_HOME:\$JRE_HOME:\$CATALINA_HOME/bin
 export PATH    
