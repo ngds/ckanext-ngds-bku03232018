@@ -11,13 +11,13 @@ A list of variables we need in this page.
 
 <div id="library-container">
     {% if g.central %}
-    <form action="{% url_for controller='package', action='search' %}" method="get">
+    <form action="{% url_for controller='package', action='search'%}" method="get">
         {% else %}
         <form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
             {% endif %}
             <div id="library-search-bar">
 
-
+                <input type="hidden" name="_tags_limit" value="0">
                 <fieldset>
                 <span class=" search-giant">
                   <input type="text" class="search" name="q" value="{{ c.q }}" autocomplete="off"

@@ -129,7 +129,7 @@ class HomeController(NGDSBaseController):
 
 
         if data['search-type'] == 'library':
-            return redirect(h.url_for(controller='package', action='search', q=query))
+            return redirect(h.url_for(controller='package', action='search', q=query, _tags_limit=0))
         else:
             return redirect(h.url_for(controller='ckanext.ngds.ngdsui.controllers.home:HomeController',action='render_map', query=query))
             # return self.render_map(query)

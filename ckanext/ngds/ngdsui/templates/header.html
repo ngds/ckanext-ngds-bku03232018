@@ -73,9 +73,9 @@ pass in the tab that is being rendered and the active_tab variable that we get f
         </a>
 
         {% if g.central %}
-        <a href="{% url_for controller='package', action='search' %}">
+        <a href="{% url_for controller='package', action='search', _tags_limit=0 %}">
             {% else %}
-            <a href="{% url_for controller='organization', id=default_group , action='read' %}">
+            <a href="{% url_for controller='organization', id=default_group , action='read', _tags_limit=0 %}">
                 {% endif %}
                 {% if active_tab == "library" %} <span class="active main-nav-span borders"> {% else %} <span
                     class="main-nav-span borders"> {% endif %}

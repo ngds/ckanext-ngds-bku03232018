@@ -27,7 +27,7 @@
 
 {% block breadcrumb_content %}
 
-  <li>{% link_for _('Datasets'), controller='package', action='search', highlight_actions = 'new index' %}</li>
+  <li>{% link_for _('Datasets'), controller='package', action='search',_tags_limit=0, highlight_actions = 'new index' %}</li>
   <li>{% link_for h.dataset_display_name(pkg_dict)|truncate(30), controller='package', action='read', id=pkg_dict.name %}</li>
   <li class="active"><a href="">{{_('Add resource')}}</a></li>
 {% endblock %}

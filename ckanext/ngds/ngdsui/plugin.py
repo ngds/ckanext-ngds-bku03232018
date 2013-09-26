@@ -306,12 +306,15 @@ class NgdsuiPlugin(SingletonPlugin):
 
     def before_search(self, search_params):
 
-        if 'fq' in search_params:
+        if 'fq' in search_params or 'q' in search_params:
             def repl(m):
                 datestr = m.group()
                 datestr = datestr.replace("\"", "")
                 return datestr
-            search_params['fq'] = re.sub('publication_date:".*"', repl, search_params['fq'])
+            if 'fq' in search_params:
+                search_params['fq'] = re.sub('publication_date:".*"', repl, search_params['fq'])
+            if 'q' in search_params:
+                search_params['q'] = re.sub('publication_date: ".*"', repl, str(search_params['q']))
 
 
         if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:

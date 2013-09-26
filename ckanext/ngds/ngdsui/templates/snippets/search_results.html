@@ -45,13 +45,21 @@
                         {% set rating_val, rating_counter = h.get_rating_details(package.id) %}
 
                         {% for i in range(1,rating_val+1) %}
+                            {% if user %}
                             <img src="/images/u448_normal.png"
                                  onclick='callRating("{{_(rating_dict[i])}}", "{{i|float}}", "{{_(package.id)}}");'/>
+                            {% else %}
+                                <img src="/images/u448_normal.png" />
+                            {% endif %}
                         {% endfor %}
 
-                        {% for i in range(1,6-rating_val) %}
+                        {% for i in range(rating_val+1,6) %}
+                            {% if user %}
                             <img src="/images/u448_clear.png"
                                  onclick='callRating("{{_(rating_dict[i])}}", "{{i|float}}", "{{_(package.id)}}");'/>
+                            {% else %}
+                                <img src="/images/u448_clear.png" />
+                            {% endif %}
                         {% endfor %}
 
                     </span>
