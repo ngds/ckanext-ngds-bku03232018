@@ -26,7 +26,7 @@ class ScriptCompiler(object):
             if scripts_path.endswith('min.js'):
                 return
             print os.path.splitext(scripts_path)[0] + "-min.js " + scripts_path
-            subprocess.call(["yui-compressor -o " + os.path.splitext(scripts_path)[0] + "-min.js " + scripts_path],
+            subprocess.call(["yui-compressor -o " + os.path.splitext(scripts_path)[0] + ".min.js " + scripts_path],
                             shell=True)
 
 
