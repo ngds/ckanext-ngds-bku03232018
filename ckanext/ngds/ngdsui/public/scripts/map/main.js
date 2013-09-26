@@ -39,6 +39,7 @@ ngds.layer_map = { // A mapping table to map ngds result ids(dom) to leaflet ids
  * 	Publish module
  */
 
+
 (function setup_control_styles() {
     ngds.subscribe("Map.loaded", function (topic, data) {
         // ngds.Map.top_level_search();
@@ -403,3 +404,11 @@ $(document).ready(function () {
 ngds.subscribe('Map.layer_added', function () {
     ngds.util.make_prominent();
 });
+
+(function clear_map_search_field() {
+    $(document).ready(function () {
+        $("#map-clear").on("click", function () {
+            $("#map-query").val("");
+        });
+    });
+})();

@@ -92,7 +92,7 @@ ngds.Map = {
         var geosearch = ngds.Map.geosearch = new L.Control.GeoSearch({
             provider: new L.GeoSearch.Provider.OpenStreetMap(),
             position: 'topright',
-            searchLabel:'Locate an address'
+            searchLabel: 'Locate an address'
         });
 
         geosearch.addTo(map);
@@ -107,7 +107,9 @@ ngds.Map = {
         var fs = new L.FullScreen();
 
         map.addControl(zoom);
-        map.addControl(fs);
+        if (fs.is_fs_supported() === true) {
+            map.addControl(fs);
+        }
         map.addControl(loadingControl);
 
         this.layers = {

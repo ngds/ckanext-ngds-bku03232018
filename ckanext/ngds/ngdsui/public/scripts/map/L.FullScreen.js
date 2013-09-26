@@ -33,11 +33,11 @@ L.FullScreen = L.Control.extend({
     },
     request_fs: function (el) {
         if (typeof el.webkitRequestFullScreen !== 'undefined') {
-            el.webkitRequestFullScreen();
+            el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
             return;
         }
         if (typeof el.mozRequestFullScreen !== 'undefined') {
-            el.mozRequestFullScreen();
+            el.mozRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
             return;
         }
     },
@@ -59,7 +59,16 @@ L.FullScreen = L.Control.extend({
             return document.mozIsFullScreen;
         }
     },
+    is_fs_supported: function () {
+        if (typeof document.webkitIsFullScreen === 'undefined' && typeof document.mozCancelFullScreen === 'undefined') {
+            return false;
+        }
+        return true;
+    },
     full_screen: function () {
+        if (this.is_fs_supported() === false) {
+            return;
+        }
         this.fs = this.get_state();
         if (this.fs === true) {
             this.cancel_fs();

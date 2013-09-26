@@ -83,13 +83,15 @@ ngds.Search = function () {
             var cur_page = Number(ngds.Map.cur_page);
             var dots_added = false;
 
-            pager_div.append(ngds.util.dom_element_constructor({
-                'tag': 'a',
-                'attributes': {
-                    'class': 'page-num',
-                    'text': '<'
-                }
-            }));
+            if (cur_page !== 1) {
+                pager_div.append(ngds.util.dom_element_constructor({
+                    'tag': 'a',
+                    'attributes': {
+                        'class': 'page-num',
+                        'text': '<'
+                    }
+                }));
+            }
 
             for (var i = 1; i < num_pages + 1; i++) {
                 if ((i !== cur_page && i !== 1 && i !== num_pages) && (i < cur_page - 1 || i > cur_page + 1)) {
@@ -119,13 +121,15 @@ ngds.Search = function () {
                     a.addClass("page-active");
                 }
             }
-            pager_div.append(ngds.util.dom_element_constructor({
-                'tag': 'a',
-                'attributes': {
-                    'class': 'page-num',
-                    'text': '>'
-                }
-            }));
+            if (ngds.Map.num_pages - ngds.Map.cur_page !== 0) {
+                pager_div.append(ngds.util.dom_element_constructor({
+                    'tag': 'a',
+                    'attributes': {
+                        'class': 'page-num',
+                        'text': '>'
+                    }
+                }));
+            }
         });
     };
 

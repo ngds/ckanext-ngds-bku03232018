@@ -31,7 +31,7 @@
         </div>
         <div id="search-meta-row">
             <div id="meta-data-details">
-                <p>{{package.author}}</p>
+                <p>{% if not package.author =='None' %}{{package.author}}{% endif %}</p>
 
                 <p>Published: {{ h.get_formatted_date(package.metadata_created)}}</p>
             </div>

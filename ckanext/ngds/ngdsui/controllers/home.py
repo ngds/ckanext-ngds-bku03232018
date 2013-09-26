@@ -52,13 +52,15 @@ class HomeController(NGDSBaseController):
 
 
 
-    def render_map(self, query=None):
+    def render_map(self):
 
         """
         This function is responsible for rendering the Map Search page.
         """
-        if query:
-            c.query = query
+        data = clean_dict(unflatten(tuplize_dict(parse_params(request.params))))
+        if data.get('query'):
+            c.query = data['query']
+
         return render('map/map.html')
 
     def render_library(self):
@@ -125,11 +127,12 @@ class HomeController(NGDSBaseController):
         if 'query' in data:
             query = data['query']
 
-        if data['search-type'] == 'library':
-            return redirect('/organization/public?q=' + query)
-        else:
-            return self.render_map(query)
 
+        if data['search-type'] == 'library':
+            return redirect(h.url_for(controller='package', action='search', q=query))
+        else:
+            return redirect(h.url_for(controller='ckanext.ngds.ngdsui.controllers.home:HomeController',action='render_map', query=query))
+            # return self.render_map(query)
 
     def render_partners(self):
         """

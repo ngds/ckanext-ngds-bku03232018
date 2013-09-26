@@ -204,6 +204,22 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
                             ]
 
+                        },
+                        {
+                            'tag': 'div',
+                            'attributes': {
+                                'class': 'clear-map-state'
+                            },
+                            'children': [
+                                {
+                                    'tag': 'button',
+                                    'attributes': {
+                                        'class': 'clear-map-state',
+                                        'title': 'Clear search'
+                                    }
+                                }
+                            ]
+
                         }
                     ]},
                 {
@@ -299,7 +315,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             ngds.util.state['hidden_t'][seq] = ngds.layer_map;
             for (var item_key in ngds.layer_map) {
                 ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[item_key]);
-                $(ev.target).addClass("toggled");
+                $(".visible").addClass("toggled");
             }
             ngds.util.state['map_features'] = [];
             return;
@@ -318,7 +334,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 delete ngds.util.state['hidden_t'][item_h_key];
             }
             delete ngds.util.state['hidden_t']
-            $(ev.target).removeClass("toggled");
+            $(".visible").removeClass("toggled");
         }
 
         // Show/hide All.
