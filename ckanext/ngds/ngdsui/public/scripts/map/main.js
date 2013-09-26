@@ -404,11 +404,3 @@ $(document).ready(function () {
 ngds.subscribe('Map.layer_added', function () {
     ngds.util.make_prominent();
 });
-
-(function clear_map_search_field() {
-    $(document).ready(function () {
-        $("#map-clear").on("click", function () {
-            $("#map-query").val("");
-        });
-    });
-})();

@@ -301,6 +301,17 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         alert("The Web Map Services you requested have been added to the map.");
     });
 
+    (function doc_ready_section() {
+        $(document).ready(function () {
+            $(".clear-map-state").on("click", function () {
+                ngds.util.clear_map_state();
+                ngds.Map.get_layer('drawnItems').clearLayers();
+                ngds.publish('Map.clear_rect', {});
+            });
+        });
+    })();
+
+
     $(".visibility-toggler button").click(function (ev) {
         ev.stopPropagation();
         var seq = Number($(ev.target).attr('data-seq'));
