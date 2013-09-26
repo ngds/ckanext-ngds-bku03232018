@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>client.py</title>
+  <link rel="stylesheet" href="../../../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>client.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>This file contains the extended version of CKAN Client class.This client will be used during "bulk-upload" process
+for creating datasets in CKAN.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">ckanclient</span> <span class="kn">import</span> <span class="n">CkanClient</span>
+<span class="kn">import</span> <span class="nn">urlparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Extends from CkanClient Class and overrides the upload_file method. Default upload_file method doesn't support
+binary files upload.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">NgdsCkanClient</span><span class="p">(</span><span class="n">CkanClient</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_location</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">is_verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">http_user</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">http_pass</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_netloc</span> <span class="o">=</span> <span class="n">urlparse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">base_location</span><span class="p">)</span><span class="o">.</span><span class="n">netloc</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NgdsCkanClient</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">base_location</span><span class="o">=</span><span class="n">base_location</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">,</span> <span class="n">is_verbose</span><span class="o">=</span><span class="n">is_verbose</span><span class="p">,</span>
+                 <span class="n">http_user</span><span class="o">=</span><span class="n">http_user</span><span class="p">,</span> <span class="n">http_pass</span><span class="o">=</span><span class="n">http_pass</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Upload a file to a CKAN instance via CKAN&#39;s FileStore API.</span>
+
+<span class="sd">        The CKAN instance must have file storage enabled.</span>
+
+<span class="sd">        A timestamped directory is created on the server to store the file as</span>
+<span class="sd">        if it had been uploaded via the graphical interface. On success, the</span>
+<span class="sd">        URL of the file is returned along with an empty error message. On</span>
+<span class="sd">        failure, the URL is an empty string.</span>
+
+<span class="sd">        :param file_path: path to the file to upload, on the local filesystem</span>
+<span class="sd">        :type file_path: string</span>
+
+<span class="sd">        :returns: a (url, errmsg) 2-tuple containing the URL of the</span>
+<span class="sd">            successufully uploaded file on the CKAN server (string, an empty</span>
+<span class="sd">            string if the upload failed) and any error message from the server</span>
+<span class="sd">            (string, an empty string if there was no error)</span>
+<span class="sd">        :rtype: (string, string) 2-tuple</span>
+
+<span class="sd">        &#39;&#39;&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>see ckan/public/application.js:makeUploadKey for why the file_key
+is derived this way.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">norm_name</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">file_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">norm_name</span><span class="p">)</span>
+        <span class="n">auth_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_auth_get</span><span class="p">(</span><span class="s">&#39;/form/&#39;</span><span class="o">+</span><span class="n">file_key</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">urlparse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">auth_dict</span><span class="p">[</span><span class="s">&#39;action&#39;</span><span class="p">])</span>
+
+        <span class="kn">import</span> <span class="nn">requests</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_netloc</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">,</span><span class="s">&#39;X-CKAN-API-Key&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="p">}</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;key&#39;</span><span class="p">:</span><span class="n">file_key</span><span class="p">},</span><span class="n">files</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_key</span><span class="p">),</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">))},</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="n">errcode</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">errcode</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;http://</span><span class="si">%s</span><span class="s">/storage/f/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_netloc</span><span class="p">,</span> <span class="n">file_key</span><span class="p">),</span> <span class="s">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">errmsg</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

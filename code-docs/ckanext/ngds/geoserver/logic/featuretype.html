@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>featuretype.py</title>
+  <link rel="stylesheet" href="../../../../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>featuretype.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">ckanext.datastore.db</span> <span class="kn">as</span> <span class="nn">db</span>
+<span class="kn">from</span> <span class="nn">geoserver.catalog</span> <span class="kn">import</span> <span class="n">Layer</span>
+<span class="kn">import</span> <span class="nn">ckanext.datastore.db</span> <span class="kn">as</span> <span class="nn">db</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">SqlFeatureTypeDef</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">):</span>
+        
+        <span class="n">baseGeoserverUrl</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;geoserver&#39;</span><span class="p">]</span>
+        <span class="n">resource_id</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;resource_id&#39;</span><span class="p">]</span>
+        <span class="n">layer_name</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;layer_name&#39;</span><span class="p">]</span>
+        <span class="n">workspace_name</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;workspace_name&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">baseGeoserverUrl</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;using default geoserver :&quot;</span><span class="o">+</span><span class="n">baseGeoserverUrl</span>
+            <span class="n">baseGeoserverUrl</span> <span class="o">=</span> <span class="s">&#39;http://localhost:8080/geoserver/rest/&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>gets the fields of the resource_id in the database URl defined in
+the context['connection']</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; reading field list &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">)</span>   
+        <span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; done reading field list &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+         
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">layer_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">layer_name</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>adds ""s in the field names putting them in another list</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">fieldNames</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&quot;</span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">fld</span> <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="n">fld</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">,</span> <span class="s">&quot;owningmap&quot;</span><span class="p">]</span> <span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>print "fieldNames = "+fieldNames</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        
+        
+        <span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; building namespace &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">workspace_name</span><span class="p">,</span>
+            <span class="s">&quot;href&quot;</span><span class="p">:</span> <span class="n">baseGeoserverUrl</span> <span class="o">+</span> <span class="s">&quot;/namespaces/&quot;</span> <span class="o">+</span> <span class="n">workspace_name</span> <span class="o">+</span> <span class="s">&quot;.json&quot;</span>                  
+        <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>self.nativeCRS = layer.srs.wkt</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">nativeCRS</span> <span class="o">=</span> <span class="s">&#39;EPSG:4326&#39;</span>
+        
+        <span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; setting bounding box &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+     
+        <span class="bp">self</span><span class="o">.</span><span class="n">nativeBoundingBox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calcualte_bounding_box</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latLonBoundingBox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nativeBoundingBox</span>
+        <span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; bounding box &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">nativeBoundingBox</span>
+        
+        
+        
+        <span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; building geometry &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;col_geography&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">[</span><span class="s">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;shape&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">[</span><span class="s">&quot;srid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;EPSG:4326&#39;</span>
+        
+        <span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; building virtual table &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">virtualTable</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">virtualTable</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">virtualTable</span><span class="p">[</span><span class="s">&quot;sql&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;select &quot;</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fieldNames</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; from </span><span class="se">\&quot;</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">resource_id</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&quot;</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">virtualTable</span><span class="p">[</span><span class="s">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
+        
+        <span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; building store &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;@class&quot;</span><span class="p">:</span> <span class="s">&quot;dataStore&quot;</span><span class="p">,</span>
+            <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;datastore&quot;</span><span class="p">,</span>
+            <span class="s">&quot;href&quot;</span><span class="p">:</span> <span class="n">baseGeoserverUrl</span> <span class="o">+</span> <span class="s">&quot;/workspaces/&quot;</span> <span class="o">+</span> <span class="n">workspace_name</span> <span class="o">+</span> <span class="s">&quot;/datastores/datastore.json&quot;</span>              
+        <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">calcualte_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">):</span>
+        <span class="n">resource_id</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;resource_id&#39;</span><span class="p">]</span>
+        <span class="n">col_latitude</span> <span class="o">=</span>  <span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;col_longitude&#39;</span><span class="p">]</span>
+        <span class="n">col_longitude</span> <span class="o">=</span>  <span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;col_latitude&#39;</span><span class="p">]</span>
+
+       
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s">&quot;SELECT MIN(</span><span class="se">\&quot;</span><span class="s">&quot;</span> <span class="o">+</span><span class="n">col_latitude</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">), MAX(</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="o">+</span><span class="n">col_latitude</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">)&quot;</span><span class="o">+</span>
+                <span class="s">&quot;, MIN(</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="o">+</span><span class="n">col_longitude</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">), MAX(</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="o">+</span><span class="n">col_longitude</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">)&quot;</span><span class="o">+</span>
+                <span class="s">&quot;FROM </span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="o">+</span><span class="n">resource_id</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">)</span>
+        
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s">&#39;connection&#39;</span><span class="p">]</span>
+        <span class="n">queryresult</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>queryresult = db._get_engine(None, data_dict).execute(query)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;minx&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">queryresult</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="s">&quot;maxx&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">queryresult</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="s">&quot;miny&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">queryresult</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]),</span>
+            <span class="s">&quot;maxy&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">queryresult</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">]),</span>
+            <span class="s">&quot;crs&quot;</span><span class="p">:</span> <span class="s">&#39;EPSG:4326&#39;</span>                          
+        <span class="p">}</span>
+        
+        
+        <span class="k">return</span> <span class="n">result</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+            <span class="s">&quot;featureType&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                <span class="s">&quot;namespace&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span><span class="p">,</span>
+                <span class="s">&quot;nativeCRS&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nativeCRS</span><span class="p">,</span>
+                <span class="s">&quot;nativeBoundingBox&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nativeBoundingBox</span><span class="p">,</span>
+                <span class="s">&quot;latLonBoundingBox&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">latLonBoundingBox</span><span class="p">,</span>
+                <span class="s">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s">&quot;entry&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s">&quot;@key&quot;</span><span class="p">:</span> <span class="s">&quot;JDBC_VIRTUAL_TABLE&quot;</span><span class="p">,</span>
+                        <span class="s">&quot;virtualTable&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">virtualTable</span>          
+                    <span class="p">}</span>             
+                <span class="p">},</span>
+                <span class="s">&quot;store&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span>                
+            <span class="p">}</span>              
+        <span class="p">})</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

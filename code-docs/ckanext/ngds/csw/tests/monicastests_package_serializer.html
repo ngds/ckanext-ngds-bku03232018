@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>monicastests_package_serializer.py</title>
+  <link rel="stylesheet" href="../../../../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>monicastests_package_serializer.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on Jun 17, 2013</span>
+<span class="sd">#DIVIDER</span>
+<span class="sd">@author: </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pylons</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">ckan.model</span> <span class="kn">as</span> <span class="nn">model</span>
+<span class="kn">from</span> <span class="nn">ckan</span> <span class="kn">import</span> <span class="n">plugins</span>
+<span class="kn">import</span> <span class="nn">requests</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">ConfigParser</span>
+<span class="kn">from</span> <span class="nn">pylons</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">ckanext.ngds.csw.controllers.serializer</span> <span class="kn">import</span> <span class="n">PackageSerializer</span>
+
+<span class="kn">from</span> <span class="nn">ckanclient</span> <span class="kn">import</span> <span class="n">CkanClient</span>
+<span class="kn">import</span> <span class="nn">ckanext.datastore.db</span> <span class="kn">as</span> <span class="nn">db</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+
+<span class="kn">from</span> <span class="nn">paste.deploy</span> <span class="kn">import</span> <span class="n">appconfig</span>
+<span class="kn">from</span> <span class="nn">pylons</span> <span class="kn">import</span> <span class="n">config</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>conf = appconfig('config:development.ini', relative_to='../../../../../ckan/.')</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">TestPackageSerialization</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+	<span class="n">millis</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+	<span class="n">package_name</span> <span class="o">=</span> <span class="s">&#39;serializer_test_resource_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">millis</span><span class="p">)</span>
+	<span class="nb">id</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>  <span class="c"># id of the resource used during testing</span>
+	<span class="n">database_id</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+	<span class="n">engine</span> <span class="o">=</span> <span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Note that paster must have started ckan for this test to be able to execute
+e.g. start paster separately</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Test Setup &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_test_database</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package_name</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c"># wait for the data to be stored in the database through celeryd</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        
+        <span class="k">assert</span> <span class="bp">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>plugins.load('csw')</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Test Teardown &gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>		<span class="bp">self</span><span class="o">.</span><span class="n">_clean_test_database</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+		<span class="k">assert</span> <span class="bp">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>time.sleep(1) # wait for the database to be updated</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">testSerialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>		<span class="sd">&#39;&#39;&#39;pkg = model.Package.get(self.database_id)</span>
+<span class="sd">		package_serializer=PackageSerializer()</span>
+<span class="sd">		returnVal = package_serializer.dispatch(format=&#39;xml&#39;, package_id=self.database_id)</span>
+<span class="sd">#DIVIDER</span>
+<span class="sd">		print &quot;&gt;&gt;&gt;&gt; &quot;, returnVal</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+		<span class="k">assert</span> <span class="bp">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>so this doesn't work because ckan isn't initiazed as what is running in this
+test, so when it tries to look up the package it fails
+so change this to a web service call as in the test_geoserver tests
+and for this case, give up trying to invoke the controller directly
+because if you attempt to run nosetests with --ckan, it trashes the databases by
+removing the postGIS tab;es, etc.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_setup_test_database</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">):</span>
+		
+		<span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; creating package: &quot;</span><span class="p">,</span> <span class="n">package_name</span>
+		<span class="n">base_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ckan_base_api_url</span><span class="p">()</span>
+		<span class="n">api_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_user_api_key</span><span class="p">()</span>
+		<span class="n">testclient</span> <span class="o">=</span> <span class="n">CkanClient</span><span class="p">(</span><span class="n">base_location</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+		<span class="k">print</span> <span class="s">&quot;base.. &quot;</span><span class="p">,</span> <span class="n">testclient</span><span class="o">.</span><span class="n">base_location</span>
+		<span class="n">file_url</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">testclient</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span><span class="s">&quot;./testData/small_with_lat_long.csv&quot;</span><span class="p">)</span>
+		
+		<span class="k">print</span> <span class="s">&quot;created file_url:&quot;</span><span class="p">,</span> <span class="n">file_url</span>
+		<span class="k">print</span> <span class="s">&quot;status: &quot;</span><span class="p">,</span> <span class="n">status</span>
+		<span class="k">assert</span> <span class="bp">True</span>
+		  
+	
+		<span class="n">package_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">u&#39;name&#39;</span><span class="p">:</span> <span class="n">package_name</span><span class="p">,</span> <span class="s">u&#39;title&#39;</span><span class="p">:</span> <span class="s">u&#39;Serialize test 1&#39;</span><span class="p">,</span> <span class="s">u&#39;notes&#39;</span><span class="p">:</span> <span class="s">u&#39;dummy notes&#39;</span><span class="p">,</span>
+		<span class="s">&#39;owner_org&#39;</span><span class="p">:</span> <span class="s">&#39;public&#39;</span><span class="p">,</span> <span class="s">u&#39;private&#39;</span><span class="p">:</span> <span class="s">u&#39;False&#39;</span><span class="p">,</span> <span class="s">u&#39;state&#39;</span><span class="p">:</span> <span class="s">u&#39;active&#39;</span><span class="p">,</span>
+		<span class="s">&#39;resources&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">u&#39;Resource Document Description&#39;</span><span class="p">,</span> <span class="s">&#39;format&#39;</span><span class="p">:</span> <span class="s">u&#39;csv&#39;</span><span class="p">,</span> <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="n">file_url</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">u&#39;Resource somewhere&#39;</span><span class="p">}]}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>package_id=self.database_id)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>		 
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">ret_pack</span> <span class="o">=</span> <span class="n">testclient</span><span class="o">.</span><span class="n">package_register_post</span><span class="p">(</span><span class="n">package_dict</span><span class="p">)</span>
+			<span class="n">resources</span> <span class="o">=</span> <span class="n">ret_pack</span><span class="p">[</span><span class="s">&#39;resources&#39;</span><span class="p">]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">database_id</span> <span class="o">=</span> <span class="n">resources</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;id&#39;</span><span class="p">]</span> 
+		
+			<span class="k">print</span> <span class="s">&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; database_id:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database_id</span>
+		<span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&quot;Exception: &quot;</span><span class="p">,</span> <span class="n">e</span>
+			<span class="k">assert</span> <span class="bp">False</span>
+			<span class="k">return</span> <span class="s">&quot;&quot;</span>
+		
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">database_id</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>this function imports a resource to ckan. the resource will originate a
+table in the postgres database</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_get_ckan_base_api_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ckan_port</span><span class="p">()</span>
+		<span class="n">hostname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ckan_hostname</span><span class="p">()</span>
+		
+		<span class="k">return</span> <span class="s">&quot;http://&quot;</span> <span class="o">+</span> <span class="n">hostname</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="n">port</span> <span class="o">+</span> <span class="s">&quot;/api&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>print "package_dict: at test: ", package_dict</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_get_ckan_port</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_get_ckan_hostname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="s">&#39;localhost&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_get_resource_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_get_package_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_name</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_clean_test_database</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_name</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+		
+		<span class="n">base_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ckan_base_api_url</span><span class="p">()</span>
+		<span class="n">api_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_user_api_key</span><span class="p">()</span>
+		<span class="n">testclient</span> <span class="o">=</span> <span class="n">CkanClient</span><span class="p">(</span><span class="n">base_location</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>		<span class="n">testclient</span><span class="o">.</span><span class="n">package_entity_delete</span><span class="p">(</span><span class="n">package_name</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        	<span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+       		<span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;connection_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pylons</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ckan.datastore.write_url&#39;</span><span class="p">,</span> <span class="s">&#39;postgresql://testuser:pass@localhost/testdb&#39;</span><span class="p">)</span>  
+        	<span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">_get_engine</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">)</span>
+        	<span class="n">connection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        	<span class="n">resources_sql</span> <span class="o">=</span> <span class="s">&#39;DROP TABLE IF EXISTS &quot;&#39;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s">&#39;&quot;;&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>package_name ='spatialize_test_resource_3'</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        	<span class="k">try</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&#39;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Executing command: &#39;</span><span class="p">,</span> <span class="n">resources_sql</span>
+			<span class="n">trans</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+			<span class="n">results</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">resources_sql</span><span class="p">)</span>
+			<span class="n">trans</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> 
+        	<span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&quot;exception&quot;</span><span class="p">,</span> <span class="n">e</span>
+			<span class="k">assert</span> <span class="bp">False</span>
+        	<span class="k">finally</span><span class="p">:</span>
+        		<span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>also remove table from database using id</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_get_local_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+			<span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="n">data_dict</span><span class="p">[</span><span class="s">&#39;connection_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pylons</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;sqlalchemy.url&#39;</span><span class="p">,</span> <span class="s">&#39;postgresql://testuser:pass@localhost/testdb&#39;</span><span class="p">)</span>  
+			<span class="bp">self</span><span class="o">.</span><span class="n">engine</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">_get_engine</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">data_dict</span><span class="p">)</span>
+       	 	<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>resources_sql = 'DROP TABLE "b11351a2-5bbc-4f8f-8078-86a4eef1c7b0";'</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_execute_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">,</span> <span class="n">rscript</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_get_local_engine</span><span class="p">()</span>
+		<span class="n">connection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">();</span>
+        	<span class="k">try</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&#39;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Executing command: &#39;</span><span class="p">,</span> <span class="n">rscript</span>
+			<span class="n">trans</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+			<span class="n">results</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">rscript</span><span class="p">)</span>
+			<span class="n">trans</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span> 
+        	<span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+			<span class="k">print</span> <span class="s">&quot;exception&quot;</span><span class="p">,</span> <span class="n">e</span>
+			<span class="k">assert</span> <span class="bp">False</span>
+        	<span class="k">finally</span><span class="p">:</span>
+         		<span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        	<span class="k">return</span> <span class="n">results</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="k">def</span> <span class="nf">_get_user_api_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		
+		<span class="n">script</span> <span class="o">=</span> <span class="s">&quot;select apikey from public.user where name = &#39;admin&#39;;&quot;</span>
+		<span class="n">myres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">script</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">myres</span><span class="p">:</span>
+			<span class="n">apikey</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;apikey&#39;</span><span class="p">]</span>
+        
+		<span class="k">return</span>  <span class="n">apikey</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>	<span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>import sys;sys.argv = ['', 'Test.testName']</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
