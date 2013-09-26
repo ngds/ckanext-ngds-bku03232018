@@ -46,12 +46,16 @@ node_params = [
     ("ngds.client_config_file", "/home/ngds/pyenv2/src/ckanext-ngds/ckanclient.cfg")    
 ]
 
+node_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query datastorer csw metadata geoserver ngdsui'
+
 central_params = [
     ("ngds.deployment", "central"),
     ("ngds.home_images_dir", "assets"),
     ("ngds.logo_text", "CONTRIBUTING GEOTHERMAL DATA"),
     ("ngds.home_images_config_path", "/home/ngds/pyenv2/src/ckanext-ngds/home_images.cfg")    
 ]
+
+central_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query harvest spatial_harvest_metadata_api csw_harvester csw metadata geoserver ngdsui'
 
 parser = argparse.ArgumentParser(description='Load NGDS configuration properties')
 parser.add_argument('-f','--filename', help='Config File to be updated(Full file Path)', required=True)
@@ -72,11 +76,15 @@ else:
 
     if args.deployment.lower() == 'central':
         deployment_params = central_params
+        plugins = central_plugins
     else:
         deployment_params = node_params
+        plugins = node_plugins
 
     for param in deployment_params:
         config["app:main"][param[0]] = param[1]
         config["app:main"].comments[param[0]] = ["","# %s"%param[2]] if len(param)>2 else []
+
+    config["app:main"]["ckan.plugins"] = plugins
 
     config.write()
