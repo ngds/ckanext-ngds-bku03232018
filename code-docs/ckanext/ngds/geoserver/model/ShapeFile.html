@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>ShapeFile.py</title>
+  <link rel="stylesheet" href="../../../../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>ShapeFile.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">ogr</span>
+<span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">osr</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">search</span>
+<span class="kn">from</span> <span class="nn">ckanext.ngds.ngdsui.misc.helpers</span> <span class="kn">import</span> <span class="n">file_path_from_url</span>
+<span class="kn">from</span> <span class="nn">pylons</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">ckan.plugins</span> <span class="kn">import</span> <span class="n">toolkit</span>
+<span class="kn">import</span> <span class="nn">ckan.plugins</span> <span class="kn">as</span> <span class="nn">p</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Shapefile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">resource</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">unzipped_dir</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">ogr_source</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;driver&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="s">&quot;source&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="s">&quot;layer&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="s">&quot;srs&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="s">&quot;geom_extent&quot;</span><span class="p">:</span> <span class="bp">None</span>
+    <span class="p">}</span>
+    <span class="n">ogr_destination</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;driver&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="s">&quot;source&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="s">&quot;layer&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="s">&quot;srs&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+        <span class="s">&quot;geom_extent&quot;</span><span class="p">:</span> <span class="bp">None</span>
+    <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Get the resource</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">resource</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">get_action</span><span class="p">(</span><span class="s">&quot;resource_show&quot;</span><span class="p">)(</span><span class="bp">None</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Get the path to the file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="p">[</span><span class="s">&quot;url&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">file_path_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Check that it is a valid zip file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">is_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Make sure that the uploaded zip file is a valid shapefile</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Check that it is a zip file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Open the zipfile as read-only</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">zf</span><span class="p">:</span>
+                <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;.shp&quot;</span><span class="p">,</span> <span class="s">&quot;.shx&quot;</span><span class="p">,</span> <span class="s">&quot;.dbf&quot;</span><span class="p">]</span>
+                <span class="n">optional</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;.prj&quot;</span><span class="p">,</span> <span class="s">&quot;.sbn&quot;</span><span class="p">,</span> <span class="s">&quot;.sbx&quot;</span><span class="p">,</span> <span class="s">&quot;.fbn&quot;</span><span class="p">,</span> <span class="s">&quot;.fbx&quot;</span><span class="p">,</span> <span class="s">&quot;.ain&quot;</span><span class="p">,</span> <span class="s">&quot;.aih&quot;</span><span class="p">,</span> <span class="s">&quot;.ixs&quot;</span><span class="p">,</span> <span class="s">&quot;.mxs&quot;</span><span class="p">,</span> <span class="s">&quot;.atx&quot;</span><span class="p">,</span> <span class="s">&quot;.cpg&quot;</span><span class="p">,</span> <span class="s">&quot;.xml&quot;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Look at the file extensions in the zipfile</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">zf</span><span class="o">.</span><span class="n">infolist</span><span class="p">()]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Check that all the required extensions are there</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">ext</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">required</span> <span class="k">if</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">required</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Check that there are not extension in there that are not required</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">ext</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span> <span class="k">if</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">optional</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">extensions</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">required</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;Not a valid shapefile&quot;</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Unzip the shapefile into a pre-determined directory next to it</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">unzip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Generate the path for the directory to be unzipped to</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">unzipped_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;_UNZIPPED&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Open the zipfile and extract everything (overwrite if there's stuff there??)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">zf</span><span class="p">:</span>
+            <span class="n">zf</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">unzipped_dir</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Return the path to the unzipped directory</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">unzipped_dir</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Get a OGRLayer for this shapefile</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_source_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Where is the unzipped shapefile?</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzipped_dir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unzipped_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Generate the OGR DataSource</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">input_driver</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">GetDriverByName</span><span class="p">(</span><span class="s">&quot;ESRI Shapefile&quot;</span><span class="p">)</span>
+        <span class="n">input_datasource</span> <span class="o">=</span> <span class="n">input_driver</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unzipped_dir</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>A dataSource is always an array, but shapefiles are always by themselves. Get the layer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">layer</span> <span class="o">=</span> <span class="n">input_datasource</span><span class="o">.</span><span class="n">GetLayerByIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">GetExtent</span><span class="p">()</span>
+        <span class="n">geom_extent</span> <span class="o">=</span> <span class="p">[[</span><span class="n">geom</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">geom</span><span class="p">[</span><span class="mi">0</span><span class="p">]],[</span><span class="n">geom</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">geom</span><span class="p">[</span><span class="mi">1</span><span class="p">]]]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Cache the OGR objects so they don't get cleaned up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_source</span><span class="p">[</span><span class="s">&quot;driver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_driver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_source</span><span class="p">[</span><span class="s">&quot;source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_datasource</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_source</span><span class="p">[</span><span class="s">&quot;layer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_source</span><span class="p">[</span><span class="s">&quot;geom_extent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_extent</span>
+
+        <span class="k">return</span> <span class="n">layer</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">ogr_source_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ogr_source</span>
+        <span class="k">return</span> <span class="n">source</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Get an OGRDataSource for the default PostgreSQL destination</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_destination_source</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Generate connection details from CKAN config</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">datastore_url</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;ckan.datastore.write_url&quot;</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="s">&quot;://(?P&lt;user&gt;.+?):(?P&lt;password&gt;.+?)@(?P&lt;host&gt;.+?)/(?P&lt;dbname&gt;.+)$&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">datastore_url</span><span class="p">)</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&quot;host&quot;</span><span class="p">),</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&quot;dbname&quot;</span><span class="p">),</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&quot;user&quot;</span><span class="p">),</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&quot;password&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">ogr_connection_string</span> <span class="o">=</span> <span class="s">&quot;PG: host=</span><span class="si">%s</span><span class="s"> port=5432 dbname=</span><span class="si">%s</span><span class="s"> user=</span><span class="si">%s</span><span class="s"> password=</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">connection</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Generate the destination DataSource</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">try</span><span class="p">:</span>
+            <span class="n">output_driver</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">GetDriverByName</span><span class="p">(</span><span class="s">&quot;PostgreSQL&quot;</span><span class="p">)</span>
+            <span class="n">destination_source</span> <span class="o">=</span> <span class="n">output_driver</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">ogr_connection_string</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>Cache the OGR objects so they don't get cleaned up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">ogr_destination</span><span class="p">[</span><span class="s">&quot;driver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_driver</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ogr_destination</span><span class="p">[</span><span class="s">&quot;source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">destination_source</span>
+
+            <span class="k">return</span> <span class="n">destination_source</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Create a table in the given destination OGRDataSource</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">create_destination_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destination_source</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">epsg</span><span class="o">=</span><span class="mi">4326</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Get the shapefile OGR Layer and its "definition"</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_source_layer</span><span class="p">()</span>
+        <span class="n">source_def</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">GetLayerDefn</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>Read some shapefile properties</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">srs</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">()</span>
+        <span class="n">srs</span><span class="o">.</span><span class="n">ImportFromEPSG</span><span class="p">(</span><span class="n">epsg</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>Cache the OGR objects so they don't get cleaned up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_source</span><span class="p">[</span><span class="s">&quot;srs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">srs</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>Multi any single geometry types</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">geom_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_geom</span><span class="p">(</span><span class="n">source</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>Create the destination layer in memory</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">new_layer</span> <span class="o">=</span> <span class="n">destination_source</span><span class="o">.</span><span class="n">CreateLayer</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">srs</span><span class="p">,</span> <span class="n">geom_type</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;OVERWRITE=YES&quot;</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>Iterate through shapefile fields, add them to the new layer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">source_def</span><span class="o">.</span><span class="n">GetFieldCount</span><span class="p">()):</span>
+            <span class="n">field_def</span> <span class="o">=</span> <span class="n">source_def</span><span class="o">.</span><span class="n">GetFieldDefn</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">new_layer</span><span class="o">.</span><span class="n">CreateField</span><span class="p">(</span><span class="n">field_def</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>Commit it</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">new_layer</span><span class="o">.</span><span class="n">CommitTransaction</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Cache the OGR objects so they don't get cleaned up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_destination</span><span class="p">[</span><span class="s">&quot;layer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_layer</span>
+
+        <span class="k">return</span> <span class="n">new_layer</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>Given an OGRDataSource (destination_source), find an OGRLayer within it by name</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_destination_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destination_source</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">destination_source</span><span class="p">:</span>
+            <span class="n">destination_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_destination_source</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_name</span><span class="p">()</span>
+
+        <span class="n">layer</span> <span class="o">=</span> <span class="n">destination_source</span><span class="o">.</span><span class="n">GetLayerByName</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">layer</span><span class="p">:</span>
+            <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_destination_layer</span><span class="p">(</span><span class="n">destination_source</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <p>Cache the OGR objects so they don't get cleaned up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_destination</span><span class="p">[</span><span class="s">&quot;layer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span>
+
+        <span class="k">return</span> <span class="n">layer</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>Move shapefile data into the given destination OGRLayer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destination_layer</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">destination_layer</span><span class="p">:</span>
+            <span class="n">destination_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_destination_layer</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>Get information about the destination layer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">dest_def</span> <span class="o">=</span> <span class="n">destination_layer</span><span class="o">.</span><span class="n">GetLayerDefn</span><span class="p">()</span>
+        <span class="n">target_srs</span> <span class="o">=</span> <span class="n">destination_layer</span><span class="o">.</span><span class="n">GetSpatialRef</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>Cache the OGR objects so they don't get cleaned up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_destination</span><span class="p">[</span><span class="s">&quot;srs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_srs</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>Setup the coordinate transformation</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_source_layer</span><span class="p">()</span>
+        <span class="n">source_srs</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">GetSpatialRef</span><span class="p">()</span>
+        <span class="n">transformation</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">CoordinateTransformation</span><span class="p">(</span><span class="n">source_srs</span><span class="p">,</span> <span class="n">target_srs</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <p>Remove any features currently in the destination layer -- they'll be replaced by shapefile contents</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">dest_record</span> <span class="o">=</span> <span class="n">destination_layer</span><span class="o">.</span><span class="n">GetNextFeature</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">dest_record</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">destination_layer</span><span class="o">.</span><span class="n">DeleteFeature</span><span class="p">(</span><span class="n">dest_record</span><span class="o">.</span><span class="n">GetFID</span><span class="p">())</span>
+            <span class="n">dest_record</span> <span class="o">=</span> <span class="n">destination_layer</span><span class="o">.</span><span class="n">GetNextFeature</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <p>Iterate through the shapefile features. Project each one and add it to the destination</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">source_record</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">GetNextFeature</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">source_record</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <p>Create a new, blank feature in the destination layer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">dest_record</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">dest_def</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>Set its geometry</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">geom</span> <span class="o">=</span> <span class="n">source_record</span><span class="o">.</span><span class="n">GetGeometryRef</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <p>Transform</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">geom</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>Force multi onto geoms</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">geom_type</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">GetGeometryType</span><span class="p">()</span>
+            <span class="n">force_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_geom_force</span><span class="p">(</span><span class="n">geom_type</span><span class="p">)</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">force_function</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <p>Set its attributes from the source feature</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">dest_record</span><span class="o">.</span><span class="n">SetFrom</span><span class="p">(</span><span class="n">source_record</span><span class="p">)</span>
+            <span class="n">dest_record</span><span class="o">.</span><span class="n">SetGeometry</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>Save it to the destination layer and iterate</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">destination_layer</span><span class="o">.</span><span class="n">CreateFeature</span><span class="p">(</span><span class="n">dest_record</span><span class="p">)</span>
+            <span class="n">source_record</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">GetNextFeature</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <p>Reproject a single feature's geometry into a new SRS and return the new geometry</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">reproject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">target_srs</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Get the appropriate transformations and build a reprojected geometry</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">source_srs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ogr_source</span><span class="p">[</span><span class="s">&quot;layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">GetSpatialRef</span><span class="p">()</span>
+        <span class="n">transformation</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">CoordinateTransformation</span><span class="p">(</span><span class="n">source_srs</span><span class="p">,</span> <span class="n">target_srs</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <p>Cache the OGR objects so they don't get cleaned up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">ogr_source</span><span class="p">[</span><span class="s">&quot;srs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_srs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span> <span class="o">=</span> <span class="n">transformation</span>
+
+        <span class="k">return</span> <span class="n">feature</span><span class="o">.</span><span class="n">GetGeometryRef</span><span class="p">()</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzipped_dir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unzipped_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unzip</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>Generate the OGR DataSource</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">inputDriver</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">GetDriverByName</span><span class="p">(</span><span class="s">&quot;ESRI Shapefile&quot;</span><span class="p">)</span>
+        <span class="n">dataSource</span> <span class="o">=</span> <span class="n">inputDriver</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unzipped_dir</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      <p>A dataSource is always an array, but shapefiles are always by themselves. Get the layer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">dataSource</span><span class="o">.</span><span class="n">GetLayerByIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">table_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">)</span> <span class="c"># Postgresql will have the name screwballed</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-59'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-59'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">output_geom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-60'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-60'>#</a>
+      </div>
+      <p>Find the geometry type of the source shapefile</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">source_def</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">GetLayerDefn</span><span class="p">()</span>
+        <span class="n">geom_type</span> <span class="o">=</span> <span class="n">source_def</span><span class="o">.</span><span class="n">GetGeomType</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-61'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-61'>#</a>
+      </div>
+      <p>Convert to Multi</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">geom_type</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbMultiLineString</span> <span class="k">if</span> <span class="n">geom_type</span> <span class="o">==</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbLineString</span> <span class="k">else</span> <span class="n">geom_type</span>
+        <span class="n">geom_type</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbMultiPolygon</span> <span class="k">if</span> <span class="n">geom_type</span> <span class="o">==</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbPolygon</span> <span class="k">else</span> <span class="n">geom_type</span>
+        <span class="n">geom_type</span> <span class="o">=</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbMultiPoint</span> <span class="k">if</span> <span class="n">geom_type</span> <span class="o">==</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbPoint</span> <span class="k">else</span> <span class="n">geom_type</span>
+
+        <span class="k">return</span> <span class="n">geom_type</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-62'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-62'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">output_geom_force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom_type</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-63'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-63'>#</a>
+      </div>
+      <p>Return the correct function</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">geom_type</span> <span class="o">==</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbLineString</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ogr</span><span class="o">.</span><span class="n">ForceToMultiLineString</span>
+        <span class="k">elif</span> <span class="n">geom_type</span> <span class="o">==</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbPolygon</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ogr</span><span class="o">.</span><span class="n">ForceToMultiPolygon</span>
+        <span class="k">elif</span> <span class="n">geom_type</span> <span class="o">==</span> <span class="n">ogr</span><span class="o">.</span><span class="n">wkbPoint</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ogr</span><span class="o">.</span><span class="n">ForceToMultiPoint</span>
+        <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-64'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-64'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">def</span> <span class="nf">do_nothing</span><span class="p">(</span><span class="n">geom</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">geom</span>
+            <span class="k">return</span> <span class="n">do_nothing</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

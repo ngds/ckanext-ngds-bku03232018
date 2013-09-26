@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>ngds.py</title>
+  <link rel="stylesheet" href="../../../../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>ngds.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>This is the base controller object which other controllers extend.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">ckan.lib.base</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">ckan.lib.base</span> <span class="kn">import</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span>
+                           <span class="n">render</span><span class="p">,</span>
+                           <span class="n">BaseController</span><span class="p">,</span>
+                           <span class="n">model</span><span class="p">,</span>
+                           <span class="n">abort</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy.exc</span>
+<span class="kn">from</span> <span class="nn">pylons</span> <span class="kn">import</span> <span class="n">config</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">NGDSBaseController</span><span class="p">(</span><span class="n">BaseController</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__before__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">env</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">BaseController</span><span class="o">.</span><span class="n">__before__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">**</span><span class="n">env</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ngds_deployment</span><span class="p">()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">ProgrammingError</span><span class="p">,</span>
+                <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">OperationalError</span><span class="p">),</span> <span class="n">e</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>postgres and sqlite errors for missing tables</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s">&#39;relation&#39;</span> <span class="ow">in</span> <span class="n">msg</span> <span class="ow">and</span> <span class="s">&#39;does not exist&#39;</span> <span class="ow">in</span> <span class="n">msg</span><span class="p">)</span> <span class="ow">or</span> \
+                    <span class="p">(</span><span class="s">&#39;no such table&#39;</span> <span class="ow">in</span> <span class="n">msg</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>table missing, major database problem</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">abort</span><span class="p">(</span><span class="mi">503</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;This site is currently off-line. Database is not initialised.&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Retreive configuration items that will be essential to the application while it is running. These are :
+1) Logo text to display below the site-logo.
+2) The deployment configuration of this node to determine if this is a node-in-a-box deployment or a central node deployment,
+    what functionality must be exposed and what pages to render.
+3) The default group name under which all datasets will be stored. This information is purely internal and not exposed to the user.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">_ngds_deployment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">g</span><span class="o">.</span><span class="n">logo_text</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ngds.logo_text&#39;</span><span class="p">,</span> <span class="s">&#39;REDUCE RISK, INCREASE CERTAINTY&#39;</span><span class="p">)</span>
+
+        <span class="n">ngds_deployment</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ngds.deployment&#39;</span><span class="p">,</span> <span class="s">&#39;central&#39;</span><span class="p">)</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">default_group</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ngds.default_group_name&#39;</span><span class="p">,</span> <span class="s">&#39;public&#39;</span><span class="p">)</span>
+
+        <span class="n">g</span><span class="o">.</span><span class="n">node_in_a_box</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">central</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="n">ngds_deployment</span> <span class="o">==</span> <span class="s">&#39;node&#39;</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">node_in_a_box</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">central</span> <span class="o">=</span> <span class="bp">True</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

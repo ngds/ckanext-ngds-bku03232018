@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>ModelValidation.py</title>
+  <link rel="stylesheet" href="../../../../../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>ModelValidation.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on Apr 12, 2013</span>
+<span class="sd">#DIVIDER</span>
+<span class="sd">@author: xig3</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">urllib2</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">simplejson</span>
+
+<span class="kn">from</span> <span class="nn">ContentModel_Definitions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">ContentModel_Utilities</span>   <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="n">playground</span> <span class="o">=</span> <span class="n">ContentModel_Playground</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">load_schema</span> <span class="p">(</span><span class="n">schema_uri</span><span class="p">,</span> <span class="n">version_string</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">playground</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start schema reading&quot;</span><span class="p">)</span>
+    
+    <span class="n">remotefile</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&quot;http://schemas.usgin.org/contentmodels.json&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">result</span> <span class="o">=</span> <span class="n">simplejson</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">remotefile</span><span class="p">)</span>
+    <span class="n">schemaList</span> <span class="o">=</span> <span class="p">[</span><span class="n">rec</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">if</span> <span class="n">rec</span><span class="p">[</span><span class="s">&#39;uri&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema_uri</span><span class="p">]</span>
+
+    <span class="n">versions</span> <span class="o">=</span> <span class="n">schemaList</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;versions&#39;</span><span class="p">]</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="p">[</span><span class="n">rec</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">versions</span> <span class="k">if</span> <span class="n">rec</span><span class="p">[</span><span class="s">&#39;version&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">version_string</span><span class="p">]</span>
+
+    <span class="n">field_info_list</span> <span class="o">=</span> <span class="n">version</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;field_info&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">field_info</span> <span class="ow">in</span> <span class="n">field_info_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">field_info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">field_info</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">])</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">field_info</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isspace</span><span class="p">()))):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;found a undefined field: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">field_info</span><span class="p">))</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">playground</span><span class="o">.</span><span class="n">fieldModelList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ContentModel_FieldInfoCell</span><span class="p">(</span><span class="n">field_info</span><span class="p">[</span><span class="s">&#39;optional&#39;</span><span class="p">],</span> <span class="n">field_info</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">],</span> <span class="n">field_info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span> <span class="n">field_info</span><span class="p">[</span><span class="s">&#39;description&#39;</span><span class="p">]))</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to finish schema reading, find &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">playground</span><span class="o">.</span><span class="n">fieldModelList</span><span class="p">))</span> <span class="o">+</span> <span class="s">&quot; field information&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>remotefile = urllib2.urlopen("file:///home/xig3/workspace/ModelValidation/samples/contentmodels.json")</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>def load_schema (schema_uri, version_string)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">load_csv</span><span class="p">(</span><span class="n">csv_filename</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">playground</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start CSV reading&quot;</span><span class="p">)</span>
+    
+    <span class="n">csv_data</span> <span class="o">=</span> <span class="n">ContentModel_CSVData</span><span class="p">(</span><span class="n">csv_filename</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">csv_data</span><span class="o">.</span><span class="n">csv_reader</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">header</span><span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv_data</span><span class="o">.</span><span class="n">csv_reader</span><span class="p">:</span>
+            <span class="n">new_row</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+            <span class="n">playground</span><span class="o">.</span><span class="n">dataListList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_row</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">csv</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s">&quot;file </span><span class="si">%s</span><span class="s">, line </span><span class="si">%d</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">csv_filename</span><span class="p">,</span> <span class="n">csv_data</span><span class="o">.</span><span class="n">csv_reader</span><span class="o">.</span><span class="n">line_num</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to finish CSV reading&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>def load_csv(csv_filename)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">validate_existence</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">playground</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start field existence checking&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">linkToFieldInfoFromHeader</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">playground</span><span class="o">.</span><span class="n">fieldModelList</span><span class="p">)</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">header</span><span class="p">]</span>
+            <span class="n">linkToFieldInfoFromHeader</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;header: </span><span class="si">%s</span><span class="s"> couldn&#39;t be found in the field_info&quot;</span> <span class="o">%</span> <span class="n">header</span><span class="p">)</span>
+        
+    <span class="n">OptionalFalseIndex</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">)):</span>
+        <span class="k">if</span>   <span class="n">playground</span><span class="o">.</span><span class="n">fieldModelList</span><span class="p">[</span><span class="n">linkToFieldInfoFromHeader</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">optional</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="n">OptionalFalseIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;OptionalFalseIndex: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">OptionalFalseIndex</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">jd</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">playground</span><span class="o">.</span><span class="n">dataListList</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">OptionalFalseIndex</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataListList</span><span class="p">[</span><span class="n">jd</span><span class="p">][</span><span class="n">OptionalFalseIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">isspace</span><span class="p">()):</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): </span><span class="si">%s</span><span class="s"> (field </span><span class="si">%s</span><span class="s">) is defined as optional false&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">[</span><span class="n">OptionalFalseIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]))</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to finish field existence checking&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>build link between dataHeaderList and fieldInfoList
+fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>def validate_existence()</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">validate_numericType</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">playground</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start numeric data type checking&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">linkToFieldInfoFromHeader</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">playground</span><span class="o">.</span><span class="n">fieldModelList</span><span class="p">)</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">header</span><span class="p">]</span>
+        <span class="n">linkToFieldInfoFromHeader</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="n">IntTypeIndex</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">DoubleTypeIndex</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">)):</span>
+        <span class="k">if</span>   <span class="n">playground</span><span class="o">.</span><span class="n">fieldModelList</span><span class="p">[</span><span class="n">linkToFieldInfoFromHeader</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">typeString</span> <span class="o">==</span> <span class="s">&#39;int&#39;</span><span class="p">:</span>
+            <span class="n">IntTypeIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">playground</span><span class="o">.</span><span class="n">fieldModelList</span><span class="p">[</span><span class="n">linkToFieldInfoFromHeader</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">typeString</span> <span class="o">==</span> <span class="s">&#39;double&#39;</span><span class="p">:</span>
+            <span class="n">DoubleTypeIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;IntTypeIndex: </span><span class="si">%s</span><span class="s"> and DoubleTypeIndex: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">IntTypeIndex</span><span class="p">,</span> <span class="n">DoubleTypeIndex</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">jd</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">playground</span><span class="o">.</span><span class="n">dataListList</span><span class="p">)):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>build link between dataHeaderList and fieldInfoList
+fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">IntTypeIndex</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataListList</span><span class="p">[</span><span class="n">jd</span><span class="p">][</span><span class="n">IntTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">isInteger</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): null (field </span><span class="si">%s</span><span class="s">) is expected to be an Integer&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">[</span><span class="n">IntTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): </span><span class="si">%s</span><span class="s"> (field </span><span class="si">%s</span><span class="s">) is expected to be an Integer&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">[</span><span class="n">IntTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>check the int type</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">DoubleTypeIndex</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataListList</span><span class="p">[</span><span class="n">jd</span><span class="p">][</span><span class="n">DoubleTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">isNumber</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): null (field </span><span class="si">%s</span><span class="s">) is expected to be a  Numeric&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">[</span><span class="n">DoubleTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): </span><span class="si">%s</span><span class="s"> (field </span><span class="si">%s</span><span class="s">) is expected to be a  Numeric&quot;</span>   <span class="o">%</span><span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">playground</span><span class="o">.</span><span class="n">dataHeaderList</span><span class="p">[</span><span class="n">DoubleTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>check the double type</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>def validate_numericType()</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">csv_filename</span><span class="p">,</span> <span class="n">schema_uri</span><span class="p">,</span> <span class="n">version_string</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">playground</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;action is about to start&quot;</span><span class="p">)</span>
+    
+    <span class="n">load_schema</span><span class="p">(</span><span class="n">schema_uri</span><span class="p">,</span> <span class="n">version_string</span><span class="p">)</span>
+    <span class="n">load_csv</span><span class="p">(</span><span class="n">csv_filename</span><span class="p">)</span>
+    <span class="n">playground</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+    
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;start checking existence&quot;</span><span class="p">)</span>
+    <span class="n">validate_existence</span><span class="p">()</span>
+    <span class="n">validate_numericType</span><span class="p">()</span>
+    <span class="n">playground</span><span class="o">.</span><span class="n">report</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">csv_filename</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">schema_uri</span>   <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">version_string</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    
+    <span class="n">main</span><span class="p">(</span><span class="n">csv_filename</span><span class="p">,</span> <span class="n">schema_uri</span><span class="p">,</span> <span class="n">version_string</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;done&quot;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>def main(csv_filename, schema_uri, version_string)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

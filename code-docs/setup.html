@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>setup.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>setup.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>,</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+
+<span class="n">version</span> <span class="o">=</span> <span class="s">&#39;0.1&#39;</span>
+
+<span class="n">setup</span><span class="p">(</span>
+	<span class="n">name</span><span class="o">=</span><span class="s">&#39;ckanext-ngds&#39;</span><span class="p">,</span>
+	<span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
+	<span class="n">description</span><span class="o">=</span><span class="s">&quot;Extension for NGDS-related customizations&quot;</span><span class="p">,</span>
+	<span class="n">long_description</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s">#DIVIDER</span>
+<span class="s">	[paste.paster_command]</span>
+<span class="s">#DIVIDER</span>
+<span class="s">	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables</span>
+<span class="s">	ngdsapi=ckanext.ngds.lib.command:APICommand</span>
+
+<span class="s">	[nose.plugins]</span>
+<span class="s">    pylons = pylons.test:PylonsPlugin</span>
+
+<span class="s">	[ckan.plugins]</span>
+<span class="s">#DIVIDER</span>
+<span class="s">	csw=ckanext.ngds.csw.plugin:CswPlugin</span>
+<span class="s">#DIVIDER</span>
+<span class="s">	metadata=ckanext.ngds.metadata.plugin:MetadataPlugin</span>
+<span class="s">#DIVIDER</span>
+<span class="s">	ngds_harvester=ckanext.ngds.harvest.harvester.ngds:NgdsHarvester</span>
+<span class="s">#DIVIDER</span>
+<span class="s">	ngdsui=ckanext.ngds.ngdsui.plugin:NgdsuiPlugin</span>
+<span class="s">#DIVIDER</span>
+<span class="s">	geoserver=ckanext.ngds.geoserver.plugin:GeoserverPlugin</span>
+<span class="s">#DIVIDER</span>
+<span class="s">	contentmodel=ckanext.ngds.contentmodel.plugin:ContentModelPlugin</span>
+<span class="s">	</span>
+<span class="s">    [babel.extractors]</span>
+<span class="s">	    ckan = ckan.lib.extract:extract_ckan</span>
+<span class="s">#DIVIDER</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+keywords='',
+author='',
+author_email='',
+url='',
+license='',
+packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+namespace_packages=['ckanext'],</p>
+<h1>package_data={'':['templates/<em>.</em>','templates/<strong>/<em>.</em>','templates/</strong>/<strong>/<em>.</em>','public/</strong>/<em>.</em>','public/<strong>/</strong>/<strong>/<em>.</em>','public/</strong>/<strong>/</strong>/<strong>/<em>.</em>','public/</strong>/<strong>/</strong>/<strong>/</strong>/<strong>','public/</strong>/<em><em>/</em>.</em>']},</h1>
+<p>include_package_data=True,
+zip_safe=False,
+install_requires=[
+    # -<em>- Extra requirements: -</em>-
+],
+   message_extractors = {
+       'ckanext': [
+           ('<strong>.py', 'python', None),
+           ('</strong>.html', 'ckan', None),
+       ]
+   },     <br />
+entry_points=\</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Install NGDS additional tables</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>CSW plugin</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>NGDS Metadata plugin</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>NGDS Harvest plugin</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>NGDS UI plugin.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Geoserver Plugin.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Content Model Management Plugin.
+,</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
