@@ -314,7 +314,7 @@ class NgdsuiPlugin(SingletonPlugin):
             if 'fq' in search_params:
                 search_params['fq'] = re.sub('publication_date:".*"', repl, search_params['fq'])
             if 'q' in search_params:
-                search_params['q'] = re.sub('publication_date: ".*"', repl, str(search_params['q']))
+                search_params['q'] = re.sub('publication_date: ".*"', repl, search_params['q'])
 
 
         if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:
