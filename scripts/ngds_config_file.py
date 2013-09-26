@@ -33,7 +33,9 @@ params_to_set = [
     ("ngds.resources_dir", "/home/ubuntu/ckanenv/src/ckanext-ngds/ckanext/ngds/base/resources"),
     ("ngds.contributors_config", "/home/ngds/pyenv2/src/ckanext-ngds/contributors_config.json"),
     ("extra_public_paths", "/home/ngds/extrapublic/"),
-    ("ckan.i18n_directory", "/home/ngds/pyenv2/src/ckanext-ngds")
+    ("solr_url", "http://localhost:8983/solr"),
+    ("ckan.i18n_directory", "/home/ngds/pyenv2/src/ckanext-ngds"),
+    ("search.facets.limits", "5000")
 ]
 
 node_params = [
@@ -86,5 +88,4 @@ else:
         config["app:main"].comments[param[0]] = ["","# %s"%param[2]] if len(param)>2 else []
 
     config["app:main"]["ckan.plugins"] = plugins
-
     config.write()
