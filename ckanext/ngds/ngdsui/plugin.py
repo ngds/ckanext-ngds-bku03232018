@@ -221,7 +221,6 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_url_for_file':helpers.get_url_for_file,
             'is_plugin_enabled':helpers.is_plugin_enabled,
             'username_for_id':helpers.username_for_id,
-            'get_formatted_date':helpers.get_formatted_date,
             'load_ngds_facets':helpers.load_ngds_facets,
             'get_ngdsfacets':helpers.get_ngdsfacets,
             'get_formatted_date':helpers.get_formatted_date,
@@ -250,7 +249,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_home_images':helpers.get_home_images,
             'get_filtered_items':helpers.get_filtered_items,
             'get_content_models':helpers.get_content_models,
-            'get_contributors_list':helpers.get_contributors_list
+            'get_contributors_list':helpers.get_contributors_list,
+            'parse_publication_date_range':helpers.parse_publication_date_range
         }
 
     implements(IPackageController, inherit=True)

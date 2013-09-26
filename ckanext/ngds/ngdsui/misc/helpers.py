@@ -188,6 +188,13 @@ def username_for_id(id):
 def get_formatted_date(timestamp):
     return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
 
+def parse_publication_date_range(range):
+    if range:
+        range = range.split(' TO ')
+        return ' To '.join(map(lambda x:iso8601.parse_date(x).strftime("%b %d,%Y"), map(lambda x: x.strip(' ]').strip('['),range)))
+    return None
+
+
 
 def get_formatted_date_from_obj(timestamp, isdate):
     if isdate:

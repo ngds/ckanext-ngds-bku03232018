@@ -135,13 +135,21 @@ A list of variables we need in this page.
                                                class="remove" title="{{ _('Remove') }}">
                                                 {% endif %}
 
-                        <span class="filtered ">
+
+
                           {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
+                                                <span class="filtered ">
                             {{ c.translated_fields[(field,value)] }}
+                                                    <span class="close-button">X</span>
+                                                    </span>
                           {% else %}
-                            {{ value }}
-                          {% endif %} <span class="close-button">X</span>
-                        </span>
+                            {% if field=='publication_date' %}
+                                <div class="ngds-tag">{{h.parse_publication_date_range(value)}}<span class="close-button">X</span></div>
+                            {% else %}
+                                {{value}}
+                            {% endif %}
+                          {% endif %}
+
                                             </a>
                                             {% endfor %}
                                             {% endfor %}
