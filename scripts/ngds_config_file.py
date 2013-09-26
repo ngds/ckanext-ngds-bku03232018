@@ -34,7 +34,8 @@ params_to_set = [
     ("ngds.contributors_config", "/home/ngds/pyenv2/src/ckanext-ngds/contributors_config.json"),
     ("extra_public_paths", "/home/ngds/extrapublic/"),
     ("solr_url", "http://localhost:8983/solr"),
-    ("ckan.i18n_directory", "/home/ngds/pyenv2/src/ckanext-ngds")
+    ("ckan.i18n_directory", "/home/ngds/pyenv2/src/ckanext-ngds"),
+    ("search.facets.limits", "5000")
 ]
 
 node_params = [
