@@ -544,9 +544,9 @@ function configure_ngds() {
 
     run_or_die sudo cp $CKAN_ETC/default/development.ini $deployment_file
 
-    #$PYENV_DIR/bin/python $APPS_SRC/ckanext-ngds/scripts/ngds_config_file.py -f $deployment_file -d $deployment
+    $PYENV_DIR/bin/python $APPS_SRC/ckanext-ngds/scripts/ngds_config_file.py -f $deployment_file -d $deployment_type
 
-    $PYENV_DIR/bin/python /home/ngds/install/configobjtest.py -f $deployment_file -d $deployment_type
+    #$PYENV_DIR/bin/python /home/ngds/install/configobjtest.py -f $deployment_file -d $deployment_type
    
 
     NGDS_CUSTOM_PATH=$CKAN_ETC/default/ngds
@@ -584,7 +584,7 @@ function configure_ngds() {
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/boise.png $NGDS_CUSTOM_PUBLIC/assets/
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/aasg.png $NGDS_CUSTOM_PUBLIC/assets/
 
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -a -k "ckan.plugins" -v "resource_proxy pdf_preview ngdsui metadata csw "
+    #$PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -a -k "ckan.plugins" -v "resource_proxy pdf_preview ngdsui metadata csw "
 
     if [ "$deployment_type" = "node" ]
         then
@@ -594,12 +594,12 @@ function configure_ngds() {
             $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k ngds.client_config_file -v "$NGDS_CONFIG_PATH/ckanclient.cfg"
             $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k ngds.bulk_upload_dir -v "$BULKUPLOAD_DIRECTORY/"
             
-            $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -a -k "ckan.plugins" -v "geoserver"
+            #$PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -a -k "ckan.plugins" -v "geoserver"
             #TODO: How to update geoserver related parameters.
         else
             run_or_die sudo cp $APPS_SRC/ckanext-ngds/home_images.cfg $NGDS_CONFIG_PATH/
             $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k ngds.home_images_config_path -v "$NGDS_CONFIG_PATH/home_images.cfg"
-            $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -a -k "ckan.plugins" -v "spatial_harvest_metadata_api csw_harvester"
+            #$PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -a -k "ckan.plugins" -v "spatial_harvest_metadata_api csw_harvester"
     fi
     
     run_or_die $PYENV_DIR/bin/paster --plugin=ckanext-ngds ngds initdb -c $deployment_file
