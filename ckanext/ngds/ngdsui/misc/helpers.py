@@ -188,12 +188,15 @@ def username_for_id(id):
 def get_formatted_date(timestamp):
     return iso8601.parse_date(timestamp).strftime("%B %d,%Y")
 
+
 def parse_publication_date_range(range):
+    print range
     if range:
         range = range.split(' TO ')
-        return ' To '.join(map(lambda x:iso8601.parse_date(x).strftime("%b %d,%Y"), map(lambda x: x.strip(' ]').strip('['),range)))
-    return None
 
+        return ' To '.join(map(lambda x: iso8601.parse_date(x.strip()).strftime("%b %d,%Y") if x.strip() != "*" else "*",
+                               map(lambda x: x.strip(' ]').strip('['), range)))
+    return None
 
 
 def get_formatted_date_from_obj(timestamp, isdate):
@@ -705,6 +708,7 @@ def get_home_images():
 
     return g.home_image_items
 
+
 def get_filtered_items(request_params):
     """
     Returns the filtered fields in the search results of library page. This method will get called when CKAN doesn't
@@ -714,12 +718,13 @@ def get_filtered_items(request_params):
     fields_grouped = {}
     for (param, value) in request_params.items():
         if param not in ['q', 'page', 'sort'] \
-                and len(value) and not param.startswith('_') and not param.startswith('ext_'):
+            and len(value) and not param.startswith('_') and not param.startswith('ext_'):
             if param not in c.fields_grouped:
                 fields_grouped[param] = [value]
             else:
                 fields_grouped[param].append(value)
     return fields_grouped
+
 
 def get_content_models():
     return logic.get_action('contentmodel_list_short')()
@@ -751,7 +756,7 @@ def get_contributors_list():
                 contributor['logo_path'] = prepend_str + contributor.get("logo_path")
                 #contributors_list.append(contributor)
 
-        print "contributors_list: ",contributors_list
+        print "contributors_list: ", contributors_list
 
         g.contributors_list = contributors_list
 

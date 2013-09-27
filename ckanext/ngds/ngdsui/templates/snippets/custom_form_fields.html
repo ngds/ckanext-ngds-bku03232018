@@ -23,7 +23,7 @@
     {% endif %}
     <div class="sp-label"><label>{{_('Authors')}}</label></div>
       <input id="field-extras-12-key" name="extras__12__key" value="authors" placeholder="" style="display:none;">
-      <input type="text" id="authors_fake" value="{{ get_value('authors',extras) }}"/>
+      <input type="text" id="authors_fake" placeholder="Ex: Joe Moore" value="{{ get_value('authors',extras) }}"/>
       <div class="author-tags retreived-tags"></div>
       {% if errors.authors %}
       <span class="error-block">{{errors.authors}}</span>
@@ -40,7 +40,7 @@
       {% endif %}
     <div class="sp-label"><label>{{_('Maintainer')}}</label></div>
       <input id="field-extras-13-key" name="extras__13__key" value="ngds_maintainer" placeholder="" style="display:none;">
-      <input type="text" id="maintainer_fake" value="{{ get_value('ngds_maintainer',extras) }}" />
+      <input type="text" id="maintainer_fake" placeholder="Ex: John Doe" value="{{ get_value('ngds_maintainer',extras) }}" />
       <div class="maintainer-tag retreived-tags"></div>
       {% if errors.maintainer %}
         <span class="error-block">{{errors.maintainer}}</span>
@@ -60,7 +60,7 @@
 <div class="input-group">
     <div class="sp-label"><label>{{_('Spatial Location')}}</label></div>
       <input id="field-extras-9-key" name="extras__9__key" value="spatial_word" placeholder="" style="display:none;">
-      <input id="field-extras-9-value" type="text" name="extras__9__value" placeholder value="{{ get_value('spatial_word',extras) }}" >
+      <input id="field-extras-9-value" type="text" placeholder="Ex: San Bernardino, California" name="extras__9__value" placeholder value="{{ get_value('spatial_word',extras) }}" >
 </div>
 
 <!-- <div class="input-group">
@@ -95,7 +95,7 @@
   {% endif %}
     <div class="sp-label"><label>{{_('URI')}}</label></div>
       <input id="field-extras-3-key" name="extras__3__key" value="uri" placeholder="" style="display:none;">
-      <input id="field-extras-3-value" type="text" name="extras__3__value" placeholder value="{{ get_value('uri',extras) }}">
+      <input id="field-extras-3-value" type="text" name="extras__3__value" placeholder="Ex: doi:10.1594/PANGAEA.726855" value="{{ get_value('uri',extras) }}">
       {% if errors.uri %}
         <span class="error-block">{{errors.uri}}</span>
       {% endif %}
@@ -104,7 +104,7 @@
 <div class="input-group">
     <div class="sp-label"><label>{{_('Quality')}}</label></div>
       <input id="field-extras-5-key" name="extras__5__key" value="quality" placeholder="" style="display:none;">
-      <input id="field-extras-5-value" type="text" name="extras__5__value" placeholder value="{{ get_value('quality',extras) }}">
+      <input id="field-extras-5-value" type="text" name="extras__5__value" placeholder="Ex: Good" value="{{ get_value('quality',extras) }}">
 </div>
 
 <div class="input-group">
