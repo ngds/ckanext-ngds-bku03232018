@@ -2,28 +2,28 @@
     {
         "name":"Boise State University",
         "abbreviation":"BSU",
-        "logo_path":"boise.png",
+        "logo_path":"logos/boise.png",
         "url":"http://www.boisestate.edu/",
         "is_gold":"true"
     },
     {
         "name":"Southern Methodist University",
         "abbreviation":"SMU",
-        "logo_path":"smu.png",
+        "logo_path":"logos/smu.png",
         "url":"http://smu.edu/geothermal/",
         "is_gold":"true"
     },
     {
         "name":"U. S. Geological Survey",
         "abbreviation":"USGS",
-        "logo_path":"usgs.png",
+        "logo_path":"logos/usgs.png",
         "url":"http://energy.usgs.gov/OtherEnergy/Geothermal.aspx",
         "is_gold":"true"
     },
     {
         "name":"Association of American State Geologists",
         "abbreviation":"AASG",
-        "logo_path":"aasg.png",
+        "logo_path":"logos/aasg.png",
         "url":"http://www.stategeologists.org/",
         "is_gold":"true"
     }
