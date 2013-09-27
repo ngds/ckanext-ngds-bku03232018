@@ -26,7 +26,6 @@
                 <div>
                     <p>I want to ...</p>
                     <span><a class="footer-link">{{ _('Contribute data to NGDS') }}</a></span>
-                    <span><a class="footer-link">{{ _('Contact NGDS') }}</a></span>
                 </div>
 
             </div>
@@ -63,8 +62,8 @@
         <span class="left"><a
                 href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{
             _('HOME') }}</a></span>
-        <span class="center"><a href="#">{{ _('CONTACT') }}</a></span>
-        <span class="right"><a href="#">{{ _('TERMS OF USE') }} &amp; {{ _('PRIVACY') }}</a></span>
+        <span class="center"><a href="/ngds/contact">{{ _('CONTACT') }}</a></span>
+        <span class="right"><a href="/ngds/terms_of_use">{{ _('TERMS OF USE') }} &amp; {{ _('PRIVACY') }}</a></span>
     </div>
 </div>
 

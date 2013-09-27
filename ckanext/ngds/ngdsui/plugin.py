@@ -167,7 +167,8 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("new_to_ngds", "/ngds/new_to_ngds", controller=home_controller, action="render_new_to_ngds")
         map.connect("faq", "/ngds/faq", controller=home_controller, action="render_faq")
         map.connect("contributors_list", "/ngds/contributors_list", controller=home_controller, action="render_contributors")
-
+        map.connect("contributors_list", "/ngds/terms_of_use", controller=home_controller, action="render_terms_of_use")
+        map.connect("contributors_list", "/ngds/contact", controller=home_controller, action="render_contact")
         return map
 
     implements(IConfigurer, inherit=True)
