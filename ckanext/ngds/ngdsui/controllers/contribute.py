@@ -21,7 +21,7 @@ from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
 import ckanext.ngds.importer.helper as import_helper
 from ckan.controllers.package import PackageController
 from ckan.plugins import toolkit
-import ckanext.ngds.lib.importer.validator as ngdsvalidator
+import ckanext.ngds.importer.validator as ngdsvalidator
 from ckanext.ngds.ngdsui.misc.helpers import process_resource_docs_to_index
 
 
