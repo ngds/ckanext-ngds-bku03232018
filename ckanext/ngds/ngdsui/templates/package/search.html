@@ -146,7 +146,7 @@ A list of variables we need in this page.
                             {% if field=='publication_date' %}
                                 <div class="ngds-tag">{{h.parse_publication_date_range(value)}}<span class="close-button">X</span></div>
                             {% else %}
-                                {{value}}
+                                 <div class="ngds-tag">{{value}}<span class="close-button">X</span></div>
                             {% endif %}
                           {% endif %}
 
