@@ -1,62 +1,75 @@
 <div id="footer"> <!-- Start of footer section -->
-		<div class="row">	
-			<div class="footer-links-feedback-caption-container">
-				<div id ="footer-links-section">
-					<div>
-						<p>{{ _('About NGDS') }}</p>				
-						<span><a class="footer-link" href="/ngds/partners">{{ _('Partners') }}</a></span>
-						<span><a class="footer-link" href="/ngds/data">{{ _('Data') }}</a></span>
-						<span><a class="footer-link" href="/ngds/history">{{ _('History') }}</a></span>
-					</div>
-					<div>
-						<p>Help</p>				
-						<span><a class="footer-link" href="/ngds/new_to_ngds">{{ _('New to NGDS?') }}</a></span>
-						<span><a class="footer-link">{{ _('Get started now.') }}</a></span>
-						<span><a class="footer-link" href="/ngds/faq">{{ _('FAQ\'s') }}</a></span>
-					</div>	
-					<div>
-						<p>I want to ...</p>				
-						<span><a class="footer-link">{{ _('Contribute data to NGDS') }}</a></span>
-						<span><a class="footer-link">{{ _('Contact NGDS') }}</a></span>
-						<span><a class="footer-link">{{ _('View my saved searches') }}</a></span>
-						<span><a class="footer-link">{{ _('Share my favorites') }}</a></span>
-					</div>		
+    <div class="row">
+        <div class="footer-links-feedback-caption-container">
+            <div id="footer-links-section">
+                <div>
+                    <p>{{ _('About NGDS') }}</p>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_partners' %}">{{
+                        _('Partners') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_data' %}">{{
+                        _('Data') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_history' %}">{{
+                        _('History') }}</a></span>
+                </div>
+                <div>
+                    <p>Help</p>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_new_to_ngds' %}">{{
+                        _('New to NGDS?') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_faq' %}">{{
+                        _('FAQ\'s') }}</a></span>
+                </div>
+                <div>
+                    <p>I want to ...</p>
+                    <span><a class="footer-link">{{ _('Contribute data to NGDS') }}</a></span>
+                </div>
 
-				</div>
-			</div>
+            </div>
+        </div>
 
-            {% set contributors_list=h.get_contributors_list() %}
+        {% set contributors_list=h.get_contributors_list() %}
 
-            {% if  contributors_list %}
-			<div id="data-contributors-container">
-                <h5>{{_('Contributors')}}</h5>
-                <ul>
+        {% if contributors_list %}
+        <div id="data-contributors-container">
+            <h5>{{_('Contributors')}}</h5>
+            <ul>
                 {% set c_i=0 %}
                 {% for contributor in contributors_list if contributor.is_gold=='true' %}
-                    {% set c_i=c_i+1 %}
-                    <!--<li><span><a href="{{contributor.url}}" target="_blank"><img src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></li>-->
-                    {% if c_i<7 %}
-                    <li><span><a href="{{contributor.url}}" target="_blank"><img src="{{contributor.logo_path}}"/></a></span></li>
-                    {% endif %}
+                {% set c_i=c_i+1 %}
+                <!--<li><span><a href="{{contributor.url}}" target="_blank"><img src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></li>-->
+                {% if c_i<7 %}
+                <li><span><a href="{{contributor.url}}" target="_blank"><img
+                        src="{{contributor.logo_path}}"/></a></span></li>
+                {% endif %}
                 {% endfor %}
-                </ul>
-                <p><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_contributors' %}">{{_('Full list of contributors')}}</a></p>
-			</div>
-            {% endif %}
-		</div>
-		</div>
-	<div class="postface">
-		<div class="left">
-		    <p>&copy; {{ _('US DEPARTMENT OF ENERGY') }}</p>
-		</div>
-		<div class="right">
-		    <span class="left"><a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{ _('HOME') }}</a></span>
-		    <span class="center"><a href="#">{{ _('CONTACT') }}</a></span>
-		    <span class="right"><a href="#">{{ _('TERMS OF USE') }} &amp; {{ _('PRIVACY') }}</a></span>
-		</div>
-	</div>		
+            </ul>
+            <p>
+                <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_contributors' %}">{{_('Full
+                    list of contributors')}}</a></p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="postface">
+    <div class="left">
+        <p>&copy; {{ _('US DEPARTMENT OF ENERGY') }}</p>
+    </div>
+    <div class="right">
+        <span class="left"><a
+                href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{
+            _('HOME') }}</a></span>
+        <span class="center"><a href="/ngds/contact">{{ _('CONTACT') }}</a></span>
+        <span class="right"><a href="/ngds/terms_of_use">{{ _('TERMS OF USE') }} &amp; {{ _('PRIVACY') }}</a></span>
+    </div>
+</div>
 
-<div id="not-implemented-popup" style="background-color:#d9d9f3; border:1px dotted black; position:absolute; top:300px; width:400px; height:300px; left:35%; display:none;">
-	<p style="font-family:Arial; font-size:18px; margin-top:125px;">Not implemented yet!<br/><br/> <b>Click anywhere or push ESC to hide me.</b></p>
+<div id="not-implemented-popup"
+     style="background-color:#d9d9f3; border:1px dotted black; position:absolute; top:300px; width:400px; height:300px; left:35%; display:none;">
+    <p style="font-family:Arial; font-size:18px; margin-top:125px;">Not implemented yet!<br/><br/> <b>Click anywhere or
+        push ESC to hide me.</b></p>
 </div>
 <!-- {# snippet "snippets/language_selector.html" #} -->

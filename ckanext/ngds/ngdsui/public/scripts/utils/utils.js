@@ -126,8 +126,8 @@ ngds.util.svg_crispify_post_process = function () {
 };
 
 ngds.util.clear_map_state = function () {
-    $("#jspContainer").remove();
-    $(".result").remove();
+    $(".jspContainer").remove();
+    $(".results").remove();
     $(".reader").remove();
     $(".search-results-page-nums").empty();
     $(".results-text").remove();

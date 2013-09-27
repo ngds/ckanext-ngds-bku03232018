@@ -118,8 +118,11 @@
 
 {% if c.query %}
 <script>
-    console.log("Initiating search");
-    ngds.Map.top_level_search();
+    $(document).ready(function () {
+        console.log("Initiating search");
+        ngds.Map.top_level_search();
+    });
+
 </script>
 {% endif %}
 

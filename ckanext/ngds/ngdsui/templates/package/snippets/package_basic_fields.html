@@ -68,13 +68,16 @@
                           title="A long-text description of this dataset">{{data['notes']}}</textarea>
             </div>
 
-            <div class="input-group">
+            <div class="input-group tags-selector-label">
                 <div class="sp-label">
-                    <label for="tags">Tags</label>
+                    <label for="field-tags">Tags</label>
                 </div>
-                <input type="text" name="tag_string" id="tags"
+                <input type="text" name="tag_string" id="field-tags"
                        placeholder="Keywords that describe the theme of this dataset. Ex. geothermal, temperature"
-                       value="{{data['tag_string']}}" title="Keywords that describe the theme of this dataset"></input>
+                       value="{{data['tag_string']}}" title="Keywords that describe the theme of this dataset"
+                       data-module-tags="" data-module="autocomplete"
+                       data-module-source="/api/2/util/tag/autocomplete?incomplete=?" style="display: none;">
+
             </div>
 
             <div class="input-group">

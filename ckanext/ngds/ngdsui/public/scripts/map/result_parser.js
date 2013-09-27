@@ -204,6 +204,22 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
                             ]
 
+                        },
+                        {
+                            'tag': 'div',
+                            'attributes': {
+                                'class': 'clear-map-state'
+                            },
+                            'children': [
+                                {
+                                    'tag': 'button',
+                                    'attributes': {
+                                        'class': 'clear-map-state',
+                                        'title': 'Clear search'
+                                    }
+                                }
+                            ]
+
                         }
                     ]},
                 {
@@ -285,6 +301,17 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         alert("The Web Map Services you requested have been added to the map.");
     });
 
+    (function doc_ready_section() {
+        $(document).ready(function () {
+            $(".clear-map-state").on("click", function () {
+                ngds.util.clear_map_state();
+                ngds.Map.get_layer('drawnItems').clearLayers();
+                ngds.publish('Map.clear_rect', {});
+            });
+        });
+    })();
+
+
     $(".visibility-toggler button").click(function (ev) {
         ev.stopPropagation();
         var seq = Number($(ev.target).attr('data-seq'));
@@ -299,7 +326,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             ngds.util.state['hidden_t'][seq] = ngds.layer_map;
             for (var item_key in ngds.layer_map) {
                 ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[item_key]);
-                $(ev.target).addClass("toggled");
+                $(".visible").addClass("toggled");
             }
             ngds.util.state['map_features'] = [];
             return;
@@ -318,7 +345,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 delete ngds.util.state['hidden_t'][item_h_key];
             }
             delete ngds.util.state['hidden_t']
-            $(ev.target).removeClass("toggled");
+            $(".visible").removeClass("toggled");
         }
 
         // Show/hide All.

@@ -3,146 +3,143 @@
 {% set default_group = h.get_default_group() %}
 
 
-{% block title %} 
-	NGDS - National Geothermal Data System 
+{% block title %}
+NGDS - National Geothermal Data System
 {% endblock %}
 
 {% block links -%}
-  
+
 {% endblock -%}
 
 ## Include our css resources in this block
 
 
 {% block styles %}
-  <script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
 
-  <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom-min.js"></script>
+<script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom-min.js"></script>
 
-  <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
-  {{ h.get_master_style() }}
-  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
-  <!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
-  <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css" />
+<link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
+{{ h.get_master_style() }}
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css"/>
+<!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
+<link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css"/>
 {% block jquery_no_conflict %}
-     <script>
-     $(document).ready(function() {
-$.noConflict();
-     });
-   </script>
+<script>
+    $(document).ready(function () {
+        $.noConflict();
+    });
+</script>
 {% endblock %}
-        <script>
-               var ngds = ngds || (ngds = { });
-        </script>
-  <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
+<script>
+    var ngds = ngds || (ngds = { });
+</script>
+<script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
 
-   {% if h.is_development() %}
-   <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
-   <script type="text/javascript" src="/vendor/mustache/mustache.js"></script> 
-   <script type="text/javascript" src="/scripts/utils/utils.js"></script>
-   <script type="text/javascript" src="/scripts/main/ngds_pubsub.js"></script> 
-   <script type="text/javascript" src="/scripts/map/bounding_box.js"></script> 
-   <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
+{% if h.is_development() %}
+<script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
+<script type="text/javascript" src="/vendor/mustache/mustache.js"></script>
+<script type="text/javascript" src="/scripts/utils/utils.js"></script>
+<script type="text/javascript" src="/scripts/main/ngds_pubsub.js"></script>
+<script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
+<script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
+<script type="text/javascript" src="/scripts/scripts.js"></script>
 
-   {% else %}
-     <script type="text/javascript" src="/vendor/PubSubJS/pubsub.min.js"></script>
-   <script type="text/javascript" src="/vendor/mustache/mustache.min.js"></script> 
-   <script type="text/javascript" src="/scripts/utils/utils.min.js"></script>
-   <script type="text/javascript" src="/scripts/main/ngds_pubsub.min.js"></script> 
-   <script type="text/javascript" src="/scripts/map/bounding_box.min.js"></script> 
-   <script type="text/javascript" src="/scripts/notifications/handlers.min.js"></script>
-   {% endif %}
+
+{% else %}
+<script type="text/javascript" src="/vendor/PubSubJS/pubsub.min.js"></script>
+<script type="text/javascript" src="/vendor/mustache/mustache.min.js"></script>
+<script type="text/javascript" src="/scripts/utils/utils.min.js"></script>
+<script type="text/javascript" src="/scripts/main/ngds_pubsub.min.js"></script>
+<script type="text/javascript" src="/scripts/map/bounding_box.min.js"></script>
+<script type="text/javascript" src="/scripts/notifications/handlers.min.js"></script>
+<script type="text/javascript" src="/scripts/scripts.min.js"></script>
+{% endif %}
 
 {% endblock %}
 
 
 {%- block page -%}
 
-   <div id="top-level-container">
-  {#
-  Override the header on a page by page basis by extending this block. If
-  making sitewide header changes it is preferable to override the header.html
-  file.
-  #}
-  {%- block header %}
-  {% set active_tab = active_page %}  
+<div id="top-level-container">
+    {#
+    Override the header on a page by page basis by extending this block. If
+    making sitewide header changes it is preferable to override the header.html
+    file.
+    #}
+    {%- block header %}
+    {% set active_tab = active_page %}
     {% include "header.html" %}
-  {% endblock -%}
+    {% endblock -%}
 
-  {# The content block allows you to replace the content of the page if needed #}
-  <div id="body-container">
+    {# The content block allows you to replace the content of the page if needed #}
+    <div id="body-container">
 
-          {% block flash %}
-            {% set flash_messages = h.flash.pop_messages() | list %}
-            <div class="flash-messages">
-              {% for message in flash_messages %}
-                <div class="alert fade in {{ message.category }}">
-                  {{ h.literal(message) }}
+        {% block flash %}
+        {% set flash_messages = h.flash.pop_messages() | list %}
+        <div class="flash-messages">
+            {% for message in flash_messages %}
+            <div class="alert fade in {{ message.category }}">
+                {{ h.literal(message) }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                $(".flash-msg-close").click(function (ev) {
+                    $(ev.currentTarget.parentElement).fadeOut(500, function () {
+                        ev.currentTarget.parentElement.remove();
+                    });
+                });
+
+                $(".close").live('click', function (ev) { // Late binding...awesome! Live is deprecated. Replace with 'on' and event delegation.
+                    $(ev.currentTarget.parentElement).fadeOut(500, function () {
+                        ev.currentTarget.parentElement.remove();
+                    });
+                });
+            });
+        </script>
+        {% endblock %}
+
+
+        {% if active_page=="library" %}
+        <div id="content-container" style="min-height:600px;">
+            {% elif active_page=="home"%}
+            <div id="content-container" style="">
+                {% else %}
+                <div id="content-container">
+                    {% endif %}
+                    {%- block content %}
+
+
+                    {% endblock -%}
                 </div>
-              {% endfor %}
             </div>
 
-            <script>
-              $(document).ready(function() {
-                $(".flash-msg-close").click(function(ev){
-                  $(ev.currentTarget.parentElement).fadeOut(500,function() {
-                    ev.currentTarget.parentElement.remove();
-                  });
-                });
-             
-              $(".close").live('click',function(ev){ // Late binding...awesome! Live is deprecated. Replace with 'on' and event delegation.
-                  $(ev.currentTarget.parentElement).fadeOut(500,function() {
-                    ev.currentTarget.parentElement.remove();
-                  });
-                });
-              });
-            </script>
-          {% endblock %}
+            {#
+            Override the footer on a page by page basis by extending this block. If
+            making sitewide header changes it is preferable to override the footer.html-u
+            file.
+            #}
+            {%- block footer %}
+            {% include "footer.html" %}
+            {% endblock -%}
+        </div>
+        <div id="errors">
 
+        </div>
+        {%- endblock -%}
 
-  {% if active_page=="library" %}
-    <div id="content-container" style="min-height:600px;">
-      {% elif active_page=="home"%}
-    <div id="content-container" style="">
-      {% else %}
-    <div id="content-container">
-      {% endif %}
-  {%- block content %}
-
-     
-  {% endblock -%}
-    </div>
-  </div>
-
-  {#
-  Override the footer on a page by page basis by extending this block. If
-  making sitewide header changes it is preferable to override the footer.html-u
-  file.
-  #}
-  {%- block footer %}
-    {% include "footer.html" %}
-  {% endblock -%}
-  </div>
-  <div id="errors">
-
-  </div>
-{%- endblock -%}
-   
-  {% block scripts %}
-  {{ super() }}
-      {% resource 'base/main' %}
-    {% resource 'base/ckan' %}
-    {% if g.tracking_enabled %}
+        {% block scripts %}
+        {{ super() }}
+        {% resource 'base/main' %}
+        {% resource 'base/ckan' %}
+        {% if g.tracking_enabled %}
         {% resource 'base/tracking.js' %}
-    {% endif %}
-
-    {% if h.is_development() %}
-  <script type="text/javascript" src="/scripts/scripts.js"></script> 
-  {% else %}
-<script type="text/javascript" src="/scripts/scripts.min.js"></script> 
-  {% endif %}
+        {% endif %}
 
 
-  {% endblock %}
+        {% endblock %}
 
 

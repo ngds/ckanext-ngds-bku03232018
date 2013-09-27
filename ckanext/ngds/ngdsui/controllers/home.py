@@ -15,13 +15,13 @@ from sqlalchemy import desc
 from ckan.lib.navl.dictization_functions import unflatten
 from ckan.logic import (tuplize_dict, clean_dict, parse_params)
 
-
 import ckan.lib.dictization.model_dictize as model_dictize
 from ckanext.ngds.ngdsui.misc import helpers
 
 from pylons.decorators import jsonify
 
 import ckan.rating as rating
+
 
 class HomeController(NGDSBaseController):
     def render_index(self):
@@ -44,21 +44,21 @@ class HomeController(NGDSBaseController):
         activity_dicts = model_dictize.activity_list_dictize(activity_objects, context)
         c.recent_activity = activity_dicts
 
-
         c.image_files = helpers.get_home_images()
         helpers.get_contributors_list()
 
         return render('home/index_ngds.html')
 
 
-
-    def render_map(self, query=None):
+    def render_map(self):
 
         """
         This function is responsible for rendering the Map Search page.
         """
-        if query:
-            c.query = query
+        data = clean_dict(unflatten(tuplize_dict(parse_params(request.params))))
+        if data.get('query'):
+            c.query = data['query']
+
         return render('map/map.html')
 
     def render_library(self):
@@ -126,10 +126,12 @@ class HomeController(NGDSBaseController):
             query = data['query']
 
         if data['search-type'] == 'library':
-            return redirect('/organization/public?q=' + query)
+            return redirect(h.url_for(controller='package', action='search', q=query, _tags_limit=0))
         else:
-            return self.render_map(query)
-
+            return redirect(
+                h.url_for(controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map',
+                          query=query))
+            # return self.render_map(query)
 
     def render_partners(self):
         """
@@ -172,3 +174,15 @@ class HomeController(NGDSBaseController):
         This function is responsible for rendering the About page via the template defined at templates/info/master/about_master.html
         """
         return render('home/contributors.html')
+
+    def render_terms_of_use(self):
+        """
+        This function is responsible for rendering the T page via the template defined at templates/info/master/terms_of_use_master.html
+        """
+        return render('info/master/terms_of_use_master.html')
+
+    def render_contact(self):
+        """
+        This function is responsible for rendering the Contact page via the template defined at templates/info/master/contact_master.html
+        """
+        return render('info/master/contact_master.html')
