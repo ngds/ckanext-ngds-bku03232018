@@ -92,6 +92,19 @@
           border: none;
         }
       }
+
+      div.clear-map-state {
+        position: absolute;
+        right: 40px;
+
+        button.clear-map-state {
+          background-image: url(/assets/map_clear_rect.png);
+          width: 25px;
+          height: 25px;
+          border: none;
+        }
+      }
+
     }
 
     div.reader {
@@ -321,6 +334,11 @@
 
     fieldset {
       margin-top: 15px;
+
+      .field .btn-search {
+        .simple-input .field .btn-search
+      ;
+      }
     }
 
     input[type="text"] {
@@ -437,7 +455,7 @@
   margin-top: 0px !important;
 
   .leaflet-control-rectangle-clear {
-    background-image: url(/assets/map_draw_rect.png) !important;
+    background-image: url(/assets/map_clear_rect.png) !important;
     width: 26px;
     height: 25px;
     background-position: 50% 50%;
@@ -456,7 +474,7 @@
     background-image: url(/assets/map_fullscreen.png) !important;
     width: 26px;
     height: 25px;
-    background-position: 50% 50%;
+    border: none;
     display: block;
   }
 }

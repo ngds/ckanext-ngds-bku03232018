@@ -48,8 +48,10 @@ alternative_url
         {% else %}
           <div>
         {% endif %}
-        
+              {% set counter=0 %}
           {% for item in facet.fvalues %}
+              {% set counter=counter+1%}
+              {% if not (facet.type == 'dynamic_keywords' and facet.facet_field=='tags' and counter>25)%}
             {% set href = h.remove_url_param(facet.facet_field, item.name, extras=extras, alternative_url=alternative_url) if item.active else h.add_url_param(new_params={facet.facet_field: item.name}, extras=extras, alternative_url=alternative_url) %}
             
             {% set label = label_function(item) if label_function else h.truncate(item.display_name, 22) %}
@@ -62,12 +64,13 @@ alternative_url
             {% if facet.type == 'dynamic_keywords'%}
               <br>
             {% endif %}
+              {% endif %}
           {% endfor %}
 
-          {% if facet.type=='dynamic_keywords' %}
+          {% if facet.type=='dynamic_keywords' and facet.facet_field!='tags' %}
             <span  style="font-size:10px">
               {% if h.get_param_int('_%s_limit' % facet.facet_field) %}
-                <a href="{{ h.remove_url_param('_%s_limit' % facet.facet_field, replace=0, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show More {facet}').format(facet=facet.display_name) }}</a>
+                <a href="{{ h.remove_url_param('_%s_limit' % facet.facet_field, replace=0, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show More {facet}').format(facet=facet.display_name)  }}</a>
               {% else %}
                 <a href="{{ h.remove_url_param('_%s_limit' % facet.facet_field, extras=extras, alternative_url=alternative_url) }}" class="read-more">{{ _('Show Only Popular {facet}').format(facet=facet.display_name) }}</a>
               {% endif %}

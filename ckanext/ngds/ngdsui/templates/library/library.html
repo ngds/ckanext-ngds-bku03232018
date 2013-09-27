@@ -15,9 +15,9 @@
     <div class="library-search-bar">
         <p>Search</p>
         {% if g.central %}
-        <form action="{% url_for controller='package', action='search' %}" method="get">
+        <form action="{% url_for controller='package', action='search', _tags_limit=0 %}" method="get">
             {% else %}
-            <form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
+            <form action="{% url_for controller='organization', id=default_group , action='read', _tags_limit=0 %}" method="get">
                 {% endif %}
 
                 <fieldset>

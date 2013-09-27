@@ -146,8 +146,10 @@ var render_forms = function (value) {
                 $("[name='distributor_email']").val(dict['email']);
             });
         }
-
+        setTimeout(function() {window.onbeforeunload=null;;},500);
+        console.log(window.onbeforeunload);
         ngds.publish("Forms.reinitialize", {});
+
     }
     ;
 $('input[name="resource_format"]').on('change', function (ev) {
@@ -167,6 +169,7 @@ $('input[name="resource_format"]').on('change', function (ev) {
     }
 
     render_forms(value);
+    window.onbeforeunload = null;
 });
 
 $("#go-metadata").click(function () {
@@ -188,6 +191,6 @@ $("#go-metadata").click(function () {
 
 if (typeof continuation !== 'undefined') {
     for (var i = 0; i < continuation.length; i++) {
-        $("[name=" + continuation['field'] + "]").val(continuation['value']);
+        $("[name=" + continuation['field'] + "]").vall(continuation['value']);
     }
 }

@@ -19,15 +19,15 @@
         {% if pkg.organization %}
         {% set organization = pkg.organization.title or pkg.organization.name %}
         <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
-        <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name %}
+        <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name,_tags_limit=0 %}
             {% else %}
-        <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
+        <li>{% link_for _('Datasets'), controller='package', action='search',_tags_limit=0 %}</li>
         {% endif %}
-        <li
-        {{ self.breadcrumb_content_selected() }}>{% link_for dataset|truncate(30), controller='package', action='read',
+        <li>
+        {{ self.breadcrumb_content_selected() }}{% link_for dataset|truncate(30), controller='package', action='read',
         id=pkg.name %}</li>
         {% else %}
-        <li>{% link_for _('Datasets'), controller='package', action='search' %}</li>
+        <li>{% link_for _('Datasets'), controller='package', action='search',_tags_limit=0 %}</li>
         <li class="active"><a href="">{{ _('Create Dataset') }}</a></li>
         {% endif %}
         {% endblock %}

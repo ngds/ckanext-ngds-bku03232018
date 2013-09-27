@@ -167,7 +167,8 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("new_to_ngds", "/ngds/new_to_ngds", controller=home_controller, action="render_new_to_ngds")
         map.connect("faq", "/ngds/faq", controller=home_controller, action="render_faq")
         map.connect("contributors_list", "/ngds/contributors_list", controller=home_controller, action="render_contributors")
-
+        map.connect("contributors_list", "/ngds/terms_of_use", controller=home_controller, action="render_terms_of_use")
+        map.connect("contributors_list", "/ngds/contact", controller=home_controller, action="render_contact")
         return map
 
     implements(IConfigurer, inherit=True)
@@ -221,7 +222,6 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_url_for_file':helpers.get_url_for_file,
             'is_plugin_enabled':helpers.is_plugin_enabled,
             'username_for_id':helpers.username_for_id,
-            'get_formatted_date':helpers.get_formatted_date,
             'load_ngds_facets':helpers.load_ngds_facets,
             'get_ngdsfacets':helpers.get_ngdsfacets,
             'get_formatted_date':helpers.get_formatted_date,
@@ -250,7 +250,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_home_images':helpers.get_home_images,
             'get_filtered_items':helpers.get_filtered_items,
             'get_content_models':helpers.get_content_models,
-            'get_contributors_list':helpers.get_contributors_list
+            'get_contributors_list':helpers.get_contributors_list,
+            'parse_publication_date_range':helpers.parse_publication_date_range
         }
 
     implements(IPackageController, inherit=True)
@@ -306,12 +307,15 @@ class NgdsuiPlugin(SingletonPlugin):
 
     def before_search(self, search_params):
 
-        if 'fq' in search_params:
+        if 'fq' in search_params or 'q' in search_params:
             def repl(m):
                 datestr = m.group()
                 datestr = datestr.replace("\"", "")
                 return datestr
-            search_params['fq'] = re.sub('publication_date:".*"', repl, search_params['fq'])
+            if 'fq' in search_params:
+                search_params['fq'] = re.sub('publication_date:".*"', repl, search_params['fq'])
+            if 'q' in search_params:
+                search_params['q'] = re.sub('publication_date: ".*"', repl, search_params['q'])
 
 
         if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:
