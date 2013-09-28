@@ -166,6 +166,7 @@ var make_datastore_search_url = function() {
 
 var get_csv_fields = function() {
     var field_list;
+    console.log("{{ res.id }}");
     $.ajax({
         url:make_datastore_search_url(),
         data:{"resource_id":("{{ res.id }}")},

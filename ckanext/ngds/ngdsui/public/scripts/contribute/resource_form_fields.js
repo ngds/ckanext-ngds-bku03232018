@@ -554,22 +554,22 @@ ngds.form.data_service_form_fields = [
                 {
                     'tag': 'option',
                     'attributes': {
-                        'value': 'wms',
-                        'text': 'WMS'
+                        'value': 'OGC:WMS',
+                        'text': 'OGC:WMS'
                     }
                 },
                 {
                     'tag': 'option',
                     'attributes': {
-                        'value': 'wfs',
-                        'text': 'WFS'
+                        'value': 'OGC:WFS',
+                        'text': 'OGC:WFS'
                     }
                 },
                 {
                     'tag': 'option',
                     'attributes': {
-                        'value': 'wcs',
-                        'text': 'WCS'
+                        'value': 'OGC:WCS',
+                        'text': 'OGC:WCS'
                     }
                 },
                 {
@@ -619,7 +619,7 @@ ngds.form.data_service_form_fields = [
                 'attributes': {
                     'type': 'text',
                     'placeholder': 'A layer name that can be used to access this resource using the protocol selected above. Eg. A Geoserver WMS layer.',
-                    'name': 'layer',
+                    'name': 'layer_name',
                     'class': 'structured-input',
                     'title': 'Layer name if any for this resource'
                 }
