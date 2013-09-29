@@ -619,7 +619,7 @@ ngds.form.data_service_form_fields = [
                 'attributes': {
                     'type': 'text',
                     'placeholder': 'A layer name that can be used to access this resource using the protocol selected above. Eg. A Geoserver WMS layer.',
-                    'name': 'layer_name',
+                    'name': 'layer',
                     'class': 'structured-input',
                     'title': 'Layer name if any for this resource'
                 }
