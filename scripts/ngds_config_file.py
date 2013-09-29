@@ -45,7 +45,8 @@ node_params = [
     ("geoserver.workspace_name", "ngds","Geoserver Workspace Name"),
     ("geoserver.workspace_uri", "http://localhost:5000/ngds","Geoserver Workspace URI"),
     ("ngds.bulk_upload_dir", "/home/ngds/work/bulkupload/"),
-    ("ngds.client_config_file", "/home/ngds/pyenv2/src/ckanext-ngds/ckanclient.cfg")    
+    ("ngds.client_config_file", "/home/ngds/pyenv2/src/ckanext-ngds/ckanclient.cfg"),
+    ("ckan.site_logo", "/assets/nib.png")
 ]
 
 node_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query datastorer csw metadata geoserver ngdsui'
@@ -54,7 +55,8 @@ central_params = [
     ("ngds.deployment", "central"),
     ("ngds.home_images_dir", "assets"),
     ("ngds.logo_text", "CONTRIBUTING GEOTHERMAL DATA"),
-    ("ngds.home_images_config_path", "/home/ngds/pyenv2/src/ckanext-ngds/home_images.cfg")    
+    ("ngds.home_images_config_path", "/home/ngds/pyenv2/src/ckanext-ngds/home_images.cfg"),
+    ("ckan.site_logo", "/assets/logo.png")
 ]
 
 central_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query harvest spatial_harvest_metadata_api csw_harvester csw metadata geoserver ngdsui'

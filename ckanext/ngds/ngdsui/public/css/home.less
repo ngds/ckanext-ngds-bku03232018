@@ -1,194 +1,195 @@
 #data-watch-container {
-	.dialog-common('/assets/border_box_2.png');
-	margin-top:20px;
-	height:480px;
-	.lrb-border;
+  .dialog-common('/assets/border_box_2.png');
+  margin-top: 20px;
+  height: 480px;
+  .lrb-border;
 
-	p+div {
-			margin-top:30px;
-		}
+  p+div {
+    margin-top: 30px;
+  }
 
-	div {
-		margin-left:@lcontent-small-margin;
-//		width:260px;
-		margin-bottom:20px;
-		margin-top:20px;
+  div {
+    margin-left: @lcontent-small-margin;
+    //		width:260px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 
-		.a-style(@color) {
-			font-size:@font-regular;
-			font-family:"Arial";
-			font-weight:bold;
-			color:@color;
-			text-decoration:none;
-		}
+    .a-style(@color) {
+      font-size: @font-regular;
+      font-family: "Arial";
+      font-weight: bold;
+      color: @color;
+      text-decoration: none;
+    }
 
-		a {
-			.a-style(@light);
-		}
+    a {
+      .a-style(@light);
+    }
 
-		p {
-			font-style:italic;
-			margin-bottom:0px;
+    p {
+      font-style: italic;
+      margin-bottom: 0px;
 
-			a {
-				.a-style(@extra-light);
-			}
-		}
-	}
+      a {
+        .a-style(@extra-light);
+      }
+    }
+  }
 }
 
 div#showcase-find-map-container { // Showcase map find container begin
-	float:right;
-	margin-top:5px;
-	right:0px;
-    //margin-right:195px;
+  float: right;
+  margin-top: 5px;
+  right: 0px;
+  //margin-right:195px;
 
-	.map-find-common(@left,@right) {
-		top:10px;
-		width:320px;
-		height:175px;
-		position:relative;
-		left:@left;
-		right:@right;
-		display:inline-block;
-	}
+  .map-find-common(@left,@right) {
+    top: 10px;
+    width: 320px;
+    height: 175px;
+    position: relative;
+    left: @left;
+    right: @right;
+    display: inline-block;
+  }
 
-	.map-find-content-common(@left) {
-		display:inline;
-		width:405px;
-		position:absolute;
-		top:10px;
-		left:@left;
-		text-align:left;
+  .map-find-content-common(@left) {
+    display: inline;
+    width: 405px;
+    position: absolute;
+    top: 10px;
+    left: @left;
+    text-align: left;
 
-		img {
-			width:411px;
-			height:231px;
-		}
-	}
+    img {
+      width: 411px;
+      height: 231px;
+    }
+  }
 
-	#showcase-container {
-		position:relative;
-		top:0px;
-		right:40px;
+  #showcase-container {
+    position: relative;
+    top: 0px;
+    right: 40px;
 
-		.showcase-image {
-			width:842px;
-			height:440px;
-		}
-	}
+    .showcase-image {
+      width: 842px;
+      height: 440px;
+    }
+  }
 
+  div#find-in-library-container {
+    .map-find-common(70px,'');
 
-	div#find-in-library-container {
-		.map-find-common(70px,'');
+    a img {
+      border: 0px;
+    }
 
-		a img {
-			border:0px;
-		}
+  }
 
-	}
+  div#map-it-container {
+    .map-find-common('',40px);
 
-	div#map-it-container {
-		.map-find-common('',40px);
+    a img {
+      border: 0px;
+    }
+  }
 
-		a img {
-			border:0px;
-		}
-	}
+  .map-it-content {
+    .map-find-content-common(0px);
+  }
 
-	.map-it-content {
-		.map-find-content-common(0px);
-	}
+  .find-it-content {
+    .map-find-content-common(0px);
+  }
+}
 
-	.find-it-content {
-		.map-find-content-common(0px);
-	}
-} // End of showcase map find container
-
-
+// End of showcase map find container
 
 #search-datawatch-container {
-	position:relative;
-	display:inline-block;
-	line-height:16px;
-	top:0px;
-	left:0px;
+  position: relative;
+  display: inline-block;
+  line-height: 16px;
+  top: 0px;
+  left: 0px;
 
-	.menu-caption {
-		.left-container-item-common;
-		font-size:12px;
-		font-family:Arial;
-		line-height:16px;
-		margin-top:0px;
-		text-align:left;
-		color:#515151;
-	}
+  .menu-caption {
+    .left-container-item-common;
+    font-size: 12px;
+    font-family: Arial;
+    line-height: 16px;
+    margin-top: 0px;
+    text-align: left;
+    color: #515151;
+  }
 
-	@input-elem-margin-top:0px;
-	@input-elem-height:25px;
+  @input-elem-margin-top: 0px;
+  @input-elem-height: 25px;
 
-	#search-container {
-		height:140px;
-		.dialog-common('/assets/border_box_1.png');
-		.lrb-border;
+  #search-container {
+    height: 140px;
+    .dialog-common('/assets/border_box_1.png');
+    .lrb-border;
 
-		.search-bar {
-			width:162px;
-			margin-top:@input-elem-margin-top;
-			height:@input-elem-height;
-			background-color:#edeef0;
-			border:1px solid #cacaca;
-		}
+    .search-bar {
+      width: 162px;
+      margin-top: @input-elem-margin-top;
+      height: @input-elem-height;
+      background-color: #edeef0;
+      border: 1px solid #cacaca;
+    }
 
-        input[type="text"], input[type="select"], input[type="submit"] {
-			margin:@input-elem-margin-top;
-            height: 25px;
-            padding-top: 2px;
-		}
+    input[type="text"], input[type="select"], input[type="submit"] {
+      margin: @input-elem-margin-top;
+      height: 25px;
+      padding-top: 2px;
+    }
 
-        input[type="text"] {
-            margin-left:20px;
-        }
+    input[type="text"] {
+      margin-left: 20px;
+    }
 
-        input[type="submit"] {
-          width: 35px;
-          padding-left: 6px;
-        }
+    input[type="submit"] {
+      width: 35px;
+      padding-left: 6px;
+    }
 
-
-      select {
-          width:80px;
-          margin-bottom:0px;
-          padding:0px;
-          height: 25px !important;
-      }
-	}
+    select {
+      width: 80px;
+      margin-bottom: 0px;
+      padding: 0px;
+      height: 25px !important;
+    }
+  }
 }
 
 #slides {
-    height:400px;
-    width:840px;
-    line-height: 400px;
-    position:relative;
-    text-align: center;
-    //background:black;
-    //border: 1px dotted grey;
-    a{
-      width: 100%;
-      img{
-        vertical-align: middle;
-        overflow:hidden;
-        height:400px;
-        width:840px;
-      }
+  height: 400px;
+  width: 840px;
+  line-height: 400px;
+  position: relative;
+  text-align: center;
+  //background:black;
+  //border: 1px dotted grey;
+  a {
+    width: 100%;
+    img {
+      vertical-align: middle;
+      overflow: hidden;
+      height: 400px;
+      width: 840px;
     }
+  }
 }
-#slide-controls{
-    background-color:#fff;
-    z-index: 5000;
-    position: absolute;
-    margin: 5px;
-    a{
-      color: darkslategrey;
-    }
+
+#slide-controls {
+  background-color: #edeef0;
+  z-index: 5000;
+  position: absolute;
+  margin: 5px;
+  bottom: 0px;
+  right: 0px;
+  a {
+    color: #276795;
+  }
 }

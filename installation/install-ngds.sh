@@ -805,6 +805,22 @@ sudo chmod 755 $NGDS_SCRIPTS/geoserver.sh
 $NGDS_SCRIPTS/geoserver.sh start
 }
 
+function create_ngds_scripts() {
+
+cat > $NGDS_SCRIPTS/ngds-celeryd.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec $PYENV_DIR/bin/paster --plugin=ckan celeryd -c $CKAN_ETC/default/production.ini >>/var/log/apache2/ngds-celery.log 2>&1
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ngds-celeryd.conf
+cp $NGDS_SCRIPTS/ngds-celeryd.conf /etc/init/
+service ngds-celeryd start
+
+}
+
 
 function run1() {
     setup_env
@@ -842,6 +858,8 @@ function run() {
     setup_solr
 
     setup_geoserver
+    
+    create_ngds_scripts
 }
 
 

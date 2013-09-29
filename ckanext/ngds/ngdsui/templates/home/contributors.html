@@ -12,13 +12,13 @@
     <ul>
         <h5>{{_('Primary Contributors')}}</h5>
     {% for contributor in contributors_list if contributor.is_gold=='true' %}
-        <li><span><a href="{{contributor.url}}" target="_blank"><img src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></li>
+        <li><span><a href="{{contributor.url}}" target="_blank"><img class="contributor" src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></li>
     {% endfor %}
     </ul>
     <ul>
         <h5>{{_('Other Contributors')}}</h5>
     {% for contributor in contributors_list if not contributor.is_gold=='true' %}
-        <li><span><a href="{{contributor.url}}" target="_blank"><img src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></li>
+        <li><span><a href="{{contributor.url}}" target="_blank"><img class="contributor" src="{{contributor.logo_path}}"/> {{contributor.name}}</a></span></li>
     {% endfor %}
     </ul>
 </div>

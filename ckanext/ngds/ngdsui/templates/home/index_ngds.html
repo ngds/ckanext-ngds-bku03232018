@@ -47,11 +47,6 @@
         <!-- Placeholder for the flashy image showcase widget in the middle of the home page. -->
 
         <div>
-            <!--                  <div id="slides">
-                                  <div class="slide"><a href="http://www.energy.gov" target="_blank"> <img src="/assets/banner_image0.png" width="840" height="400"/></a></div>
-                                  <div class="slide"><a href="http://www.siemens.com" target="_blank"> <img src="/assets/banner_image1.png" width="840" height="400"/></a></div>
-                                  <div class="slide"><a href="http://www.USA.gov" target="_blank"> <img src="/assets/banner_image2.png" width="840" height="400"/></a></div>
-                              </div>-->
             <div id="slide-controls">
                 <a href="#"><i class="icon-arrow-left" id="prev"></i></a>
                 <a href="#" id="pause"><i class="icon-pause" id="pause-button"></i><i class="icon-play"
@@ -71,9 +66,9 @@
         <!-- <img src="/assets/banner_image.png" class="showcase-image" alt=""/> -->
     </div>
     <div id="map-it-container">
-        <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map' %}">
+        <a href="http://geothermal.smu.edu/" target="_blank">
                   <span class="map-it-content menu-item-large">
-                    <img src="/assets/map-it-new.png" class="star-it-pointer-img" alt="V"/>
+                    <img src="/assets/smu-link.png" class="star-it-pointer-img" alt="V"/>
                   </span>
         </a>
     </div>
@@ -85,7 +80,7 @@
             <a href="{% url_for controller='organization', id=default_group , action='read', _tags_limit=0 %}">
                 {% endif %}
                   <span class="find-it-content menu-item-large">
-                    <img src="/assets/find-in-library-new.png" class="star-it-pointer-img" alt="VS"/>
+                    <img src="/assets/find-in-library.png" class="star-it-pointer-img" alt="VS"/>
                   </span>
             </a>
     </div>
