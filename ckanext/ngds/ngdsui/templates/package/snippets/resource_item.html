@@ -123,12 +123,16 @@ var populate_geoserver_layer_name = function (dom_marker) {
                 'label': 'Geoserver Layer Name',
                 'name': 'gs_lyr_name',
                 'tag': 'input',
+                'top_classes': function () {
+                    return 'gs_lyr_name_marker'
+                },
                 'additional': function () {
                     return 'type=text id=gs_lyr_name_input'
                 },
                 'title': 'A layer name for this resource in the Geoserver.  Must begin with a letter ("a-Z").'
             }
         ]};
+    $(".gs_lyr_name_marker").remove();
     marker.append(Mustache.render(ngds.structured_form_template, gs_lyr_name_struct));
 };
 
