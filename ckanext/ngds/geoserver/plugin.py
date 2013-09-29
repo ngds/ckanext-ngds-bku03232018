@@ -119,23 +119,11 @@ class GeoserverPlugin(p.SingletonPlugin):
             ottoman = armchair.recline_ogc_wms(data_dict)
             p.toolkit.c.resource["wms_url"] = ottoman["url"]
             p.toolkit.c.resource["layer_name"] = ottoman["layer"].lower()
-
-        """
-        if resource.get("resource_format", {}) == "data-service" and resource.get("protocol", {}) == "OGC:WMS":
-            wms_url = resource.get("url", {})
-            layer_name = resource.get("layer", {})
-            p.toolkit.c.resource["wms_url"] = wms_url
-            p.toolkit.c.resource["layer_name"] = layer_name
-        elif data_dict.get("resource", {}).get("protocol", {}) == "OGC:WFS":
-            armchair = recline.GMLtoReclineJS()
+        elif resource.get("protocol", {}) == "OGC:WFS":
+            resourceURL = resource.get("url", {})
+            armchair = ogc_recline.WFSDataServiceToReclineJS(resourceURL)
             reclineJSON = armchair.MakeReclineJSON(data_dict)
             p.toolkit.c.resource["reclineJSON"] = reclineJSON
-        elif data_dict.get("resource", {}).get("protocol", {}) == "OGC:WMS":
-            armchair = recline.GMLtoReclineJS()
-            wms_url = armchair.makeGetWMSURL(data_dict)
-            p.toolkit.c.resource["wms_url"] = wms_url
-            p.toolkit.c.resource["layer_name"] = data_dict["resource"]["layer_name"].lower()
-        """
 
     # Render the jinja2 template which builds the recline preview
     def preview_template(self, context, data_dict):

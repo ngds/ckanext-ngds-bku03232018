@@ -39,6 +39,7 @@ class GMLtoReclineJS():
         url += "/" + dataStore.lower() + "/"
         url += "ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
         url += layer_name.lower()
+        print url
         return url
 
     def makeGetWMSURL(self, data_dict):

@@ -1,11 +1,8 @@
 from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
-
-#url = "http://geo.cei.psu.edu:8080/geoserver/wms"
-#layer = "cei:precip_2009_0"
-#version = "1.1.1"
-#srs = "EPSG:4326"
-#format = "image/png"
+from lxml import etree
+import re
+from osgeo import ogr
 
 class WMSDataServiceToReclineJS():
 
@@ -69,18 +66,14 @@ class WMSDataServiceToReclineJS():
     def hack_up_a_layer_name(self, data_dict):
         data = data_dict.get("resource")
         if data.get("layer_name"):
-            print data.get("layer_name")
             return data.get("layer_name")
         elif data.get("layer"):
-            print data.get("layer")
             return data.get("layer")
         elif data.get("layers"):
-            print data.get("layers")
             return data.get("layers")
         else:
             try:
                 layer_list = self.get_layers()
-                print layer_list[0]
                 return layer_list[0]
             except:
                 return "Sorry, can't find a layer!"
@@ -101,5 +94,87 @@ class WFSDataServiceToReclineJS():
         self.title = self.wfs.identification.title
         self.abstract = self.wfs.identification.abstract
 
-#a = DataServiceToReclineJS(url, version)
-#print a.get_service_url(layer)
+    def get_layer_list(self):
+        return list(self.wfs.contents)
+
+    def get_single_layer(self, layer):
+        theseLayers = self.get_layer_list()
+        return [i for i in theseLayers if i == layer]
+
+    def get_service_operations(self):
+        thisWFS = self.wfs.operations
+        return [op.name for op in thisWFS]
+
+    def get_GET_feature_operation(self):
+        operations = self.get_service_operations()
+        return [i for i in operations if i.endswith("GetFeature")][0]
+
+    def get_service_methods(self, service_operation):
+        thisWFS = self.wfs
+        thisOperation = service_operation
+        return thisWFS.getOperationByName(thisOperation).methods
+    #
+    def get_service_method_URL(self, service_operation):
+        thisWFS = self.wfs
+        thisOperation = service_operation
+        return thisWFS.getOperationByName('{http://www.opengis.net/wfs}GetFeature').methods['{http://www.opengis.net/wfs}Get']['url']
+
+    def get_service_format_options(self, service_operation):
+        thisWFS = self.wfs
+        thisOperation = service_operation
+        return thisWFS.getOperationByName(thisOperation).formatOptions
+
+    def get_GML_format_option(self, service_operation):
+        formatOptions = self.get_service_format_options(service_operation)
+        return [i for i in formatOptions if i.endswith("GML2")][0]
+
+    def get_response(self, layer):
+        thisLayer = self.get_single_layer(layer)
+        thisOperation = self.get_GET_feature_operation()
+        thisGML = self.get_GML_format_option(thisOperation)
+        response = self.wfs.getfeature(typename=thisLayer)
+        return response
+
+    def hack_up_a_layer_name(self, data_dict):
+        data = data_dict.get("resource")
+        if data.get("layer_name"):
+            return data.get("layer_name")
+        elif data.get("layer"):
+            return data.get("layer")
+        elif data.get("layers"):
+            return data.get("layers")
+        else:
+            try:
+                layer_list = self.get_layers()
+                return layer_list[0]
+            except:
+                return "Sorry, can't find a layer!"
+
+    def make_recline_url(self, data_dict):
+        data = data_dict
+        thisLayer = self.hack_up_a_layer_name(data).lower()
+        getMethod = self.get_GET_feature_operation()
+        baseURL = self.get_service_method_URL(getMethod)
+        baseURL += "&service=WFS&version=1.0.0&typeName="
+        baseURL += thisLayer
+        return baseURL
+
+    def MakeReclineJSON(self, data_dict):
+        json_obj = []
+        attribs = []
+        data = data_dict
+        gml_wfs = self.make_recline_url(data)
+        source = ogr.Open(gml_wfs)
+        print source
+        layer = source.GetLayerByIndex(0)
+        print layer
+
+        for feature in layer:
+            json_obj.append(feature.ExportToJson(as_object=True))
+
+        for i in json_obj:
+            properties = i['properties']
+            properties.update(dict(geometry=i['geometry']))
+            attribs.append(properties)
+
+        return attribs
