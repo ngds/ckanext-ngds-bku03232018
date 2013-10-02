@@ -219,6 +219,10 @@ def load_ngds_facets():
     """
 
     # Return the loaded facets from global context if available. This will avoid unnecssary reading of config file everytime during search.
+
+    loaded_facets = None
+    facets_dict = None
+
     try:
         if g.loaded_facets:
             return g.loaded_facets

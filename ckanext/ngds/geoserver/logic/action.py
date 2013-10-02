@@ -4,6 +4,7 @@ from ckanext.ngds.geoserver.model.Geoserver import Geoserver
 from ckanext.ngds.geoserver.model.Layer import Layer
 from ckan.plugins import toolkit
 from ckanext.ngds.env import ckan_model
+from owslib.wms import WebMapService
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -77,19 +78,10 @@ def unpublish(context,data_dict):
 
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)
-        # layer_name = resource.get('layer_name')
 
     geoserver = Geoserver.from_ckan_config()
 
     package_id = ckan_model.Resource.get(resource_id).resource_group.package_id
-    # package = ckan_model.Package.get(package_id)
-
-    # for resource in package.resources:
-    #     if 'parent_resource' in resource.extras and 'ogc_type' in resource.extras:
-    #         extras = resource.extras
-    #         if extras['parent_resource'] == resource_id:
-    #             layer_name = extras['layer_name']
-    #             break
 
     def unpub():
         if geoserver_layer_name is not None:
@@ -104,3 +96,28 @@ def unpublish(context,data_dict):
     layer.remove()
 
     return True
+
+def GETLayerNameWMS(context, data_dict, version="1.1.1"):
+
+    data = data_dict
+    version = version
+    thisData = data.get("resource")
+    thisURL = thisData.get("url")
+    thisWMS = WebMapService(thisURL, version)
+
+    def get_layer_list():
+        return list(thisWMS.contents)
+
+    def get_first_layer():
+        theseLayers = get_layer_list()
+        return theseLayers[0]
+
+    try:
+        if thisData.get("layer_name"):
+            return thisData.get("layer_name")
+        elif thisData.get("layer"):
+            return thisData.get("layer")
+        else:
+            return thisData.get("layers")
+    except:
+        return get_first_layer()

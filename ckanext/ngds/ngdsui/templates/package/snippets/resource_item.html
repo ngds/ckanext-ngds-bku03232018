@@ -170,7 +170,6 @@ var make_datastore_search_url = function() {
 
 var get_csv_fields = function() {
     var field_list;
-    console.log("{{ res.id }}");
     $.ajax({
         url:make_datastore_search_url(),
         data:{"resource_id":("{{ res.id }}")},
@@ -225,7 +224,6 @@ $(document).ready(function() {
 
                 publish_as_ogc(lyr_name_val, resource_id, package_id, lat_field_val, lng_field_val);
         });
-
         });
   }
 

@@ -16,6 +16,16 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
     $(".map-search-results").prepend($("<div/>", {"class": clazz, "id": "results"}));
 
+    var hack_up_a_layer_name = function(a){
+        $.ajax({
+            url:'/api/action/geoserver_proxy_layer_name',
+            'type':'POST',
+            'data':JSON.stringify({
+
+            })
+        })
+    };
+
     var wms_mapping = {
 
     };

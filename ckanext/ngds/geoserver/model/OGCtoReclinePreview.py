@@ -1,7 +1,5 @@
 from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
-from lxml import etree
-import re
 from osgeo import ogr
 
 class WMSDataServiceToReclineJS():
