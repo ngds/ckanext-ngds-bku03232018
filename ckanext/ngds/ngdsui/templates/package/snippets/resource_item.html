@@ -144,12 +144,12 @@ var publish_as_ogc = function(gs_lyr_name, resource_id, package_id, lat_field, l
         url:'/api/action/geoserver_publish_layer',
         'type':'POST',
         'data':JSON.stringify({
-        gs_lyr_name:gs_lyr_name,
-        resource_id:resource_id,
-        package_id:package_id,
-        col_geography:"geometry",
-        col_latitude:lat_field,
-        col_longitude:lng_field
+            gs_lyr_name:gs_lyr_name,
+            resource_id:resource_id,
+            package_id:package_id,
+            col_geography:"geometry",
+            col_latitude:lat_field,
+            col_longitude:lng_field
         }),
         success:function(response){
             window.alert("This resource has now been published as an OGC service.");
@@ -181,7 +181,6 @@ var get_csv_fields = function() {
 };
 
 var make_field_list = function(data){
-    console.log(data);
     var field_list = [];
     var index;
     var fields = data.result.fields;

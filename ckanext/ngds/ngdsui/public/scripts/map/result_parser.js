@@ -16,16 +16,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
     $(".map-search-results").prepend($("<div/>", {"class": clazz, "id": "results"}));
 
-    var hack_up_a_layer_name = function(a){
-        $.ajax({
-            url:'/api/action/geoserver_proxy_layer_name',
-            'type':'POST',
-            'data':JSON.stringify({
-
-            })
-        })
-    };
-
     var wms_mapping = {
 
     };
@@ -37,11 +27,11 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             if (resource.protocol === 'OGC:WMS') {
                 is_wms_present = true;
                 wms_mapping[results[i].id] = wms_mapping[results[i].id] || ( wms_mapping[results[i].id] = [ ] );
-                var layer_name = resource.layer_name;
+
                 wms_mapping[results[i].id].push({
                     'id': resource.id,
                     'url': resource.url.split('?')[0],
-                    'layer': layer_name,
+                    'layer': 'undefined',
                     'name': resource.description
                 });
             }
@@ -285,8 +275,27 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
     var inc = inc || (inc = 0);
 
+    var hack_up_a_layer_name = function(){
+        var resource_id = id;
+        $.ajax({
+            url:'/api/action/geoserver_proxy_layer_name',
+            type:'POST',
+            data:JSON.stringify({
+                'resource_id':resource_id
+            }),
+            success: function(data){
+                this_layer = layer_name_callback(data);
+            }
+        });
+    };
+
+    var layer_name_callback = function(data){
+        return data.result;
+    };
+
     $(".wms").click(function (ev) {
         var id = ev.currentTarget.id;
+        console.log(id);
         var label_prefix = '';
         try {
             var label_prefix = $(ev.currentTarget).siblings().find("img").next()[0].textContent + " : ";

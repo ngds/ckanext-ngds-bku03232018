@@ -99,9 +99,9 @@ def unpublish(context,data_dict):
 
 def GETLayerNameWMS(context, data_dict, version="1.1.1"):
 
-    data = data_dict
-    version = version
-    thisData = data.get("resource")
+    resource_id = data_dict.get("resource_id")
+    file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
+    thisData = file_resource
     thisURL = thisData.get("url")
     thisWMS = WebMapService(thisURL, version)
 
