@@ -194,8 +194,9 @@ def parse_publication_date_range(range):
     if range:
         range = range.split(' TO ')
 
-        return ' To '.join(map(lambda x: iso8601.parse_date(x.strip()).strftime("%b %d,%Y") if x.strip() != "*" else "*",
-                               map(lambda x: x.strip(' ]').strip('['), range)))
+        return ' To '.join(
+            map(lambda x: iso8601.parse_date(x.strip()).strftime("%b %d,%Y") if x.strip() != "*" else "*",
+                map(lambda x: x.strip(' ]').strip('['), range)))
     return None
 
 
@@ -728,6 +729,27 @@ def get_filtered_items(request_params):
 
 def get_content_models():
     return logic.get_action('contentmodel_list_short')()
+
+
+def get_content_models_for_ui():
+    cm_names = filter(lambda x: {x['title'], x['uri']}, logic.get_action('contentmodel_list_short')())
+    return cm_names
+
+
+def get_content_models_versions_for_ui():
+    cm_names = filter(lambda x: {x['title'], x['uri']}, logic.get_action('contentmodel_list_short')())
+    return cm_names
+
+
+def get_content_model_version_for_uri(uri):
+    print uri
+    cm_list = logic.get_action('contentmodel_list_short')()
+    for cm in cm_list:
+        cm_versions = cm['versions']
+        cm_v = filter(lambda x: x if x['uri'] == uri else None, cm_versions)
+        if len(cm_v)>0:
+            return cm_v[0]['version']
+    return None
 
 
 def get_contributors_list():

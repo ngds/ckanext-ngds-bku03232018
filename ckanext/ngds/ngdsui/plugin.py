@@ -1,5 +1,5 @@
 from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, IFacets, \
-    ITemplateHelpers, IPackageController, IConfigurable, IActions
+    ITemplateHelpers, IPackageController, IConfigurable, IActions, IDatasetForm
 
 from ckan.lib.base import (model, g)
 
@@ -251,7 +251,9 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_filtered_items':helpers.get_filtered_items,
             'get_content_models':helpers.get_content_models,
             'get_contributors_list':helpers.get_contributors_list,
-            'parse_publication_date_range':helpers.parse_publication_date_range
+            'parse_publication_date_range':helpers.parse_publication_date_range,
+            'get_content_models_for_ui':helpers.get_content_models_for_ui,
+            'get_content_model_version_for_uri':helpers.get_content_model_version_for_uri
         }
 
     implements(IPackageController, inherit=True)
@@ -369,4 +371,86 @@ class NgdsuiPlugin(SingletonPlugin):
         if ngds_facets:
             facets_dict = ngds_facets
 
-        return facets_dict    
+        return facets_dict
+
+    implements(IDatasetForm)
+
+    def package_types(self):
+        return ['dataset']
+
+    def is_fallback(self):
+        return False
+
+    def package_form(self):
+        return 'package/new_package_form.html'
+
+    def search_template(self):
+        return 'package/search.html'
+
+    def read_template(self):
+        return 'package/read.html'
+
+    def new_template(self):
+        return 'package/new.html'
+
+    def edit_template(self):
+        return 'package/edit.html'
+
+    def setup_template_variables(self, context, data_dict):
+        pass
+
+    def create_package_schema(self):
+        def res_v_test(key,data,errors,context):
+            print "Validating resources : "
+            print data
+            return data[key]
+        return {
+            'id': [],
+            'type': [],
+            'url': [],
+            'name': [],
+            'source_type': [],
+            'title': [],
+            'notes': [],
+            'owner_org': [],
+            'organization': [],
+            'frequency': [],
+            'state': [],
+            'config': [],
+            'extras': [res_v_test],
+            'resources':[res_v_test]
+        }
+
+    def update_package_schema(self):
+        def res_v_test(key,value):
+            print "Validating resources : "
+            print data
+            from ckan.lib.navl.dictization_functions import Invalid
+            if True:
+                errors.get(("resources",)).append({"url":["Some error"]})
+
+
+        return {
+            'id': [],
+            'type': [],
+            'url': [],
+            'name': [],
+            'source_type': [],
+            'title': [],
+            'notes': [],
+            'owner_org': [],
+            'organization': [],
+            'frequency': [],
+            'state': [],
+            'config': [],
+            'extras': [res_v_test],
+            'resources': [res_v_test]
+        }
+
+    def show_package_schema(self):
+        pass
+
+    # def check_data_dict(self,data_dict,schema):
+    #     from ckan.lib.navl.dictization_functions import Invalid
+    #     raise Invalid("Some test error.")
+

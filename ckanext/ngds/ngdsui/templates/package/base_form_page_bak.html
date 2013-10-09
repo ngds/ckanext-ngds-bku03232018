@@ -1,37 +1,17 @@
 {% extends "package/base.html" %}
 
-{% block primary %}
+{{ c.pkg_dict }}
 
+{% block primary %}
 {% if c.pkg_dict %}
 {% set pkg_dict = c.pkg_dict %}
 {% endif %}
-
-{% if pkg_dict and pkg_dict.state=='draft' %}
-    {% set is_draft = true %}
-{% else %}
-    {% set is_draft = false %}
-{% endif %}
-
-
-
-{% if pkg_dict and pkg_dict.name and not is_draft %}
+{% if pkg_dict and pkg_dict.name %}
 {{super()}}
 {% else %}
 <div class="primary expanded"></div>
 {% block primary_content %}
-
-{% if c.pkg_dict %}
-    {% set pkg_dict = c.pkg_dict %}
-{% endif %}
-
-
-{% if pkg_dict and pkg_dict.state=='draft' %}
-    {% set is_draft = true %}
-{% else %}
-    {% set is_draft = false %}
-{% endif %}
-
-{% if pkg_dict and pkg_dict.name and not is_draft %}
+{% if pkg_dict and pkg_dict.name %}
 <section class="module">
     {% else %}
     <section class="module dataset_create">
@@ -48,19 +28,7 @@
 
 
     {% block secondary %}
-
-    {% if c.pkg_dict %}
-        {% set pkg_dict = c.pkg_dict %}
-    {% endif %}
-
-    {% if pkg_dict and pkg_dict.state=='draft' %}
-        {% set is_draft = true %}
-    {% else %}
-        {% set is_draft = false %}
-    {% endif %}
-
-    {% if pkg_dict and pkg_dict.name and not is_draft %}
-
+    {% if pkg_dict and pkg_dict.name %}
     {{super()}}
     {% endif %}
     {% endblock %}
