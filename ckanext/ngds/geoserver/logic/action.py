@@ -97,7 +97,7 @@ def unpublish(context,data_dict):
 
     return True
 
-def GETLayerNameWMS(context, data_dict, version="1.1.1"):
+def GETLayerNameWMS(data_dict, version="1.1.1"):
 
     resource_id = data_dict.get("resource_id")
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
@@ -112,12 +112,15 @@ def GETLayerNameWMS(context, data_dict, version="1.1.1"):
         theseLayers = get_layer_list()
         return theseLayers[0]
 
-    try:
-        if thisData.get("layer_name"):
-            return thisData.get("layer_name")
-        elif thisData.get("layer"):
-            return thisData.get("layer")
-        else:
-            return thisData.get("layers")
-    except:
+    layers = list(thisWMS.contents)
+
+    given_layer = thisData.get("layer_name")
+    if not given_layer:
+        thisData.get("layer")
+    if not given_layer:
+        thisData.get("layers")
+
+    if given_layer in layers:
+        return given_layer
+    else:
         return get_first_layer()
