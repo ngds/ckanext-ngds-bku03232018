@@ -8,7 +8,12 @@
 
 {% block subtitle %}{{ _('Add data to the dataset') }}{% endblock %}
 
-{% block form %}{% snippet 'package/snippets/resource_form.html', data=data, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, allow_upload=logged_in %}{% endblock %}
+{% block form %}
+        {% if pkg_dict and data %}
+            {% set data = h.get_full_resource_dict(data,pkg_dict) %}
+        {% endif %}
+{% snippet 'package/snippets/resource_form.html', data=data, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, allow_upload=logged_in %}
+{% endblock %}
 
 {% block secondary_content %}
   {% if pkg_dict and pkg_dict.state != 'draft' %}

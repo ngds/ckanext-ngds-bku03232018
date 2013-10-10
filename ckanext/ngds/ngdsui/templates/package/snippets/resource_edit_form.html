@@ -10,7 +10,6 @@
 
 {% block basic_fields %}
         {{super()}}
-
         {% if resource['resource_format'] == 'structured' %}
 
                {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
@@ -56,6 +55,11 @@
                     {{ form.input('distributor', id='field-distributor', label=_('Distributor'), value=data.distributor, error=errors.distributor, classes=['control-full', 'control-large']) }}
 
                 </div><!-- End of additional resource fields -->
+
+
+        {% elif resource['resource_format'] == 'structured' %}
+
+
         {% else %}
                 <div class="additional-resource-fields">
 

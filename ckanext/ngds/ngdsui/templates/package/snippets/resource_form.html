@@ -11,7 +11,6 @@
 {% endmacro %}
 
 {% block basic_fields_data %}
-
         <div class="controls"{% if allow_upload %} data-module="resource-upload-field"{% endif %}>
         {#
         This block uses a slightly odd pattern. Unlike the rest of the radio
@@ -19,26 +18,48 @@
         after the input. This enables us to style the label based on the state
         of the radio using css. eg. input[type=radio]+label {}
         #}
-
         <i class="ckan-icon ckan-icon-link-file"></i>
-        <input id="field-resource-type-structured" type="radio" name="ngds_resource_type" value="structured" {{type_checked('structured')}}/>
+        <input id="field-resource-type-structured" type="radio" name="resource_format" value="structured" {{type_checked('structured')}}/>
         <label class="radio inline" for="field-resource-type-structured">{{ _('Structured Resource') }}</label>
 
         <i class="ckan-icon ckan-icon-link-plugin"></i>
-        <input id="field-resource-type-unstructured" type="radio" name="ngds_resource_type" value="unstructured" {{type_checked('unstructured')}}/>
+        <input id="field-resource-type-unstructured" type="radio" name="resource_format" value="unstructured" {{type_checked('unstructured')}}/>
         <label class="radio inline" for="field-resource-type-unstructured">{{ _('Unstructured Resource') }}</label>
 
         <i class="ckan-icon ckan-icon-link-plugin"></i>
-        <input id="field-resource-type-offline" type="radio" name="ngds_resource_type" value="offline" {{type_checked('offline')}}/>
+        <input id="field-resource-type-offline" type="radio" name="resource_format" value="offline-resource" {{type_checked('offline-resource')}}/>
         <label class="radio inline" for="field-resource-type-offline">{{ _('Offline Resource') }}</label>
 
         <i class="ckan-icon ckan-icon-link-plugin"></i>
-        <input id="field-resource-type-data-service" type="radio" name="ngds_resource_type" value="data-service" {{type_checked('data-service')}}/>
+        <input id="field-resource-type-data-service" type="radio" name="resource_format" value="data-service" {{type_checked('data-service')}}/>
         <label class="radio inline" for="field-resource-type-data-service">{{ _('Data Service') }}</label>
 
 
         </div>
         </div>
 {% endblock %}
+{% block basic_fields %}
+{{super()}}
+        <div class="additional-resource-fields">
+
+            {% if errors or resource %}
+
+                {% if resource and resource.resource_format == 'structured' %}
+
+                {% elif resource and resource.resource_format == 'unstructured' %}
+
+                {% elif resource and resource.resource_format == 'offline-resource' %}
+
+                    {{ form.markdown('ordering_procedure', id='field-ordering-procedure', label=_('Ordering Procedure'), placeholder=_('Indicate how a person can go about obtaining this resource.'), value=data.ordering_procedure, error=errors.ordering_procedure) }}
+
+                {% elif resource and resource.resource_format == 'data-service' %}
+
+                {% endif %}
+            {% endif %}
+
+        </div>
+{% endblock %}
+
 
 {% block basic_fields_format %}{% endblock %}
+

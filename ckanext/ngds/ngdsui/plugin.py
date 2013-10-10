@@ -10,7 +10,7 @@ from ckanext.ngds.ngdsui import authorize
 import ckanext.datastore.logic.auth as datastore_auth
 import ckanext.ngds.contentmodel.model.contentmodels as contentmodels
 import ckanext.ngds.contentmodel.logic.action as contentmodel_action
-import ckanext.ngds.logic.action.validate as validate_action
+import ckanext.ngds.logic.action.validate as ngds_validator
 
 from pylons import config as ckan_config
 
@@ -193,8 +193,8 @@ class NgdsuiPlugin(SingletonPlugin):
         'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
         'contentmodel_checkBulkFile':contentmodel_action.contentmodel_checkBulkFile,
         #'create_resource_document_index': lib_action.create_resource_document_index
-        'validate_resource': validate_action.validate_resource,
-        'validate_dataset_metadata':validate_action.validate_dataset_metadata
+        # 'validate_resource': validate_action.validate_resource,
+        # 'validate_dataset_metadata':validate_action.validate_dataset_metadata
         }
 
     implements(IAuthFunctions, inherit=True)
@@ -253,7 +253,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_contributors_list':helpers.get_contributors_list,
             'parse_publication_date_range':helpers.parse_publication_date_range,
             'get_content_models_for_ui':helpers.get_content_models_for_ui,
-            'get_content_model_version_for_uri':helpers.get_content_model_version_for_uri
+            'get_content_model_version_for_uri':helpers.get_content_model_version_for_uri,
+            'get_full_resource_dict':helpers.get_full_resource_dict
         }
 
     implements(IPackageController, inherit=True)
@@ -400,57 +401,11 @@ class NgdsuiPlugin(SingletonPlugin):
         pass
 
     def create_package_schema(self):
-        def res_v_test(key,data,errors,context):
-            print "Validating resources : "
-            print data
-            return data[key]
-        return {
-            'id': [],
-            'type': [],
-            'url': [],
-            'name': [],
-            'source_type': [],
-            'title': [],
-            'notes': [],
-            'owner_org': [],
-            'organization': [],
-            'frequency': [],
-            'state': [],
-            'config': [],
-            'extras': [res_v_test],
-            'resources':[res_v_test]
-        }
+        pass
 
     def update_package_schema(self):
-        def res_v_test(key,value):
-            print "Validating resources : "
-            print data
-            from ckan.lib.navl.dictization_functions import Invalid
-            if True:
-                errors.get(("resources",)).append({"url":["Some error"]})
-
-
-        return {
-            'id': [],
-            'type': [],
-            'url': [],
-            'name': [],
-            'source_type': [],
-            'title': [],
-            'notes': [],
-            'owner_org': [],
-            'organization': [],
-            'frequency': [],
-            'state': [],
-            'config': [],
-            'extras': [res_v_test],
-            'resources': [res_v_test]
-        }
+        package_update_schema = ngds_validator.ngds_package_schema()
+        return package_update_schema
 
     def show_package_schema(self):
         pass
-
-    # def check_data_dict(self,data_dict,schema):
-    #     from ckan.lib.navl.dictization_functions import Invalid
-    #     raise Invalid("Some test error.")
-
