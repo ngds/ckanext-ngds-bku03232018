@@ -54,6 +54,29 @@
 
                 {% if resource and resource.resource_format == 'structured' %}
 
+                    {% if "content_model_uri" in errors %}
+                    {% set cm_error = true %}
+                {% endif %}
+
+                {% set content_models = h.get_content_models_for_ui() %}
+
+                 <div class="control-group{% if protocol_error %} error{% endif %} control-medium" data-cm>
+                        <label class="control-label" for="field-content-model">{{ _("Content Model") }}</label>
+                        <div class="controls">
+                            <select id="field-content-model" name="content_model_uri" data-module="autocomplete">
+                                <option value="none"{{ is_selected("none","content_model_uri",data)}}>None</option>
+                               {% for cm in content_models %}
+                                <option value="{{cm['uri']}}"{{ is_selected(cm['uri'],"content_model_uri",data)}}>{{cm['title']}}</option>
+                               {% endfor %}
+                            </select>
+                            {% if cm_error %}
+                                {% for error in errors['content_model_uri'] %}
+                                    <span class="error-block">{{error}}</span>
+                                {% endfor %}
+                             {% endif %}
+                        </div>
+                    </div>
+
                 {% elif resource and resource.resource_format == 'unstructured' %}
 
                     {% if data.distributor %}
@@ -65,7 +88,7 @@
                 {% endcall %}
 
                 {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':distributor['name'],'data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
-                {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. economy, mental health, government'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
+                {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
                 {% elif resource and resource.resource_format == 'offline-resource' %}
 
@@ -74,7 +97,7 @@
                 {% elif resource and resource.resource_format == 'data-service' %}
 
                 {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
-                {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. economy, mental health, government'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
+                {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
                 {% if "protocol" in errors %}
                     {% set protocol_error = true %}
@@ -101,7 +124,7 @@
                         </div>
                     </div>
 
-
+                {{ form.input('layer', id='field-layer', label=_('Layer'), value=data.layer, error=errors.layer, classes=['control-full', 'control-full']) }}
                 {% endif %}
             {% endif %}
 

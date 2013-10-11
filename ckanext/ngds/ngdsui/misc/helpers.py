@@ -732,7 +732,8 @@ def get_content_models():
 
 
 def get_content_models_for_ui():
-    cm_names = filter(lambda x: {x['title'], x['uri']}, logic.get_action('contentmodel_list_short')())
+    list = logic.get_action('contentmodel_list_short')()
+    cm_names = map(lambda x: {"title": x['title'], "uri": x['uri']}, list)
     return cm_names
 
 
@@ -741,15 +742,19 @@ def get_content_models_versions_for_ui():
     return cm_names
 
 
-def get_content_model_version_for_uri(uri):
-    print uri
-    cm_list = logic.get_action('contentmodel_list_short')()
-    for cm in cm_list:
-        cm_versions = cm['versions']
-        cm_v = filter(lambda x: x if x['uri'] == uri else None, cm_versions)
-        if len(cm_v)>0:
-            return cm_v[0]['version']
-    return None
+def get_content_models_for_ui_action(context, data_dict):
+    return get_content_models_for_ui()
+
+
+def get_content_model_versions_for_uri(uri):
+    content_models = logic.get_action('contentmodel_list_short')()
+    content_model = filter(lambda x: True if x['uri'] == uri else False, content_models)
+    return content_model[0]['versions']
+
+
+def get_content_model_version_for_uri_action(context, data_dict):
+    uri = data_dict['cm_uri']
+    return get_content_model_versions_for_uri(uri)
 
 
 def get_contributors_list():
@@ -784,10 +789,11 @@ def get_contributors_list():
 
     return g.contributors_list
 
-def get_full_resource_dict(data,pkg_dict):
+
+def get_full_resource_dict(data, pkg_dict):
     try:
-        resources = [ item for item in pkg_dict['resources'] if data['id'] == item['id'] ]
-        if resources and len(resources)>0:
+        resources = [item for item in pkg_dict['resources'] if data['id'] == item['id']]
+        if resources and len(resources) > 0:
             return resources[0]
     except(Exception):
         pass

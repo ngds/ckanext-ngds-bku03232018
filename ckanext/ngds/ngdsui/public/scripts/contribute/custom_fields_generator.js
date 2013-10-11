@@ -1,16 +1,226 @@
 $(document).ready(function () {
+    ngds.util.state['prev_resource_type'] = $("[name=resource_format]:checked").val();
+    ngds.util.state['versions'] = {};
+    ngds.util.state['versions_dom'] = {};
 
-    $("[name=resource_format]").on('change', function (ev) {
-        var resource_type = ev.currentTarget.value;
+    (function init_memorizer() {
+        ngds.memorizer = (function () {
 
+            var memory = {
+
+            };
+
+            var memorize = function (master_key, field_key, value) {
+                if (typeof memory[master_key] === 'undefined') {
+                    memory[master_key] = {};
+                }
+                memory[master_key][field_key] = value;
+            };
+
+            var remind = function (master_key, field_key) {
+                if (typeof memory[master_key] === 'undefined') {
+                    return '';
+                }
+                if (typeof memory[master_key][field_key] === 'undefined') {
+                    return '';
+                }
+
+                return memory[master_key][field_key];
+            };
+
+            return {
+                'memorize': memorize,
+                'remind': remind
+            }
+        })();
+    })();
+
+    ngds.memorize_additional_fields = function (master_key) {
+        $(".additional-resource-fields input").each(function () {
+            if ($(this).attr("class") === "select2-input") {
+                return;
+            }
+            if ($(this).attr("data-module") === 'autocomplete') {
+                var key = $(this).attr("name");
+                var value = $(this).select2("data");
+                ngds.memorizer.memorize(master_key, key, value);
+            }
+            else if ($(this).val() !== "") {
+                var key = $(this).attr("name");
+                var value = $(this).val();
+                ngds.memorizer.memorize(master_key, key, value);
+            }
+        });
+
+        $(".additional-resource-fields select").each(function () {
+            if ($(this).val() !== "") {
+                if ($(this).attr("data-module") === 'autocomplete') {
+                    var key = $(this).attr("name");
+                    var value = $(this).select2("data");
+                    ngds.memorizer.memorize(master_key, key, value);
+                }
+                else {
+                    var key = $(this).attr("name");
+                    var value = $(this).val();
+                    ngds.memorizer.memorize(master_key, key, value);
+                }
+            }
+        });
+
+        $(".additional-resource-fields textarea").each(function () {
+            if ($(this).val() !== "") {
+                var key = $(this).attr("name");
+                var value = $(this).val();
+                ngds.memorizer.memorize(master_key, key, value);
+            }
+        });
+    };
+
+    ngds.restore_additional_fields = function (master_key) {
+
+        $(".additional-resource-fields input").each(function () {
+
+            if ($(this).attr("class") === "select2-input") {
+                return;
+            }
+            var key = $(this).attr("name");
+            var rvalue = ngds.memorizer.remind(master_key, key);
+            if (rvalue !== '') {
+                if (typeof rvalue === "object") {
+                    $(this).val(JSON.stringify(rvalue));
+                }
+                if ($(this).attr("data-module") === 'autocomplete') {
+                    $(this).select2("data", rvalue);
+                }
+                else {
+                    $(this).val(rvalue);
+                }
+            }
+        });
+
+        $(".additional-resource-fields textarea").each(function () {
+            var key = $(this).attr("name");
+            var rvalue = ngds.memorizer.remind(master_key, key);
+            if (rvalue !== '') {
+                $(this).val(rvalue);
+            }
+        });
+
+        $(".additional-resource-fields select").each(function () {
+            var key = $(this).attr("name");
+
+            var rvalue = ngds.memorizer.remind(master_key, key);
+            if (rvalue === '') {
+                return;
+            }
+
+            var options = $(this).children().filter("option");
+
+            if ($(this).attr("data-module") === "autocomplete") {
+                $(this).select2("data", rvalue);
+            }
+            else {
+                options.each(function () {
+                    if ($(this).val() === rvalue) {
+                        $(this).prop("selected", true);
+                    }
+                });
+            }
+
+        });
+    };
+
+    $("[data-module=resource-upload-field] label").click(function (ev) {
+        var for_attr = $(ev.currentTarget).attr("for");
+        if (for_attr !== "field-resource-type-upload") {
+            var resource_type = $("#" + $(ev.currentTarget).attr("for")).val();
+
+            ngds.memorize_additional_fields(ngds.util.state['prev_resource_type']);
+            ngds.util.state['prev_resource_type'] = resource_type;
+            ngds.resource_type_change(resource_type);
+        }
+
+    });
+
+    ngds.resource_type_change = function (resource_type) {
         $(".additional-resource-fields").empty();
         construct_form_objects();
+
+        if (resource_type === 'structured') {
+            $(".additional-resource-fields").replaceWith(ngds.forms.structured_form.form);
+//            ckan.module.initializeElement($("#field-distributor")[0]);
+            ngds.initialize_content_model_widget(function () {
+                ckan.module.initializeElement($("#field-content-model")[0]);
+                ckan.module.initializeElement($("#field-content-model-version")[0]);
+
+                if (typeof $("[name=content_model_uri]").val() !== 'undefined' && $("[name=content_model_uri]").val() !== "none") {
+                    var val = $("[name=content_model_uri]").val();
+                    var versions_dom = ngds.util.state['versions_dom'][val];
+                    if (typeof versions_dom !== 'undefined') {
+                        $("[name=content_model_version]").empty();
+                        for (var i = 0; i < versions_dom.length; i++) {
+                            $("[name=content_model_version]").append(versions_dom[i]);
+                        }
+                    }
+                }
+
+                $("[name=content_model_uri]").on('change', function (ev) {
+                    var val = ev.val;
+
+                    var option_constructor = function (version) {
+                        var option = {
+                            'tag': 'option',
+                            'attributes': {
+                                'value': version['uri'],
+                                'text': version['version']
+                            }
+                        };
+                        return ngds.util.dom_element_constructor(option);
+                    };
+
+                    if (typeof ngds.util.state['versions'][val] === 'undefined') {
+                        $.ajax({
+                            'url': '/api/action/get_content_model_version_for_uri',
+                            'data': JSON.stringify({
+                                'cm_uri': val
+                            }),
+                            'type': 'POST',
+                            'success': function (response) {
+                                var versions = response.result;
+                                ngds.util.state['versions'][val] = versions;
+                                var versions_dom = ngds.util.state['versions_dom'][val] = [];
+                                $("[name=content_model_version]").empty();
+
+                                var none = option_constructor({"uri": "None", "version": "none"});
+
+                                $("[name=content_model_version]").append(none);
+                                versions_dom.push(none);
+
+                                for (var i = 0; i < versions.length; i++) {
+                                    $("[name=content_model_version]").append(option_constructor(versions[i]));
+                                    versions_dom.push(option_constructor(versions[i]));
+                                }
+
+                            }
+                        });
+                    }
+                    else {
+                        var versions_dom = ngds.util.state['versions_dom'][val];
+                        $("[name=content_model_version]").empty();
+                        for (var i = 0; i < versions_dom.length; i++) {
+                            $("[name=content_model_version]").append(versions_dom[i]);
+                        }
+                    }
+                });
+            });
+
+//            ckan.module.initializeElement($("#field-format")[0]);
+        }
 
         if (resource_type === 'unstructured') {
             $(".additional-resource-fields").replaceWith(ngds.forms.unstructured_form.form);
             ckan.module.initializeElement($("#field-distributor")[0]);
             ckan.module.initializeElement($("#field-format")[0]);
-
         }
 
         if (resource_type === 'offline-resource') {
@@ -23,24 +233,151 @@ $(document).ready(function () {
             ckan.module.initializeElement($("#field-protocol")[0]);
         }
 
-    });
+        ngds.restore_additional_fields(resource_type);
+    };
 });
+
+
+ngds.initialize_content_model_widget = function (callback) {
+
+    if (typeof ngds.util.state['content_models'] === 'undefined') {
+        $.ajax({
+            'url': '/api/action/get_content_models_for_ui',
+            'type': 'POST',
+            'data': JSON.stringify({"dummy": "dummy"}),
+            'success': function (response) {
+                ngds.util.state['content_models'] = response.result;
+                var option_constructor = function (content_model) {
+                    var option = {
+                        'tag': 'option',
+                        'attributes': {
+                            'value': content_model['uri'],
+                            'text': content_model['title']
+                        }
+                    };
+                    return ngds.util.dom_element_constructor(option);
+                };
+
+                var content_models = ngds.util.state['content_models'];
+                var content_models_dom = ngds.util.state['content_models_dom'] = [];
+                var none = option_constructor({"uri": "None", "title": "none"});
+
+                $("[name=content_model_uri]").append(none);
+                content_models_dom.push(none);
+
+                for (var i = 0; i < content_models.length; i++) {
+                    $("[name=content_model_uri]").append(option_constructor(content_models[i]));
+                    content_models_dom.push(option_constructor(content_models[i]));
+                }
+                callback();
+            }
+        })
+    }
+    else {
+        var content_models_dom = ngds.util.state['content_models_dom'];
+
+        for (var i = 0; i < content_models_dom.length; i++) {
+            $("[name=content_model_uri]").append(content_models_dom[i]);
+        }
+        callback();
+    }
+
+};
 
 
 function construct_form_objects() {
     ngds.forms = {};
+    ngds.forms.structured_form = {};
     ngds.forms.unstructured_form = {};
     ngds.forms.offline_form = {};
     ngds.forms.data_service_form = {};
 
+    ngds.forms.structured_form.form = ngds.util.dom_element_constructor(structured_form_raw);
+
     ngds.forms.unstructured_form.form = ngds.util.dom_element_constructor(unstructured_form_raw);
-    ngds.forms.unstructured_form.values = {};
 
     ngds.forms.offline_form.form = ngds.util.dom_element_constructor(offline_form_raw);
-    ngds.forms.offline_form.values = {};
 
     ngds.forms.data_service_form.form = ngds.util.dom_element_constructor(data_service_raw);
-    ngds.forms.data_service_form.values = {};
+
+};
+
+
+var structured_form_raw = {
+    'tag': 'div',
+    'attributes': {
+        'class': 'additional-resource-fields'
+    },
+    'children': [
+        {
+            'tag': 'div',
+            'attributes': {
+                'class': 'control-group control-full'
+            },
+            'children': [
+                {
+                    'tag': 'label',
+                    'attributes': {
+                        'class': 'control-label',
+                        'for': 'field-content-model',
+                        'text': 'Content Model'
+                    }
+                },
+                {
+                    'tag': 'div',
+                    'attributes': {
+                        'class': 'controls'
+                    },
+                    'children': [
+                        {
+                            'tag': 'select',
+                            'attributes': {
+                                'id': 'field-content-model',
+                                'type': 'text',
+                                'name': 'content_model_uri',
+                                'placeholder': 'Ex: Borehole Lithology Intercepts',
+                                'data-module': "autocomplete"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            'tag': 'div',
+            'attributes': {
+                'class': 'control-group control-full'
+            },
+            'children': [
+                {
+                    'tag': 'label',
+                    'attributes': {
+                        'class': 'control-label',
+                        'for': 'field-content-model-version',
+                        'text': 'Content Model Version'
+                    }
+                },
+                {
+                    'tag': 'div',
+                    'attributes': {
+                        'class': 'controls'
+                    },
+                    'children': [
+                        {
+                            'tag': 'select',
+                            'attributes': {
+                                'id': 'field-content-model-version',
+                                'type': 'text',
+                                'name': 'content_model_version',
+                                'placeholder': 'Ex: 1.1',
+                                'data-module': "autocomplete"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 };
 
 

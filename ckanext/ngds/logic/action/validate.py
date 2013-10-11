@@ -12,6 +12,8 @@ def ngds_resource_schema():
     resource_update_schema['format'] = [ignore_missing]
     resource_update_schema['protocol'] = [ignore_missing]
     resource_update_schema['layer'] = [ignore_missing]
+    resource_update_schema['content_model_uri'] = [ignore_missing]
+    resource_update_schema['content_model_version'] = [ignore_missing]
     return resource_update_schema
 
 
@@ -35,6 +37,8 @@ def valid_resource_type(key, data, errors, context):
             validate_offline_resource_fields_present(key, data, errors, context)
         elif data[key] == 'data-service':
             validate_data_service_resource_fields_present(key, data, errors, context)
+        elif data[key] == 'structured':
+            validate_structured_resource_fields_present(key, data, errors, context)
     return data[key]
 
 
@@ -54,6 +58,8 @@ def existence_check(key, data, errors, context):
         else:
             errors[key] = []
             errors[key].append(_('Missing value'))
+        return False
+    return True
 
 
 def validate_ordering_procedure(key, data, errors, context):
@@ -69,6 +75,19 @@ def validate_protocol(key, data, errors, context):
 
 
 def validate_layer(key, data, errors, context):
+    existence_check(key, data, errors, context)
+
+
+def validate_content_model(key, data, errors, context):
+    existence_check(key, data, errors, context)
+
+
+def is_content_model_none(key, data, errors, context):
+    if existence_check(key, data, errors, context) and data[key] == "none":
+        return True
+
+
+def validate_content_model_version(key, data, errors, context):
     existence_check(key, data, errors, context)
 
 
@@ -88,3 +107,17 @@ def validate_data_service_resource_fields_present(key, data, errors, context):
     validate_distributor(distributor_key, data, errors, context)
     validate_protocol(protocol_key, data, errors, context)
     validate_layer(layer_key, data, errors, context)
+
+
+def validate_structured_resource_fields_present(key, data, errors, context):
+    key_stub = key[0:2]
+
+    content_model_key = key_stub + ('content_model_uri',)
+    content_model_version_key = key_stub + ('content_model_version',)
+
+    validate_content_model(content_model_key, data, errors, context)
+    cm_none = is_content_model_none(content_model_key, data, errors, context)
+    if cm_none:
+        data.pop(key)
+    else:
+        validate_content_model_version(content_model_version_key, data, errors, context)
