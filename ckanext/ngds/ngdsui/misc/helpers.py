@@ -785,5 +785,9 @@ def get_contributors_list():
     return g.contributors_list
 
 def get_full_resource_dict(data,pkg_dict):
-    resources = [ item for item in pkg_dict['resources'] if data['id'] == item['id'] ]
-    return resources[0]
+    try:
+        resources = [ item for item in pkg_dict['resources'] if data['id'] == item['id'] ]
+        if resources and len(resources)>0:
+            return resources[0]
+    except(Exception):
+        pass

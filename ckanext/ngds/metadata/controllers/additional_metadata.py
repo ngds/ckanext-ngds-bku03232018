@@ -4,6 +4,7 @@ from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty, La
 from pylons import c, request, response
 import ckan.lib.base as base
 import ckan.lib.jsonp as jsonp
+import json
 
 def dispatch(context, data_dict):
     """
@@ -44,13 +45,14 @@ class Responsible_Parties_UI(base.BaseController):
         q = request.params.get('q', '')
         query =ResponsibleParty.search(q).limit(10)
         
-        responsible_parties = []
+        responsible_parties = {"ResultSet":{"Result":[]}}
         for responsible_party in query.all():
             result_dict = {}
-            for k in ['id', 'name','email']:
-                    result_dict[k] = getattr(responsible_party,k)
-
-            responsible_parties.append(result_dict)
+            name = getattr(responsible_party,"name")
+            email = getattr(responsible_party,"email")
+            result_dict["name"] = name
+            result_dict["value"] = json.dumps({"name":name,"email":email})
+            responsible_parties["ResultSet"]["Result"].append(result_dict)
 
         return responsible_parties
     

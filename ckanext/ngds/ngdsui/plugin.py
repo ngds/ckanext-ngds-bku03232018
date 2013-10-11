@@ -401,7 +401,8 @@ class NgdsuiPlugin(SingletonPlugin):
         pass
 
     def create_package_schema(self):
-        pass
+        package_create_schema = ngds_validator.default_package_schema()
+        return package_create_schema
 
     def update_package_schema(self):
         package_update_schema = ngds_validator.ngds_package_schema()

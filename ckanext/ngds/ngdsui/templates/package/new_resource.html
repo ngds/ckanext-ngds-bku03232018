@@ -10,7 +10,9 @@
 
 {% block form %}
         {% if pkg_dict and data %}
-            {% set data = h.get_full_resource_dict(data,pkg_dict) %}
+            {% if h.get_full_resource_dict(data,pkg_dict) %}
+                {% set data = h.get_full_resource_dict(data,pkg_dict) %}
+            {% endif %}
         {% endif %}
 {% snippet 'package/snippets/resource_form.html', data=data, errors=errors, error_summary=error_summary, include_metadata=false, pkg_name=pkg_name, stage=stage, allow_upload=logged_in %}
 {% endblock %}

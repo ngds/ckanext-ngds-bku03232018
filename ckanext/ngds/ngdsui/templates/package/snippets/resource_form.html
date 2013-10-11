@@ -10,6 +10,14 @@
     {% endif %}
 {% endmacro %}
 
+{% macro is_selected(det,key,data) %}
+    {% if data %}
+        {% if data[key] == det %}
+            selected
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
 {% block basic_fields_data %}
         <div class="controls"{% if allow_upload %} data-module="resource-upload-field"{% endif %}>
         {#
@@ -48,11 +56,51 @@
 
                 {% elif resource and resource.resource_format == 'unstructured' %}
 
+                    {% if data.distributor %}
+                        {% set distributor = h.parseJSON(data.distributor) %}
+                    {% endif %}
+
+                {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
+                {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('eg. CSV, XML or JSON'), value=data.format, error=errors.format, classes=['control-medium'], attrs=format_attrs) %}
+                {% endcall %}
+
+                {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':distributor['name'],'data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
+                {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. economy, mental health, government'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
+
                 {% elif resource and resource.resource_format == 'offline-resource' %}
 
                     {{ form.markdown('ordering_procedure', id='field-ordering-procedure', label=_('Ordering Procedure'), placeholder=_('Indicate how a person can go about obtaining this resource.'), value=data.ordering_procedure, error=errors.ordering_procedure) }}
 
                 {% elif resource and resource.resource_format == 'data-service' %}
+
+                {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
+                {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. economy, mental health, government'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
+
+                {% if "protocol" in errors %}
+                    {% set protocol_error = true %}
+                {% endif %}
+
+                 <div class="control-group{% if protocol_error %} error{% endif %} control-medium" data-cm>
+                        <label class="control-label" for="field-protocol">{{ _("Protocol") }}</label>
+                        <div class="controls">
+                            <select id="field-protocol" name="protocol" data-module="autocomplete">
+                               <option value="wms"{{ is_selected("wms","protocol",data)}}>WMS</option>
+                                <option value="wfs"{{ is_selected("wfs","protocol",data)}}>WFS</option>
+                                <option value="wcs"{{ is_selected("wcs","protocol",data)}}>WCS</option>
+                                <option value="esri_map_service"{{ is_selected("esri_map_service","protocol",data)}}>ESRI Map Service</option>
+                                <option value="csw"{{ is_selected("csw","protocol",data)}}>CSW</option>
+                                <option value="sos"{{ is_selected("sos","protocol",data)}}>SOS</option>
+                                <option value="opendap"{{ is_selected("opendap","protocol",data)}}>Open DAP</option>
+                                <option value="other"{{ is_selected("other","protocol",data)}}>Other</option>
+                            </select>
+                            {% if protocol_error %}
+                                {% for error in errors['protocol'] %}
+                                    <span class="error-block">{{error}}</span>
+                                {% endfor %}
+                             {% endif %}
+                        </div>
+                    </div>
+
 
                 {% endif %}
             {% endif %}
