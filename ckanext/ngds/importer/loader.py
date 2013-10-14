@@ -1,3 +1,18 @@
+''' ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ '''
+
 """
 Handles the functionality of updating/merging the resource details as part of Bulk Upload process. Updates dict value with
 respect to the existing and new field values populated for a particular resource.

@@ -1,3 +1,18 @@
+''' ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ '''
+
 """
 This controller class is responsible purely for rendering top-level pages in the NGDS UI. These are the home page,map, about,
 library search, contribute landing page and page links in the footer section of every NGDS Page. Each page has a corresponding render function
