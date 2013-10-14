@@ -41,7 +41,7 @@ def default_package_schema():
 
 def valid_resource_type(key, data, errors, context):
     resource_types = ("structured", 'unstructured', 'offline-resource', 'data-service')
-    if "resource_format" in key and data[key] not in resource_types:
+    if "resource_format" not in key and data[key] not in resource_types:
         raise Invalid(_(
             'Selecting a resource type is mandatory. Please select one of - Structured, Unstructured, Offline Resource or Data Service'))
     else:
@@ -51,6 +51,8 @@ def valid_resource_type(key, data, errors, context):
             validate_data_service_resource_fields_present(key, data, errors, context)
         elif data[key] == 'structured':
             validate_structured_resource_fields_present(key, data, errors, context)
+        elif data[key] == 'unstructured':
+            validate_unstructured_resource_fields_present(key, data, errors, context)
     return data[key]
 
 
@@ -83,7 +85,13 @@ def validate_ordering_procedure(key, data, errors, context):
 
 
 def validate_distributor(key, data, errors, context):
-    existence_check(key, data, errors, context)
+    if key[0] == 'resources':
+        key_stub = key[0:2]
+        distributor_key = key_stub + ('distributor',)
+    else:
+        distributor_key = ('distributor',)
+
+    existence_check(distributor_key, data, errors, context)
 
 
 def validate_protocol(key, data, errors, context):
@@ -101,6 +109,12 @@ def validate_content_model(key, data, errors, context):
 def is_content_model_none(key, data, errors, context):
     if existence_check(key, data, errors, context) and data[key] == "None":
         return True
+
+
+def is_content_model_version_none(key, data, errors, context):
+    if not existence_check(key, data, errors, context):
+        return True
+    return False
 
 
 def conforms_to_content_model(key, data, errors, context):
@@ -123,7 +137,7 @@ def conforms_to_content_model(key, data, errors, context):
     cm_version = split_version[len(split_version) - 1]
     data_dict = {'cm_uri': cm, 'cm_version': cm_version, 'cm_resource_url': url}
     cm_validation_results = contentmodel_checkFile({}, data_dict)
-    if cm_validation_results['valid'] == False:
+    if not cm_validation_results['valid']:
         error_append(err_key, errors, cm_validation_results['messages'])
 
 
@@ -140,11 +154,10 @@ def validate_offline_resource_fields_present(key, data, errors, context):
 def validate_data_service_resource_fields_present(key, data, errors, context):
     key_stub = key[0:2]
 
-    distributor_key = key_stub + ('distributor',)
     protocol_key = key_stub + ('protocol',)
     layer_key = key_stub + ('layer',)
 
-    validate_distributor(distributor_key, data, errors, context)
+    validate_distributor(key, data, errors, context)
     validate_protocol(protocol_key, data, errors, context)
     validate_layer(layer_key, data, errors, context)
 
@@ -153,23 +166,28 @@ def validate_structured_resource_fields_present(key, data, errors, context):
     key_stub = key[0:2]
 
     if key_stub[0] == 'resources':
-        distributor_key = key_stub + ('distributor',)
         content_model_key = key_stub + ('content_model_uri',)
         content_model_version_key = key_stub + ('content_model_version',)
     else:
-        distributor_key = ('distributor',)
         content_model_key = ('content_model_uri',)
         content_model_version_key = ('content_model_version',)
 
     validate_content_model(content_model_key, data, errors, context)
-    validate_distributor(distributor_key, data, errors, context)
+    validate_distributor(key, data, errors, context)
     cm_none = is_content_model_none(content_model_key, data, errors, context)
     if cm_none:
-        data.pop(key)
+        if is_content_model_version_none(content_model_version_key, data, errors, context):
+            error_append(content_model_version_key, errors, _('Missing Value'))
+        data.pop(content_model_key)
     else:
-        cmv_none = validate_content_model_version(content_model_version_key, data, errors, context)
+        cmv_none = is_content_model_version_none(content_model_version_key, data, errors, context)
         if not cm_none and not cmv_none:
             conforms_to_content_model(content_model_key, data, errors, context)
+
+
+def validate_unstructured_resource_fields_present(key, data, errors, context):
+    key_stub = key[0:2]
+    validate_distributor(key, data, errors, context)
 
 
 def validate_owner_org(key, data, errors, context):

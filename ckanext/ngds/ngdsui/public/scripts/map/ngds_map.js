@@ -431,6 +431,9 @@ ngds.Map = {
             if (i === map_features.length) {
                 break;
             }
+            if (typeof map_features[i] === 'undefined' || map_features[i] === null) {
+                continue;
+            }
             if (perimeter < new ngds.Map.BoundingBox().store_raw(map_features[i].getBounds()).get_perimeter()) {
                 break;
             }
@@ -438,6 +441,9 @@ ngds.Map = {
 
         map_features.splice(i, 0, layer);
         for (var i = map_features.length - 1; i > -1; i--) {
+            if (typeof map_features[i] === 'undefined' || map_features[i] === null) {
+                continue;
+            }
             map_features[i].bringToFront();
         }
     },

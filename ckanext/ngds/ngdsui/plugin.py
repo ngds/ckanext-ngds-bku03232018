@@ -421,7 +421,7 @@ class NgdsuiPlugin(SingletonPlugin):
         return 'package/edit.html'
 
     def setup_template_variables(self, context, data_dict):
-        pass
+        return data_dict
 
     def create_package_schema(self):
         package_create_schema = ngds_validator.default_package_schema()

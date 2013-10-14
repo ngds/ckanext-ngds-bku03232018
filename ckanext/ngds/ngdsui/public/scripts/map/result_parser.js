@@ -314,8 +314,10 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
 
     $(".visibility-toggler button").click(function (ev) {
+
         ev.stopPropagation();
         var seq = Number($(ev.target).attr('data-seq'));
+
         if (typeof ngds.util.state['hidden_t'] === "undefined") {
             ngds.util.state['hidden_t'] = {};
         }
@@ -324,6 +326,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         // Show/hide All.
 
         if (typeof ngds.util.state['hidden_t'][seq] === "undefined" && seq === 0) {
+
             ngds.util.state['hidden_t'][seq] = ngds.layer_map;
             for (var item_key in ngds.layer_map) {
                 ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[item_key]);
@@ -335,8 +338,10 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
         else if (seq === 0) {
             for (var item_key in ngds.layer_map) {
-                ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[item_key]);
-                ngds.Map.sort_geojson_layers(ngds.layer_map[item_key]);
+                if (typeof ngds.layer_map[item_key] !== 'undefined') {
+                    ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[item_key]);
+                    ngds.Map.sort_geojson_layers(ngds.layer_map[item_key]);
+                }
             }
             for (var item_h_key in ngds.util.state['hidden_t']) {
                 if (item_h_key === 0) {
@@ -363,6 +368,12 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         else {
             ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[seq]);
             ngds.Map.sort_geojson_layers(ngds.layer_map[seq]);
+
+            for (var i = 0; i < ngds.util.state['map_features'].length; i++) {
+                if (ngds.util.state['hidden_t'][seq] === ngds.util.state['map_features'][i]) {
+                    delete ngds.util.state['map_features'][i];
+                }
+            }
             delete ngds.util.state['hidden_t'][seq];
             $(ev.target).removeClass("toggled");
         }

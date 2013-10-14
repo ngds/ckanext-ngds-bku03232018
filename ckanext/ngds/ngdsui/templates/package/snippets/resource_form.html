@@ -82,7 +82,7 @@
                         {% set cm_version_error = true %}
                     {% endif %}
 
-                    {% if data['content_model_uri']!="None" %}
+                    {% if not 'content_model_uri' in data or data['content_model_uri']!="None" %}
                         {% set content_model_versions = h.get_content_model_versions_for_uri(data['content_model_uri']) %}
                     {% endif %}
 
@@ -90,9 +90,11 @@
                         <label class="control-label" for="field-content-model-version">{{ _("Content Model Version") }}</label>
                         <div class="controls">
                             <select id="field-content-model-version" name="content_model_version" data-module="autocomplete">
-                               {% for cmv in content_model_versions %}
-                                <option value="{{cmv['uri']}}"{{ is_selected(cmv['uri'],"content_model_version",data)}}>{{cmv['version']}}</option>
-                               {% endfor %}
+                                {% if cmv %}
+                                   {% for cmv in content_model_versions %}
+                                    <option value="{{cmv['uri']}}"{{ is_selected(cmv['uri'],"content_model_version",data)}}>{{cmv['version']}}</option>
+                                   {% endfor %}
+                                {% endif %}
                             </select>
                             {% if cm_version_error %}
                                 {% for error in errors['content_model_version'] %}
@@ -101,6 +103,7 @@
                              {% endif %}
                         </div>
                     </div>
+
 
                     {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
                     {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
@@ -119,7 +122,7 @@
                 {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('eg. CSV, XML or JSON'), value=data.format, error=errors.format, classes=['control-medium'], attrs=format_attrs) %}
                 {% endcall %}
 
-                {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':distributor['name'],'data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
+                {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':'Ex: John Doe','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
                 {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
                 {% elif resource and resource.resource_format == 'offline-resource' %}

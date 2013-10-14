@@ -747,6 +747,8 @@ def get_content_models_for_ui_action(context, data_dict):
 
 
 def get_content_model_versions_for_uri(uri):
+    if not uri or uri=='none' or uri=='None':
+        return
     content_models = logic.get_action('contentmodel_list_short')()
     content_model = filter(lambda x: True if x['uri'] == uri else False, content_models)
     return content_model[0]['versions']
