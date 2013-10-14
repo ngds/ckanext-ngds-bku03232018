@@ -1,0 +1,142 @@
+{#
+Adds a block of custom form fields.
+
+extras - The fields to add.
+errors - A dict of errors for the fields.
+limit  - The total number of fields that should be output.
+Example:
+
+{% snippet 'snippets/custom_form_fields.html', extras=data.extras, errors=errors, limit=3 %}
+
+#}
+{% import "macros/form.html" as form %}
+
+{% macro is_selected(value,key,extra) %}
+  {% for extra in extras %}
+    {% if extra.key == key %}
+      {%- if extra.value == value %}
+        selected
+      {% endif -%}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+
+{% macro get_value(key,extra) -%}
+{% for extra in extras -%}
+{% if extra.key == key -%}
+{{ extra.value }}
+{%- endif %}
+{%- endfor %}
+{%- endmacro %}
+
+<div data-module="custom-fields">
+    <input type="hidden" name="extras__0__key" value="authors"/>
+    {% set authors_attrs = {'data-module-tags':
+    '','data-module-key':'value','multiple':'','data-module-label':'name','data-module': 'autocomplete',
+    'data-module-source': 'responsible_parties?q=?'} %}
+    {{ form.input('extras__0__value', id='field-authors', label=_('Authors'), placeholder=_('eg. John Doe, Jane Doe'),
+    value=get_value('authors',extras), error=errors.authors, classes=['control-full'], attrs=authors_attrs) }}
+</div>
+
+<input type="hidden" name="extras__1__key" value="maintainer"/>
+{% set maintainer_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete', 'data-module-source': 'responsible_parties?q=?'} %}
+{{ form.input('extras__1__value', id='field-maintainer', label=_('Maintainer'), placeholder=_('eg. John Doe'), value=get_value('maintainer',extras), error=errors.maintainer, classes=['control-full'], attrs=maintainer_attrs) }}
+<p>Can't find a maintainer? Create one.</p>
+
+<input type="hidden" name="extras__2__key" value="spatial_word"/>
+{{ form.input('extras__2__value', id='field-spatial-location', label=_('Spatial Location'), value=get_value('spatial_word',extras), error=errors.spatial_word, classes=['control-full', 'control-full']) }}
+
+{% if errors.dataset_category %}
+    {% set category_error = true %}
+{% endif %}
+
+<input type="hidden" name="extras__3__key" value="dataset_category"/>
+<div class="control-group{% if category_error %} error{% endif %} control-medium" data-cm>
+    <label class="control-label" for="field-category">{{ _("Category") }}</label>
+
+    <div class="controls">
+        <select id="field-category" name="extras__3__value" data-module="autocomplete">
+            {% for category_item in h.get_dataset_categories() %}
+                <option value="{{category_item['value']}}"{{ is_selected(category_item['value'],'dataset_category',extras)}}>{{category_item['label']}}</option>
+            {% endfor %}
+        </select>
+        {% if category_error %}
+            {% for error in errors.dataset_category %}
+                <span class="error-block">{{error}}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+
+
+<input type="hidden" name="extras__4__key" value="dataset_uri"/>
+{{ form.input('extras__4__value', id='field-uri', label=_('URI'), value=get_value('dataset_uri',extras), error=errors.dataset_uri, classes=['control-full', 'control-full']) }}
+
+<input type="hidden" name="extras__5__key" value="quality"/>
+{{ form.input('extras__5__value', id='field-quality', label=_('Quality'), placeholder='Ex: Good', value=get_value('quality',extras), error=errors.quality, classes=['control-full', 'control-full']) }}
+
+<input type="hidden" name="extras__6__key" value="lineage"/>
+{{ form.input('extras__6__value', id='field-lineage', label=_('Lineage'), value=get_value('lineage',extras), error=errors.lineage, classes=['control-full', 'control-full']) }}
+
+
+{% if errors.status %}
+    {% set status_error = true %}
+{% endif %}
+
+<input type="hidden" name="extras__7__key" value="status"/>
+<div class="control-group{% if status_error %} error{% endif %} control-medium" data-cm>
+    <label class="control-label" for="field-status">{{ _("Status") }}</label>
+
+    <div class="controls">
+        <select id="field-status" name="extras__7__value" data-module="autocomplete">
+            {% for status_item in h.get_status_for_ui() %}
+                <option value="{{status_item['value']}}"{{ is_selected(status_item['value'],'status',extras)}}>{{status_item['label']}}</option>
+            {% endfor %}
+        </select>
+        {% if status_error %}
+            {% for error in errors.status %}
+                <span class="error-block">{{error}}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+
+<input type="hidden" name="extras__8__key" value="publication_date"/>
+{{ form.input('extras__8__value', id='field-publication-date', label=_('Publication Date'), value=get_value('publication_date',extras), error=errors.publication_date, classes=['control-full', 'control-full']) }}
+
+
+{% if errors.dataset_lang %}
+    {% set language_error = true %}
+{% endif %}
+
+<input type="hidden" name="extras__9__key" value="dataset_lang"/>
+<div class="control-group{% if language_error %} error{% endif %} control-medium" data-cm>
+    <label class="control-label" for="field-language">{{ _("Language") }}</label>
+
+    <div class="controls">
+        <select id="field-language" name="extras__9__value" style="width:100%;">
+            {% for language_item in h.get_languages_for_ui() %}
+                <option value="{{language_item['code']}}"{{ is_selected(language_item['code'],'dataset_lang',extras)}}>{{language_item['name']}}</option>
+            {% endfor %}
+        </select>
+        {% if language_error %}
+            {% for error in errors.dataset_lang %}
+                <span class="error-block">{{error}}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="input-group">
+    <div class="sp-label"><label>{{_('Dataset Extent')}}</label></div>
+      <div id="bbox-map"></div>
+</div>
+
+{% if get_value('spatial',extras) %}
+        {% set saved_spatial = true %}
+{% endif %}
+<input type="hidden" id="field-extras-10-key" name="extras__10__key" value="spatial" />
+<input type="hidden" id="field-extras-10-value" name="extras__10__value" {% if saved_spatial %}data-restore-spatial data-key="spatial" data-dom-key="field-extras-10-value" data-pkg-id="{{pkg_id}}"{% endif %} />

@@ -298,7 +298,8 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             layer_control.addOverlay(layer_to_add, label_prefix + wms_mapping[id][k].name);
             ngds.Map.map.addLayer(layer_to_add);
         }
-        alert("The Web Map Services you requested have been added to the map.");
+        ckan.notify("The Web Map Services you requested have been added to the map.");
+
     });
 
     (function doc_ready_section() {

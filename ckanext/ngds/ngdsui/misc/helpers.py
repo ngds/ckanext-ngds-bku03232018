@@ -797,3 +797,77 @@ def get_full_resource_dict(data, pkg_dict):
             return resources[0]
     except(Exception):
         pass
+
+
+def get_dataset_categories():
+    return [
+        {
+            'value': 'Dataset',
+            'label': 'Dataset'
+        },
+        {
+            'value': 'Physical Collection',
+            'label': 'Physical Collection'
+        },
+        {
+            'value': 'Catalog',
+            'label': 'Catalog'
+        },
+        {
+            'value': 'Movie or Video',
+            'label': 'Movie or Video'
+        },
+        {
+            'value': 'Drawing',
+            'label': 'Drawing'
+        },
+        {
+            'value': 'Photograph',
+            'label': 'Photograph'
+        },
+        {
+            'value': 'Remotely Sensed Image',
+            'label': 'Remotely Sensed Image'
+        },
+        {
+            'value': 'Map',
+            'label': 'Map'
+        },
+        {
+            'value': 'Text Document',
+            'label': 'Text Document'
+        },
+        {
+            'value': 'Physical Artifact',
+            'label': 'Physical Artifact'
+        },
+        {
+            'value': 'Desktop Application',
+            'label': 'Desktop Application'
+        },
+        {
+            'value': 'Web Application',
+            'label': 'Web Application'
+        }
+    ]
+
+
+def get_status_for_ui():
+    return [
+        {
+            'value': 'completed',
+            'label': 'Completed'
+        },
+        {
+            'value': 'ongoing',
+            'label': 'Ongoing'
+        },
+        {
+            'value': 'deprecated',
+            'label': 'Deprecated'
+        }
+    ]
+
+def get_languages_for_ui():
+    languages = model.Language.search('').all()
+    return languages

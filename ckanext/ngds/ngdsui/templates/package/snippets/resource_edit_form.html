@@ -10,58 +10,5 @@
 
 {% block basic_fields %}
         {{super()}}
-        {% if resource['resource_format'] == 'structured' %}
-
-               {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
-                    {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('eg. CSV, XML or JSON'), value=data.format, error=errors.format, classes=['control-medium'], attrs=format_attrs) %}
-                    <span class="info-block info-block-small">
-                      <i class="icon-info-sign"></i>
-                      {{ _('This is generated automatically. You can edit if you wish') }}
-                    </span>
-                    {% endcall %}
-
-                <div class="additional-resource-fields">
-                    <div class="control-group control-medium" data-cm>
-                        <label class="control-label" for="field-content-model-uri">{{ _("Content Model") }}</label>
-                        <div class="controls">
-                            <select id="field-content-model-uri" name="content_model_uri" data-module="autocomplete">
-                                <option value="none">None</option>
-                                {% for content_model in content_models  %}
-                                    <option value="{{content_model['uri']}}"{{ cm_compare(content_model['uri'])}}>{{content_model['title']}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    {% if h.get_content_model_version_for_uri(resource['content_model_version']) %}
-                    <div class="control-group control-medium" data-cm-version>
-                        <label class="control-label" for="field-content-model-version">{{ _("Version") }}</label>
-                        <div class="controls">
-                            <select id="field-content-model-version" name="content_model_version" data-module="autocomplete">
-                                <option value="resource['content_model_version']">{{h.get_content_model_version_for_uri(resource['content_model_version'])}}</option>
-                            </select>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="control-group control-medium" data-cm-version>
-                        <label class="control-label" for="field-content-model-version">{{ _("Version") }}</label>
-                        <div class="controls">
-                            <select id="field-content-model-version" name="content_model_version" data-module="autocomplete">
-                            </select>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), value=data.distributor, error=errors.distributor, classes=['control-full', 'control-large']) }}
-
-                </div><!-- End of additional resource fields -->
-
-
-        {% elif resource['resource_format'] == 'structured' %}
-
-
-        {% else %}
-        {% endif %}
-
 
 {% endblock %}

@@ -1,7 +1,14 @@
 $(document).ready(function () {
-    ngds.util.state['prev_resource_type'] = $("[name=resource_format]:checked").val();
-    ngds.util.state['versions'] = {};
-    ngds.util.state['versions_dom'] = {};
+    (function stage_setup() {
+        ngds.util.state['prev_resource_type'] = $("[name=resource_format]:checked").val();
+        ngds.util.state['versions'] = {};
+        ngds.util.state['versions_dom'] = {};
+        if ($("[name=content_model_version]").length > 0 && $("[name=content_model_version]").parent().parent().attr("class").indexOf("error") !== -1) {
+            $("[name=content_model_version]").prop("selectedIndex", -1);
+            // Disobedient select box.
+        }
+        ngds.util.state['first-load'] = true;
+    })();
 
     (function init_memorizer() {
         ngds.memorizer = (function () {
@@ -110,6 +117,7 @@ $(document).ready(function () {
             var key = $(this).attr("name");
 
             var rvalue = ngds.memorizer.remind(master_key, key);
+
             if (rvalue === '') {
                 return;
             }
@@ -126,7 +134,6 @@ $(document).ready(function () {
                     }
                 });
             }
-
         });
     };
 
@@ -142,79 +149,105 @@ $(document).ready(function () {
 
     });
 
+    ngds.load_content_model_widget = function (resource_type) {
+        ngds.initialize_content_model_widget(function () {
+            if (typeof $("#field-content-model")[0] !== 'undefined') {
+                ckan.module.initializeElement($("#field-content-model")[0]);
+            }
+            if (typeof $("#field-content-model-version")[0] !== 'undefined') {
+
+                ckan.module.initializeElement($("#field-content-model-version")[0]);
+            }
+
+            if (typeof $("[name=content_model_uri]").val() !== 'undefined' && $("[name=content_model_uri]").val() !== "None") {
+                var val = $("[name=content_model_uri]").val();
+                var versions_dom = ngds.util.state['versions_dom'][val];
+                if (typeof versions_dom !== 'undefined') {
+                    $("[name=content_model_version]").empty();
+                    for (var i = 0; i < versions_dom.length; i++) {
+                        $("[name=content_model_version]").append(versions_dom[i]);
+                    }
+                }
+            }
+
+            function load_content_model_versions(content_model_uri) {
+                if (ngds.memorizer.remind('structured', 'content_model_version') === "") {
+                    return;
+                }
+                var val = content_model_uri;
+                var option_constructor = function (version) {
+                    var option = {
+                        'tag': 'option',
+                        'attributes': {
+                            'value': version['uri'],
+                            'text': version['version']
+                        }
+                    };
+                    return ngds.util.dom_element_constructor(option);
+                };
+
+                if (typeof ngds.util.state['versions'][val] === 'undefined') {
+                    $.ajax({
+                        'url': '/api/action/get_content_model_version_for_uri',
+                        'data': JSON.stringify({
+                            'cm_uri': val
+                        }),
+                        'type': 'POST',
+                        'success': function (response) {
+                            var versions = response.result;
+                            ngds.util.state['versions'][val] = versions;
+                            var versions_dom = ngds.util.state['versions_dom'][val] = [];
+                            $("[name=content_model_version]").empty();
+
+                            for (var i = 0; i < versions.length; i++) {
+                                $("[name=content_model_version]").append(option_constructor(versions[i]));
+                                versions_dom.push(option_constructor(versions[i]));
+                            }
+                            if (ngds.memorizer.remind("structured", "content_model_version") !== "") {
+                                $("#field-content-model-version option").filter("[value=" + ngds.memorizer.remind("structured", "content_model_version")['id'] + "]").prop("selected", true);
+                            }
+                            else {
+                                $("[name=content_model_version]").prop("selectedIndex", -1);
+                            }
+                        }
+                    });
+                }
+                else {
+                    var versions_dom = ngds.util.state['versions_dom'][val];
+                    $("[name=content_model_version]").empty();
+                    for (var i = 0; i < versions_dom.length; i++) {
+                        $("[name=content_model_version]").append(versions_dom[i]);
+                    }
+                    $("[name=content_model_version]").prop("selectedIndex", -1);
+                }
+            };
+
+            $("[name=content_model_uri]").on('change', function (ev) {
+                var val = ev.val;
+                if (val === "None") {
+                    return;
+                }
+
+                load_content_model_versions(val);
+            });
+
+            ngds.restore_additional_fields(resource_type);
+
+            if ($("[name=content_model_uri]").length > 0 && $("[name=content_model_uri]").val() !== "None" && $("[name=content_model_uri]").val() !== "none") {
+                load_content_model_versions($("[name=content_model_uri]").val());
+            }
+        });
+    };
+
     ngds.resource_type_change = function (resource_type) {
         $(".additional-resource-fields").empty();
         construct_form_objects();
 
         if (resource_type === 'structured') {
             $(".additional-resource-fields").replaceWith(ngds.forms.structured_form.form);
-//            ckan.module.initializeElement($("#field-distributor")[0]);
-            ngds.initialize_content_model_widget(function () {
-                ckan.module.initializeElement($("#field-content-model")[0]);
-                ckan.module.initializeElement($("#field-content-model-version")[0]);
-
-                if (typeof $("[name=content_model_uri]").val() !== 'undefined' && $("[name=content_model_uri]").val() !== "none") {
-                    var val = $("[name=content_model_uri]").val();
-                    var versions_dom = ngds.util.state['versions_dom'][val];
-                    if (typeof versions_dom !== 'undefined') {
-                        $("[name=content_model_version]").empty();
-                        for (var i = 0; i < versions_dom.length; i++) {
-                            $("[name=content_model_version]").append(versions_dom[i]);
-                        }
-                    }
-                }
-
-                $("[name=content_model_uri]").on('change', function (ev) {
-                    var val = ev.val;
-
-                    var option_constructor = function (version) {
-                        var option = {
-                            'tag': 'option',
-                            'attributes': {
-                                'value': version['uri'],
-                                'text': version['version']
-                            }
-                        };
-                        return ngds.util.dom_element_constructor(option);
-                    };
-
-                    if (typeof ngds.util.state['versions'][val] === 'undefined') {
-                        $.ajax({
-                            'url': '/api/action/get_content_model_version_for_uri',
-                            'data': JSON.stringify({
-                                'cm_uri': val
-                            }),
-                            'type': 'POST',
-                            'success': function (response) {
-                                var versions = response.result;
-                                ngds.util.state['versions'][val] = versions;
-                                var versions_dom = ngds.util.state['versions_dom'][val] = [];
-                                $("[name=content_model_version]").empty();
-
-                                var none = option_constructor({"uri": "None", "version": "none"});
-
-                                $("[name=content_model_version]").append(none);
-                                versions_dom.push(none);
-
-                                for (var i = 0; i < versions.length; i++) {
-                                    $("[name=content_model_version]").append(option_constructor(versions[i]));
-                                    versions_dom.push(option_constructor(versions[i]));
-                                }
-
-                            }
-                        });
-                    }
-                    else {
-                        var versions_dom = ngds.util.state['versions_dom'][val];
-                        $("[name=content_model_version]").empty();
-                        for (var i = 0; i < versions_dom.length; i++) {
-                            $("[name=content_model_version]").append(versions_dom[i]);
-                        }
-                    }
-                });
-            });
-
-//            ckan.module.initializeElement($("#field-format")[0]);
+            ngds.load_content_model_widget("structured");
+            ckan.module.initializeElement($("#field-distributor")[0]);
+            ckan.module.initializeElement($("#field-format")[0]);
         }
 
         if (resource_type === 'unstructured') {
@@ -235,6 +268,8 @@ $(document).ready(function () {
 
         ngds.restore_additional_fields(resource_type);
     };
+
+    ngds.load_content_model_widget($("[name=resource_format]:checked").val());
 });
 
 
@@ -376,7 +411,81 @@ var structured_form_raw = {
                     ]
                 }
             ]
+        },
+        {
+            'tag': 'div',
+            'attributes': {
+                'class': 'control-group control-full'
+            },
+            'children': [
+                {
+                    'tag': 'label',
+                    'attributes': {
+                        'class': 'control-label',
+                        'for': 'field-distributor',
+                        'text': 'Distributor'
+                    }
+                },
+                {
+                    'tag': 'div',
+                    'attributes': {
+                        'class': 'controls'
+                    },
+                    'children': [
+                        {
+                            'tag': 'input',
+                            'attributes': {
+                                'id': 'field-distributor',
+                                'type': 'text',
+                                'name': 'distributor',
+                                'placeholder': 'Ex: ' +
+                                    'John Doe',
+                                'data-module-label': "name",
+                                'data-module': "autocomplete",
+                                'data-module-source': "responsible_parties?q=?",
+                                'data-module-key': "value"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            'tag': 'div',
+            'attributes': {
+                'class': 'control-group control-full'
+            },
+            'children': [
+                {
+                    'tag': 'label',
+                    'attributes': {
+                        'class': 'control-label',
+                        'for': 'field-format',
+                        'text': 'Format'
+                    }
+                },
+                {
+                    'tag': 'div',
+                    'attributes': {
+                        'class': 'controls'
+                    },
+                    'children': [
+                        {
+                            'tag': 'input',
+                            'attributes': {
+                                'id': 'field-format',
+                                'type': 'text',
+                                'name': 'format',
+                                'placeholder': 'eg. CSV, XML or JSON',
+                                'data-module': 'autocomplete',
+                                'data-module-source': "/api/2/util/resource/format_autocomplete?incomplete=?"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
+
     ]
 };
 

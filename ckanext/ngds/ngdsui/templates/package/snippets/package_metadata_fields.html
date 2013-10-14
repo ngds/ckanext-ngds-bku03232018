@@ -1,0 +1,16 @@
+{% ckan_extends %}
+
+{% block package_metadata_author %}
+{% endblock %}
+
+{% block package_metadata_fields_maintainer %}
+{% endblock %}
+
+{% block package_metadata_fields_custom %}
+{% block custom_fields %}
+  {% snippet 'snippets/custom_form_fields.html', extras=data.extras, errors=errors, limit=3, pkg_id=data.id %}
+{% endblock %}
+{% endblock %}
+
+{% block dataset_fields %}{% endblock %}
+

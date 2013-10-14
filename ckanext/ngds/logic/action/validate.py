@@ -1,7 +1,9 @@
 __author__ = 'vivek'
 from ckan.logic.schema import default_update_resource_schema, default_update_package_schema, default_create_package_schema
-from ckan.lib.navl.validators import Invalid, not_empty, ignore_missing
+from ckan.lib.navl.validators import Invalid, not_empty, ignore_missing, not_missing, keep_extras, ignore
+from ckan.logic.validators import extras_unicode_convert
 from pylons.i18n import _
+from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
 
 
 def ngds_resource_schema():
@@ -14,12 +16,22 @@ def ngds_resource_schema():
     resource_update_schema['layer'] = [ignore_missing]
     resource_update_schema['content_model_uri'] = [ignore_missing]
     resource_update_schema['content_model_version'] = [ignore_missing]
+
     return resource_update_schema
 
 
 def ngds_package_schema():
     package_update_schema = default_update_package_schema()
     package_update_schema['resources'] = ngds_resource_schema()
+    package_update_schema['owner_org'] = [validate_owner_org]
+    package_update_schema['extras'] = {
+        'id': [ignore],
+        'key': [not_empty, unicode, validate_extras],
+        'value': [not_missing],
+        'state': [ignore],
+        'deleted': [ignore_missing],
+        'revision_timestamp': [ignore],
+    }
     return package_update_schema
 
 
@@ -51,13 +63,17 @@ def resource_metadata_validator(key, data, errors, context):
     return data[key]
 
 
+def error_append(key, errors, err):
+    if key in errors:
+        errors[key].append(err)
+    else:
+        errors[key] = []
+        errors[key].append(err)
+
+
 def existence_check(key, data, errors, context):
     if key not in data or data[key] == '':
-        if key in errors:
-            errors[key].append(_('Missing value'))
-        else:
-            errors[key] = []
-            errors[key].append(_('Missing value'))
+        error_append(key, errors, _('Missing value'))
         return False
     return True
 
@@ -83,8 +99,32 @@ def validate_content_model(key, data, errors, context):
 
 
 def is_content_model_none(key, data, errors, context):
-    if existence_check(key, data, errors, context) and data[key] == "none":
+    if existence_check(key, data, errors, context) and data[key] == "None":
         return True
+
+
+def conforms_to_content_model(key, data, errors, context):
+    if len(key) == 1:
+        url_key = ('url',)
+        cm_key = ('content_model_uri',)
+        cmv_key = ('content_model_version',)
+        err_key = ('content_model',)
+    else:
+        key_pre = key[0:2]
+        url_key = key_pre + ('url',)
+        cm_key = key_pre + ('content_model_uri',)
+        cmv_key = key_pre + ('content_model_version',)
+        err_key = key_pre + ('content_model',)
+
+    url = data[url_key]
+    cm = data[cm_key]
+    cmv = data[cmv_key]
+    split_version = cmv.split('/')
+    cm_version = split_version[len(split_version) - 1]
+    data_dict = {'cm_uri': cm, 'cm_version': cm_version, 'cm_resource_url': url}
+    cm_validation_results = contentmodel_checkFile({}, data_dict)
+    if cm_validation_results['valid'] == False:
+        error_append(err_key, errors, cm_validation_results['messages'])
 
 
 def validate_content_model_version(key, data, errors, context):
@@ -112,12 +152,60 @@ def validate_data_service_resource_fields_present(key, data, errors, context):
 def validate_structured_resource_fields_present(key, data, errors, context):
     key_stub = key[0:2]
 
-    content_model_key = key_stub + ('content_model_uri',)
-    content_model_version_key = key_stub + ('content_model_version',)
+    if key_stub[0] == 'resources':
+        distributor_key = key_stub + ('distributor',)
+        content_model_key = key_stub + ('content_model_uri',)
+        content_model_version_key = key_stub + ('content_model_version',)
+    else:
+        distributor_key = ('distributor',)
+        content_model_key = ('content_model_uri',)
+        content_model_version_key = ('content_model_version',)
 
     validate_content_model(content_model_key, data, errors, context)
+    validate_distributor(distributor_key, data, errors, context)
     cm_none = is_content_model_none(content_model_key, data, errors, context)
     if cm_none:
         data.pop(key)
     else:
-        validate_content_model_version(content_model_version_key, data, errors, context)
+        cmv_none = validate_content_model_version(content_model_version_key, data, errors, context)
+        if not cm_none and not cmv_none:
+            conforms_to_content_model(content_model_key, data, errors, context)
+
+
+def validate_owner_org(key, data, errors, context):
+    data[key] = "public"
+
+
+def validate_extras(key, data, errors, context):
+    if ("extras", 0, "key") not in data or data[("extras", 0, "value")] == "":
+        errors[("authors",)] = [_("Missing value")]
+
+    if ("extras", 1, "key") not in data or data[("extras", 1, "value")] == "":
+        errors[("maintainer",)] = [_("Missing value")]
+
+    if ("extras", 2, "key") not in data or data[("extras", 2, "value")] == "":
+        errors[("spatial_word",)] = [_("Missing value")]
+
+    if ("extras", 3, "key") not in data or data[("extras", 3, "value")] == "":
+        errors[("dataset_category",)] = [_("Missing value")]
+
+    if ("extras", 4, "key") not in data or data[("extras", 4, "value")] == "":
+        errors[("dataset_uri",)] = [_("Missing value")]
+
+    if ("extras", 5, "key") not in data or data[("extras", 5, "value")] == "":
+        errors[("quality",)] = [_("Missing value")]
+
+    if ("extras", 6, "key") not in data or data[("extras", 6, "value")] == "":
+        errors[("lineage",)] = [_("Missing value")]
+
+    if ("extras", 7, "key") not in data or data[("extras", 7, "value")] == "":
+        errors[("status",)] = [_("Missing value")]
+
+    if ("extras", 8, "key") not in data or data[("extras", 8, "value")] == "":
+        errors[("publication_date",)] = [_("Missing value")]
+
+    if ("extras", 9, "key") not in data or data[("extras", 9, "value")] == "":
+        errors[("dataset_lang",)] = [_("Missing value")]
+
+    if ("extras", 10, "key") not in data or data[("extras", 10, "value")] == "":
+        errors[("spatial",)] = [_("Missing value")]

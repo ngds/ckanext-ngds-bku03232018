@@ -55,12 +55,12 @@
                 {% if resource and resource.resource_format == 'structured' %}
 
                     {% if "content_model_uri" in errors %}
-                    {% set cm_error = true %}
-                {% endif %}
+                        {% set cm_error = true %}
+                    {% endif %}
 
                 {% set content_models = h.get_content_models_for_ui() %}
 
-                 <div class="control-group{% if protocol_error %} error{% endif %} control-medium" data-cm>
+                 <div class="control-group{% if cm_error %} error{% endif %} control-medium" data-cm>
                         <label class="control-label" for="field-content-model">{{ _("Content Model") }}</label>
                         <div class="controls">
                             <select id="field-content-model" name="content_model_uri" data-module="autocomplete">
@@ -76,6 +76,38 @@
                              {% endif %}
                         </div>
                     </div>
+
+
+                    {% if "content_model_version" in errors %}
+                        {% set cm_version_error = true %}
+                    {% endif %}
+
+                    {% if data['content_model_uri']!="None" %}
+                        {% set content_model_versions = h.get_content_model_versions_for_uri(data['content_model_uri']) %}
+                    {% endif %}
+
+                    <div class="control-group{% if cm_version_error %} error{% endif %} control-medium" data-cm>
+                        <label class="control-label" for="field-content-model-version">{{ _("Content Model Version") }}</label>
+                        <div class="controls">
+                            <select id="field-content-model-version" name="content_model_version" data-module="autocomplete">
+                               {% for cmv in content_model_versions %}
+                                <option value="{{cmv['uri']}}"{{ is_selected(cmv['uri'],"content_model_version",data)}}>{{cmv['version']}}</option>
+                               {% endfor %}
+                            </select>
+                            {% if cm_version_error %}
+                                {% for error in errors['content_model_version'] %}
+                                    <span class="error-block">{{error}}</span>
+                                {% endfor %}
+                             {% endif %}
+                        </div>
+                    </div>
+
+                    {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
+                    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'), value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
+
+                    {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
+                    {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('eg. CSV, XML or JSON'), value=data.format, error=errors.format, classes=['control-medium'], attrs=format_attrs) %}
+                    {% endcall %}
 
                 {% elif resource and resource.resource_format == 'unstructured' %}
 
