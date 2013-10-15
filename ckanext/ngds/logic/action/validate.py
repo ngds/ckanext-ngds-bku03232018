@@ -4,6 +4,7 @@ from ckan.lib.navl.validators import Invalid, not_empty, ignore_missing, not_mis
 from ckan.logic.validators import extras_unicode_convert
 from pylons.i18n import _
 from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
+from pylons import request
 
 
 def ngds_resource_schema():
@@ -107,8 +108,9 @@ def validate_content_model(key, data, errors, context):
 
 
 def is_content_model_none(key, data, errors, context):
-    if existence_check(key, data, errors, context) and data[key] == "None":
+    if existence_check(key, data, errors, context) and (data[key] == "None" or data[key] == "none"):
         return True
+    return False
 
 
 def is_content_model_version_none(key, data, errors, context):
@@ -136,9 +138,11 @@ def conforms_to_content_model(key, data, errors, context):
     split_version = cmv.split('/')
     cm_version = split_version[len(split_version) - 1]
     data_dict = {'cm_uri': cm, 'cm_version': cm_version, 'cm_resource_url': url}
-    cm_validation_results = contentmodel_checkFile({}, data_dict)
-    if not cm_validation_results['valid']:
-        error_append(err_key, errors, cm_validation_results['messages'])
+
+    if url != "":
+        cm_validation_results = contentmodel_checkFile({}, data_dict)
+        if not cm_validation_results['valid']:
+            error_append(err_key, errors, cm_validation_results['messages'])
 
 
 def validate_content_model_version(key, data, errors, context):
@@ -176,8 +180,8 @@ def validate_structured_resource_fields_present(key, data, errors, context):
     validate_distributor(key, data, errors, context)
     cm_none = is_content_model_none(content_model_key, data, errors, context)
     if cm_none:
-        if is_content_model_version_none(content_model_version_key, data, errors, context):
-            error_append(content_model_version_key, errors, _('Missing Value'))
+        #if is_content_model_version_none(content_model_version_key, data, errors, context):
+        #    error_append(content_model_version_key, errors, _('Missing Value'))
         data.pop(content_model_key)
     else:
         cmv_none = is_content_model_version_none(content_model_version_key, data, errors, context)
@@ -195,6 +199,9 @@ def validate_owner_org(key, data, errors, context):
 
 
 def validate_extras(key, data, errors, context):
+    if request.params.get('save') and request.params.get('save') == 'go-dataset':
+        return
+
     if ("extras", 0, "key") not in data or data[("extras", 0, "value")] == "":
         errors[("authors",)] = [_("Missing value")]
 
