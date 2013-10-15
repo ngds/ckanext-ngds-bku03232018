@@ -1,9 +1,25 @@
+''' ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ '''
+
 import logging
 import ckan.logic as logic
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
 from ckanext.ngds.geoserver.model.Layer import Layer
 from ckan.plugins import toolkit
 from ckanext.ngds.env import ckan_model
+from owslib.wms import WebMapService
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -77,19 +93,10 @@ def unpublish(context,data_dict):
 
     if not layer_name:
         resource = ckan_model.Resource.get(resource_id)
-        # layer_name = resource.get('layer_name')
 
     geoserver = Geoserver.from_ckan_config()
 
     package_id = ckan_model.Resource.get(resource_id).resource_group.package_id
-    # package = ckan_model.Package.get(package_id)
-
-    # for resource in package.resources:
-    #     if 'parent_resource' in resource.extras and 'ogc_type' in resource.extras:
-    #         extras = resource.extras
-    #         if extras['parent_resource'] == resource_id:
-    #             layer_name = extras['layer_name']
-    #             break
 
     def unpub():
         if geoserver_layer_name is not None:
@@ -104,3 +111,31 @@ def unpublish(context,data_dict):
     layer.remove()
 
     return True
+
+def GETLayerNameWMS(data_dict, version="1.1.1"):
+
+    resource_id = data_dict.get("resource_id")
+    file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
+    thisData = file_resource
+    thisURL = thisData.get("url")
+    thisWMS = WebMapService(thisURL, version)
+
+    def get_layer_list():
+        return list(thisWMS.contents)
+
+    def get_first_layer():
+        theseLayers = get_layer_list()
+        return theseLayers[0]
+
+    layers = list(thisWMS.contents)
+
+    given_layer = thisData.get("layer_name")
+    if not given_layer:
+        thisData.get("layer")
+    if not given_layer:
+        thisData.get("layers")
+
+    if given_layer in layers:
+        return given_layer
+    else:
+        return get_first_layer()

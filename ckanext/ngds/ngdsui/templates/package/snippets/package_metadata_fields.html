@@ -1,4 +1,46 @@
+<<<<<<< HEAD
 {% ckan_extends %}
+=======
+{# ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ #}
+
+{% import 'macros/form.html' as form %}
+{% macro is_selected(value,key,extra) %}
+  {% for extra in extras %}
+    {% if extra.key == key %}
+      {% if extra.value == value %}
+        selected
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+{% include 'package/add_responsible_party.tmf' %}
+        {% macro get_value(key,extra) -%}
+  {% for extra in extras -%}
+    {% if extra.key == key -%}
+      {{ extra.value }}
+    {%- endif %}
+  {%- endfor %}
+{%- endmacro %}
+<div class="form-body">
+ 
+  <!-- <div class="input-group">
+    <div class="sp-label"><label>Author Email</label></div>
+      <input type="text" name="author_email" placeholder="joe@example.com" value="{{data.author_email}}"></input>
+  </div> -->
+>>>>>>> master
 
 {% block package_metadata_author %}
 {% endblock %}

@@ -1,0 +1,200 @@
+{# ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ #}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Flot Examples: Basic Usage</title>
+	<link href="examples.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="vendor/jquery-ui-1.10.3/themes/base/jquery-ui.css" />
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../../excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="vendor/flot/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="vendor/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js"></script>
+	<script language="javascript" type="text/javascript" src="vendor/flot/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="vendor/flot/jquery.flot.categories.js"></script>
+	<script type="text/javascript">
+	
+	function plot_histogram(style, config, data) {
+		
+		var style_obj= $.parseJSON(style);
+		var config_obj= $.parseJSON(config);
+		
+		var lower= config_obj.lower;
+		var upper= config_obj.upper;;
+		var num_bins= config_obj.num_bins;
+		var precision= style_obj.precision;
+		
+		var bins= new Array();
+		var bin_width= (upper - lower + 1) / num_bins;
+		var ignore_counter= 0;
+
+		console.log('precision: ' + precision);
+		console.log('upper: ' + upper);
+		
+		// initialize the Bins 
+		for (i= 0; i<num_bins-1; i++) {
+			bins[i]= [ "[" + (i*bin_width).toPrecision(precision) + "-" + ((i+1)*bin_width).toPrecision(precision) + "[", 0 ];
+		}
+		
+		i= num_bins-1;
+		bins[i]= [ "[" + (i*bin_width).toPrecision(3) + "-" + ((i+1)*bin_width).toPrecision(3) + "]", 0 ];
+		
+		// fill the Bins 
+		for (i= 0; i<data.length; i++) {
+			pos= Math.floor(data[i] / bin_width);
+			// we include the upper boundary in the last bin 
+			if (pos==num_bins) {
+				pos= num_bins-1;
+			}
+			// anything beyond the last bin is ignored 
+			if (pos <= num_bins) {
+				// console.log("d: " + data[i] + " \t pos: " + pos);
+				bin= bins[pos];
+				bin[1]++;
+			} else {
+				ignore_counter++;
+			}
+		}		
+		$.plot("#placeholder", [ bins ], {
+			series: {
+				bars: {
+					show: true,
+					barWidth: 0.6,
+					align: "center"
+				}
+			},
+			xaxis: {
+				mode: "categories",
+				tickLength: 0
+			}
+		});		
+	}
+
+	// Base Data
+	var data = [10, 8, 4, 1, 7, 8, 2, 10, 8, 5, 6, 5, 6, 5, 9];
+	var style= '{ "precision": "3" }';
+	var config= '{ "type": "linear", "lower": 1, "upper": 10, "num_bins": 4 }';
+	
+	function updateHistogram() {
+		
+		style= '{ "precision": ' + $('#i_precision').val() + ' }';
+		config= '{ "type": "' + $('#type').val() + '", "lower": ' + $('#i_lower').val() + ', "upper": ' + $('#i_upper').val() + ', "num_bins": ' + $('#i_numBins').val() + ' }';
+		console.log (config);
+		plot_histogram(style, config, data);
+	}
+	
+	function resetHistogram() {
+		$("#i_precision").val(3);
+		$("#i_lower").val(0);
+		$("#i_upper").val(10);
+		$("#i_numBins").val(4);
+		$("#bin_slider").slider( { value: 4 } );
+		$("#range_slider").slider( { values: [ 0, 10 ] } );
+	}
+	
+	$(function() {
+		plot_histogram(style, config, data);
+		
+		$( "#bin_slider" ).slider({
+			value:4,
+			min: 1,
+			max: 20,
+			step: 1,
+			slide: function( event, ui ) {
+			$( "#i_numBins" ).val( ui.value );
+			}
+		});
+		$( "#i_numBins" ).val( $( "#bin_slider" ).slider( "value" ) );
+		
+		$( "#range_slider" ).slider({
+			 range: true,
+			 min: 0,
+			 max: 10,
+			 values: [ 0, 10 ],
+			 slide: function( event, ui ) {
+			 	$( "#i_lower" ).val( ui.values[ 0 ] );
+			 	$( "#i_upper" ).val( ui.values[ 1 ] );
+			 }
+		});
+		$( "#i_lower" ).val( $( "#range_slider" ).slider( "values", 0 ) );
+		$( "#i_upper" ).val( $( "#range_slider" ).slider( "values", 1 ) );
+			
+		// Add the Flot version string to the footer
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+	});
+	</script>
+</head>
+<body>
+	<div id="header">
+		<h2>Basic Usage</h2>
+	</div>
+
+	<div id="content">
+
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+
+		<div id="" class="demo-config">
+			<form name="histo_config" action="javascript:updateHistogram()">
+				<table><tbody>
+				<tr>
+					<td><label>Precision:</label></td>
+					<td><input id="i_precision"    type="number" maxlength="2" size="2" value="3"/></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><label>Boundaries:</label></td>
+					<td><input id="i_lower"   type="number" maxlength="2" size="2" readonly="readonly"/></td>
+					<td id="td_range_slider"><div id="range_slider"></div></td>
+					<td><input id="i_upper"   type="number" maxlength="2" size="2" readonly="readonly"/></td>
+				</tr>
+				<!-- 
+				<tr><td><label>Lower Boundary:</label></td><td><input id="i_lower"   type="number"/></td></tr>
+				<tr><td><label>Upper Boundary:</label></td><td><input id="i_upper"   type="number"/></td></tr>
+				 -->
+				 
+				<tr>
+					<td><label>Number of Bins:</label></td>
+					<td><input id="i_numBins" type="number" maxlength="2" size="2" readonly="readonly"/></td>
+					<td id="td_slider"><div id="bin_slider"></div></td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td><label>Type:</label></td>
+					<td colspan="2">
+						<select id="s_type" name="select_type">
+							<option>linear</option>
+							<option>logarithmic</option>
+						</select>
+					</td>
+					<td></td>
+				</tr>
+				</tbody></table>
+				<input name="Submit" type="submit" value="Update"/>
+				<input name="Reset"  type="button" value="Reset" onclick="javascript:resetHistogram()"/>
+			</form>
+		</div>
+	</div>
+
+	<div id="footer">
+		Copyright &copy; 2007 - 2013 IOLA and Ole Laursen
+	</div>
+
+</body>
+</html>

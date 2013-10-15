@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "package/base.html" %}
 
 {% block primary %}
@@ -35,6 +36,54 @@
 <section class="module">
     {% else %}
     <section class="module dataset_create">
+=======
+{# ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ #}
+
+{% extends "page_ngds.html" %}
+
+{% block content %}
+{% set pkg = c.pkg_dict %}
+{% block breadcrumb_content_selected %}{% endblock %}
+
+{% block contribute_landing %}
+<!--<h2 class="heading"><img class="heading-image" src="/images/create_node.png" alt=""> {# _('CONTRIBUTE') #}</h2>-->
+
+{% endblock %}
+
+<div class="toolbar">
+    <ol class="breadcrumb">
+        {% snippet 'snippets/home_breadcrumb_item.html' %}
+        {% block breadcrumb_content %}
+
+        {% if pkg %}
+        {% set dataset = pkg.title or pkg.name %}
+        {% if pkg.organization %}
+        {% set organization = pkg.organization.title or pkg.organization.name %}
+        <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
+        <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name,_tags_limit=0 %}
+            {% else %}
+        <li>{% link_for _('Datasets'), controller='package', action='search',_tags_limit=0 %}</li>
+        {% endif %}
+        <li>
+        {{ self.breadcrumb_content_selected() }}{% link_for dataset|truncate(30), controller='package', action='read',
+        id=pkg.name %}</li>
+        {% else %}
+        <li>{% link_for _('Datasets'), controller='package', action='search',_tags_limit=0 %}</li>
+        <li class="active"><a href="">{{ _('Create Dataset') }}</a></li>
+>>>>>>> master
         {% endif %}
         <div class="module-content">
             {% block form %}{{ c.form | safe }}{% endblock %}
@@ -81,5 +130,9 @@
     <script type="text/javascript" src="/scripts/contribute/custom_fields_generator.js"></script>
     <script type="text/javascript" src="/scripts/utils/utils.js"></script>
 
+<<<<<<< HEAD
     {% endif %}
     {% endblock %}
+=======
+{% endblock %}
+>>>>>>> master

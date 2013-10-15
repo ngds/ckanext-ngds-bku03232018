@@ -1,3 +1,18 @@
+''' ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ '''
+
 import logging
 
 import ckan.plugins as p
@@ -55,25 +70,26 @@ class GeoserverPlugin(p.SingletonPlugin):
         '''
 
         actions = {
-           'geoserver_publish_layer':action.publish,
-           'geoserver_layer_exists':action.layer_exists,
-           'geoserver_unpublish_layer':action.unpublish,
+           'geoserver_publish_layer': action.publish,
+           'geoserver_layer_exists': action.layer_exists,
+           'geoserver_unpublish_layer': action.unpublish,
+           'geoserver_proxy_layer_name': action.GETLayerNameWMS,
         }
         
         return actions
 
     def get_auth_functions(self):
-        functions =  {'datastore_spatialize' : auth.datastore_create, 
-                'datastore_expose_as_layer' : auth.datastore_create,
-                'datastore_is_spatialized' : auth.datastore_search,
-                'datastore_is_exposed_as_layer' : auth.datastore_search,
-                'datastore_remove_exposed_layer' : auth.datastore_delete,
-                'datastore_remove_all_exposed_layers' :auth.datastore_delete,
-                'datastore_list_exposed_layers' : auth.datastore_search,
-                'geoserver_create_workspace' : auth.datastore_create,
-                'geoserver_delete_workspace' : auth.datastore_delete,
-                'geoserver_create_store' : auth.datastore_create,
-                'geoserver_delete_store' : auth.datastore_delete,}
+        functions =  {'datastore_spatialize': auth.datastore_create,
+                'datastore_expose_as_layer': auth.datastore_create,
+                'datastore_is_spatialized': auth.datastore_search,
+                'datastore_is_exposed_as_layer': auth.datastore_search,
+                'datastore_remove_exposed_layer': auth.datastore_delete,
+                'datastore_remove_all_exposed_layers': auth.datastore_delete,
+                'datastore_list_exposed_layers': auth.datastore_search,
+                'geoserver_create_workspace': auth.datastore_create,
+                'geoserver_delete_workspace': auth.datastore_delete,
+                'geoserver_create_store': auth.datastore_create,
+                'geoserver_delete_store': auth.datastore_delete}
         
         return functions
 

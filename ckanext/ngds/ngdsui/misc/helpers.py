@@ -1,3 +1,18 @@
+''' ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ '''
+
 """
 This file defines a list of helper functions that are used from the site templates to obtain data that may not be available at the time of rendering, or to process information on the fly.
 """
@@ -220,6 +235,10 @@ def load_ngds_facets():
     """
 
     # Return the loaded facets from global context if available. This will avoid unnecssary reading of config file everytime during search.
+
+    loaded_facets = None
+    facets_dict = None
+
     try:
         if g.loaded_facets:
             return g.loaded_facets

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {#
 Adds a block of custom form fields.
 
@@ -9,6 +10,23 @@ Example:
 {% snippet 'snippets/custom_form_fields.html', extras=data.extras, errors=errors, limit=3 %}
 
 #}
+=======
+{# ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ #}
+
+>>>>>>> master
 {% import "macros/form.html" as form %}
 
 {% macro is_selected(value,key,extra) %}
@@ -135,8 +153,14 @@ Example:
       <div id="bbox-map"></div>
 </div>
 
+<<<<<<< HEAD
 {% if get_value('spatial',extras) %}
         {% set saved_spatial = true %}
 {% endif %}
 <input type="hidden" id="field-extras-10-key" name="extras__10__key" value="spatial" />
 <input type="hidden" id="field-extras-10-value" name="extras__10__value" {% if saved_spatial %}data-restore-spatial data-key="spatial" data-dom-key="field-extras-10-value" data-pkg-id="{{pkg_id}}"{% endif %} />
+=======
+//$("#maintainer_fake").val("");
+</script>
+<script type="text/javascript" src="/scripts/metadata_type_ahead.js"></script>
+>>>>>>> master
