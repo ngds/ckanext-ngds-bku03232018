@@ -135,25 +135,20 @@ ngds.ckanlib = {
 
         var location = null;
 
-        var p_m1 = parameter_obj['q'].match(/ near /);
-        var p_m2 = parameter_obj['q'].match(/^near /);
-        var token = null;
         var proximity_matched = false;
-        if (p_m1 !== null || p_m2 !== null) {
-            proximity_matched = true;
-        }
-
-        if (p_m1 !== null) {
-            token = " near ";
-        }
-        else {
-            token = "near ";
+        var tokens = parameter_obj['q'].split(" ");
+        for (var i = 0; i < tokens.length; i++) {
+            var space_stripped = tokens[i].replace(" ", "").replace(" ", "");
+            if (space_stripped === "near" || space_stripped === "in") {
+                proximity_matched = true;
+                break;
+            }
         }
 
         if (proximity_matched === true) {
-            var sp_str = parameter_obj['q'].split(token);
-            location = sp_str[1];
-            var query = parameter_obj['q'] = sp_str[0];
+            location = tokens.splice(i + 1, tokens.length);
+            var query = tokens.splice(0, i).join(" ");
+            parameter_obj['q'] = query;
             var osm_provider = new L.GeoSearch.Provider.OpenStreetMap();
             var g_url = osm_provider.GetServiceUrl(location);
             ngds.publish("data-loading", {});

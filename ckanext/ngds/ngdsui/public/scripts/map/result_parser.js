@@ -298,7 +298,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             layer_control.addOverlay(layer_to_add, label_prefix + wms_mapping[id][k].name);
             ngds.Map.map.addLayer(layer_to_add);
         }
-        ckan.notify("The Web Map Services you requested have been added to the map.");
+        ckan.notify("The Web Map Services you requested have been added to the map.","","info");
 
     });
 
@@ -312,74 +312,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         });
     })();
 
-
-    $(".visibility-toggler button").click(function (ev) {
-
-        ev.stopPropagation();
-        var seq = Number($(ev.target).attr('data-seq'));
-
-        if (typeof ngds.util.state['hidden_t'] === "undefined") {
-            ngds.util.state['hidden_t'] = {};
-        }
-        var hidden_map = ngds.util.state['hidden_t'];
-
-        // Show/hide All.
-
-        if (typeof ngds.util.state['hidden_t'][seq] === "undefined" && seq === 0) {
-
-            ngds.util.state['hidden_t'][seq] = ngds.layer_map;
-            for (var item_key in ngds.layer_map) {
-                ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[item_key]);
-                $(".visible").addClass("toggled");
-            }
-            ngds.util.state['map_features'] = [];
-            return;
-        }
-
-        else if (seq === 0) {
-            for (var item_key in ngds.layer_map) {
-                if (typeof ngds.layer_map[item_key] !== 'undefined') {
-                    ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[item_key]);
-                    ngds.Map.sort_geojson_layers(ngds.layer_map[item_key]);
-                }
-            }
-            for (var item_h_key in ngds.util.state['hidden_t']) {
-                if (item_h_key === 0) {
-                    continue;
-                }
-                $("[data-seq=" + item_h_key + "]").removeClass("toggled");
-                delete ngds.util.state['hidden_t'][item_h_key];
-            }
-            delete ngds.util.state['hidden_t']
-            $(".visible").removeClass("toggled");
-        }
-
-        // Show/hide All.
-
-        if (seq === 0) {
-            return;
-        }
-
-        if (typeof ngds.util.state['hidden_t'][seq] === "undefined") {
-            ngds.util.state['hidden_t'][seq] = ngds.layer_map[seq];
-            ngds.Map.geoJSONLayer.removeLayer(ngds.layer_map[seq]);
-            $(ev.target).addClass("toggled");
-        }
-        else {
-            ngds.Map.get_layer('geojson').addLayer(ngds.layer_map[seq]);
-            ngds.Map.sort_geojson_layers(ngds.layer_map[seq]);
-
-            for (var i = 0; i < ngds.util.state['map_features'].length; i++) {
-                if (ngds.util.state['hidden_t'][seq] === ngds.util.state['map_features'][i]) {
-                    delete ngds.util.state['map_features'][i];
-                }
-            }
-            delete ngds.util.state['hidden_t'][seq];
-            $(ev.target).removeClass("toggled");
-        }
-
-
-    });
     ngds.publish('Map.results_rendered', {
 
     });

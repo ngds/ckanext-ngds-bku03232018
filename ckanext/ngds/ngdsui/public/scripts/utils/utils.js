@@ -131,6 +131,7 @@ ngds.util.clear_map_state = function () {
     $(".reader").remove();
     $(".search-results-page-nums").empty();
     $(".results-text").remove();
+    ngds.Map.visibility_mgr.clearMgrs();
     ngds.Map.zoom_handler.clear_listeners();
     ngds.layer_map = {};
     ngds.Map.clear_layer('geojson');

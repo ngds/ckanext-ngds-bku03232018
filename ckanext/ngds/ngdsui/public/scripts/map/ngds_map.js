@@ -418,6 +418,7 @@ ngds.Map = {
         geoJSONRepresentation.bindPopup(popup);
         this.add_to_layer([geoJSONRepresentation], 'geojson');
         this.sort_geojson_layers(geoJSONRepresentation);
+        return geoJSONRepresentation;
 
     },
     sort_geojson_layers: function (layer) {
