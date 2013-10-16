@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-{% ckan_extends %}
-=======
 {# ___NGDS_HEADER_BEGIN___
 
 National Geothermal Data System - NGDS
@@ -16,11 +13,7 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ #}
 
-{% set stage = stage or 1 %}
-{% set include_metadata = include_metadata or false %}
-{% set data = data %}
-{% extends 'package/snippets/resource_form.html' %}
->>>>>>> master
+{% ckan_extends %}
 
 {% set content_models = h.get_content_models_for_ui() %}
 

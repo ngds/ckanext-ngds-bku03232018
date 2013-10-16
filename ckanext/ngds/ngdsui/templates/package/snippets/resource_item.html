@@ -154,6 +154,7 @@ var populate_geoserver_layer_name = function (dom_marker) {
 var publish_as_ogc = function(gs_lyr_name, resource_id, package_id, lat_field, lng_field){
     lat_field = typeof lat_field !== 'undefined' ? lat_field : 'LATITUDE';
     lng_field = typeof lng_field !== 'undefined' ? lng_field : 'LONGITUDE';
+    ckan.notify("Please wait while this resource is published ...... ","","info");
 
     $.ajax({
         url:'/api/action/geoserver_publish_layer',
@@ -167,11 +168,13 @@ var publish_as_ogc = function(gs_lyr_name, resource_id, package_id, lat_field, l
             col_longitude:lng_field
         }),
         success:function(response){
-            window.alert("This resource has now been published as an OGC service.");
+            $(".alert").remove();
+            ckan.notify("This resource has now been published as an OGC service.","","success");
             window.location.reload();
         },
         error:function() {
-            window.alert("Sorry. The action requested could not be successfully completed.");
+            $(".alert").remove();
+            ckan.notify("Sorry. The action requested could not be successfully completed.","","error")
         }
     });
 };

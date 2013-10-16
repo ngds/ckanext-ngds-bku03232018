@@ -1,4 +1,4 @@
-# ___NGDS_HEADER_BEGIN___
+/* ___NGDS_HEADER_BEGIN___
 # 
 # National Geothermal Data System - NGDS
 # https://github.com/ngds
@@ -11,14 +11,14 @@
 # project:
 # https://github.com/ngds/ckanext-ngds/README.txt
 # 
-# ___NGDS_HEADER_END___ #}
+# ___NGDS_HEADER_END___ */
 
 .res-container {
   display: table;
   margin-left: 50px;
   font-family: Arial;
   font-size: 13px;
-  padding:30px;
+  padding: 30px;
 
   .res-table {
     display: table-row;
@@ -48,7 +48,7 @@
       width: 830px;
       padding-left: 50px;
       border-top: 1px solid #bababa;
-      border-right:1px solid #bababa;
+      border-right: 1px solid #bababa;
       border-bottom: 1px solid #bababa;
 
       p {
@@ -79,4 +79,13 @@
     }
 
   }
+}
+
+.additional-info td, .additional-info th {
+  text-align: center;
+}
+
+.additional-info table thead:first-child tr:first-child th, .table thead:first-child tr:first-child td {
+  background-color: #476276;
+  color: white;
 }

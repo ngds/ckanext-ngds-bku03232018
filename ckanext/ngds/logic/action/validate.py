@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-__author__ = 'vivek'
-from ckan.logic.schema import default_update_resource_schema, default_update_package_schema, default_create_package_schema
-from ckan.lib.navl.validators import Invalid, not_empty, ignore_missing, not_missing, keep_extras, ignore
-from ckan.logic.validators import extras_unicode_convert
-from pylons.i18n import _
-=======
 ''' ___NGDS_HEADER_BEGIN___
 
 National Geothermal Data System - NGDS
@@ -20,11 +13,12 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ '''
 
-from inspect import isfunction
-from ckanext.ngds.metadata.model.additional_metadata import ResponsibleParty
-import ast
-from ckan.model import meta
->>>>>>> master
+__author__ = 'vivek'
+from ckan.logic.schema import default_update_resource_schema, default_update_package_schema, default_create_package_schema
+from ckan.lib.navl.validators import Invalid, not_empty, ignore_missing, not_missing, keep_extras, ignore
+from ckan.logic.validators import extras_unicode_convert
+from pylons.i18n import _
+
 from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
 from pylons import request
 
@@ -254,17 +248,5 @@ def validate_extras(key, data, errors, context):
     if ("extras", 9, "key") not in data or data[("extras", 9, "value")] == "":
         errors[("dataset_lang",)] = [_("Missing value")]
 
-<<<<<<< HEAD
     if ("extras", 10, "key") not in data or data[("extras", 10, "value")] == "":
         errors[("spatial",)] = [_("Missing value")]
-=======
-def responsible_party_exists(email):
-    try:
-        responsible_party = meta.Session.query(ResponsibleParty).filter(ResponsibleParty.email == email)
-        if responsible_party.first().email == email:
-            return True
-    except Exception as e:
-        pass
-        # swallow it
-    return False
->>>>>>> master

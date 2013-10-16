@@ -73,21 +73,8 @@ ___NGDS_HEADER_END___ #}
         <tr rel="dc:relation" resource="_:extra{{ i }}">
           <th scope="row" class="dataset-label" property="rdfs:label">{{ _(h.get_label_for_pkg_attribute(key)) }}</th>
 
-          {% if key == "authors" and h.is_json(value) %}
-            <td class="dataset-details">
-                {% for item in h.parseJSON(value) %}
-                {{ h.mail_to(email_address=item.email, name=item.name) }}<br/>
-                {% endfor %}
-            </td>
-          {% elif key == "ngds_maintainer" and h.is_json(value) %}
-            <td class="dataset-details">
-                {% set maintainer_parsed = h.parseJSON(value) %}
-                {{ h.mail_to(email_address=maintainer_parsed.email, name=maintainer_parsed.name) }}<br/>
-            </td>
-          {% else %}
-          <td class="dataset-details" property="rdf:value">{{ value }}</td>
-          {% endif %}
 
+          <td class="dataset-details" property="rdf:value">{{ value }}</td>
         </tr>
         {% endfor %}
     </tbody>
