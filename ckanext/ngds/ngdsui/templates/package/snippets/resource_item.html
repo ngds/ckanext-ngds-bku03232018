@@ -20,6 +20,7 @@ ___NGDS_HEADER_END___ #}
     {{ h.resource_display_name(res) | truncate(50) }}<span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>
     {{ h.popular('views', res.tracking_summary.total, min=10) }}
   </a>
+
   {% endblock %}
   <p class="description">
     {% if res.description %}
@@ -29,12 +30,10 @@ ___NGDS_HEADER_END___ #}
     {% endif %}
   </p>
   {% block resource_item_explore %}
-  <div class="dropdown btn-group">
-    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-      <i class="icon-share-alt"></i>
-      {{ _('Explore') }}
-      <span class="caret"></span>
-    </a>
+  <div class="btn-group">
+
+    <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
+    <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
 
     {% if h.check_access('package_create') and not g.central %}
     {% if h.is_plugin_enabled('geoserver') %}

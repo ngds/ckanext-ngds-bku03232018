@@ -181,13 +181,6 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("manage_users", "/ngds/users", controller=user_controller, action="manage_users")
         map.connect("member_new", "/ngds/member_new", controller=user_controller, action="member_new")
         map.connect("logout_page", "/user/logged_out_redirect", controller=user_controller, action="logged_out_page")
-        map.connect("validate_resource", "/ngds/contribute/validate_resource", controller=contribute_controller,
-                    action="validate_resource")
-        map.connect("additional_metadata", "/ngds/contribute/additional_metadata", controller=contribute_controller,
-                    action="additional_metadata")
-        map.connect("new_metadata", "/ngds/contribute/new_metadata", controller=contribute_controller,
-                    action="new_metadata")
-
         map.connect("execute_fulltext_indexer", "/ngds/execute_fulltext_indexer", controller=contribute_controller,
                     action="execute_fulltext_indexer")
 

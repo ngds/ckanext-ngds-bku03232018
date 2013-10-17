@@ -319,7 +319,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 ngds.Map.map.addLayer(layer_to_add);
             });
         }
-
+        console.log(wms_mapping);
         for (var k = 0; k < wms_mapping[this_resource_id].length; k++) {
             addWmsLayer(wms_mapping[this_resource_id][k]);
         }

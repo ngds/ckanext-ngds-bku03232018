@@ -21,6 +21,8 @@ from pylons.i18n import _
 
 from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
 from pylons import request
+import json
+from ckanext.ngds.contentmodel.logic.ContentModel_Utilities import get_url_for_file
 
 
 def ngds_resource_schema():
@@ -91,9 +93,14 @@ def error_append(key, errors, err):
 
 
 def existence_check(key, data, errors, context):
-    if key not in data or data[key] == '':
+    if key not in data:
         error_append(key, errors, _('Missing value'))
         return False
+
+    if data[key] == '':
+        error_append(key, errors, _('Missing value'))
+        return False
+
     return True
 
 
@@ -119,12 +126,10 @@ def validate_layer(key, data, errors, context):
     existence_check(key, data, errors, context)
 
 
-def validate_content_model(key, data, errors, context):
-    existence_check(key, data, errors, context)
-
-
 def is_content_model_none(key, data, errors, context):
-    if existence_check(key, data, errors, context) and (data[key] == "None" or data[key] == "none"):
+    if not key in data:
+        return True
+    if data[key] == "None" or data[key] == "none":
         return True
     return False
 
@@ -133,6 +138,24 @@ def is_content_model_version_none(key, data, errors, context):
     if not existence_check(key, data, errors, context):
         return True
     return False
+
+
+def line_count(key, data, errors, context, key_stub):
+    url = data[key]
+    if key_stub:
+        lcount_key = key_stub + ('lcount', )
+    else:
+        lcount_key = ('lcount', )
+
+    modified_resource_url = url.replace("%3A", ":")
+    truncated_url = modified_resource_url.split("/storage/f/")[1]
+    filename_withfile = get_url_for_file(truncated_url)
+
+    if filename_withfile:
+        f = open(filename_withfile.split("file://")[1])
+        count = len([line for line in f.readlines()])
+        data[lcount_key] = count
+        f.close()
 
 
 def conforms_to_content_model(key, data, errors, context):
@@ -188,17 +211,22 @@ def validate_structured_resource_fields_present(key, data, errors, context):
     if key_stub[0] == 'resources':
         content_model_key = key_stub + ('content_model_uri',)
         content_model_version_key = key_stub + ('content_model_version',)
+        url_key = key_stub + ('url',)
     else:
+        key_stub = None
         content_model_key = ('content_model_uri',)
         content_model_version_key = ('content_model_version',)
+        url_key = ('url',)
 
-    validate_content_model(content_model_key, data, errors, context)
+    line_count(url_key, data, errors, context, key_stub=key_stub)
+
     validate_distributor(key, data, errors, context)
     cm_none = is_content_model_none(content_model_key, data, errors, context)
     if cm_none:
         #if is_content_model_version_none(content_model_version_key, data, errors, context):
         #    error_append(content_model_version_key, errors, _('Missing Value'))
-        data.pop(content_model_key)
+        if content_model_key in data:
+            data.pop(content_model_key)
     else:
         cmv_none = is_content_model_version_none(content_model_version_key, data, errors, context)
         if not cm_none and not cmv_none:
@@ -220,6 +248,13 @@ def validate_extras(key, data, errors, context):
 
     if ("extras", 0, "key") not in data or data[("extras", 0, "value")] == "":
         errors[("authors",)] = [_("Missing value")]
+    else:
+        try:
+            pattempt = json.loads(data[("extras", 0, "value")])
+            if not isinstance(pattempt, list):
+                data[("extras", 0, "value")] = "[" + data[("extras", 0, "value")] + "]"
+        except Exception:
+            data[("extras", 0, "value")] = "[" + data[("extras", 0, "value")] + "]"
 
     if ("extras", 1, "key") not in data or data[("extras", 1, "value")] == "":
         errors[("maintainer",)] = [_("Missing value")]
