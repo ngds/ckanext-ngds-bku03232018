@@ -81,7 +81,7 @@ ___NGDS_HEADER_END___ #}
 var populate_lat_lng_fields = function (dom_marker, field_list) {
     var marker = dom_marker;
     var fields = field_list;
-    var lat_lng_field_struct = {
+    var lat_lng_field_structure = {
         'form': [
             {
                 'label': 'Latitude Field',
@@ -111,7 +111,7 @@ var populate_lat_lng_fields = function (dom_marker, field_list) {
 
     $(".lat_field_name").remove();
     $(".lng_field_name").remove();
-    marker.after(Mustache.render(ngds.structured_form_template, lat_lng_field_struct));
+    marker.after(Mustache.render(ngds.structured_form_template, lat_lng_field_structure));
 
     var select_lat = document.getElementById("lat_field_marker");
     var select_lon = document.getElementById("lng_field_marker");
@@ -131,7 +131,14 @@ var populate_drop_down_list = function(dom_element, field_list) {
 };
 
 var populate_geoserver_layer_name = function (dom_marker) {
+    $("#user-input-parent").remove();
     var marker = dom_marker;
+    var btn_parent = marker.parent();
+    var resource_item = btn_parent.parent();
+    resource_item.append('<div id="user-input-parent"></div>');
+    $("#user-input-parent").append('<div id="user-input"></div>');
+    var lyr_name_marker = $("#user-input");
+
     var gs_lyr_name_struct = {
         'form': [
             {
@@ -148,7 +155,7 @@ var populate_geoserver_layer_name = function (dom_marker) {
             }
         ]};
     $(".gs_lyr_name_marker").remove();
-    marker.append(Mustache.render(ngds.structured_form_template, gs_lyr_name_struct));
+    lyr_name_marker.append(Mustache.render(ngds.structured_form_template, gs_lyr_name_struct));
 };
 
 var publish_as_ogc = function(gs_lyr_name, resource_id, package_id, lat_field, lng_field){
@@ -210,36 +217,54 @@ var make_field_list = function(data){
 
 var callback = function(data){
     var field_list = make_field_list(data);
-    var latlng_marker = $("#gs_lyr_name_input");
+    var latlng_marker = $(".gs_lyr_name_marker");
     populate_lat_lng_fields(latlng_marker, field_list);
 };
+
+var which_resource_item = function (event) {
+    var target = $(event.target);
+    return target
+};
+
+var build_buttons = function (resource_id,package_id) {
+    $(".cancel_lyr_inputs").remove();
+    $(".enter_gs_lyr_name").remove();
+    $("#user-input").after('<button class="btn cancel_lyr_inputs">Cancel</button>')
+    $(".cancel_lyr_inputs").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="">Publish</button>');
+    $(".enter_gs_lyr_name").val(resource_id + "," + package_id);
+    $(".cancel_lyr_inputs").click(function() {
+        $("#user-input").remove();
+        $(".enter_gs_lyr_name").remove();
+        $(".cancel_lyr_inputs").remove();
+    });
+}
 
 $(document).ready(function() {
   if((window.spatialize_handler===null || typeof window.spatialize_handler==='undefined') && ($(".spatialize").length>0)) {
         window.spatialize_handler = 'defined';
         var resource_format = ("{{ res.format }}");
-        $(".resource-item").after('<div id="user-input"></div>');
-        var lyr_name_marker = $("#user-input");
-        $(".spatialize").click(function(){
-            populate_geoserver_layer_name(lyr_name_marker);
+        $(".spatialize").click(function(ev){
+            var params = (ev.currentTarget.value.split(","));
+            var resource_id = params[0];
+            var package_id = params[1];
+            var a = which_resource_item(event);
+            populate_geoserver_layer_name(a);
             if (resource_format === "CSV"){
                 get_csv_fields();
-                $(".enter_gs_lyr_name").remove();
-                $("#user-input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
+                build_buttons(resource_id,package_id);
             } else {
-                $(".enter_gs_lyr_name").remove();
-                $("#user-input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
+                build_buttons(resource_id,package_id);
             }
 
             $(".enter_gs_lyr_name").click(function(ev) {
                 var params = ev.currentTarget.value.split(",");
-                var resource_id = params[0];
-                var package_id = params[1];
+                var this_resource_id = params[0];
+                var this_package_id = params[1];
                 var lyr_name_val = $("#gs_lyr_name_input").val();
                 var lat_field_val = $("#lat_field_marker").val();
                 var lng_field_val = $("#lng_field_marker").val();
 
-                publish_as_ogc(lyr_name_val, resource_id, package_id, lat_field_val, lng_field_val);
+                publish_as_ogc(lyr_name_val, this_resource_id, this_package_id, lat_field_val, lng_field_val);
         });
         });
   }
