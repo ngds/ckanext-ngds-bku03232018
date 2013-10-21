@@ -1,8 +1,6 @@
    NGDS: The National Geothermal Data System
 ===============================================
 
-THIS IS A PRELIMINARY DOCUMENT!
-
 NGDS provides a solution for storing and retrieving information about 
 geothermal energy. It provides a web user interface with flexible search and
 analysis features. NGDS also provides all features required by an orginization
@@ -203,7 +201,7 @@ SDPX Identifier: GPL-2.0+
 SOLR V2
 -------
 
-Copyright © 2011-2012 The Apache Software Foundation, Licensed under the Apache License, Version 2.0. Privacy Policy
+Copyright ï¿½ 2011-2012 The Apache Software Foundation, Licensed under the Apache License, Version 2.0. Privacy Policy
 Apache and the Apache feather logo are trademarks of The Apache Software Foundation. Apache Lucene, Apache Solr and their respective logos are trademarks of the Apache Software Foundation. Please see the Apache Trademark Policy for more information. 
 http://lucene.apache.org/solr/
 
