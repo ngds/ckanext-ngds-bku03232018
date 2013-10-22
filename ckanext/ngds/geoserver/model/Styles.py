@@ -1,21 +1,30 @@
 from Geoserver import Geoserver
-from os import listdir
-from os.path import isfile, isdir, join
+from os import listdir, getcwd, makedirs
+from os.path import isfile, isdir, join, normpath
+from urlparse import urlsplit
 import urllib2
 import json
-import pprint
+import sys
+import re
 
-my_path = r"/Users/adrian/virtualenvs/ckan_env/src/ckanext-ngds/ckanext/ngds/geoserver/sld_files/"
 content_model = "http://schemas.usgin.org/uri-gin/ngds/dataschema/activefault/"
-
 
 class Styles:
 
     def __init__(self):
         self.model_url = 'http://schemas.usgin.org/contentmodels.json'
         self.geoserver = Geoserver.from_ckan_config()
-        self.this_path = r"/Users/adrian/virtualenvs/ckan_env/src/ckanext-ngds/ckanext/ngds/geoserver/sld_files/"
-        self.sld_dir = ""#path to directory of sld files
+
+    def get_sld_dir(self):
+        path = getcwd()
+        parent = normpath(join(path, '..'))
+        if 'sld_files' in listdir(parent):
+        #if 'sld_files' not in listdir(parent):
+            #makedirs(join(parent, 'sld_files'))
+            return join(parent, 'sld_files')
+        else:
+            error_msg = sys.exc_info()[0]
+            return "Error: %s" % error_msg
 
     def get_gs_styles(self):
         geoserver = self.geoserver
@@ -23,8 +32,8 @@ class Styles:
 
     def get_sld_list(self, path):
         this_path = path
-        files = [f for f in listdir(this_path) if isfile(join(this_path,f))]
-        path_files = [this_path + f for f in files]
+        files = [f for f in listdir(this_path) if isfile(join(this_path,f)) if not f.startswith('.')]
+        path_files = [join(this_path,f) for f in files]
         return path_files
 
     def get_dir_list(self, path):
@@ -32,10 +41,10 @@ class Styles:
         dirs = [d for d in listdir(this_path) if isdir(join(this_path,d))]
         return dirs
 
-    def make_sld_path_list(self, path):
-        this_path = path
+    def make_sld_path_list(self):
+        this_path = self.get_sld_dir()
         folders = self.get_dir_list(this_path)
-        path_folders = [this_path + dir + '/' for dir in folders]
+        path_folders = [join(this_path, dir) for dir in folders]
         base_slds = self.get_sld_list(this_path)
         path_slds = [self.get_sld_list(that_path) for that_path in path_folders]
         flat_path_slds = [item for sub_list in path_slds for item in sub_list]
@@ -61,12 +70,12 @@ class Styles:
             pass
 
     def loop_load_styles(self):
+        this_path = self.get_sld_dir()
         files = self.get_sld_list()
         for file in files:
             style_name = file[:-4]
             style_path = this_path + file
             self.load_style(style_name, style_path)
-            print style_name
 
     def get_content_models(self):
         url = self.model_url
@@ -74,24 +83,41 @@ class Styles:
         data = json.loads(str(reader))
         return data
 
-    def get_sld(self, content_model=None):
-        label = []
+    def get_uri_sld(self, content_model=None):
         data = self.get_content_models()
         if content_model is None:
-            label = [model['sld_file_path'] for model in data for model in model['versions']]
+            return dict((model['label'], (version['uri'], version['sld_file_path']))
+                        for model in data for version in model['versions'])
         else:
-            label = [model['label'] for model in data if model['uri'] == content_model]
-        return label
+            return dict((model['label'], (version['uri'], version['sld_file_path'])) for model in
+                        data for version in model['versions'] if model['uri'] == content_model)
+
+    def get_sld(self, content_model=None):
+        data = self.get_content_models()
+        if content_model is None:
+            return [model['sld_file_path'] for model in data for model in model['versions']]
+        else:
+            return [model['label'] for model in data if model['uri'] == content_model]
 
     def get_uri(self):
         data = self.get_content_models()
-        uri = [model['uri'] for model in data for model in model['versions']]
-        return uri
+        return [model['uri'] for model in data for model in model['versions']]
+
+    def build_file_directory(self):
+        data = self.get_uri_sld()
+        that_dir = self.get_sld_dir()
+        urls = [value[1] for value in data.itervalues()]
+        paths = [urlsplit(url).path for url in urls if url is not None]
+        pattern_a = r'.*?\/files/(.*)/.*'
+        path_id = [match.group(1) for path in paths for match in [re.search(pattern_a, path)]]
+        pattern_b = re.compile('(-|\.)')
+        path_safe_chars = [pattern_b.sub('_', path) for path in path_id]
+        path_folders = [(path.rsplit('/')) for path in path_safe_chars]
+        for path in path_folders:
+            makedirs(join(that_dir, path[0], path[1]))
 
 a = Styles()
-#print a.make_sld_path_list(my_path)
-for i in a.get_sld():
-    print i
+#a.build_file_directory()
 
-for e in a.get_uri():
-    print e
+b = a.get_sld_dir()
+print a.get_dir_list(b)
