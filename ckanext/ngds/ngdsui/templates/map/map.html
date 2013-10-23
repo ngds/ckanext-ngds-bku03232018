@@ -94,6 +94,7 @@ ___NGDS_HEADER_END___ #}
 
 {% if h.is_development() %}
 <script type="text/javascript" src="/scripts/map/L.TileLayer.EsriImageExports.js"></script>
+    <script type="text/javascript" src="/scripts/map/L.TileLayer.WMSWFI.js"></script>
 
 <script type="text/javascript" src="/scripts/map/L.Draw.Clear.js"></script>
 <script type="text/javascript" src="/scripts/map/L.FullScreen.js"></script>
@@ -108,6 +109,12 @@ ___NGDS_HEADER_END___ #}
 <script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
 <script type="text/javascript" src="/scripts/map/result_parser.js"></script>
 <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
+    <script>
+        function processFeatureInfo(data) {
+            console.log(data);
+        };
+
+    </script>
 
 {% else %}
 

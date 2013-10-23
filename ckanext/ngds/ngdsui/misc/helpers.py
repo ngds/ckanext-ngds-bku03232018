@@ -892,3 +892,10 @@ def get_status_for_ui():
 def get_languages_for_ui():
     languages = model.Language.search('').all()
     return languages
+
+
+def get_cur_page():
+    unsp = request.path_info
+    if unsp.startswith("/"):
+        return unsp[1:len(unsp)]
+    return unsp

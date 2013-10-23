@@ -23,6 +23,8 @@ from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
 from pylons import request
 import json
 from ckanext.ngds.contentmodel.logic.ContentModel_Utilities import get_url_for_file
+from ckanext.ngds.logic.file_processors.FileProcessorFactory import FileProcessorFactory
+import ckan.logic as logic
 
 
 def ngds_resource_schema():
@@ -158,18 +160,17 @@ def line_count(key, data, errors, context, key_stub):
         f.close()
 
 
-def conforms_to_content_model(key, data, errors, context):
+def construct_key(key, field):
     if len(key) == 1:
-        url_key = ('url',)
-        cm_key = ('content_model_uri',)
-        cmv_key = ('content_model_version',)
-        err_key = ('content_model',)
-    else:
-        key_pre = key[0:2]
-        url_key = key_pre + ('url',)
-        cm_key = key_pre + ('content_model_uri',)
-        cmv_key = key_pre + ('content_model_version',)
-        err_key = key_pre + ('content_model',)
+        return (field,)
+    return key[0:2] + (field, )
+
+
+def conforms_to_content_model(key, data, errors, context):
+    url_key = construct_key(key, 'url')
+    cm_key = construct_key(key, 'content_model_uri')
+    cmv_key = construct_key(key, 'content_model_version')
+    err_key = construct_key(key, 'content_model')
 
     url = data[url_key]
     cm = data[cm_key]
@@ -182,6 +183,15 @@ def conforms_to_content_model(key, data, errors, context):
         cm_validation_results = contentmodel_checkFile({}, data_dict)
         if not cm_validation_results['valid']:
             error_append(err_key, errors, cm_validation_results['messages'])
+        else:
+            fpf = FileProcessorFactory
+            modified_resource_url = url.replace("%3A", ":")
+            truncated_url = modified_resource_url.split("/storage/f/")[1]
+            csv_filename_withfile = get_url_for_file(truncated_url).split("file://")[1]
+            results = fpf.get_file_processor(csv_filename_withfile, cm, cmv, 'dummy_res_id').run_processes()
+            for result in results:
+                k = construct_key(key, result)
+                data[k] = str(results[result])
 
 
 def validate_content_model_version(key, data, errors, context):
@@ -212,11 +222,13 @@ def validate_structured_resource_fields_present(key, data, errors, context):
         content_model_key = key_stub + ('content_model_uri',)
         content_model_version_key = key_stub + ('content_model_version',)
         url_key = key_stub + ('url',)
+        res_id_key = key_stub + ('id',)
     else:
         key_stub = None
         content_model_key = ('content_model_uri',)
         content_model_version_key = ('content_model_version',)
         url_key = ('url',)
+        res_id_key = ('id',)
 
     line_count(url_key, data, errors, context, key_stub=key_stub)
 
@@ -230,7 +242,21 @@ def validate_structured_resource_fields_present(key, data, errors, context):
     else:
         cmv_none = is_content_model_version_none(content_model_version_key, data, errors, context)
         if not cm_none and not cmv_none:
-            conforms_to_content_model(content_model_key, data, errors, context)
+            if has_resource_url_changed(res_id_key, url_key, data):
+                conforms_to_content_model(content_model_key, data, errors, context)
+
+
+def has_resource_url_changed(id_key, url_key, data):
+    if not id_key in data:
+        return True
+
+    old_res = logic.get_action('resource_show')({}, {
+                                                        'id': data[id_key]
+                                                    })
+    if not old_res['url'] == data[url_key]:
+        return True
+
+    return False
 
 
 def validate_unstructured_resource_fields_present(key, data, errors, context):

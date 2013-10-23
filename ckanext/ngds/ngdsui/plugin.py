@@ -194,6 +194,7 @@ class NgdsuiPlugin(SingletonPlugin):
                     action="render_contributors")
         map.connect("contributors_list", "/ngds/terms_of_use", controller=home_controller, action="render_terms_of_use")
         map.connect("contributors_list", "/ngds/contact", controller=home_controller, action="render_contact")
+        map.connect("rate", "/ngds/rate/{pkg_id}/{rating_value}", controller=home_controller, action="rate")
         return map
 
     implements(IConfigurer, inherit=True)
@@ -220,6 +221,7 @@ class NgdsuiPlugin(SingletonPlugin):
             'contentmodel_checkBulkFile': contentmodel_action.contentmodel_checkBulkFile,
             'get_content_models_for_ui': helpers.get_content_models_for_ui_action,
             'get_content_model_version_for_uri': helpers.get_content_model_version_for_uri_action,
+
             #'create_resource_document_index': lib_action.create_resource_document_index
             # 'validate_resource': validate_action.validate_resource,
             # 'validate_dataset_metadata':validate_action.validate_dataset_metadata
@@ -285,7 +287,8 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_full_resource_dict': helpers.get_full_resource_dict,
             'get_dataset_categories': helpers.get_dataset_categories,
             'get_status_for_ui': helpers.get_status_for_ui,
-            'get_languages_for_ui': helpers.get_languages_for_ui
+            'get_languages_for_ui': helpers.get_languages_for_ui,
+            'get_cur_page':helpers.get_cur_page
         }
 
     implements(IPackageController, inherit=True)
