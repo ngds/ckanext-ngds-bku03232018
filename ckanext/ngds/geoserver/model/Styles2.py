@@ -1,12 +1,14 @@
 from Geoserver import Geoserver
 from os import listdir, getcwd, makedirs, walk
-from os.path import isfile, isdir, join, normpath
+from os.path import isfile, basename, join, normpath
 from urlparse import urlsplit
 import urllib2
 from urllib import urlretrieve
 import json
 import sys
 import re
+import zipfile
+from shutil import copyfileobj
 
 class ManageStyles:
 
@@ -32,16 +34,19 @@ class ManageStyles:
         data = json.loads(str(reader))
         return data
 
-    def make_file_path(self, path):
+    def make_file_path(self, path, download=True):
         base_dir = self.get_sld_dir()
         if path is not None:
             this_path = urlsplit(path).path
-            file_name = this_path.rsplit('/',1)[1]
+            file_name = this_path.rsplit('/', 1)[1]
             pattern_id = r'.*?\/files/(.*)/.*'
             path_id = re.search(pattern_id, this_path).group(1)
             pattern_safe_chars = re.compile('(-|\.)')
             path_folders = pattern_safe_chars.sub('_', path_id).rsplit('/')
-            return join(base_dir, path_folders[0], path_folders[1], file_name)
+            if download:
+                return join(base_dir, path_folders[0], path_folders[1], file_name)
+            else:
+                return join(base_dir, path_folders[0], path_folders[1])
         else:
             return None
 
@@ -61,15 +66,17 @@ class ManageStyles:
         data = self.get_sld_info()
         urls = [value[1] for value in data.itervalues()]
         for url in urls:
-            file_path = self.make_file_path(url)
-            if file_path is not None: makedirs(file_path)
+            file_path = self.make_file_path(url, False)
+            if file_path is not None:
+                makedirs(file_path)
 
     def download_styles(self):
         data = self.get_sld_info()
         for value in data.itervalues():
             url = value[1]
             path = value[2]
-            if url is not None: urlretrieve(url, path)
+            if url is not None:
+                urlretrieve(url, path)
 
     def make_file_path_list(self):
         these_paths = []
@@ -79,6 +86,36 @@ class ManageStyles:
                 these_paths.append(paths)
         return these_paths
 
-a = Styles()
+    def get_style_file(self, path):
+        this_path = path
+        files = [f for f in listdir(this_path) if isfile(join(this_path,f)) if not f.startswith('.')]
+        path_files = [join(this_path,f) for f in files]
+        return path_files
 
-a.download_styles()
+    def get_style_file_list(self):
+        these_paths = []
+        paths = self.make_file_path_list()
+        for path in paths:
+            full_path = self.get_style_file(path)
+            these_paths.append(full_path)
+        return [path for sub_list in these_paths for path in sub_list]
+
+    def handle_zipped_files(self):
+        these_files = self.get_style_file_list()
+        for f in these_files:
+            if zipfile.is_zipfile(f):
+                destination = f.rsplit('/', 1)[0]
+                with zipfile.ZipFile(f) as zf:
+                    for member in zf.namelist():
+                        filename = basename(member)
+                        if not filename:
+                            continue
+                        source = zf.open(member)
+                        target = file(join(destination, filename), 'wb')
+                        with source, target:
+                            copyfileobj(source, target)
+
+    def do_everything(self):
+        self.build_file_directory()
+        self.download_styles()
+        self.handle_zipped_files()
