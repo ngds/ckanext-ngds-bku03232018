@@ -115,6 +115,12 @@ class ManageStyles:
                         with source, target:
                             copyfileobj(source, target)
 
+    def get_sld_list(self, path):
+        this_path = path
+        files = [f for f in listdir(this_path) if isfile(join(this_path,f)) if not f.startswith('.')]
+        path_files = [join(this_path,f) for f in files]
+        return path_files
+
     def do_everything(self):
         self.build_file_directory()
         self.download_styles()
@@ -123,20 +129,28 @@ class ManageStyles:
 
 class UseStyles:
 
+    default_styles = ['burg','capitals','cite_lakes','dem','giant_polygon','grass',
+                      'green','poi','poly_landmarks','pophatch','population','rain',
+                      'restricted','simple_roads','simple_streams','tiger_roads']
+
     def __init__(self):
         self.geoserver = Geoserver.from_ckan_config()
+        self.Manage = ManageStyles()
 
     def get_gs_styles(self):
         geoserver = self.geoserver
         return [style.name for style in geoserver.get_styles()]
 
+    def delete_all_styles(self):
+        geoserver = self.geoserver
+        these_styles = self.get_gs_styles()
+        for style in these_styles:
+            this_style = geoserver.get_style(style)
+            geoserver.delete(this_style)
+
     def delete_default_styles(self):
         geoserver = self.geoserver
-        default_styles = ['burg','capitals','cite_lakes','dem','giant_polygon','grass',
-                          'green','line','poi','point','poly_landmarks','polygon',
-                          'pophatch','population','rain','raster','restricted','simple_roads',
-                          'simple_streams','tiger_roads']
-        for style in default_styles:
+        for style in self.default_styles:
             this_style = geoserver.get_style(style)
             geoserver.delete(this_style)
 
@@ -144,14 +158,18 @@ class UseStyles:
         geoserver = self.geoserver
         styles = [style.name for style in geoserver.get_styles()]
         if style_name not in styles:
-            geoserver.create_style(style_name, open(style_path).read(), overwrite=True)
+            geoserver.create_style(style_name, open(style_path).read(), overwrite=False)
         else:
             pass
 
     def loop_load_styles(self):
-        this_path = self.get_sld_dir()
-        files = self.get_sld_list()
-        for file in files:
-            style_name = file[:-4]
-            style_path = this_path + file
-            self.load_style(style_name, style_path)
+        file_paths = self.Manage.get_style_file_list()
+        for style_path in file_paths:
+            try:
+                if zipfile.is_zipfile(style_path):
+                    pass
+                else:
+                    style_name = style_path.rsplit('/', 1)[1][:-4]
+                    self.load_style(style_name, style_path)
+            except:
+                pass
