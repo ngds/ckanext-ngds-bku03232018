@@ -119,3 +119,39 @@ class ManageStyles:
         self.build_file_directory()
         self.download_styles()
         self.handle_zipped_files()
+
+
+class UseStyles:
+
+    def __init__(self):
+        self.geoserver = Geoserver.from_ckan_config()
+
+    def get_gs_styles(self):
+        geoserver = self.geoserver
+        return [style.name for style in geoserver.get_styles()]
+
+    def delete_default_styles(self):
+        geoserver = self.geoserver
+        default_styles = ['burg','capitals','cite_lakes','dem','giant_polygon','grass',
+                          'green','line','poi','point','poly_landmarks','polygon',
+                          'pophatch','population','rain','raster','restricted','simple_roads',
+                          'simple_streams','tiger_roads']
+        for style in default_styles:
+            this_style = geoserver.get_style(style)
+            geoserver.delete(this_style)
+
+    def load_style(self, style_name, style_path):
+        geoserver = self.geoserver
+        styles = [style.name for style in geoserver.get_styles()]
+        if style_name not in styles:
+            geoserver.create_style(style_name, open(style_path).read(), overwrite=True)
+        else:
+            pass
+
+    def loop_load_styles(self):
+        this_path = self.get_sld_dir()
+        files = self.get_sld_list()
+        for file in files:
+            style_name = file[:-4]
+            style_path = this_path + file
+            self.load_style(style_name, style_path)
