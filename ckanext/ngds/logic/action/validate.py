@@ -143,6 +143,9 @@ def is_content_model_version_none(key, data, errors, context):
 
 
 def line_count(key, data, errors, context, key_stub):
+    if key not in data or data[key] == "":
+        return
+
     url = data[key]
     if key_stub:
         lcount_key = key_stub + ('lcount', )
