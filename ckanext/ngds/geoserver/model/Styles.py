@@ -1,5 +1,5 @@
 from Geoserver import Geoserver
-from os import listdir, getcwd, makedirs
+from os import listdir, getcwd, makedirs, walk
 from os.path import isfile, isdir, join, normpath
 from urlparse import urlsplit
 import urllib2
@@ -20,7 +20,7 @@ class Styles:
         parent = normpath(join(path, '..'))
         if 'sld_files' in listdir(parent):
         #if 'sld_files' not in listdir(parent):
-            #makedirs(join(parent, 'sld_files'))
+        #    makedirs(join(parent, 'sld_files'))
             return join(parent, 'sld_files')
         else:
             error_msg = sys.exc_info()[0]
@@ -40,6 +40,14 @@ class Styles:
         this_path = path
         dirs = [d for d in listdir(this_path) if isdir(join(this_path,d))]
         return dirs
+
+    def make_file_path_list(self):
+        these_paths = []
+        base_dir = self.get_sld_dir()
+        for paths, dirs, files in walk(base_dir):
+            if len(dirs) == 0:
+                these_paths.append(paths)
+        return these_paths
 
     def make_sld_path_list(self):
         this_path = self.get_sld_dir()
@@ -83,7 +91,7 @@ class Styles:
         data = json.loads(str(reader))
         return data
 
-    def get_uri_sld(self, content_model=None):
+    def get_sld_uri(self, content_model=None):
         data = self.get_content_models()
         if content_model is None:
             return dict((model['label'], (version['uri'], version['sld_file_path']))
@@ -104,7 +112,7 @@ class Styles:
         return [model['uri'] for model in data for model in model['versions']]
 
     def build_file_directory(self):
-        data = self.get_uri_sld()
+        data = self.get_sld_uri()
         that_dir = self.get_sld_dir()
         urls = [value[1] for value in data.itervalues()]
         paths = [urlsplit(url).path for url in urls if url is not None]
@@ -117,7 +125,8 @@ class Styles:
             makedirs(join(that_dir, path[0], path[1]))
 
 a = Styles()
-#a.build_file_directory()
 
-b = a.get_sld_dir()
-print a.get_dir_list(b)
+#b = a.get_sld_dir()
+#print a.get_dir_list(b)
+
+print a.make_file_path_list()
