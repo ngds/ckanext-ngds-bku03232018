@@ -288,7 +288,9 @@ class NgdsuiPlugin(SingletonPlugin):
             'get_dataset_categories': helpers.get_dataset_categories,
             'get_status_for_ui': helpers.get_status_for_ui,
             'get_languages_for_ui': helpers.get_languages_for_ui,
-            'get_cur_page':helpers.get_cur_page
+            'get_cur_page': helpers.get_cur_page,
+            'get_content_model_dict': helpers.get_content_model_dict,
+            'metadata_fields_to_display_for_cm': helpers.metadata_fields_to_display_for_cm
         }
 
     implements(IPackageController, inherit=True)

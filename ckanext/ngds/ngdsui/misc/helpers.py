@@ -36,6 +36,8 @@ from ckan.model.resource import Resource
 import logging
 import ckan.plugins as p
 import json
+import ckanext.ngds.logic.file_processors.ProcessorRegistry as PR
+import ckanext.ngds.logic.file_processors.ContentModelConstants as CMC
 
 from ckan.plugins import toolkit
 
@@ -750,6 +752,12 @@ def get_content_models():
     return logic.get_action('contentmodel_list_short')()
 
 
+def get_content_model_dict(uri):
+    cmlist = logic.get_action('contentmodel_list_short')()
+    cm = filter(lambda x: x['uri'] == uri, cmlist)
+    return cm[0]
+
+
 def get_content_models_for_ui():
     list = logic.get_action('contentmodel_list_short')()
     cm_names = map(lambda x: {"title": x['title'], "uri": x['uri']}, list)
@@ -766,7 +774,7 @@ def get_content_models_for_ui_action(context, data_dict):
 
 
 def get_content_model_versions_for_uri(uri):
-    if not uri or uri=='none' or uri=='None':
+    if not uri or uri == 'none' or uri == 'None':
         return
     content_models = logic.get_action('contentmodel_list_short')()
     content_model = filter(lambda x: True if x['uri'] == uri else False, content_models)
@@ -889,6 +897,7 @@ def get_status_for_ui():
         }
     ]
 
+
 def get_languages_for_ui():
     languages = model.Language.search('').all()
     return languages
@@ -899,3 +908,9 @@ def get_cur_page():
     if unsp.startswith("/"):
         return unsp[1:len(unsp)]
     return unsp
+
+
+def metadata_fields_to_display_for_cm(uri, version):
+    registry = PR.get_registry()
+    cm = CMC.ContentModelValue(uri, version)
+    return map(lambda x: x['metadata_field'], registry[cm])

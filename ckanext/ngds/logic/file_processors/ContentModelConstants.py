@@ -8,8 +8,10 @@ class ContentModelValue(object):
 
     def __hash__(self):
         det = self.cm + self.cmv
+        hash = 0
         for c in det:
             hash = 101 * hash + ord(c)
+        return hash
 
     def __eq__(self, other):
         return self.cm == other.cm and self.cmv == other.cmv
