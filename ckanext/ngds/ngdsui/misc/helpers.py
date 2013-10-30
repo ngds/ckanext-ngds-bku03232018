@@ -913,4 +913,6 @@ def get_cur_page():
 def metadata_fields_to_display_for_cm(uri, version):
     registry = PR.get_registry()
     cm = CMC.ContentModelValue(uri, version)
-    return map(lambda x: x['metadata_field'], registry[cm])
+    if cm in registry:
+        return map(lambda x: x['metadata_field'], registry[cm])
+    return []
