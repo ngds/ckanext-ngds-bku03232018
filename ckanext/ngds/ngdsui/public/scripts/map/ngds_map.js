@@ -25,16 +25,21 @@ ngds.Map = {
             layers: [base],
             center: new L.LatLng(34.1618, -100.53332),
             zoom: 3,
-            zoomControl: false
+            zoomControl: false,
+            attributionControl: false
         });
 
+        var attribution = new L.Control.Attribution({
+            'prefix': 'Test'
+        });
+
+        attribution.addTo(map);
 //	L.tileLayer.betterWms('http://localhost:8080/geoserver/NGDS/wms', {
 //        layers: 'NGDS:1ee1ce06-b0a0-4a5b-8823-679fc17b71dd',
 //        transparent: true,
 //        format: 'image/png',
 //        srs:'EPSG:4326'
 //      }).addTo(map);
-
 
 
         var loadingControl = L.Control.loading({
