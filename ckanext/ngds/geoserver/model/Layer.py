@@ -167,6 +167,7 @@ class Layer(object):
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             'protocol': 'OGC:WMS',
             'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
+            "resource_format": self.file_resource.get("resource_format")
 #            'geom_extent': self.returnGeomExtent()
         }
         if self.file_resource.get("content_model_version") and self.file_resource.get("content_model_uri"):
@@ -174,6 +175,7 @@ class Layer(object):
                 "content_model_version": self.file_resource.get("content_model_version"),
                 "content_model_uri": self.file_resource.get("content_model_uri")
             })
+        
         self.wms_resource = toolkit.get_action('resource_create')(context, data_dict)
 
         # WFS Resource Creation
