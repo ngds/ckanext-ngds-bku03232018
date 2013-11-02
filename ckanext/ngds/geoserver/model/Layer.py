@@ -170,7 +170,7 @@ class Layer(object):
             'layer':"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
             #'layer' We should also be creating valid NGDS resources since we're enforcing structure.
             #"resource_format": self.file_resource.get("resource_format")
-            'resource_format':'data-service'
+            'resource_format':'data-service'g
             # Why does this have to be structured as opposed to a data-service type? Isn't a WMS a data service?
 #            'geom_extent': self.returnGeomExtent()
         }
