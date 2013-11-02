@@ -256,5 +256,61 @@ ngds.ckanlib = {
                 return callback(response);
             }
         });
+    },
+    datastore_search: function (resource_id, callback) {
+        if (typeof resource_id === 'undefined' || resource_id === null) {
+            throw "Expected resource id. Got nothing.";
+        }
+        if (typeof callback !== 'function' || callback === null) {
+            throw "Expected callback function. Got nothing.";
+        }
+
+        $.ajax({
+            'url': '/api/3/action/datastore_search',
+            // Is there any particular reason why we would assume that this url should not be local?
+            'data': {
+                'resource_id': resource_id
+            },
+            'dataType': 'jsonp',
+            'success': function (response) {
+                return callback(response);
+            }
+        })
+    },
+    'publish_to_geoserver': function (params) {
+        $.ajax({
+            'url': '/api/action/geoserver_publish_layer',
+            'type': 'POST',
+            'data': JSON.stringify({
+                gs_lyr_name: params['layer_name'],
+                resource_id: params['resource_id'],
+                package_id: params['package_id'],
+                col_geography: params['col_geo'],
+                col_latitude: params['col_lat'],
+                col_longitude: params['col_lng']
+            }),
+            'success': function (response) {
+                params['callback']({'response': response, 'status': 'success'});
+            },
+            'error': function () {
+                params['callback']({'status': 'failure'});
+            }
+        });
+    },
+    'unpublish_layer': function (params) {
+        $.ajax({
+            'url': '/api/action/geoserver_unpublish_layer',
+            'type': 'POST',
+            'data': JSON.stringify({
+                'resource_id': params['resource_id'],
+                'gs_lyr_name': params['layer_name']
+            }),
+            'success': function (response) {
+                params['callback']({'response': response, 'status': 'success'});
+            },
+            'error': function () {
+                params['callback']({'status': 'failure'});
+            }
+        });
     }
-}
+};
