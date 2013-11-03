@@ -30,7 +30,7 @@ ngds.Map = {
         });
 
         var attribution = new L.Control.Attribution({
-            'prefix': 'Test'
+            'prefix': 'Tiles provided by Nokia OVI Maps'
         });
 
         attribution.addTo(map);
