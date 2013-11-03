@@ -112,7 +112,7 @@ def unpublish(context,data_dict):
 
     return True
 
-def GETLayerNameWMS(data_dict, version="1.1.1"):
+def GETLayerNameWMS(context, data_dict):
 
     resource_id = data_dict.get("resource_id")
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
