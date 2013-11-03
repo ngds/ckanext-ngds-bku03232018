@@ -118,7 +118,7 @@ def GETLayerNameWMS(data_dict, version="1.1.1"):
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
     thisData = file_resource
     thisURL = thisData.get("url")
-    thisWMS = WebMapService(thisURL, version)
+    thisWMS = WebMapService(thisURL, "1.1.1")
 
     def get_layer_list():
         return list(thisWMS.contents)

@@ -186,8 +186,12 @@ class Layer(object):
         data_dict.update({
             "package_id": self.package_id,
             "url": self.geoserver.service_url.replace("/rest", "/wfs?request=GetCapabilities"),
+            'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             "description": "WFS for %s" % self.file_resource["name"],
-            "protocol": "OGC:WFS"
+            "protocol": "OGC:WFS",
+            "layer":"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
+            'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
+            'resource_format':'data-service'
         })
         self.wfs_resource = toolkit.get_action('resource_create')(context, data_dict)
 

@@ -29,7 +29,7 @@ import ckan.logic as logic
 
 def ngds_resource_schema():
     resource_update_schema = default_update_resource_schema()
-    resource_update_schema['resource_format'] = [valid_resource_type]
+    resource_update_schema['resource_format'] = [not_missing,not_empty,valid_resource_type]
     resource_update_schema['ordering_procedure'] = [ignore_missing]
     resource_update_schema['distributor'] = [ignore_missing]
     resource_update_schema['format'] = [ignore_missing]
