@@ -434,6 +434,7 @@ class NgdsuiPlugin(SingletonPlugin):
         return 'package/edit.html'
 
     def setup_template_variables(self, context, data_dict):
+        toolkit.DefaultDatasetForm().setup_template_variables(context, data_dict)
         return data_dict
 
     def create_package_schema(self):
