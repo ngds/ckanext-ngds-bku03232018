@@ -134,7 +134,6 @@ of the radio using css. eg. input[type=radio]+label {}
     'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
     {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'),
     value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
-
     {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source':
     '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
     {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('eg. CSV, XML or JSON'),

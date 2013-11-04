@@ -29,7 +29,7 @@ import ckan.logic as logic
 
 def ngds_resource_schema():
     resource_update_schema = default_update_resource_schema()
-    resource_update_schema['resource_format'] = [not_missing,not_empty,valid_resource_type]
+    resource_update_schema['resource_format'] = [not_missing, not_empty, valid_resource_type]
     resource_update_schema['ordering_procedure'] = [ignore_missing]
     resource_update_schema['distributor'] = [ignore_missing]
     resource_update_schema['format'] = [ignore_missing]
@@ -228,16 +228,21 @@ def validate_structured_resource_fields_present(key, data, errors, context):
         content_model_version_key = key_stub + ('content_model_version',)
         url_key = key_stub + ('url',)
         res_id_key = key_stub + ('id',)
+        format_key = key_stub + ('format',)
+        distributor_key = key_stub + ('distributor',)
     else:
         key_stub = None
         content_model_key = ('content_model_uri',)
         content_model_version_key = ('content_model_version',)
         url_key = ('url',)
         res_id_key = ('id',)
+        format_key = ('format',)
+        distributor_key = ('distributor',)
 
     line_count(url_key, data, errors, context, key_stub=key_stub)
 
-    validate_distributor(key, data, errors, context)
+    validate_distributor(distributor_key, data, errors, context)
+    validate_format(format_key, data, errors, context)
     cm_none = is_content_model_none(content_model_key, data, errors, context)
     if cm_none:
         #if is_content_model_version_none(content_model_version_key, data, errors, context):
@@ -266,11 +271,23 @@ def has_resource_url_changed(id_key, url_key, data):
 
 def validate_unstructured_resource_fields_present(key, data, errors, context):
     key_stub = key[0:2]
-    validate_distributor(key, data, errors, context)
+    if key_stub[0] == 'resources':
+        format_key = key_stub + ('format',)
+        distributor_key = key_stub + ('distributor',)
+    else:
+        format_key = ('format',)
+        distributor_key = ('distributor',)
+
+    validate_distributor(distributor_key, data, errors, context)
+    validate_format(format_key, data, errors, context)
 
 
 def validate_owner_org(key, data, errors, context):
     data[key] = "public"
+
+
+def validate_format(key, data, errors, context):
+    existence_check(key, data, errors, context)
 
 
 def validate_extras(key, data, errors, context):
