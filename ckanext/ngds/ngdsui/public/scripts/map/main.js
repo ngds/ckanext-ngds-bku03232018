@@ -134,7 +134,6 @@ if (typeof ngds.Map !== 'undefined') {
 
 (function subscribe_data_loaded() {
     ngds.subscribe('data-loaded', function (msg, data) {
-        ngds.publish('Map.results_rendered', {});
         ngds.Map.map.fireEvent('dataload');
     })
 })();
@@ -449,6 +448,19 @@ if (typeof ngds.Map !== 'undefined') {
 
 
 ngds.subscribe('Map.results_rendered', function (topic, data) {
+//    TODO - This is a good place to put in layer sorting.
+    var bounds = ngds.util.state['map_features'].map(function (item) {
+        var b = item.getBounds();
+        var sw = b.getSouthWest();
+        var ne = b.getNorthEast();
+        return new L.LatLngBounds(sw, ne);
+    });
+
+    for (var i = 0; i < bounds.length; i++) {
+        bounds[i].extend(bounds[i - 1]);
+    }
+
+    ngds.Map.map.fitBounds(bounds[bounds.length - 1]);
     $(".visibility-managed").show();
     $(".results").jScrollPane({contentWidth: '0px', hideFocus: true});
 });
