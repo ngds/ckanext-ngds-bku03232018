@@ -392,7 +392,10 @@ def construct_facet(facet_group, facet_dict={}, metadatafield=None, facet_level=
         found = False
         for ret_facet in facet_values:
             #print "ret_facet['name']: ",ret_facet['name']
-            if str(ret_facet['name']).lower() == str(facet_group.get('facet')).lower():
+            fc_group = (facet_group.get('facet').encode('ascii','ignore')).lower()
+            fc_name = (ret_facet['name'].encode('ascii','ignore')).lower()
+
+            if fc_name == fc_group:
                 ret_facet['display_name'] = facet_group.get('display_name') or facet_group.get('facet')
                 facet_dict['fvalues'] = [ret_facet]
                 found = True
