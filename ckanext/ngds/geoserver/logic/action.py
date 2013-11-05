@@ -18,8 +18,10 @@ import ckan.logic as logic
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
 from ckanext.ngds.geoserver.model.Layer import Layer
 from ckan.plugins import toolkit
-from ckanext.ngds.env import ckan_model
+from ckanext.ngds.env import ckan_model, h, _
 from owslib.wms import WebMapService
+import socket
+
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -40,6 +42,7 @@ def layer_exists(context, data_dict):
         return False
     else:
         return True
+
 
 def publish(context, data_dict):
     """
@@ -63,31 +66,43 @@ def publish(context, data_dict):
     # Publish a layer
     def pub():
         if geoserver_layer_name is not None:
-            l = Layer.publish(package_id, resource_id, geoserver_layer_name, username, lat_field=lat_field, lng_field=lng_field)
+            l = Layer.publish(package_id, resource_id, geoserver_layer_name, username, lat_field=lat_field,
+                              lng_field=lng_field)
             return l
         else:
             l = Layer.publish(package_id, resource_id, layer_name, username, lat_field=lat_field, lng_field=lng_field)
             return l
 
-    l = pub()
+    try:
+        l = pub()
+        if l is None:
+            h.flash_error(
+                _(
+                    "Failed to generate a geoserver layer. Please contact the site administrator if this problem persists."))
+            raise Exception(toolkit._("Layer generation failed"))
+        else:
+            # csv content should be spatialized or a shapefile uploaded, Geoserver updated, resources appended.
+            #  l should be a Layer instance. Return whatever you wish to
+            h.flash_success(
+                _("This resource has successfully been published as an OGC service."))
+            return "Success"
+    except socket.error:
+        h.flash_error(
+            _("Error connecting to geoserver. Please contact the site administrator if this problem persists."))
 
-    # Confirm that everything went according to plan
-    if l is None:
-        raise Exception(toolkit._("Layer generation failed"))
-    else:
-        # csv content should be spatialized or a shapefile uploaded, Geoserver updated, resources appended.
-        #  l should be a Layer instance. Return whatever you wish to
-        return "Success"
 
-def unpublish(context,data_dict):
+        # Confirm that everything went according to plan
+
+
+def unpublish(context, data_dict):
     """
     Un-publishes the geoserver layer based on the resource identifier. Retrieves the geoserver layer name and package
      identifier to construct layer and remove it.
     """
     resource_id = data_dict.get("resource_id")
     layer_name = data_dict.get("layer_name")
-    layer_name = "NGDS:"+resource_id
-    username =  context.get('user')
+    layer_name = "NGDS:" + resource_id
+    username = context.get('user')
     geoserver_layer_name = data_dict.get("gs_lyr_name", None)
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
 
@@ -100,20 +115,29 @@ def unpublish(context,data_dict):
 
     def unpub():
         if geoserver_layer_name is not None:
-            layer = Layer(geoserver=geoserver, layer_name=geoserver_layer_name, resource_id=resource_id,package_id=package_id,username=username)
+            layer = Layer(geoserver=geoserver, layer_name=geoserver_layer_name, resource_id=resource_id,
+                          package_id=package_id, username=username)
             return layer
         else:
-            layer = Layer(geoserver=geoserver, layer_name=layer_name, resource_id=resource_id,package_id=package_id,username=username)
+            layer = Layer(geoserver=geoserver, layer_name=layer_name, resource_id=resource_id,
+                          package_id=package_id,
+                          username=username)
             return layer
 
-    layer = unpub()
+    try:
+        layer = unpub()
+    except socket.error:
+        h.flash_error(
+            _("Error connecting to geoserver. Please contact the site administrator if this problem persists."))
+        return False
 
     layer.remove()
-
+    h.flash_success(
+        _("This resource has successfully been unpublished."))
     return True
 
-def GETLayerNameWMS(context, data_dict):
 
+def GETLayerNameWMS(context, data_dict):
     resource_id = data_dict.get("resource_id")
     file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
     thisData = file_resource

@@ -88,12 +88,13 @@ $(document).ready(function () {
                         'col_lng': $("[name=lng]").val(),
                         'callback': function (resp_obj) {
                             if (resp_obj['status'] === 'failure') {
-                                ckan.notify("Sorry. The action requested could not be successfully completed.", "", "error")
+//                                ckan.notify("Sorry. The action requested could not be successfully completed.", "", "error")
                             }
                             else {
-                                ckan.notify("This resource has now been published as an OGC service.", "", "success");
-                                window.location.reload();
+//                                ckan.notify("This resource has now been published as an OGC service.", "", "success");
+
                             }
+                            window.location.reload();
                         }
                     });
                 }
@@ -111,10 +112,10 @@ $(document).ready(function () {
                 'resource_id': resource_id,
                 'callback': function (resp_obj) {
                     if (resp_obj['status'] === "failure") {
-                        ckan.notify("Sorry. The action requested could not be successfully completed.", "", "error");
+//                        ckan.notify("Sorry. The action requested could not be successfully completed.", "", "error");
                     }
                     else {
-                        ckan.notify("This resource has now been unpublished", "", "success");
+//                        ckan.notify("This resource has now been unpublished", "", "success");
                         window.location.reload();
                     }
                 }

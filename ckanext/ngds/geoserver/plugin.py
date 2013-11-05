@@ -70,41 +70,47 @@ class GeoserverPlugin(p.SingletonPlugin):
         '''
 
         actions = {
-           'geoserver_publish_layer': action.publish,
-           'geoserver_layer_exists': action.layer_exists,
-           'geoserver_unpublish_layer': action.unpublish,
-           'geoserver_proxy_layer_name': action.GETLayerNameWMS,
+            'geoserver_publish_layer': action.publish,
+            'geoserver_layer_exists': action.layer_exists,
+            'geoserver_unpublish_layer': action.unpublish,
+            'geoserver_proxy_layer_name': action.GETLayerNameWMS,
         }
-        
+
         return actions
 
     def get_auth_functions(self):
-        functions =  {'datastore_spatialize': auth.datastore_create,
-                'datastore_expose_as_layer': auth.datastore_create,
-                'datastore_is_spatialized': auth.datastore_search,
-                'datastore_is_exposed_as_layer': auth.datastore_search,
-                'datastore_remove_exposed_layer': auth.datastore_delete,
-                'datastore_remove_all_exposed_layers': auth.datastore_delete,
-                'datastore_list_exposed_layers': auth.datastore_search,
-                'geoserver_create_workspace': auth.datastore_create,
-                'geoserver_delete_workspace': auth.datastore_delete,
-                'geoserver_create_store': auth.datastore_create,
-                'geoserver_delete_store': auth.datastore_delete}
-        
+        functions = {'datastore_spatialize': auth.datastore_create,
+                     'datastore_expose_as_layer': auth.datastore_create,
+                     'datastore_is_spatialized': auth.datastore_search,
+                     'datastore_is_exposed_as_layer': auth.datastore_search,
+                     'datastore_remove_exposed_layer': auth.datastore_delete,
+                     'datastore_remove_all_exposed_layers': auth.datastore_delete,
+                     'datastore_list_exposed_layers': auth.datastore_search,
+                     'geoserver_create_workspace': auth.datastore_create,
+                     'geoserver_delete_workspace': auth.datastore_delete,
+                     'geoserver_create_store': auth.datastore_create,
+                     'geoserver_delete_store': auth.datastore_delete}
+
         return functions
 
-    p.implements(ITemplateHelpers,inherit=True)
+    p.implements(ITemplateHelpers, inherit=True)
+
     def get_helpers(self):
-      return {
-        'is_spatialized':helpers.is_spatialized,
-      }
+        return {
+            'is_spatialized': helpers.is_spatialized,
+        }
 
-    p.implements(IRoutes,inherit=True)
-    def before_map(self,map):
-      map.connect('spatialize','/ngds/publish_ogc',controller="ckanext.ngds.geoserver.controllers.ogc:OGCController",action="publish_ogc",conditions={"method":["POST"]})
-      map.connect('publish_layer','/ngds/publish_layer',controller="ckanext.ngds.geoserver.controllers.ogc:OGCController",action="publish_layer",conditions={"method":["POST"]})
+    p.implements(IRoutes, inherit=True)
 
-      return map
+    def before_map(self, map):
+        map.connect('spatialize', '/ngds/publish_ogc',
+                    controller="ckanext.ngds.geoserver.controllers.ogc:OGCController", action="publish_ogc",
+                    conditions={"method": ["POST"]})
+        map.connect('publish_layer', '/ngds/publish_layer',
+                    controller="ckanext.ngds.geoserver.controllers.ogc:OGCController", action="publish_layer",
+                    conditions={"method": ["POST"]})
+
+        return map
 
     # Start WFS preview plugin
 
