@@ -1,3 +1,5 @@
+var ngds = ngds || (ngds = {});
+
 ngds.render_search_results = function (topic, result) { //Subscription - 'Map.result_received'
     var seq = new ngds.util.sequence_generator();
     var count = result['count'];
