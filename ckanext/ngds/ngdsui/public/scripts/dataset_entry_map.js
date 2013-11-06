@@ -8,6 +8,51 @@ $(document).ready(function () {
 // Drawing bits from example:
 //    https://github.com/jacobtoye/Leaflet.draw/blob/master/example/drawing.html
 
+   L.Clear = L.Control.extend({
+       options: {
+           position: 'topleft',
+           title: 'Clear Rectangle',
+           forceSeparateButton: false
+       },
+
+       onAdd: function (map) {
+           var container = L.DomUtil.create('div', 'leaflet-control-rectangle-clear-container');
+           this._createButton(this.options.title, 'leaflet-control-rectangle-clear', container, this.clearRectangle, map);
+           return container;
+       },
+
+       _createButton: function (title, className, container, fn, context) {
+           var link = L.DomUtil.create('a', className, container);
+           link.href = '#';
+           link.title = title;
+           L.DomEvent
+               .addListener(link, 'click', L.DomEvent.stopPropagation)
+               .addListener(link, 'click', L.DomEvent.preventDefault)
+               .addListener(link, 'click', fn, context);
+           return link;
+       },
+       clearRectangle: function () {
+           try {
+               if (map.hasLayer(map.originalExtent)) {
+                   map.removeLayer(map.originalExtent);
+               }
+           } catch(err) {
+               console.log("No original dataset extent layer");
+           }
+       }
+/*
+           var get_layer = function (key) {
+               if (key in this.layers) {
+                   return this.layers[key];
+               }
+               throw "No layer exists with the key : " + key;
+           };
+           map.get_layer('drawnItems').clearLayers();
+           ngds.publish('Map.clear_rect', {});
+       }
+*/
+   });
+
 // Add the control panel
     var drawControl = new L.Control.Draw({
         position: 'topright',
@@ -26,6 +71,12 @@ $(document).ready(function () {
 //	geojson = getGeoJSON("Polygon", e.poly._latlngs);
 //	writeGeoJson(geojson);
 //});
+
+    var clearControl = new L.Clear({
+        position: 'topright'
+    });
+    map.addControl(clearControl);
+
     map.on('draw:rectangle-created', function (e) {
         drawnItems.clearLayers();
         drawnItems.addLayer(e.rect);

@@ -21,12 +21,12 @@ $(document).ready(function () {
                         var value = JSON.parse(extras[i]['value']);
                         $("#" + dom_key).val(extras[i]['value']);
 
-                        var lvalue = L.geoJson(value);
-                        lvalue.addTo(map);
+                        map.originalExtent = L.geoJson(value);
+                        map.originalExtent.addTo(map);
 
-                        var layers = lvalue._layers;
+                        var layers = map.originalExtent._layers;
 
-                        map.panTo(lvalue.getBounds().getCenter());
+                        map.panTo(map.originalExtent.getBounds().getCenter());
 
                         for (var index in layers) {
                             if (layers[index].feature.type === 'Point') {
