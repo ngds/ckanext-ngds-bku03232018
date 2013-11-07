@@ -37,7 +37,7 @@ $(document).ready(function () {
                    map.removeLayer(map.originalExtent);
                }
            } catch(err) {
-               console.log("No original dataset extent layer");
+               console.log("No original dataset extent layer.  Error: " + err);
            }
        }
 /*
