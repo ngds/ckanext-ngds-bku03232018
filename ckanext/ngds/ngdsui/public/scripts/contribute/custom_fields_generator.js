@@ -576,14 +576,14 @@ var data_service_raw = {
                                     'tag': 'option',
                                     'attributes': {
                                         'text': 'WMS',
-                                        'value': 'wms'
+                                        'value': 'OGC:WMS'
                                     }
                                 },
                                 {
                                     'tag': 'option',
                                     'attributes': {
                                         'text': 'WFS',
-                                        'value': 'wfs'
+                                        'value': 'OGC:WFS'
                                     }
                                 },
                                 {

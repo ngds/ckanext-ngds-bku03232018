@@ -216,10 +216,16 @@ def validate_offline_resource_fields_present(key, data, errors, context):
 def validate_data_service_resource_fields_present(key, data, errors, context):
     key_stub = key[0:2]
 
-    protocol_key = key_stub + ('protocol',)
-    layer_key = key_stub + ('layer',)
+    if key_stub[0] == 'resources':
+        distributor_key = key_stub + ('distributor',)
+        protocol_key = key_stub + ('protocol',)
+        layer_key = key_stub + ('layer',)
+    else:
+        distributor_key = ('distributor',)
+        protocol_key = ('protocol',)
+        layer_key = ('layer',)
 
-    validate_distributor(key, data, errors, context)
+    validate_distributor(distributor_key, data, errors, context)
     validate_protocol(protocol_key, data, errors, context)
     validate_layer(layer_key, data, errors, context)
 
