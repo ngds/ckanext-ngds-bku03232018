@@ -288,9 +288,11 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             }),
             success: function (data) {
                 this_layer = data.result;
+                ckan.notify("Successfully added the WMS requested to the map.", "", "success");
                 callback(null, this_layer);
             },
             error: function () {
+                ckan.notify("Encountered an error while trying to add this WMS to the map.", "", "error");
                 callback(new Error("Error getting data"));
             }
         });
@@ -308,6 +310,9 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
         function addWmsLayer(resource) {
             hack_up_a_layer_name(resource.id, function (err, whatcomesback) {
+                if(typeof err !=='undefined' && err instanceof Error) {
+                    return;
+                }
                 var layer_to_add = L.tileLayer.wms(resource.url, {
                     'layers': whatcomesback,
                     'format': 'image/png',
@@ -323,10 +328,10 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         }
 
         console.log(wms_mapping);
+        ckan.notify("Please wait while the Web Map Services you requested are being added to the map.", "", "info");
         for (var k = 0; k < wms_mapping[this_resource_id].length; k++) {
             addWmsLayer(wms_mapping[this_resource_id][k]);
         }
-        ckan.notify("The Web Map Services you requested have been added to the map.", "", "info");
     });
 
     (function doc_ready_section() {

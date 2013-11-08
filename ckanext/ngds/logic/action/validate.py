@@ -154,15 +154,19 @@ def line_count(key, data, errors, context, key_stub):
 
     if not url.endswith('csv'):
         return
-    modified_resource_url = url.replace("%3A", ":")
-    truncated_url = modified_resource_url.split("/storage/f/")[1]
-    filename_withfile = get_url_for_file(truncated_url)
 
-    if filename_withfile:
-        f = open(filename_withfile.split("file://")[1])
-        count = len([line for line in f.readlines()])
-        data[lcount_key] = count
-        f.close()
+    try:
+        modified_resource_url = url.replace("%3A", ":")
+        truncated_url = modified_resource_url.split("/storage/f/")[1]
+        filename_withfile = get_url_for_file(truncated_url)
+
+        if filename_withfile:
+            f = open(filename_withfile.split("file://")[1])
+            count = len([line for line in f.readlines()])
+            data[lcount_key] = count
+            f.close()
+    except Exception:
+        return
 
 
 def construct_key(key, field):
