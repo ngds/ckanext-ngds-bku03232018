@@ -31,9 +31,9 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 wms_mapping[results[i].id] = wms_mapping[results[i].id] || ( wms_mapping[results[i].id] = [ ] );
 
                 wms_mapping[results[i].id].push({
-                    'id': resource.id,
+                    'data-resource-id': resource.id,
                     'url': resource.url.split('?')[0],
-                    'layer': 'undefined',
+                    'layer': resource.layer_name,
                     'name': resource.description
                 });
             }
@@ -118,7 +118,8 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                 'attributes': {
                     'class': 'wms ngds-slug',
                     'text': 'WMS',
-                    'id': results[i].id
+                    'data-package-id': results[i].id,
+                    'type': 'button'
                 }
             });
         }
@@ -288,6 +289,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             }),
             success: function (data) {
                 this_layer = data.result;
+                console.log(this_layer);
                 ckan.notify("Successfully added the WMS requested to the map.", "", "success");
                 callback(null, this_layer);
             },
@@ -298,41 +300,42 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
         });
     };
 
-    $(".wms").click(function (ev) {
-        var this_resource_id = ev.currentTarget.id;
-        var label_prefix = '';
-        try {
-            var label_prefix = $(ev.currentTarget).siblings().find("img").next()[0].textContent + " : ";
-        }
-        catch (e) {
-
-        }
-
-        function addWmsLayer(resource) {
-            hack_up_a_layer_name(resource.id, function (err, whatcomesback) {
-                if(typeof err !=='undefined' && err instanceof Error) {
-                    return;
-                }
-                var layer_to_add = L.tileLayer.wms(resource.url, {
-                    'layers': whatcomesback,
-                    'format': 'image/png',
-                    'transparent': true,
-                    'attribution': 'NGDS',
-                    'tileSize': 128,
-                    'opacity': 0.9999
-                });
-
-                layer_control.addOverlay(layer_to_add, label_prefix + resource.name);
-                ngds.Map.map.addLayer(layer_to_add);
-            });
-        }
-
-        console.log(wms_mapping);
-        ckan.notify("Please wait while the Web Map Services you requested are being added to the map.", "", "info");
-        for (var k = 0; k < wms_mapping[this_resource_id].length; k++) {
-            addWmsLayer(wms_mapping[this_resource_id][k]);
-        }
-    });
+//    $(".wms").click(function (ev) {
+//        var this_resource_id = ev.currentTarget.id;
+//        var label_prefix = '';
+//        try {
+//            var label_prefix = $(ev.currentTarget).siblings().find("img").next()[0].textContent + " : ";
+//        }
+//        catch (e) {
+//
+//        }
+//
+//        function addWmsLayer(resource) {
+//            hack_up_a_layer_name(resource.id, function (err, whatcomesback) {
+//                if (typeof err !== 'undefined' && err instanceof Error) {
+//                    return;
+//                }
+//                var layer_to_add = L.tileLayer.wms(resource.url, {
+//                    'layers': whatcomesback,
+//                    'format': 'image/png',
+//                    'transparent': true,
+//                    'attribution': 'NGDS',
+//                    'tileSize': 128,
+//                    'opacity': 0.9999,
+//                    'version': '1.1.1'
+//                });
+//
+//                layer_control.addOverlay(layer_to_add, label_prefix + resource.name);
+//                ngds.Map.map.addLayer(layer_to_add);
+//            });
+//        }
+//
+//        console.log(wms_mapping);
+//        ckan.notify("Please wait while the Web Map Services you requested are being added to the map.", "", "info");
+//        for (var k = 0; k < wms_mapping[this_resource_id].length; k++) {
+//            addWmsLayer(wms_mapping[this_resource_id][k]);
+//        }
+//    });
 
     (function doc_ready_section() {
         $(document).ready(function () {

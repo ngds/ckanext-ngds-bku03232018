@@ -84,7 +84,7 @@ ngds.ckanlib = {
      *	Input : A package id and a callback.
      */
     package_show: function (package_id, callback) {
-        ngds.publish("data-loading", {});
+//        ngds.publish("data-loading", {});
 
         // Validate input.
         (function () {
@@ -109,7 +109,7 @@ ngds.ckanlib = {
             dataType: 'JSON',
             data: data,
             success: function (response) {
-                ngds.publish("data-loaded", {});
+//                ngds.publish("data-loaded", {});
                 return callback(response);
             }
         });
@@ -310,6 +310,27 @@ ngds.ckanlib = {
             },
             'error': function () {
                 params['callback']({'status': 'failure'});
+            }
+        });
+    },
+    'get_wms_resources': function (package_id, callback) {
+        ngds.ckanlib.package_show(package_id, function (response) {
+            if (typeof response.result.resources !== 'undefined') {
+                var resources = response.result.resources;
+                var collector = [];
+
+                for (var i = 0; i < resources.length; i++) {
+                    var resource = resources[i];
+                    if (typeof resource.resource_format !== 'undefined' && resource.resource_format.toLowerCase() === 'data-service') {
+                        if (typeof resource.protocol !== 'undefined' && resource.protocol.toLowerCase() === 'ogc:wms') {
+                            collector.push(resource);
+                        }
+                    }
+                }
+                return callback(collector);
+            }
+            else {
+                return callback([]);
             }
         });
     }

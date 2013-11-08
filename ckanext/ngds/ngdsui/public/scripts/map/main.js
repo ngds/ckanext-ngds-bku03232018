@@ -505,6 +505,17 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     ngds.Map.map.on('zoomend', ngds.util.make_prominent);
+
+    $(".map-search").on("click", ".wms", function (ev) {
+        ev.preventDefault();
+        ckan.notify("Please wait while the Web Map Services you requested are fetched", "", "info");
+        var package_id = $(this).attr("data-package-id");
+        ngds.ckanlib.get_wms_resources(package_id, function (wms_resources) {
+
+        });
+        return false;
+    });
+
 });
 
 ngds.subscribe('Map.layer_added', function () {
