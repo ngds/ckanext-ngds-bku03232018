@@ -227,7 +227,7 @@ def validate_data_service_resource_fields_present(key, data, errors, context):
 
     validate_distributor(distributor_key, data, errors, context)
     validate_protocol(protocol_key, data, errors, context)
-    validate_layer(layer_key, data, errors, context)
+    #validate_layer(layer_key, data, errors, context)
 
 
 def validate_structured_resource_fields_present(key, data, errors, context):

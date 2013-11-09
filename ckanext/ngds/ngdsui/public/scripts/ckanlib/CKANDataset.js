@@ -92,7 +92,7 @@ ngds.ckandataset = function (raw) {
                 tag_div['children'].push({
                                              'tag': 'div',
                                              'attributes': {
-                                                 'class': 'ngds-tag',
+                                                 'class': 'ngds-tag no-click',
                                                  'text': raw.tags[tag]['name']
                                              }
                                          });
