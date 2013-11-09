@@ -73,7 +73,7 @@ class GeoserverPlugin(p.SingletonPlugin):
             'geoserver_publish_layer': action.publish,
             'geoserver_layer_exists': action.layer_exists,
             'geoserver_unpublish_layer': action.unpublish,
-            'geoserver_proxy_layer_name': action.GETLayerNameWMS,
+            'get_wms_for_pkg': action.get_wms_for_pkg,
         }
 
         return actions

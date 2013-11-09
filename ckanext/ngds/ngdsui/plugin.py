@@ -373,6 +373,19 @@ class NgdsuiPlugin(SingletonPlugin):
         return search_params
 
     def after_search(self, search_results, search_params):
+
+        def mark_wms_pkgs(pkg):
+
+            def is_wms_resource(resource):
+                if 'protocol' in resource and resource['protocol'].lower() == 'ogc:wms':
+                    return True
+                return False
+
+            if True in map(is_wms_resource, pkg['resources']):
+                pkg['hasWMSResources'] = True
+
+        map(mark_wms_pkgs, search_results['results'])
+
         try:
             if g.facet_json_data:
                 print "global value is there..."

@@ -71,10 +71,6 @@ if (typeof ngds.Map !== 'undefined') {
         });
 
     };
-
-//    $("#map-query").on("change", function () {
-//        ngds.publish("Map.clear_rect", {});
-//    });
 }
 
 (function publish_pager_advance() {
@@ -510,7 +506,25 @@ $(document).ready(function () {
         ev.preventDefault();
         ckan.notify("Please wait while the Web Map Services you requested are fetched", "", "info");
         var package_id = $(this).attr("data-package-id");
-        ngds.ckanlib.get_wms_resources(package_id, function (wms_resources) {
+        ngds.ckanlib.get_wms_urls(package_id, function (wms_mappings) {
+            for (var i = 0; i < wms_mappings.length; i++) {
+                var mapping = wms_mappings[i];
+                var wms_params = {
+                    'layers': mapping['layer'],
+                    'format': 'image/png',
+                    'transparent': true,
+                    'attribution': 'NGDS',
+                    'tileSize': 128,
+                    'opacity': 0.9999,
+                    'version': '1.1.1'
+                };
+
+                var layer = L.tileLayer.wms(mapping['url'], wms_params);
+
+                ngds.Map.layer_control.addOverlay(layer, mapping['layer']);
+                ngds.Map.map.addLayer(layer);
+            }
+            ckan.notify("The Web Map Services you requested have been added to the map.", "", "success");
 
         });
         return false;

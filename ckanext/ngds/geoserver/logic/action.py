@@ -137,29 +137,71 @@ def unpublish(context, data_dict):
     return True
 
 
-def GETLayerNameWMS(context, data_dict):
-    resource_id = data_dict.get("resource_id")
-    file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
-    thisData = file_resource
-    thisURL = thisData.get("url")
-    thisWMS = WebMapService(thisURL, "1.1.1")
+def get_wms_for_pkg(context, data_dict):
+    """
+    This method takes in a data_dict that contains a key called pkg_id whose value is the id of a ckan package
+    and constructs WMS URLs from WMS resources contained in the package and returns the URLs to the caller.
+    """
+    pkg_id = data_dict.get("pkg_id")
+    pkg = toolkit.get_action("package_show")(None, {'id': pkg_id})
 
-    def get_layer_list():
-        return list(thisWMS.contents)
+    def is_wms_resource(resource):
+        if 'protocol' in resource and resource.get('protocol').lower() == 'ogc:wms':
+            return True
+        return False
 
-    def get_first_layer():
-        theseLayers = get_layer_list()
-        return theseLayers[0]
+    wms_resources = filter(is_wms_resource, pkg.get('resources'))
 
-    layers = list(thisWMS.contents)
+    def construct_wms_url(resource):
+        url = resource.get('url').split('?')[0]
+        layer_name = ''
+        try:
+            wms = WebMapService(url, '1.1.1')
+            layers = list(wms.contents)
+            first_layer = layers[0]
 
-    given_layer = thisData.get("layer_name")
-    if not given_layer:
-        thisData.get("layer")
-    if not given_layer:
-        thisData.get("layers")
+            if 'layer_name' in resource:
+                if resource.get('layer_name').lower() in layers:
+                    layer_name = resource.get('layer_name').lower()
 
-    if given_layer in layers:
-        return given_layer
-    else:
-        return get_first_layer()
+            if layer_name == '':
+                layer_name = first_layer
+
+        except Exception:
+            pass
+
+        return {
+            'layer': layer_name,
+            'url': url
+        }
+
+
+    wms_urls = map(construct_wms_url, wms_resources)
+    return wms_urls
+
+#def GETLayerNameWMS(context, data_dict):
+#    resource_id = data_dict.get("resource_id")
+#    file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
+#    thisData = file_resource
+#    thisURL = thisData.get("url")
+#    thisWMS = WebMapService(thisURL, "1.1.1")
+#
+#    def get_layer_list():
+#        return list(thisWMS.contents)
+#
+#    def get_first_layer():
+#        theseLayers = get_layer_list()
+#        return theseLayers[0]
+#
+#    layers = list(thisWMS.contents)
+#
+#    given_layer = thisData.get("layer_name")
+#    if not given_layer:
+#        thisData.get("layer")
+#    if not given_layer:
+#        thisData.get("layers")
+#
+#    if given_layer in layers:
+#        return given_layer
+#    else:
+#        return get_first_layer()

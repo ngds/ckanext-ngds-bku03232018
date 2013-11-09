@@ -313,25 +313,19 @@ ngds.ckanlib = {
             }
         });
     },
-    'get_wms_resources': function (package_id, callback) {
-        ngds.ckanlib.package_show(package_id, function (response) {
-            if (typeof response.result.resources !== 'undefined') {
-                var resources = response.result.resources;
-                var collector = [];
+    'get_wms_urls': function (package_id, callback) {
+        $.ajax({
+            'url': '/api/action/get_wms_for_pkg',
+            'type': 'POST',
+            'data': JSON.stringify({
+                'pkg_id': package_id
+            }),
+            'success': function (response) {
+                return callback(response.result);
+            },
+            'error': function () {
 
-                for (var i = 0; i < resources.length; i++) {
-                    var resource = resources[i];
-                    if (typeof resource.resource_format !== 'undefined' && resource.resource_format.toLowerCase() === 'data-service') {
-                        if (typeof resource.protocol !== 'undefined' && resource.protocol.toLowerCase() === 'ogc:wms') {
-                            collector.push(resource);
-                        }
-                    }
-                }
-                return callback(collector);
             }
-            else {
-                return callback([]);
-            }
-        });
+        })
     }
 };

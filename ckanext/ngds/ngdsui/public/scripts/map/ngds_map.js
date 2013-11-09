@@ -142,7 +142,7 @@ ngds.Map = {
             'NEXRAD Weather': weather_wms
         };
 
-        layer_control = new L.control.layers(baseMaps, overlayMaps, {autoZIndex: true});
+        var layer_control = ngds.Map.layer_control = new L.control.layers(baseMaps, overlayMaps, {autoZIndex: true});
         layer_control.addTo(map);
 
         map.on('layeradd', function (lev) { // Every time a layer is added or removed, make sure our geojson layer is the top-most one.
