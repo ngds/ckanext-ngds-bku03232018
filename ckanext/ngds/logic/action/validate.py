@@ -74,6 +74,9 @@ def valid_resource_type(key, data, errors, context):
             validate_structured_resource_fields_present(key, data, errors, context)
         elif data[key] == 'unstructured':
             validate_unstructured_resource_fields_present(key, data, errors, context)
+        else:
+            raise Invalid(_(
+                'NGDS does not recognize resource type %s' % data[key]))
     return data[key]
 
 
@@ -121,7 +124,9 @@ def validate_distributor(key, data, errors, context):
 
 
 def validate_protocol(key, data, errors, context):
-    existence_check(key, data, errors, context)
+    if existence_check(key, data, errors, context):
+        if data[key].lower() not in ['ogc:wms', 'ogc:wfs', 'wcs', 'esri_map_service', 'csw', 'sos', 'opendap', 'other']:
+            error_append(key, errors, _('Option %s for protocol not recognized' % data[key]))
 
 
 def validate_layer(key, data, errors, context):
@@ -317,23 +322,20 @@ def validate_extras(key, data, errors, context):
     if ("extras", 1, "key") not in data or data[("extras", 1, "value")] == "":
         errors[("maintainer",)] = [_("Missing value")]
 
-    if ("extras", 2, "key") not in data or data[("extras", 2, "value")] == "":
-        errors[("spatial_word",)] = [_("Missing value")]
-
     if ("extras", 3, "key") not in data or data[("extras", 3, "value")] == "":
         errors[("dataset_category",)] = [_("Missing value")]
-
-    if ("extras", 4, "key") not in data or data[("extras", 4, "value")] == "":
-        errors[("dataset_uri",)] = [_("Missing value")]
-
-    if ("extras", 5, "key") not in data or data[("extras", 5, "value")] == "":
-        errors[("quality",)] = [_("Missing value")]
-
-    if ("extras", 6, "key") not in data or data[("extras", 6, "value")] == "":
-        errors[("lineage",)] = [_("Missing value")]
+    else:
+        if data[("extras", 3, "value")] not in ['Dataset', 'Physical Collection', 'Catalog', 'Movie or Video',
+                                                'Drawing', 'Photograph', 'Remotely Sensed Image', 'Map',
+                                                'Text Document', 'Physical Artifact', 'Desktop Application',
+                                                'Web Application']:
+            errors[("dataset_category",)] = [_("Option %s for category not recognized" % data[("extras", 3, "value")])]
 
     if ("extras", 7, "key") not in data or data[("extras", 7, "value")] == "":
         errors[("status",)] = [_("Missing value")]
+    else:
+        if data[("extras", 7, "value")] not in ['ongoing', 'completed', 'deprecated']:
+            errors[("status",)] = [_("Option %s for status not recognized" % data[("extras", 7, "value")])]
 
     if ("extras", 8, "key") not in data or data[("extras", 8, "value")] == "":
         errors[("publication_date",)] = [_("Missing value")]
