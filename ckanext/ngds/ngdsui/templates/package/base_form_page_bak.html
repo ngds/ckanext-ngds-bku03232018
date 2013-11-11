@@ -1,0 +1,43 @@
+{% extends "package/base.html" %}
+
+{{ c.pkg_dict }}
+
+{% block primary %}
+{% if c.pkg_dict %}
+{% set pkg_dict = c.pkg_dict %}
+{% endif %}
+{% if pkg_dict and pkg_dict.name %}
+{{super()}}
+{% else %}
+<div class="primary expanded"></div>
+{% block primary_content %}
+{% if pkg_dict and pkg_dict.name %}
+<section class="module">
+    {% else %}
+    <section class="module dataset_create">
+        {% endif %}
+        <div class="module-content">
+            {% block form %}{{ c.form | safe }}{% endblock %}
+        </div>
+    </section>
+    {% endblock %}
+    {% endif %}
+
+
+    {% endblock %}
+
+
+    {% block secondary %}
+    {% if pkg_dict and pkg_dict.name %}
+    {{super()}}
+    {% endif %}
+    {% endblock %}
+
+    {% block scripts %}
+
+    {{super()}}
+    {% if pkg_dict and pkg_dict.name %}
+    <script type="text/javascript" src="/scripts/contribute/custom_fields_generator.js"></script>
+    <script type="text/javascript" src="/scripts/utils/utils.js"></script>
+    {% endif %}
+    {% endblock %}

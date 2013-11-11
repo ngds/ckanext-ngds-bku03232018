@@ -36,6 +36,8 @@ from ckan.model.resource import Resource
 import logging
 import ckan.plugins as p
 import json
+import ckanext.ngds.logic.file_processors.ProcessorRegistry as PR
+import ckanext.ngds.logic.file_processors.ContentModelConstants as CMC
 
 from ckan.plugins import toolkit
 
@@ -209,8 +211,9 @@ def parse_publication_date_range(range):
     if range:
         range = range.split(' TO ')
 
-        return ' To '.join(map(lambda x: iso8601.parse_date(x.strip()).strftime("%b %d,%Y") if x.strip() != "*" else "*",
-                               map(lambda x: x.strip(' ]').strip('['), range)))
+        return ' To '.join(
+            map(lambda x: iso8601.parse_date(x.strip()).strftime("%b %d,%Y") if x.strip() != "*" else "*",
+                map(lambda x: x.strip(' ]').strip('['), range)))
     return None
 
 
@@ -749,6 +752,40 @@ def get_content_models():
     return logic.get_action('contentmodel_list_short')()
 
 
+def get_content_model_dict(uri):
+    cmlist = logic.get_action('contentmodel_list_short')()
+    cm = filter(lambda x: x['uri'] == uri, cmlist)
+    return cm[0]
+
+
+def get_content_models_for_ui():
+    list = logic.get_action('contentmodel_list_short')()
+    cm_names = map(lambda x: {"title": x['title'], "uri": x['uri']}, list)
+    return cm_names
+
+
+def get_content_models_versions_for_ui():
+    cm_names = filter(lambda x: {x['title'], x['uri']}, logic.get_action('contentmodel_list_short')())
+    return cm_names
+
+
+def get_content_models_for_ui_action(context, data_dict):
+    return get_content_models_for_ui()
+
+
+def get_content_model_versions_for_uri(uri):
+    if not uri or uri == 'none' or uri == 'None':
+        return
+    content_models = logic.get_action('contentmodel_list_short')()
+    content_model = filter(lambda x: True if x['uri'] == uri else False, content_models)
+    return content_model[0]['versions']
+
+
+def get_content_model_version_for_uri_action(context, data_dict):
+    uri = data_dict['cm_uri']
+    return get_content_model_versions_for_uri(uri)
+
+
 def get_contributors_list():
     """
     Returns the contributors configured in the configuration.
@@ -781,3 +818,101 @@ def get_contributors_list():
 
     return g.contributors_list
 
+
+def get_full_resource_dict(data, pkg_dict):
+    try:
+        resources = [item for item in pkg_dict['resources'] if data['id'] == item['id']]
+        if resources and len(resources) > 0:
+            return resources[0]
+    except(Exception):
+        pass
+
+
+def get_dataset_categories():
+    return [
+        {
+            'value': 'Dataset',
+            'label': 'Dataset'
+        },
+        {
+            'value': 'Physical Collection',
+            'label': 'Physical Collection'
+        },
+        {
+            'value': 'Catalog',
+            'label': 'Catalog'
+        },
+        {
+            'value': 'Movie or Video',
+            'label': 'Movie or Video'
+        },
+        {
+            'value': 'Drawing',
+            'label': 'Drawing'
+        },
+        {
+            'value': 'Photograph',
+            'label': 'Photograph'
+        },
+        {
+            'value': 'Remotely Sensed Image',
+            'label': 'Remotely Sensed Image'
+        },
+        {
+            'value': 'Map',
+            'label': 'Map'
+        },
+        {
+            'value': 'Text Document',
+            'label': 'Text Document'
+        },
+        {
+            'value': 'Physical Artifact',
+            'label': 'Physical Artifact'
+        },
+        {
+            'value': 'Desktop Application',
+            'label': 'Desktop Application'
+        },
+        {
+            'value': 'Web Application',
+            'label': 'Web Application'
+        }
+    ]
+
+
+def get_status_for_ui():
+    return [
+        {
+            'value': 'completed',
+            'label': 'Completed'
+        },
+        {
+            'value': 'ongoing',
+            'label': 'Ongoing'
+        },
+        {
+            'value': 'deprecated',
+            'label': 'Deprecated'
+        }
+    ]
+
+
+def get_languages_for_ui():
+    languages = model.Language.search('').all()
+    return languages
+
+
+def get_cur_page():
+    unsp = request.path_info
+    if unsp.startswith("/"):
+        return unsp[1:len(unsp)]
+    return unsp
+
+
+def metadata_fields_to_display_for_cm(uri, version):
+    registry = PR.get_registry()
+    cm = CMC.ContentModelValue(uri, version)
+    if cm in registry:
+        return map(lambda x: x['metadata_field'], registry[cm])
+    return []

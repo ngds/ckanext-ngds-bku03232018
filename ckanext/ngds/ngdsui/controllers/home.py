@@ -106,6 +106,13 @@ class HomeController(NGDSBaseController):
             'success': True
         }
 
+    def rate(self, pkg_id, rating_value):
+        package = model.Package.get(pkg_id)
+        if float(rating_value) not in [1.0, 2.0, 3.0, 4.0, 5.0]:
+            return redirect("/dataset/" + pkg_id)
+        rating.set_rating(c.user, package, rating_value)
+        return redirect("/dataset/" + pkg_id)
+
     @jsonify
     def save_search(self):
 

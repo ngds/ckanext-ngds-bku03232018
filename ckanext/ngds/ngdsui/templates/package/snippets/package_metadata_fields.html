@@ -3,88 +3,30 @@
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
-File: <filename>
+File:
+<filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+    Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+    Please Refer to the README.txt file in the base directory of the NGDS
+    project:
+    https://github.com/ngds/ckanext-ngds/README.txt
 
-___NGDS_HEADER_END___ #}
+    ___NGDS_HEADER_END___ #}
 
-{% import 'macros/form.html' as form %}
-{% macro is_selected(value,key,extra) %}
-  {% for extra in extras %}
-    {% if extra.key == key %}
-      {% if extra.value == value %}
-        selected
-      {% endif %}
-    {% endif %}
-  {% endfor %}
-{% endmacro %}
-{% include 'package/add_responsible_party.tmf' %}
-        {% macro get_value(key,extra) -%}
-  {% for extra in extras -%}
-    {% if extra.key == key -%}
-      {{ extra.value }}
-    {%- endif %}
-  {%- endfor %}
-{%- endmacro %}
-<div class="form-body">
- 
-  <!-- <div class="input-group">
-    <div class="sp-label"><label>Author Email</label></div>
-      <input type="text" name="author_email" placeholder="joe@example.com" value="{{data.author_email}}"></input>
-  </div> -->
+    {% ckan_extends %}
 
-  <!-- <div class="input-group">
-    <div class="sp-label"><label>Maintainer Email</label></div>
-      <input type="text" name="maintainer_email" placeholder="joe@example.com" value="{{data.maintainer_email}}"></input>
-  </div> -->
-  {% if pkg_name %}
-  <input name="pkg_name" type="hidden" value="{{pkg_name}}"/>
-  {% elif data.pkg_name %}
-  <input name="pkg_name" type="hidden" value="{{ data.pkg_name}}"/>
-  {% endif %}
-  <input type="hidden" name="author" value="{{ data.author }}"/>
-  <input type="hidden" name="author_email" value="{{ data.author_email }}"/>
-{% if h.check_access('publish_dataset') %}
-  <div class="input-group">
-    <div class="sp-label"><label>{{_('Visibility')}}</label></div>
-      <select id="field-private" name="private">
-        <option value="True" {% if data.private==True%}selected{% endif %}>{{_('Private')}}</option>
-        <option value="False" {% if data.private==False%}selected{% endif %}>{{_('Public')}}</option>
-      </select>
-  </div>
-{% endif %}
-  <div class="input-group">
-    <div class="sp-label"><label>{{_('Dataset Extent')}}</label></div>
-      <div id="bbox-map"></div>
-  </div>
+    {% block package_metadata_author %}
+    {% endblock %}
 
-<link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
-<link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" />
-<script type="application/javascript" src="/vendor/leaflet/leaflet.js"></script>
-<script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
-<script type="text/javascript" src="/scripts/autocomplete.js"></script>
-<script type="application/javascript" src="/scripts/dataset_entry_map.js"></script>
-<script type="application/javascript" src="/scripts/contribute/responsible_party.js"></script>
+    {% block package_metadata_fields_maintainer %}
+    {% endblock %}
 
-<script>
+    {% block package_metadata_fields_custom %}
+    {% block custom_fields %}
+    {% snippet 'snippets/custom_form_fields.html', extras=data.extras, errors=errors, limit=3, pkg_id=data.id %}
+    {% endblock %}
+    {% endblock %}
 
-</script>
-
-
-{% block custom_fields %}
-  {% snippet 'snippets/custom_form_fields.html', extras=data.extras,data=data, errors=errors, limit=3, pkg_dict=pkg_dict %}
-{% endblock %}
-
-</div>
-
-{% if data %}
-<script>
-  // var v_collect = ngds.util.parse_raw_json("{{h.jsonify(data)}}");
-</script>
-{% endif %}
+    {% block dataset_fields %}{% endblock %}
 

@@ -242,7 +242,7 @@ def contentmodel_checkFile(context, data_dict):
             if len(validation_dateType_messages) > 0:
                 validation_msg.extend(validation_dateType_messages)
         
-        log.debug("validation detailed error message", len(validation_msg))
+        #log.debug("validation detailed error message", len(validation_msg))
         # print validation_msg
 
     log.debug('validation last step')

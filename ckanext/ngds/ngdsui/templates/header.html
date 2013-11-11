@@ -44,7 +44,7 @@ pass in the tab that is being rendered and the active_tab variable that we get f
             <li><a href="{{ h.url_for(controller='user', action='register') }}">{{ _('Sign Up') }}</a></li>
             <li><a href="{{ h.url_for(controller='user', action='login') }}">{{ _('Login') }}</a></li>
             {% endif %}
-
+            <li><a href="/help.html#{{h.get_cur_page()}}">Help</a></li>
             <!-- <li><a href="#" class="not-implemented">FAVORITES</a></li> -->
         </ul>
     </nav>

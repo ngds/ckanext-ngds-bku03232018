@@ -35,34 +35,34 @@ Example:
 {% if s3 != 'uncomplete' %}{% set class = 'stage-3' %}{% endif %}
 
 <ol class="stages {{ class }}">
-  <li class="first {{ s1 }} box-override">
+  <li class="first {{ s1 }}">
     {% if s1 != 'complete' %}
-      <span class="highlight">{{ _('1. Create dataset') }}</span>
+      <span class="highlight">{{ _('Create collection') }}</span>
     {% else %}
-      <button class="highlight" name="save" value="go-dataset" type="submit">{{ _('1. Create dataset') }}</button>
+      <button class="highlight" name="save" value="go-dataset" type="submit">{{ _('Create collection') }}</button>
     {% endif %}
   </li>
-  <li class="middle {{ s2 }} box-override">
+  <li class="middle {{ s2 }}">
     {% if s2 != 'complete' %}
-      <span class="highlight">2. {{ _('Add Resources') }}</span>
+      <span class="highlight">{{ _('Add data') }}</span>
     {% else %}
       {% if s1 == 'active' or s3 == 'active'%}
         {# stage 1 #}
-        <button class="highlight" name="save" value="go-resources" type="submit">{{ _('2. Add data') }}</button>
+        <button class="highlight" name="save" value="go-resources" type="submit">{{ _('Add data') }}</button>
       {% else %}
         {% link_for _('Add data'), controller='package', action='new', class_="highlight" %}
       {% endif %}
     {% endif %}
   </li>
-  <li class="last {{ s3 }} box-override">
+  <li class="last {{ s3 }}">
     {% if s3 != 'complete' %}
-      <span class="highlight">3. {{ _('Dataset Metadata') }}</span>
+      <span class="highlight">{{ _('Collection Metadata') }}</span>
     {% else %}
       {% if s1 == 'active' or s2 == 'active' %}
         {# stage 1 #}
-        <button class="highlight" name="save" value="go-metadata" type="submit">{{ _('3. Additional data') }}</button>
+        <button class="highlight" name="save" value="go-metadata" type="submit">{{ _('Collection Metadata') }}</button>
       {% else %}
-        {% link_for _('Additional data'), controller='package', action='new', class_="highlight" %}{{ s2 }}
+        {% link_for _('Collection Metadata'), controller='package', action='new', class_="highlight" %}{{ s2 }}
       {% endif %}
     {% endif %}
   </li>

@@ -3,115 +3,34 @@
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
-File: <filename>
+File:
+<filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+    Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+    Please Refer to the README.txt file in the base directory of the NGDS
+    project:
+    https://github.com/ngds/ckanext-ngds/README.txt
 
-___NGDS_HEADER_END___ #}
+    ___NGDS_HEADER_END___ #}
+    {% ckan_extends %}
 
-{% import 'macros/form.html' as form %}
-<div class="form-body">
-    {# form.input('title', id='field-title', label=_('Title :'), placeholder=_('eg. A descriptive title'),
-    value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module':
-    'slug-preview-target'}) #}
+    {% block package_basic_fields_license %}
 
-    {# set prefix = h.url_for(controller='package', action='read', id='') #}
-    {# set domain = h.url_for(controller='package', action='read', id='', qualified=true) #}
-    {# set domain = domain|replace("http://", "")|replace("https://", "") #}
-    {# set attrs = {'data-module': 'slug-preview-slug', 'data-module-prefix': domain, 'data-module-placeholder': '
-    <dataset>'} #}
-        {# form.prepend('name', id='field-name', label=_('URL :'), placeholder=_('eg. my-dataset'), value=data.name,
-        error=errors.name, attrs=attrs) #}
-        {# form.markdown('notes', id='field-notes', label=_('Description :'), placeholder=_('eg. Some useful notes about
-        the data'), value=data.notes, error=errors.notes) #}
+    <div class="control-group">
+        {% set error = errors.license_id %}
+        <label class="control-label" for="field-license">{{ _("License") }}</label>
 
-        {# set tag_attrs = {'data-module': 'autocomplete', 'data-module-tags': '', 'data-module-source':
-        '/api/2/util/tag/autocomplete?incomplete=?'} #}
-        {# form.input('tag_string', id='field-tags', label=_('Tags :'), placeholder=_('eg. economy, mental health,
-        government'), value=data.tag_string, error=errors.tags, classes=['control-full'], attrs=tag_attrs) #}
-
-        <div class="input-group">
-            <div class="sp-label">
-                <label for="title">Title</label>
-            </div>
-            <input type="text" name="title" id="title"
-                   data-validate
-                   data-validate-fingerprint="0^^^100^^^.+^^^2"
-                   data-validate-minlen-msg="URL Should be at least 2 characters long"
-                   data-validate-maxlen-msg="URL Should not be more than 100 characters long"
-                   data-validate-ext="name"
-                   data-validate-regex-msg="Invalid characters entered. Only lowercase and uppercase letters, numbers and hyphens are allowed "
-                   placeholder="An intuitive label that makes searching, sharing and linking easier"
-                   value="{{data['title']}}"
-                   title="An intuitive label that makes searching, sharing and linking easier"></input>
-            <!-- <span class="error-block"></span> -->
+        <div class="controls">
+            <select id="field-license" name="license_id" data-module="autocomplete">
+                {% for licence_desc, licence_id in licences|sort if licence_desc %}
+                <option value="{{ licence_id }}"
+                {% if data.get('license_id', 'notspecified') == licence_id %}selected="selected"{% endif %}>{{
+                licence_desc
+                }}</option>
+                {% endfor %}
+            </select>
+            {% if error %}<span class="error-block">{{ error }}</span>{% endif %}
         </div>
-        {% if errors.name %}
-        <div class="input-group error">
-            {% else %}
-            <div class="input-group">
-                {% endif %}
-
-                <div class="sp-label">
-                    <label for="name">URL</label>
-                </div>
-
-                <input type="text" name="name" id="name" data-validate
-                       data-validate-fingerprint="2^^^100^^^[a-zA-Z0-9\-]^^^2"
-                       data-validate-minlen-msg="URL Should be at least 2 characters long"
-                       data-validate-maxlen-msg="URL Should not be more than 100 characters long"
-                       data-validate-regex-msg="Invalid characters entered. Only lowercase and uppercase letters, numbers and hyphens are allowed "
-                       placeholder="A unique URL where your dataset will be made available. Ex. geothermal-wells-arizona"
-                       value="{{data['name']}}" title="A unique URL where your dataset will be made available"></input>
-                {% if errors.name %}
-  <span class="error-block">
-   {{h.split(errors.name,', ')}}
-  </span>
-                {% endif %}
-            </div>
-
-            <div class="input-group">
-                <div class="sp-label description-label-div">
-                    <label for="notes">Description</label>
-                </div>
-                <textarea rows="4" cols="1" name="notes" id="notes" class="structured-input"
-                          placeholder="A long-text description of this dataset"
-                          title="A long-text description of this dataset">{{data['notes']}}</textarea>
-            </div>
-
-            <div class="input-group tags-selector-label">
-                <div class="sp-label">
-                    <label for="field-tags">Tags</label>
-                </div>
-                <input type="text" name="tag_string" id="field-tags"
-                       placeholder="Keywords that describe the theme of this dataset. Ex. geothermal, temperature"
-                       value="{{data['tag_string']}}" title="Keywords that describe the theme of this dataset"
-                       data-module-tags="" data-module="autocomplete"
-                       data-module-source="/api/2/util/tag/autocomplete?incomplete=?" style="display: none;">
-
-            </div>
-
-            <div class="input-group">
-                {% set error = errors.license_id %}
-                <div class="sp-label">
-                    <label for="field-license">{{ _("License") }}</label>
-                </div>
-                <select id="field-license" name="license_id" data-module="autocomplete">
-                    {% for licence_desc, licence_id in licences|sort if licence_desc %}
-                    <option value="{{ licence_id }}"
-                    {% if data.get('license_id', 'notspecified') == licence_id %}selected="selected"{% endif %}>{{
-                    licence_desc }}</option>
-                    {% endfor %}
-                </select>
-                {% if error %}<span class="error-block">{{ error }}</span>{% endif %}
-
-            </div>
-
-            <input type="hidden" name="owner_org" value="{{ h.get_default_group() }}"/>
-
-        </div>
-        <script type="text/javascript" src="/scripts/contribute/dataset_form.js"></script>
+    </div>
+    {% endblock %}

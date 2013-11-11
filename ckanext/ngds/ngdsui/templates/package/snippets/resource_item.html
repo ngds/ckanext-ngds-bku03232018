@@ -20,6 +20,7 @@ ___NGDS_HEADER_END___ #}
     {{ h.resource_display_name(res) | truncate(50) }}<span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>
     {{ h.popular('views', res.tracking_summary.total, min=10) }}
   </a>
+
   {% endblock %}
   <p class="description">
     {% if res.description %}
@@ -28,13 +29,27 @@ ___NGDS_HEADER_END___ #}
       <span class="empty">{{ _('No description for this resource') }}</span>
     {% endif %}
   </p>
+
+  <div class="metrics">
+      {% if res.content_model_uri and res.content_model_version %}
+       {{h.get_content_model_dict(res.content_model_uri).title}}
+      ,
+      {% for mf in h.metadata_fields_to_display_for_cm(res.content_model_uri, res.content_model_version) %}
+        &nbsp;{{mf|replace('_',' ')|title}} : {{res[mf]}}&nbsp;
+      {% endfor %}
+      {% endif %}
+      <br/>
+      {% if res.lcount %}
+        {{res.lcount}} lines
+      {% endif %}
+  </div>
+
+
   {% block resource_item_explore %}
-  <div class="dropdown btn-group">
-    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-      <i class="icon-share-alt"></i>
-      {{ _('Explore') }}
-      <span class="caret"></span>
-    </a>
+  <div class="btn-group">
+
+    <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
+    <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
 
     {% if h.check_access('package_create') and not g.central %}
     {% if h.is_plugin_enabled('geoserver') %}
@@ -161,6 +176,7 @@ var populate_geoserver_layer_name = function (dom_marker) {
 var publish_as_ogc = function(gs_lyr_name, resource_id, package_id, lat_field, lng_field){
     lat_field = typeof lat_field !== 'undefined' ? lat_field : 'LATITUDE';
     lng_field = typeof lng_field !== 'undefined' ? lng_field : 'LONGITUDE';
+    ckan.notify("Please wait while this resource is published ...... ","","info");
 
     $.ajax({
         url:'/api/action/geoserver_publish_layer',
@@ -174,11 +190,13 @@ var publish_as_ogc = function(gs_lyr_name, resource_id, package_id, lat_field, l
             col_longitude:lng_field
         }),
         success:function(response){
-            window.alert("This resource has now been published as an OGC service.");
+            $(".alert").remove();
+            ckan.notify("This resource has now been published as an OGC service.","","success");
             window.location.reload();
         },
         error:function() {
-            window.alert("Sorry. The action requested could not be successfully completed.");
+            $(".alert").remove();
+            ckan.notify("Sorry. The action requested could not be successfully completed.","","error")
         }
     });
 };

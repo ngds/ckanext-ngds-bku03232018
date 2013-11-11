@@ -13,15 +13,17 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ #}
 
-{% set stage = stage or 1 %}
-{% set include_metadata = include_metadata or false %}
-{% set data = data %}
-{% extends 'package/snippets/resource_form.html' %}
+{% ckan_extends %}
 
-{% block previous_button %}{% endblock %}{% block stages %}{% endblock %}
+{% set content_models = h.get_content_models_for_ui() %}
 
-{% block again_button %}{% endblock %}
+{% macro cm_compare(uri) %}
+    {% if uri == resource['content_model_uri'] %}
+        selected
+    {% endif %}
+{% endmacro %}
 
-{% block save_button_text %}{{ _('Update Resource') }}{% endblock %}
+{% block basic_fields %}
+        {{super()}}
 
-{% block pull_right %}pull-right{% endblock %}
+{% endblock %}

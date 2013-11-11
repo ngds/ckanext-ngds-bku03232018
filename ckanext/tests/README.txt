@@ -1,5 +1,7 @@
-These two scripts: runTests.sh and runUITests.sh
+This directory is for tests at the system level for NGDS.
 
-Are here for backup purposes. they should be copied to a level above the project so the whole project is built and tested.
+The ui tests at this time are using Selenium.
 
-The tests should be able to run without shell script support, by relying solely on nose.
+See the NGDSTestingWithSelenium.docx file for more information.
+
+As of November 8th, 2013, this is testing implementation is under construction and in progress... 

@@ -13,7 +13,7 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ #}
 
-{% set rating_dict = { 1:_('Rate as very Poor?'),2:_('Rate as Poor?'), 3:_('Rate as Fair?'), 4:_('Rate as Good?'), 5:_('Rate as Very Good?') } %}
+{# set rating_dict = { 1:_('Rate as very Poor?'),2:_('Rate as Poor?'), 3:_('Rate as Fair?'), 4:_('Rate as Good?'), 5:_('Rate as Very Good?') } #}
 {% for package in packages %}
 
 <div class="search-results-container">
@@ -50,36 +50,7 @@ ___NGDS_HEADER_END___ #}
 
                 <p>Published: {{ h.get_formatted_date(package.metadata_created)}}</p>
             </div>
-            <div id="search-review">
-                <p>
-                </p>
 
-                <p>
-                    <span title="Select a star to rate this dataset">
-
-                        {% set rating_val, rating_counter = h.get_rating_details(package.id) %}
-
-                        {% for i in range(1,rating_val+1) %}
-                            {% if user %}
-                            <img src="/images/u448_normal.png"
-                                 onclick='callRating("{{_(rating_dict[i])}}", "{{i|float}}", "{{_(package.id)}}");'/>
-                            {% else %}
-                                <img src="/images/u448_normal.png" />
-                            {% endif %}
-                        {% endfor %}
-
-                        {% for i in range(rating_val+1,6) %}
-                            {% if user %}
-                            <img src="/images/u448_clear.png"
-                                 onclick='callRating("{{_(rating_dict[i])}}", "{{i|float}}", "{{_(package.id)}}");'/>
-                            {% else %}
-                                <img src="/images/u448_clear.png" />
-                            {% endif %}
-                        {% endfor %}
-
-                    </span>
-                    <span>{{rating_counter}} reviews </span></p>
-            </div>
 
 
         </div>

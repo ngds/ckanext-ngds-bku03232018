@@ -1,0 +1,41 @@
+{% set rating_dict = { 1:_('Rate as very Poor?'),2:_('Rate as Poor?'), 3:_('Rate as Fair?'), 4:_('Rate as Good?'), 5:_('Rate as Very Good?') } %}
+
+<section class="module module-narrow ratings">
+    <h2 class="module-heading"><img src="/assets/ratings_star.png"/> {{ _('Ratings') }}</h2>
+
+
+    <div id="search-review">
+        <p>
+        </p>
+
+        <p>
+                    <span title="Select a star to rate this dataset">
+
+                        {% set rating_val, rating_counter = h.get_rating_details(pkg_id) %}
+
+                        {% for i in range(1,rating_val+1) %}
+                            {% if user %}
+                            <a href="/ngds/rate/{{_(pkg_id)}}/{{i|float}}" data-module="confirm-action" data-rating-value="{{i}}" data-module-i18n="{&quot;content&quot;: &quot;Are you sure you want to rate this dataset as {{rating_dict[i]}} ?&quot;}">
+                                <img src="/images/u448_normal.png"/><a/>
+                            {% else %}
+                                <img src="/images/u448_normal.png"/>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for i in range(rating_val+1,6) %}
+                            {% if user %}
+                            <a href="/ngds/rate/{{_(pkg_id)}}/{{i|float}}" data-module="confirm-action" data-rating-value="{{i}}" data-module-i18n="{&quot;content&quot;: &quot;Are you sure you want to rate this dataset as {{rating_dict[i]}} ?&quot;}">
+                                <img src="/images/u448_clear.png"/></a>
+                            {% else %}
+                                <img src="/images/u448_clear.png"/>
+                            {% endif %}
+                        {% endfor %}
+
+                    </span>
+            <span>{{rating_counter}} reviews </span></p>
+
+    </div>
+    <div class="ratings-helper"></div>
+</section>
+
+

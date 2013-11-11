@@ -28,6 +28,15 @@ ngds.Map = {
             zoomControl: false
         });
 
+//	L.tileLayer.betterWms('http://localhost:8080/geoserver/NGDS/wms', {
+//        layers: 'NGDS:1ee1ce06-b0a0-4a5b-8823-679fc17b71dd',
+//        transparent: true,
+//        format: 'image/png',
+//        srs:'EPSG:4326'
+//      }).addTo(map);
+
+
+
         var loadingControl = L.Control.loading({
             separate: true,
             position: 'topleft'
@@ -418,6 +427,7 @@ ngds.Map = {
         geoJSONRepresentation.bindPopup(popup);
         this.add_to_layer([geoJSONRepresentation], 'geojson');
         this.sort_geojson_layers(geoJSONRepresentation);
+        return geoJSONRepresentation;
 
     },
     sort_geojson_layers: function (layer) {
@@ -431,6 +441,9 @@ ngds.Map = {
             if (i === map_features.length) {
                 break;
             }
+            if (typeof map_features[i] === 'undefined' || map_features[i] === null) {
+                continue;
+            }
             if (perimeter < new ngds.Map.BoundingBox().store_raw(map_features[i].getBounds()).get_perimeter()) {
                 break;
             }
@@ -438,6 +451,9 @@ ngds.Map = {
 
         map_features.splice(i, 0, layer);
         for (var i = map_features.length - 1; i > -1; i--) {
+            if (typeof map_features[i] === 'undefined' || map_features[i] === null) {
+                continue;
+            }
             map_features[i].bringToFront();
         }
     },

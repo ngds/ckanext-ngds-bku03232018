@@ -72,9 +72,9 @@ if (typeof ngds.Map !== 'undefined') {
 
     };
 
-    $("#map-query").on("change", function () {
-        ngds.publish("Map.clear_rect", {});
-    });
+//    $("#map-query").on("change", function () {
+//        ngds.publish("Map.clear_rect", {});
+//    });
 }
 
 (function publish_pager_advance() {
@@ -167,7 +167,8 @@ if (typeof ngds.Map !== 'undefined') {
 
 (function subscribe_feature_received() {
     ngds.subscribe('Map.feature_received', function (topic, data) {
-        ngds.Map.add_raw_result_to_geojson_layer(data['feature'], {'seq': data['seq'], 'alph_seq': data['alph_seq']});
+        var feature = ngds.Map.add_raw_result_to_geojson_layer(data['feature'], {'seq': data['seq'], 'alph_seq': data['alph_seq']});
+        ngds.publish('Map.feature_processed', {'feature': feature, 'seq': data['seq']});
     });
 
     $('.map-search-results').on('mouseover', null, function (ev) {
@@ -236,6 +237,94 @@ if (typeof ngds.Map !== 'undefined') {
         });
 
     });
+
+    $('.map-search-results').on('click', ".visibility-toggler button", function (ev) {
+        ev.stopPropagation();
+        var id = Number($(ev.target).attr('data-seq'));
+        ngds.Map.visibility_mgr.process(id);
+    });
+
+
+    ngds.Map.visibility_mgr = {
+        'init': function () {
+            var me = this;
+
+            ngds.subscribe('Map.feature_processed', function (topic, data) {
+                var show_op = function (feature) {
+                    ngds.Map.map.addLayer(feature);
+                };
+
+                var hide_op = function (feature) {
+                    ngds.Map.map.removeLayer(feature);
+                }
+
+                me.features[data['seq']] = me.construct_individual_mgr(data['feature'], data['seq'], show_op, hide_op);
+            });
+
+            var fshow = function (feature) {
+                for (var i in me.features) {
+                    if (Number(i) !== 0) {
+                        me.features[i].show();
+                    }
+                }
+                $("button[data-seq='0']").removeClass("toggled");
+
+            };
+
+            var fhide = function (feature) {
+                for (var i in me.features) {
+                    if (Number(i) !== 0) {
+                        me.features[i].hide();
+                    }
+                }
+                $("button[data-seq='0']").addClass("toggled");
+            };
+
+            var family_mgr = me.construct_individual_mgr(null, 0, fshow, fhide);
+            me.features[0] = family_mgr;
+        },
+        'process': function (id) {
+            var me = this;
+            if (me.features[id].is_hidden()) {
+                me.features[id].show();
+            }
+            else {
+                me.features[id].hide()
+            }
+        },
+        'clearMgrs': function () {
+            var family_mgr = this.features[0];
+            this.features = [family_mgr];
+        },
+        'features': {},
+        'construct_individual_mgr': function (feature, id, show_op, hide_op) {
+            var button = $("button[data-seq=" + id + "]");
+            var feature = feature;
+            var hidden = false;
+
+            var ob = {
+                'show': function () {
+                    show_op(feature);
+                    button.removeClass("toggled");
+                    hidden = false;
+                },
+                'hide': function () {
+                    hide_op(feature);
+                    button.addClass("toggled");
+                    hidden = true;
+                },
+                'is_hidden': function () {
+                    return hidden;
+                }
+            };
+
+            return ob;
+        }
+    };
+
+    ngds.Map.visibility_mgr.init();
+
+
 })();
 
 (function setup_styler_for_features() {
@@ -299,7 +388,12 @@ if (typeof ngds.Map !== 'undefined') {
         })(latlngs);
 
         ngds.Map.map.panTo(approximate_center);
-        data['Layer'].layer.openPopup();
+        try {
+            data['Layer'].layer.openPopup();
+        }
+        catch (e) {
+
+        }
         ngds.util.apply_feature_active_styles(data['Layer'], data['tag_index']);
     });
 
