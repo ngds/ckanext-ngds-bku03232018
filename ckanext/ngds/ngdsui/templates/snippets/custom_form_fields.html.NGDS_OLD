@@ -1,0 +1,280 @@
+{% import "macros/form.html" as form %}
+{% macro is_selected(value,key,extra) %}
+  {% for extra in extras %}
+    {% if extra.key == key %}
+      {% if extra.value == value %}
+        selected
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro get_value(key,extra) -%}
+  {% for extra in extras -%}
+    {% if extra.key == key -%}
+      {{ extra.value }}
+    {%- endif %}
+  {%- endfor %}
+{%- endmacro %}
+  {% if errors.authors %}
+  <div class="input-group error">
+    {% else %}
+  <div class="input-group">
+    {% endif %}
+    <div class="sp-label"><label>{{_('Authors')}}</label></div>
+      <input id="field-extras-12-key" name="extras__12__key" value="authors" placeholder="" style="display:none;">
+      <input type="text" id="authors_fake" placeholder="Ex: Joe Moore" value="{{ get_value('authors',extras) }}"/>
+      <div class="author-tags retreived-tags"></div>
+      {% if errors.authors %}
+      <span class="error-block">{{errors.authors}}</span>
+      {% endif %}
+  </div>
+
+  <input type="hidden" name="extras__12__value" id="authors" value="{{get_value('authors',extras)}}"/>
+  <input type="hidden" id="author" />
+  
+  {% if errors.maintainer %}
+  <div class="input-group error">
+    {% else %}
+    <div class="input-group">
+      {% endif %}
+    <div class="sp-label"><label>{{_('Maintainer')}}</label></div>
+      <input id="field-extras-13-key" name="extras__13__key" value="ngds_maintainer" placeholder="" style="display:none;">
+      <input type="text" id="maintainer_fake" placeholder="Ex: John Doe" value="{{ get_value('ngds_maintainer',extras) }}" />
+      <div class="maintainer-tag retreived-tags"></div>
+      {% if errors.maintainer %}
+        <span class="error-block">{{errors.maintainer}}</span>
+      {% endif %}
+  </div>
+
+  <input type="hidden" name="extras__13__value" id="maintainer"/>
+  <input type="hidden" id="maintainer_name" name="maintainer" value="{{ h.json_extract(get_value('ngds_maintainer',extras),'name') }}" />
+  <input type="hidden" id="maintainer_email" name="maintainer_email" value="{{ h.json_extract(get_value('ngds_maintainer',extras),'email') }}"/>
+
+
+<div class="input-group">
+      <input id="field-extras-0-key" name="extras__0__key" placeholder="" style="display:none;">      
+      <input id="field-extras-0-value" type="text" name="extras__0__value" placeholder style="display:none;">
+</div>
+
+<div class="input-group">
+    <div class="sp-label"><label>{{_('Spatial Location')}}</label></div>
+      <input id="field-extras-9-key" name="extras__9__key" value="spatial_word" placeholder="" style="display:none;">
+      <input id="field-extras-9-value" type="text" placeholder="Ex: San Bernardino, California" name="extras__9__value" placeholder value="{{ get_value('spatial_word',extras) }}" >
+</div>
+
+<!-- <div class="input-group">
+    <div class="sp-label"><label>Author</label></div>
+     <input id="field-author" name="author" placeholder="" style="display:none;" value="{{ data.author }}">
+      <input id="field-author-fake" type="text" name="field-author-fake" placeholder value="{{ h.get_responsible_party_name(data.author) }}">
+</div> -->
+
+<div class="input-group">
+    <div class="sp-label"><label>{{_('Category')}}</label></div>
+     <input id="field-extras-2-key" name="extras__2__key" value="data_type" placeholder="" style="display:none;">
+      <select id="field-extras-1-value" name="extras__2__value" placeholder="" data-module="autocomplete">
+          <option{{ is_selected("Dataset","data_type",extras) }}>Dataset</option>
+          <option{{ is_selected("Physical Collection","data_type",extras) }}>Physical Collection</option>
+          <option{{ is_selected("Catalog","data_type",extras) }}>Catalog</option>
+          <option{{ is_selected("Movie or Video","data_type",extras) }}>Movie or Video</option>
+          <option{{ is_selected("Drawing","data_type",extras) }}>Drawing</option>
+          <option{{ is_selected("Photograph","data_type",extras) }}>Photograph</option>
+          <option{{ is_selected("Remotely-Sensed Image","data_type",extras) }}>Remotely-Sensed Image</option>
+          <option{{ is_selected("Map","data_type",extras) }}>Map</option>
+          <option{{ is_selected("Text Document","data_type",extras) }}>Text Document</option>
+          <option{{ is_selected("Physical Artifact","data_type",extras) }}>Physical Artifact</option>
+          <option{{ is_selected("Desktop Application","data_type",extras) }}>Desktop Application</option>
+          <option{{ is_selected("Web Application","data_type",extras) }}>Web Application</option>
+      </select>
+</div>
+
+{% if errors.uri %}
+<div class="input-group error">
+  {% else %}
+<div class="input-group">
+  {% endif %}
+    <div class="sp-label"><label>{{_('URI')}}</label></div>
+      <input id="field-extras-3-key" name="extras__3__key" value="uri" placeholder="" style="display:none;">
+      <input id="field-extras-3-value" type="text" name="extras__3__value" placeholder="Ex: doi:10.1594/PANGAEA.726855" value="{{ get_value('uri',extras) }}">
+      {% if errors.uri %}
+        <span class="error-block">{{errors.uri}}</span>
+      {% endif %}
+</div>
+
+<div class="input-group">
+    <div class="sp-label"><label>{{_('Quality')}}</label></div>
+      <input id="field-extras-5-key" name="extras__5__key" value="quality" placeholder="" style="display:none;">
+      <input id="field-extras-5-value" type="text" name="extras__5__value" placeholder="Ex: Good" value="{{ get_value('quality',extras) }}">
+</div>
+
+<div class="input-group">
+    <div class="sp-label"><label>{{_('Lineage')}}</label></div>
+      <input id="field-extras-6-key" name="extras__6__key" value="lineage" placeholder="" style="display:none;">   
+      <input id="field-extras-6-value" type="text" name="extras__6__value" placeholder value="{{ get_value('lineage',extras) }}">
+</div>
+
+{% if errors.status %}
+<div class="input-group error">
+  {% else %}
+  <div class="input-group">
+  {% endif %}
+    <div class="sp-label"><label>{{_('Status')}}</label></div>
+        <input id="field-extras-7-key" name="extras__7__key" value="status" placeholder="" style="display:none;">
+      
+        <select id="field-extras-7-value" name="extras__7__value" placeholder="">
+            <option{{ is_selected("Completed","status",extras) }}>Completed</option>
+            <option{{ is_selected("Ongoing","status",extras) }}>Ongoing</option>
+            <option{{ is_selected("Deprecated","status",extras) }}>Deprecated</option>
+        </select>
+        {% if errors.status %}
+          <span class='error-block'>{{errors.status}}</span>
+        {% endif %}
+</div>
+
+
+<div class="input-group">
+    <div class="sp-label"><label>{{_('Publication Date')}}</label></div>
+      <input id="field-extras-4-key" name="extras__4__key" value="publication_date" placeholder="" style="display:none;" autocomplete="off">
+      <input id="field-extras-4-value" type="text" name="extras__4__value" value="{{ get_value('publication_date',extras) }}" placeholder="">
+      <script>
+        $(document).ready(function() {
+          $( "#field-extras-4-value" ).datepicker();
+          $("#ui-datepicker-div").addClass("datepicker-styles");
+        });
+      </script>
+</div>
+
+<div class="input-group">
+    <div class="sp-label"><label>{{_('Language')}}</label></div>
+      <input id="field-extras-8-key" name="extras__8__key" value="language" placeholder="" style="display:none;">
+      <input id="field-extras-8-value" type="text" name="extras__8__value" placeholder value="{{ get_value('language',extras) }}" style="display:none;">
+      <input id="field-language-fake" type="text" name="field-language-fake" placeholder value="{{ h.get_language(get_value('language',extras)) }}">
+</div>
+
+<script>
+  var geojson = $.parseJSON("{{ get_value('spatial',extras) }}".replace(/&#34;/g,"\""));
+  if (typeof(geojson!=='undefined') && geojson!==null ) {
+    var geoJSONRespresentation =L.geoJson(geojson);  
+    geoJSONRespresentation.addTo(map);
+    writeGeoJson(JSON.stringify(geojson));
+    var layers = geoJSONRespresentation._layers;
+    map.panTo(geoJSONRespresentation.getBounds().getCenter());
+    for(var index in layers) {
+      if(layers[index].feature.type==='Point') {
+        map.setZoom(5);
+      }
+    }
+  }
+
+var authors_ac = ngds.autocomplete("#authors_fake","/responsible_parties",'q',['name','email'],'name',true);
+var ticker = new ngds.util.tick();
+$("#authors_fake").on('autocompletechange',function(){
+  $("#authors_fake").val('');
+});
+
+var slugify = function(dict) {
+    var author_name_f = $("[name='author']").val();
+    var author_email_f = $("[name='author_email']").val();
+
+    if((author_name_f ==='' || typeof author_name_f ==='undefined') && (author_email_f ==='' || typeof author_email_f ==='undefined')) {
+      $("[name='author']").val(dict.name);
+      $("[name='author_email']").val(dict.email);
+    }
+    var state = ngds.util.state;
+
+    state['auth_autocomp'] = state['auth_autocomp'] || (state['auth_autocomp'] = [ ]);
+    var slug = get_author_slug({ 'name':dict['name'],'email':dict['email'] },ticker,function(authors_map){
+      var list_authors = [ ];
+      for(key in authors_map) {
+        list_authors.push(authors_map[key]);
+      }
+      $("#authors").val(JSON.stringify(list_authors));
+    });
+    slug.show();
+    $(".author-tags").append(slug);
+    var existing_first_author = $("[name=author]").val();
+
+    if((existing_first_author==="" || typeof existing_first_author === 'undefined' || existing_first_author==="None") && $.isEmptyObject(state['authors'])===false) {
+            determine_first_author();
+    }
+    setTimeout(function() {
+        $("#authors_fake").val("");
+    });
+//    $("#authors").val(JSON.stringify(state['auth_autocomp']));
+};
+
+var determine_first_author = function() {
+    var indices = [ ];
+    var state = ngds.util.state;
+    if($.isEmptyObject(state['authors'])===true) {
+      return;
+    }
+    for(var ordered_class in state['authors']) {
+        var index = ordered_class.match(/[0-9].*$/)[0];
+        if(isNaN(index)===false) {
+          indices.push(index);
+        }
+    }
+    var first_author_index = Math.min.apply(Math,indices);
+    var first_author = state['authors']['ngds-slug-'+first_author_index]
+    // console.log(state['authors']['ngds-slug-'+first_author_index]);
+    $("[name=author]").val(first_author['name']);
+    $("[name=author_email]").val(first_author['email']);
+}
+
+
+var get_author_slug = function(author,ticker,sync) {
+  var cur_key = "ngds-slug-"+ticker.next();
+  var sp = $("<span/>",{"class":"ngds-tag","text":author['name'],id:cur_key,"style":"display:inline-block;"});
+    var anch = $("<span/>",{"text":"X","class":"close-button-transform","style":"cursor:pointer"});
+    var authors_map = ngds.util.state['authors'] = ngds.util.state['authors'] || (ngds.util.state['authors'] = { });
+    authors_map[cur_key] = author;
+
+    sp.append(anch);
+    sync(authors_map);
+    
+    anch.on('click',function(ev) {
+        $(ev.currentTarget.parentElement).fadeOut(500,function(){
+          var parent = ev.currentTarget.parentElement;
+          var key = parent.id;
+            parent.remove();
+            delete authors_map[key];
+            $("[name=author]").val("None");
+            $("[name=author_email]").val("None");
+            determine_first_author();
+            sync(authors_map);
+        });
+    });
+    return sp;
+};
+
+authors_ac.proxy("#authors",slugify);
+if($("#authors_fake").val()!=="") {
+    var parsed_dict = '';
+    try {
+        var parsed_dict = JSON.parse($("#authors_fake").val());
+        for(var i=0;i<parsed_dict.length;i++) {
+            slugify(parsed_dict[i]);
+        }
+    }
+    catch(SyntaxError) {
+        //swallow
+    }
+
+}
+
+var maintainer_resp = new ngds.responsible_party();
+maintainer_resp.responsibilify({
+'rs_name':'#maintainer_name',
+'rs_email':'#maintainer_email',
+'rs_fake':'#maintainer_fake',
+'rs':"#maintainer",
+'slug_container':'.maintainer-tag'
+},function(dict) {
+  $("[name='maintainer']").val(dict['name']);
+  $("[name='maintainer_email']").val(dict['email']);
+});
+
+//$("#maintainer_fake").val("");
+</script>
+<script type="text/javascript" src="/scripts/metadata_type_ahead.js"></script>

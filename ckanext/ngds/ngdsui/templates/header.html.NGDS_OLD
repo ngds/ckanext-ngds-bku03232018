@@ -1,0 +1,107 @@
+{% set default_group = h.get_default_group() %}
+{#
+pass in the tab that is being rendered and the active_tab variable that we get from the controller. This will determine which menu item is shaded.
+#}
+<header-ngds>
+    <div class="logo-container">
+        <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}"
+           class="logo">
+            <img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }} Logo"
+                 title="{{ g.site_title }} Logo"/>
+            <span>{{ g.logo_text }}</span>
+        </a>
+    </div>
+
+    <nav class="span12 row-fluid">
+        {% snippet "snippets/language_selector.html" %}
+        <ul>
+
+            <li>
+                <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{
+                    _('Home') }}</a></li>
+            <li>
+                <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">{{
+                    _('About') }}</a></li>
+
+            {% if c.user %}
+            <li><a href="#" id="login-in" class="login-in">{{ c.user|capitalize }}</a></li>
+            {% else %}
+            <li><a href="{{ h.url_for(controller='user', action='register') }}">{{ _('Sign Up') }}</a></li>
+            <li><a href="{{ h.url_for(controller='user', action='login') }}">{{ _('Login') }}</a></li>
+            {% endif %}
+
+            <!-- <li><a href="#" class="not-implemented">FAVORITES</a></li> -->
+        </ul>
+    </nav>
+    {% if c.user %}
+    <div class="login-popup" id="logged-in-popup">
+        <ul>
+            <li><a href="{{ h.url_for(controller='user', action='read', id=c.userobj.name) }}"
+                   class="float-left fit-to-login-div">{{ _('Profile') }}</a></li>
+            <li><a href="{{ h.url_for(controller='user', action='dashboard', id=c.userobj.name) }}"
+                   class="float-left fit-to-login-div">{{ _('Dashboard') }}</a></li>
+            {% if h.check_access('manage_users') %}
+            <li>
+                <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.user:UserController', action='manage_users' %}"
+                   class="float-left fit-to-login-div">{{ _('User Management') }}</a></li>
+            {% endif %}
+            <li><a href="{% url_for controller='user', action='logout' %}" class="float-left fit-to-login-div">{{
+                _('Logout') }}</a></li>
+        </ul>
+    </div>
+    {% else %}
+    <!-- <div class="login-popup" id="login-popup">
+        <p>Your email address:</p>
+        <form name="login-form" method ="post" action="{{ h.get_login_url() }}">
+            <input type="text" id="username" name="login"/>
+            <p class="float-left">Your password:</p><a class="float-right fit-to-login-div not-implemented">Forgot?</a>
+            <input type="password" id="password" name="password"/><br/>
+            <input type="checkbox" name="remember" value="50000"/><span>Remember me</span>
+            <input type="submit" value="Login"/>
+        </form>
+    </div>		 -->
+    {% endif %}
+</header-ngds>
+<div id="main-nav"> <!-- This is a container div for the second-level menu. -->
+    <nav>
+        <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map' %}">
+            {% if active_tab == "map" %} <span class="active main-nav-span borders first"> {% else %} <span
+                class="main-nav-span borders first"> {% endif %}
+								<span class="main-menu-item">{{ _('MAP') }}</span>
+								<span class="main-menu-text">{{ _('Find data for a specific geographic area') }}</span>
+							</span>
+        </a>
+
+        {% if g.central %}
+        <a href="{% url_for controller='package', action='search', _tags_limit=0 %}">
+            {% else %}
+            <a href="{% url_for controller='organization', id=default_group , action='read', _tags_limit=0 %}">
+                {% endif %}
+                {% if active_tab == "library" %} <span class="active main-nav-span borders"> {% else %} <span
+                    class="main-nav-span borders"> {% endif %}
+								<span class="main-menu-item">{{ _('LIBRARY') }}</span>
+								<span class="main-menu-text">{{ _('Look up data, images, publications & more') }}</span>
+							</span>
+            </a>
+            <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_resources' %}">
+                {% if active_tab == "resources" %} <span class="active main-nav-span borders"> {% else %} <span
+                    class="main-nav-span borders"> {% endif %}
+								<span class="main-menu-item">{{ _('RESOURCES') }}</span>
+								<span class="main-menu-text">{{ _('Websites & tools for geothermal exploration') }}</span>
+							</span>
+            </a>
+            {% if g.central %}
+            <a href="/harvest">
+                {% else %}
+
+                <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='index' %}">
+                    {% endif %}
+                    {% if active_tab == "contribute" %} <span
+                        class="active main-nav-span last borders"> {% else %} <span class="main-nav-span last borders"> {% endif %}
+								<span class="main-menu-item">{{ _('CONTRIBUTE') }}</span>
+								<span class="main-menu-text">{% if g.central %} {{ _('Harvesting nodes & synchronizing nodes') }} {% else %} {{ _('Share data with NGDS') }} {% endif %}</span>
+							</span>
+                </a>
+    </nav>
+</div> <!-- End of main-nav  -->
+

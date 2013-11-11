@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>ContentModel_Utilities.py</title>
+  <link rel="stylesheet" href="../../../../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>ContentModel_Utilities.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">ckanext.ngds.contentmodel.model.contentmodels</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">ckan.plugins.toolkit</span> <span class="kn">as</span> <span class="nn">toolkit</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Checking if a String is a Number</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">isNumber</span><span class="p">(</span><span class="n">s</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>def isNumber(s)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Checking if a String is an Integer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">isInteger</span><span class="p">(</span><span class="n">s</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>def isInteger(s)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">isDate_Long</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>def isDate_Long(s)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">isDate_Short</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>def isDate_Short(s)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">isDate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">isDate_Short</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="bp">True</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">isDate_Long</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="bp">True</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>def isDate(s)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">enum</span><span class="p">(</span><span class="o">*</span><span class="n">sequential</span><span class="p">,</span> <span class="o">**</span><span class="n">named</span><span class="p">):</span>
+    <span class="n">enums</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sequential</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sequential</span><span class="p">))),</span> <span class="o">**</span><span class="n">named</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="s">&#39;Enum&#39;</span><span class="p">,</span> <span class="p">(),</span> <span class="n">enums</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Error_Message</span><span class="p">:</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">Types</span> <span class="o">=</span> <span class="n">enum</span><span class="p">(</span><span class="s">&#39;columnNameDoesntExist&#39;</span><span class="p">,</span> <span class="s">&#39;nonOptionalCellEmpty&#39;</span><span class="p">,</span> <span class="s">&#39;integerCellViolation&#39;</span><span class="p">,</span> <span class="s">&#39;numericCellViolation&#39;</span><span class="p">,</span> <span class="s">&#39;dateCellViolation&#39;</span><span class="p">,</span> <span class="s">&#39;columnNameOptionalFalseMissing&#39;</span><span class="p">,</span> <span class="s">&#39;systemError&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">Types</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">row</span> <span class="o">=</span> <span class="n">row</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">col</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errorType</span> <span class="o">=</span> <span class="n">Types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">ContentModel_FieldInfoCell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    field information cell</span>
+<span class="sd">    &#39;&#39;&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">typeString</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optional</span>    <span class="o">=</span> <span class="n">optional</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">typeString</span>  <span class="o">=</span> <span class="n">typeString</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span>        <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__str__</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>return str(self.name)
+return str(self.typeString) </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="s">&quot;{name:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, type:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">typeString</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;, opt:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;}&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>class ContentModel_FieldInfoCell(object)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">validate_header</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">,</span> <span class="n">dataListList</span><span class="p">):</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start header checking&quot;</span><span class="p">)</span>
+    
+    <span class="n">validation_messages</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>build link between dataHeaderList and fieldInfoList
+fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">linkToFieldInfoFromHeader</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">dataHeaderList</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">)</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">header</span><span class="p">]</span>
+            <span class="n">linkToFieldInfoFromHeader</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;header: </span><span class="si">%s</span><span class="s"> could NOT be found in the field_info&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="n">header</span>
+            <span class="k">print</span> <span class="n">msg</span>
+            <span class="n">validation_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;col&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;errorType&#39;</span><span class="p">:</span> <span class="s">&#39;columnNameDoesntExist&#39;</span><span class="p">,</span> <span class="s">&#39;message&#39;</span><span class="p">:</span><span class="n">msg</span><span class="p">})</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to finish header checking. linkToFieldInfoFromHeader: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">linkToFieldInfoFromHeader</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">validation_messages</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>def validate_header(fieldModelList, dataHeaderList, dataListList)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">validate_detectMissingColumn</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">):</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start missing columns checking&quot;</span><span class="p">)</span>
+    
+    <span class="n">validation_messages</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fieldModelList</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>print field.name, field.optional</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">optional</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">header</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataHeaderList</span><span class="p">)</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">header</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;header: </span><span class="si">%s</span><span class="s"> could NOT be found in the CSV file&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">validation_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;col&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;errorType&#39;</span><span class="p">:</span> <span class="s">&#39;columnNameDoesntExist&#39;</span><span class="p">,</span> <span class="s">&#39;message&#39;</span><span class="p">:</span><span class="n">msg</span><span class="p">})</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;header: </span><span class="si">%s</span><span class="s"> could NOT be found in the CSV file&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">validation_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;col&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;errorType&#39;</span><span class="p">:</span> <span class="s">&#39;columnNameDoesntExist&#39;</span><span class="p">,</span> <span class="s">&#39;message&#39;</span><span class="p">:</span><span class="n">msg</span><span class="p">})</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to finish missing columns checking&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">validation_messages</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>def validate_detectMissingColumn(fieldModelList, dataHeaderList):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">validate_existence</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">,</span> <span class="n">dataListList</span><span class="p">):</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start field existence checking&quot;</span><span class="p">)</span>
+    
+    <span class="n">validation_messages</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>build link between dataHeaderList and fieldInfoList
+fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">linkToFieldInfoFromHeader</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">dataHeaderList</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">)</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">header</span><span class="p">]</span>
+            <span class="n">linkToFieldInfoFromHeader</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    
+    <span class="n">OptionalFalseIndex</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataHeaderList</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fieldModelList</span><span class="p">[</span><span class="n">linkToFieldInfoFromHeader</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">optional</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="n">OptionalFalseIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;OptionalFalseIndex: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">OptionalFalseIndex</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">jd</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataListList</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">OptionalFalseIndex</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dataListList</span><span class="p">[</span><span class="n">jd</span><span class="p">][</span><span class="n">OptionalFalseIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">isspace</span><span class="p">()):</span>
+                <span class="k">if</span>   <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): null (field </span><span class="si">%s</span><span class="s">) is defined as optional false&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">[</span><span class="n">OptionalFalseIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): &#39;</span><span class="si">%s</span><span class="s">&#39; (field </span><span class="si">%s</span><span class="s">) is defined as optional false&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">[</span><span class="n">OptionalFalseIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="k">print</span> <span class="n">msg</span>
+                <span class="n">validation_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;col&#39;</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;errorType&#39;</span><span class="p">:</span> <span class="s">&#39;nonOptionalCellEmpty&#39;</span><span class="p">,</span> <span class="s">&#39;message&#39;</span><span class="p">:</span><span class="n">msg</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">validation_messages</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ckanext</span><span class="o">.</span><span class="n">ngds</span><span class="o">.</span><span class="n">contentmodel</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">contentmodels</span><span class="o">.</span><span class="n">checkfile_maxerror</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to finish field existence checking&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">validation_messages</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>def validate_existence(fieldModelList, dataHeaderList, dataListList)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">validate_numericType</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">,</span> <span class="n">dataListList</span><span class="p">):</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start numeric data type checking&quot;</span><span class="p">)</span>
+    
+    <span class="n">validation_messages</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>build link between dataHeaderList and fieldInfoList
+fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">linkToFieldInfoFromHeader</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">dataHeaderList</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">)</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">header</span><span class="p">]</span>
+            <span class="n">linkToFieldInfoFromHeader</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    
+    <span class="n">IntTypeIndex</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">DoubleTypeIndex</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataHeaderList</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span>   <span class="n">fieldModelList</span><span class="p">[</span><span class="n">linkToFieldInfoFromHeader</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">typeString</span> <span class="o">==</span> <span class="s">&#39;int&#39;</span><span class="p">:</span>
+                <span class="n">IntTypeIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">fieldModelList</span><span class="p">[</span><span class="n">linkToFieldInfoFromHeader</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">typeString</span> <span class="o">==</span> <span class="s">&#39;double&#39;</span><span class="p">:</span>
+                <span class="n">DoubleTypeIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;IntTypeIndex: </span><span class="si">%s</span><span class="s"> and DoubleTypeIndex: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">IntTypeIndex</span><span class="p">,</span> <span class="n">DoubleTypeIndex</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">jd</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataListList</span><span class="p">)):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>check the int type</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">IntTypeIndex</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dataListList</span><span class="p">[</span><span class="n">jd</span><span class="p">][</span><span class="n">IntTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">isInteger</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): </span><span class="si">%s</span><span class="s"> (field </span><span class="si">%s</span><span class="s">) is expected to be an Integer&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">[</span><span class="n">IntTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">validation_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;col&#39;</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;errorType&#39;</span><span class="p">:</span> <span class="s">&#39;integerCellViolation&#39;</span><span class="p">,</span> <span class="s">&#39;message&#39;</span><span class="p">:</span><span class="n">msg</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>check the double type</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">DoubleTypeIndex</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dataListList</span><span class="p">[</span><span class="n">jd</span><span class="p">][</span><span class="n">DoubleTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">isNumber</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): </span><span class="si">%s</span><span class="s"> (field </span><span class="si">%s</span><span class="s">) is expected to be a Numeric&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">[</span><span class="n">DoubleTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="n">validation_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;col&#39;</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;errorType&#39;</span><span class="p">:</span> <span class="s">&#39;numericCellViolation&#39;</span><span class="p">,</span> <span class="s">&#39;message&#39;</span><span class="p">:</span><span class="n">msg</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">validation_messages</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ckanext</span><span class="o">.</span><span class="n">ngds</span><span class="o">.</span><span class="n">contentmodel</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">contentmodels</span><span class="o">.</span><span class="n">checkfile_maxerror</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to finish field numeric checking&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">validation_messages</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>def validate_numericType(fieldModelList, dataHeaderList, dataListList)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">validate_dateType</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">,</span> <span class="n">dataListList</span><span class="p">):</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to start date data type checking&quot;</span><span class="p">)</span>
+    
+    <span class="n">validation_messages</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>build link between dataHeaderList and fieldInfoList
+fieldInfo_index = linkToFieldInfoFromHeader[headaer_index]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">linkToFieldInfoFromHeader</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">dataHeaderList</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fieldModelList</span><span class="p">)</span> <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">header</span><span class="p">]</span>
+            <span class="n">linkToFieldInfoFromHeader</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    
+    <span class="n">DateTypeIndex</span> <span class="o">=</span> <span class="p">[]</span>  
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataHeaderList</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span>   <span class="n">fieldModelList</span><span class="p">[</span><span class="n">linkToFieldInfoFromHeader</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">typeString</span> <span class="o">==</span> <span class="s">&#39;datetime&#39;</span><span class="p">:</span>
+                <span class="n">DateTypeIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;DateTypeIndex: </span><span class="si">%s</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="n">DateTypeIndex</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">jd</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataListList</span><span class="p">)):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <p>check the int type</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">DateTypeIndex</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dataListList</span><span class="p">[</span><span class="n">jd</span><span class="p">][</span><span class="n">DateTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">isDate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="n">toolkit</span><span class="o">.</span><span class="n">_</span><span class="p">(</span><span class="s">&quot;cell (</span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s">): </span><span class="si">%s</span><span class="s"> (field </span><span class="si">%s</span><span class="s">) is expected to be a ISO 1861 Format datetime&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">DateTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dataHeaderList</span><span class="p">[</span><span class="n">DateTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                    <span class="k">print</span> <span class="n">msg</span>
+                    <span class="n">validation_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="n">jd</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;col&#39;</span><span class="p">:</span><span class="n">DateTypeIndex</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;errorType&#39;</span><span class="p">:</span> <span class="s">&#39;dateCellViolation&#39;</span><span class="p">,</span> <span class="s">&#39;message&#39;</span><span class="p">:</span><span class="n">msg</span><span class="p">})</span>
+            
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">validation_messages</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ckanext</span><span class="o">.</span><span class="n">ngds</span><span class="o">.</span><span class="n">contentmodel</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">contentmodels</span><span class="o">.</span><span class="n">checkfile_maxerror</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;about to finish field datetime checking&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">validation_messages</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>def validate_dateType(fieldModelList, dataHeaderList, dataListList)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">ckan.controllers.storage</span> <span class="kn">as</span> <span class="nn">storage</span>
+<span class="kn">from</span> <span class="nn">pylons</span> <span class="kn">import</span> <span class="n">config</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_url_for_file</span><span class="p">(</span><span class="n">label</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>storage_controller = StorageController()</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">resourcename_fullpath</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ofs</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">get_ofs</span><span class="p">()</span>
+        <span class="n">BUCKET</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ckan.storage.bucket&#39;</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">)</span>
+        <span class="n">resourcename_fullpath</span> <span class="o">=</span> <span class="n">ofs</span><span class="o">.</span><span class="n">get_url</span><span class="p">(</span><span class="n">BUCKET</span><span class="p">,</span><span class="n">label</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">resourcename_fullpath</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>def get_url_for_file(label)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

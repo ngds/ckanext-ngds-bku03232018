@@ -1,0 +1,54 @@
+{#
+Inserts a stepped progress indicator for the new package form. Each stage can
+have one of three states, "uncomplete", "complete" and "active".
+
+stages - A list of states for each of the three stages. Missing stages default
+         to "uncomplete".
+
+Example:
+
+    {% snippet 'package/snippets/stages.html', stages=['active'] %}
+    {% snippet 'package/snippets/stages.html', stages=['complete', 'active'] %}
+    {% snippet 'package/snippets/stages.html', stages=['active', 'complete', 'complete'] %}
+
+#}
+{% set s1 = stages[0] or 'active' %}
+{% set s2 = stages[1] or 'uncomplete' %}
+{% set s3 = stages[2] or 'uncomplete' %}
+{% if s1 != 'uncomplete' %}{% set class = 'stage-1' %}{% endif %}
+{% if s2 != 'uncomplete' %}{% set class = 'stage-2' %}{% endif %}
+{% if s3 != 'uncomplete' %}{% set class = 'stage-3' %}{% endif %}
+
+<ol class="stages {{ class }}">
+  <li class="first {{ s1 }} box-override">
+    {% if s1 != 'complete' %}
+      <span class="highlight">{{ _('1. Create dataset') }}</span>
+    {% else %}
+      <button class="highlight" name="save" value="go-dataset" type="submit">{{ _('1. Create dataset') }}</button>
+    {% endif %}
+  </li>
+  <li class="middle {{ s2 }} box-override">
+    {% if s2 != 'complete' %}
+      <span class="highlight">2. {{ _('Add Resources') }}</span>
+    {% else %}
+      {% if s1 == 'active' or s3 == 'active'%}
+        {# stage 1 #}
+        <button class="highlight" name="save" value="go-resources" type="submit">{{ _('2. Add data') }}</button>
+      {% else %}
+        {% link_for _('Add data'), controller='package', action='new', class_="highlight" %}
+      {% endif %}
+    {% endif %}
+  </li>
+  <li class="last {{ s3 }} box-override">
+    {% if s3 != 'complete' %}
+      <span class="highlight">3. {{ _('Dataset Metadata') }}</span>
+    {% else %}
+      {% if s1 == 'active' or s2 == 'active' %}
+        {# stage 1 #}
+        <button class="highlight" name="save" value="go-metadata" type="submit">{{ _('3. Additional data') }}</button>
+      {% else %}
+        {% link_for _('Additional data'), controller='package', action='new', class_="highlight" %}{{ s2 }}
+      {% endif %}
+    {% endif %}
+  </li>
+</ol>

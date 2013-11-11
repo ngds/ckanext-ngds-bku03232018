@@ -1,0 +1,132 @@
+{% extends "page_ngds.html" %}
+{% set active_page = "map" %}
+<style>
+    .select2-container {
+        margin-right: 15px;
+        padding-left: 0px;
+        vertical-align: bottom;
+    }
+</style>
+{%- block content %}
+
+<div style="position:absolute; ">
+    <div class="map-search dialog-small-map">
+        <form class="simple-input" action="javascript:ngds.Map.top_level_search()">
+            <fieldset>
+                <div class="field">
+                    {% if c.query %}
+                    <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"
+                           value="{{ c.query }}"/>
+                    {% else %}
+                    <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"/>
+                    {% endif %}
+                    <button id="map-search" type="button" value="GO" class="btn-search"></button>
+                </div>
+            </fieldset>
+        </form>
+        <div class="map-search-results">
+            <!--<div id="results" class="results visibility-managed">-->
+
+            <!--</div>-->
+            <div class="search-results-pagination visibility-managed">
+                <div class="search-results-page-nums"></div>
+            </div>
+            <div class="map-expander">
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<div id="map-container" style=""></div>
+<!-- <div id="temporary-wms-div" style="position:absolute; bottom:0px; left:0px; background-color:#dadada; width:310px;">
+	<label for="wms" style="font-family:arial; font-size:12px;">Temporary WMS viewer</label>
+	<input name="wms" type="text" id="wms" style="width:150px;">
+</div> -->
+{% endblock %}
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" type="text/css"
+      href="/fanstatic/vendor/:version:2013-05-30T10:31:49.79/select2/select2.min.css"/>
+{% block jquery_no_conflict %}
+{% endblock %}
+<link rel="stylesheet" href="/vendor/leaflet0.6.2/leaflet.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/leaflet-draw/leaflet.draw.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/iconlabel/leaflet.iconlabel.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/jscrollpane/jquery.jscrollpane.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Label/leaflet.label.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Loading/Control.Loading.css"/>
+
+{% endblock %}
+{% block scripts %}
+<script src="/vendor/leaflet0.6.2/leaflet.js"></script>
+<script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
+        <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
+<script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
+<script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
+<script type="text/javascript" src="/scripts/map/L.TileLayer.EsriImageExports-min.js"></script>
+<script type="text/javascript" src="/vendor/geosearch/src/js/l.control.geosearch.js"></script>
+<script type="text/javascript" src="/vendor/geosearch/src/js/l.geosearch.provider.openstreetmap.js"></script>
+<script type="text/javascript" src="/vendor/jscrollpane/jquery.jscrollpane.min.js"></script>
+<script type="text/javascript" src="/vendor/jscrollpane/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="/vendor/jscrollpane/mwheelIntent.js"></script>
+<script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
+<script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
+<script type="text/javascript" src="/vendor/Leaflet.Label/leaflet.label.js"></script>
+<script type="text/javascript" src="/vendor/Leaflet.Loading/Control.Loading.min.js"></script>
+
+{% if h.is_development() %}
+<script type="text/javascript" src="/scripts/map/L.TileLayer.EsriImageExports.js"></script>
+<script type="text/javascript" src="/scripts/scripts.js"></script>
+<script type="text/javascript" src="/scripts/map/L.Draw.Clear.js"></script>
+<script type="text/javascript" src="/scripts/map/L.FullScreen.js"></script>
+<script type="text/javascript" src="/scripts/map/ngds_zoom.js"></script>
+<script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
+<script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
+<script type="text/javascript" src="/scripts/map/pager.js"></script>
+<script type="text/javascript" src="/scripts/map/main.js"></script>
+<script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
+<script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
+<script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
+<script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
+<script type="text/javascript" src="/scripts/map/result_parser.js"></script>
+<script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
+
+{% else %}
+
+<script type="text/javascript" src="/scripts/map/L.TileLayer.EsriImageExports.min.js"></script>
+<script type="text/javascript" src="/scripts/scripts.min.js"></script>
+<script type="text/javascript" src="/scripts/map/L.Draw.Clear.min.js"></script>
+<script type="text/javascript" src="/scripts/map/L.FullScreen.min.js"></script>
+<script type="text/javascript" src="/scripts/map/ngds_zoom.min.js"></script>
+<script type="text/javascript" src="/scripts/map/ngds_map.min.js"></script>
+<script type="text/javascript" src="/scripts/map/bounding_box.min.js"></script>
+<script type="text/javascript" src="/scripts/map/pager.min.js"></script>
+<script type="text/javascript" src="/scripts/map/main.min.js"></script>
+<script type="text/javascript" src="/scripts/ckanlib/CKANDataset.min.js"></script>
+<script type="text/javascript" src="/scripts/ckanlib/ckanlib.min.js"></script>
+<script type="text/javascript" src="/scripts/ckanlib/search_result.min.js"></script>
+<script type="text/javascript" src="/scripts/map/ZoomHandler.min.js"></script>
+<script type="text/javascript" src="/scripts/map/result_parser.min.js"></script>
+<script type="text/javascript" src="/scripts/notifications/handlers.min.js"></script>
+
+{% endif %}
+
+<script type="text/javascript"
+        src="/fanstatic/vendor/:version:2013-05-30T10:31:49.79/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js"></script>
+<script type="text/javascript"
+        src="/fanstatic/base/:version:2013-08-01T17:32:55.73/:bundle:plugins/jquery.inherit.min.js;plugins/jquery.proxy-all.min.js;plugins/jquery.url-helpers.min.js;plugins/jquery.date-helpers.min.js;plugins/jquery.slug.min.js;plugins/jquery.slug-preview.min.js;plugins/jquery.truncator.min.js;plugins/jquery.form-warning.min.js;sandbox.min.js;module.min.js;pubsub.min.js;client.min.js;notify.min.js;i18n.min.js;main.min.js;modules/select-switch.min.js;modules/slug-preview.min.js;modules/basic-form.min.js;modules/confirm-action.min.js;modules/api-info.min.js;modules/autocomplete.min.js;modules/custom-fields.min.js;modules/related-item.min.js;modules/data-viewer.min.js;modules/resource-form.min.js;modules/resource-upload-field.min.js;modules/follow.min.js;modules/activity-stream.min.js;modules/dashboard.min.js;modules/table-toggle-more.min.js"></script>
+
+{% if c.query %}
+<script>
+    $(document).ready(function () {
+        console.log("Initiating search");
+        ngds.Map.top_level_search();
+    });
+
+</script>
+{% endif %}
+
+{% endblock %}

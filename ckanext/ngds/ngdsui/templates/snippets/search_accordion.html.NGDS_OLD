@@ -1,0 +1,71 @@
+	
+			<ul id="accordion">			 	    
+			      <li>
+			      	<h4><a href="#">Location</a></h4>
+     					<div>
+         					Known geothermal resource area, latitude/longitude, geothermal area
+         					<div>
+         						<input type="text"/>
+         						<form action="#">
+                                    <fieldset>
+                                        <input type="submit" value="Go" class="not-implemented"/>
+                                    </fieldset>
+                                </form>
+         					</div>
+     					</div>
+			      </li>
+			      <li>
+			      	<h4><a href="#">Topic</a></h4>
+     					<div>
+         					<span><input type="checkbox" value="__" name="Geology"/>Geology</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Geophysics</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Geochemistry</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Well Logs</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Legislature/Permitting</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Infrastructure</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Production Data</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Environmental</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Economics</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Land Use and Ownership</span>
+         					<span><input type="checkbox" value="__" name="Geology"/>Reservoir Engineering</span>
+     					</div>
+     				</li>
+			      <li>
+			      	<h4><a href="#">Data Type</a></h4>
+     					<div>
+         					Placeholder
+     					</div>
+			      </li>
+			      <li>
+			      	<h4><a href="#">Source</a></h4>
+     					<div>
+         					Placeholder
+     					</div>
+			      </li>
+			      <li>
+			      	<h4><a href="#">Data Format</a></h4>
+     					<div>
+         					Placeholder
+     					</div>
+			      </li>
+			      <li>
+			      	<h4><a href="#">Date</a></h4>
+     					<div>
+         					Placeholder
+     					</div>
+			      </li>
+			      <li>
+			      	<h4><a href="#">User Review</a></h4>
+     					<div>
+         					Placeholder
+     					</div>
+			      </li>
+			      <li>
+			      	<h4><a href="#">Tools &amp; Apps</a></h4>
+     					<div>
+         					Placeholder
+     					</div>
+			      </li>
+
+			</ul>
+			

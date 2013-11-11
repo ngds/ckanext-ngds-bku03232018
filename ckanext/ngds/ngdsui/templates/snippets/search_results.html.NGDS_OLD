@@ -1,0 +1,93 @@
+{% set rating_dict = { 1:_('Rate as very Poor?'),2:_('Rate as Poor?'), 3:_('Rate as Fair?'), 4:_('Rate as Good?'), 5:_('Rate as Very Good?') } %}
+{% for package in packages %}
+
+<div class="search-results-container">
+    <div class="search-item-image">
+
+        {% set category_image_path= h.get_dataset_category_image_path(package) %}
+
+
+        <img src="{{category_image_path}}"/>
+
+    </div>
+    <div class="search-results-item">
+
+        <div id="search-title-row">
+            {% set controller = 'package' %}
+            <div id="title">
+                <a class="title" href="{{ h.url_for(controller=controller, action='read', id=package.name) }}">{{package.title}}
+                    {% if package.get('state', '').startswith('draft') %}
+                    <span class="label-info">{{ _('(Draft)') }}</span>
+                    {% elif package.get('state', '').startswith('deleted') %}
+                    <span class="label-important">{{ _('(Deleted)') }}</span>
+                    {% endif %} </a>
+                {% if package.get('private', false) %}
+                <span class="label-info">{{ _('Private') }}</span>
+                {% endif %}
+            </div>
+            <div id="banner">
+                <!--TODO-->
+            </div>
+        </div>
+        <div id="search-meta-row">
+            <div id="meta-data-details">
+                <p>{% if not package.author =='None' %}{{package.author}}{% endif %}</p>
+
+                <p>Published: {{ h.get_formatted_date(package.metadata_created)}}</p>
+            </div>
+            <div id="search-review">
+                <p>
+                </p>
+
+                <p>
+                    <span title="Select a star to rate this dataset">
+
+                        {% set rating_val, rating_counter = h.get_rating_details(package.id) %}
+
+                        {% for i in range(1,rating_val+1) %}
+                            {% if user %}
+                            <img src="/images/u448_normal.png"
+                                 onclick='callRating("{{_(rating_dict[i])}}", "{{i|float}}", "{{_(package.id)}}");'/>
+                            {% else %}
+                                <img src="/images/u448_normal.png" />
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for i in range(rating_val+1,6) %}
+                            {% if user %}
+                            <img src="/images/u448_clear.png"
+                                 onclick='callRating("{{_(rating_dict[i])}}", "{{i|float}}", "{{_(package.id)}}");'/>
+                            {% else %}
+                                <img src="/images/u448_clear.png" />
+                            {% endif %}
+                        {% endfor %}
+
+                    </span>
+                    <span>{{rating_counter}} reviews </span></p>
+            </div>
+
+
+        </div>
+        <div id="search-action-row">
+                  <span id="resources">
+                  {% if package.resources and not hide_resources %}
+
+                      <ul class="dataset-resources unstyled">
+                          {% for resource in h.dict_list_reduce(package.resources, 'format') %}
+                          <li>
+                              <a href="{{ h.url_for(controller='package', action='read', id=package.name) }}"
+                                 class="label" data-format="{{ resource.lower() }}">{{ resource }}</a>
+                          </li>
+                          {% endfor %}
+                      </ul>
+                  {% endif %}
+                   </span>
+
+
+            <span id="actions"><a
+                    href="mailto:?subject=Take a look at - {{package.name}}&body=Hi, %0d%0d I found this very interesting dataset on the NGDS website at {{ h.url_for(controller='package', action='read', id=package.name, qualified=True) }}"><img
+                    src="/assets/email.png" class="action-image"/></a></span>
+        </div>
+    </div>
+</div>
+{% endfor %}

@@ -1,0 +1,7 @@
+{% ckan_extends %}
+
+
+<!-- Need to remove this block. If required to comment news feed then change the block name as page_header_tabs -->
+{% block page_header_tabs1 %}
+	{{ h.build_nav_icon('user_edit', _('Settings'), id=user.name) }}
+{% endblock %}

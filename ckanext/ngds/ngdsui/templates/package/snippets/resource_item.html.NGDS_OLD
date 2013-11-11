@@ -1,0 +1,250 @@
+{% set url = h.url_for(controller='package', action='resource_read', id=pkg.name, resource_id=res.id) %}
+<li class="resource-item">
+  {% block resource_item_title %}
+  <a class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
+    {{ h.resource_display_name(res) | truncate(50) }}<span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>
+    {{ h.popular('views', res.tracking_summary.total, min=10) }}
+  </a>
+  {% endblock %}
+  <p class="description">
+    {% if res.description %}
+      {{ h.markdown_extract(res.description, extract_length=80) }}
+    {% else %}
+      <span class="empty">{{ _('No description for this resource') }}</span>
+    {% endif %}
+  </p>
+  {% block resource_item_explore %}
+  <div class="dropdown btn-group">
+    <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+      <i class="icon-share-alt"></i>
+      {{ _('Explore') }}
+      <span class="caret"></span>
+    </a>
+
+    {% if h.check_access('package_create') and not g.central %}
+    {% if h.is_plugin_enabled('geoserver') %}
+      {% if h.is_ogc_publishable(res.id) %}
+        {% if h.is_spatialized(res)==True %}
+         <button class="btn btn-primary unspatialize" style="margin-left:10px;" value="{{ res.id }},{{ res.layer_name }}">{{ _('Unpublish as OGC') }}</button>
+        {% else %}
+           <button class="btn btn-primary spatialize" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">{{ _('Publish as OGC') }}</button>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+    {% endif %}
+    <ul class="dropdown-menu">
+      {% block resource_item_explore_links %}
+      <li>
+        <a href="{{ url }}">
+          <i class="icon-bar-chart"></i>
+          {{ _('Preview') }}
+        </a>
+      </li>
+      <li>
+        <a href="{{ res.url }}" class="resource-url-analytics" target="_blank">
+          <i class="icon-download"></i>
+          {{ _('Download') }}
+        </a>
+      </li>
+      {% endblock %}
+    </ul>
+  </div>
+  {% endblock %}
+
+</li>
+<script>
+    var ngds = ngds || (ngds = { });
+</script>
+
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
+<script type="text/javascript" src="/vendor/mustache/mustache.js"></script>
+<script type="text/javascript" src="/scripts/contribute/resource_form_fields.js"></script>
+
+{% include 'package/resource_form_template.tmf' %}
+
+<script>
+var populate_lat_lng_fields = function (dom_marker, field_list) {
+    var marker = dom_marker;
+    var fields = field_list;
+    var lat_lng_field_struct = {
+        'form': [
+            {
+                'label': 'Latitude Field',
+                'name': 'lat_field_name',
+                'tag': 'select',
+                'top_classes': function () {
+                    return 'lat_field_marker'
+                },
+                'additional': function () {
+                    return 'type=text id=lat_field_marker'
+                },
+                'title': 'Specify the field in your dataset which contains latitude measurements.'
+            },
+            {
+                'label': 'Longitude Field',
+                'name': 'lng_field_name',
+                'tag': 'select',
+                'top_classes': function () {
+                    return 'lng_field_marker'
+                },
+                'additional': function () {
+                    return 'type=text id=lng_field_marker'
+                },
+                'title': 'Specify the field in your dataset which contains longitude measurements.'
+            }
+        ]};
+
+    $(".lat_field_name").remove();
+    $(".lng_field_name").remove();
+    marker.after(Mustache.render(ngds.structured_form_template, lat_lng_field_struct));
+
+    var select_lat = document.getElementById("lat_field_marker");
+    var select_lon = document.getElementById("lng_field_marker");
+    populate_drop_down_list(select_lat, fields);
+    populate_drop_down_list(select_lon, fields);
+};
+
+var populate_drop_down_list = function(dom_element, field_list) {
+    fields = field_list;
+    dom_ele = dom_element;
+    for(var val in fields) {
+        $("<option />", {value: fields[val], text: fields[val]}).appendTo(dom_ele);
+
+        if(this.fields[val] === "LatDegree"){$("#lat_field_marker").val("LatDegree");}
+        if(this.fields[val] === "LongDegree"){$("#lng_field_marker").val("LongDegree");}
+    }
+};
+
+var populate_geoserver_layer_name = function (dom_marker) {
+    var marker = dom_marker;
+    var gs_lyr_name_struct = {
+        'form': [
+            {
+                'label': 'Geoserver Layer Name',
+                'name': 'gs_lyr_name',
+                'tag': 'input',
+                'top_classes': function () {
+                    return 'gs_lyr_name_marker'
+                },
+                'additional': function () {
+                    return 'type=text id=gs_lyr_name_input'
+                },
+                'title': 'A layer name for this resource in the Geoserver.  Must begin with a letter ("a-Z").'
+            }
+        ]};
+    $(".gs_lyr_name_marker").remove();
+    marker.append(Mustache.render(ngds.structured_form_template, gs_lyr_name_struct));
+};
+
+var publish_as_ogc = function(gs_lyr_name, resource_id, package_id, lat_field, lng_field){
+    lat_field = typeof lat_field !== 'undefined' ? lat_field : 'LATITUDE';
+    lng_field = typeof lng_field !== 'undefined' ? lng_field : 'LONGITUDE';
+
+    $.ajax({
+        url:'/api/action/geoserver_publish_layer',
+        'type':'POST',
+        'data':JSON.stringify({
+            gs_lyr_name:gs_lyr_name,
+            resource_id:resource_id,
+            package_id:package_id,
+            col_geography:"geometry",
+            col_latitude:lat_field,
+            col_longitude:lng_field
+        }),
+        success:function(response){
+            window.alert("This resource has now been published as an OGC service.");
+            window.location.reload();
+        },
+        error:function() {
+            window.alert("Sorry. The action requested could not be successfully completed.");
+        }
+    });
+};
+
+var make_datastore_search_url = function() {
+    var res_url = ("{{ res.url }}");
+    var res_url_split =  (res_url.split("/storage"))[0];
+    var datastore_url = res_url_split + "/api/3/action/datastore_search";
+    return datastore_url;
+};
+
+var get_csv_fields = function() {
+    var field_list;
+    $.ajax({
+        url:make_datastore_search_url(),
+        data:{"resource_id":("{{ res.id }}")},
+        dataType:"jsonp",
+        success: field_list = function(data){
+            callback(data);
+        }
+    });
+};
+
+var make_field_list = function(data){
+    var field_list = [];
+    var index;
+    var fields = data.result.fields;
+    for (index = 0; index < fields.length; ++index){
+        field_list.push(fields[index]['id']);
+    }
+    return field_list;
+};
+
+var callback = function(data){
+    var field_list = make_field_list(data);
+    var latlng_marker = $("#gs_lyr_name_input");
+    populate_lat_lng_fields(latlng_marker, field_list);
+};
+
+$(document).ready(function() {
+  if((window.spatialize_handler===null || typeof window.spatialize_handler==='undefined') && ($(".spatialize").length>0)) {
+        window.spatialize_handler = 'defined';
+        var resource_format = ("{{ res.format }}");
+        $(".resource-item").after('<div id="user-input"></div>');
+        var lyr_name_marker = $("#user-input");
+        $(".spatialize").click(function(){
+            populate_geoserver_layer_name(lyr_name_marker);
+            if (resource_format === "CSV"){
+                get_csv_fields();
+                $(".enter_gs_lyr_name").remove();
+                $("#user-input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
+            } else {
+                $(".enter_gs_lyr_name").remove();
+                $("#user-input").after('<button class="btn enter_gs_lyr_name" style="margin-left:10px;" value="{{ res.id }},{{ pkg.id }}">Publish</button>');
+            }
+
+            $(".enter_gs_lyr_name").click(function(ev) {
+                var params = ev.currentTarget.value.split(",");
+                var resource_id = params[0];
+                var package_id = params[1];
+                var lyr_name_val = $("#gs_lyr_name_input").val();
+                var lat_field_val = $("#lat_field_marker").val();
+                var lng_field_val = $("#lng_field_marker").val();
+
+                publish_as_ogc(lyr_name_val, resource_id, package_id, lat_field_val, lng_field_val);
+        });
+        });
+  }
+
+  if((window.unspatialize_handler===null || typeof window.unspatialize_handler==='undefined') && ($(".unspatialize").length>0)) {
+        window.unspatialize_handler = 'defined';
+        $(".unspatialize").click(function(ev){
+            var params = ev.currentTarget.value.split(",");
+            var id = params[0];
+            var lyr_name = params[1];
+            $.ajax({
+              url:'/api/action/geoserver_unpublish_layer',
+              'type':'POST',
+              'data':JSON.stringify({
+               resource_id:id,
+               gs_lyr_name:lyr_name
+              }),
+              success:function(response){
+                  window.alert("This resource has now been unpublished.");
+                  window.location.reload();
+              }
+            });
+          });
+  }
+});
+</script>

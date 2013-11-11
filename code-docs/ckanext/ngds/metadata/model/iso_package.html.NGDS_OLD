@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>iso_package.py</title>
+  <link rel="stylesheet" href="../../../../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>iso_package.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">additional_metadata</span> <span class="kn">import</span> <span class="n">ResponsibleParty</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span>
+<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">asShape</span>
+<span class="kn">import</span> <span class="nn">json</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>A wrapper around a CKAN Package that helps organize extras and facilitate export to ISO19139</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">IsoPackage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    
+    <span class="n">metadata_info</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dataset_info</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">resources</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Must give us a Package to get things started</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ckan_package</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span> <span class="o">=</span> <span class="n">ckan_package</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>So the idea is to take the package and parse it out into what we need for ISO</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <h1>Metadata info</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;language&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;eng&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;charset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;utf8&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;contact&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_metadata_contact</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;updated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">metadata_modified</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;standard&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;ISO-NAP-USGIN&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1.1&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <h1>Dataset info</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;uri&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;dataset_uri&quot;</span><span class="p">,</span> <span class="s">&quot;http://path/to/ckan/package&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;category&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;dataset_category&quot;</span><span class="p">,</span> <span class="s">&quot;dataset&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;publication_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;publication_date&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">metadata_modified</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;creators&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset_creators</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;abstract&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">notes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;quality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;quality&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;status&quot;</span><span class="p">,</span> <span class="s">&quot;completed&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;keywords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">get_tags</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;language&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;dataset_lang&quot;</span><span class="p">,</span> <span class="s">&quot;eng&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;topic&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;geoscientificInformation&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;extent_keyword&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;spatial_word&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;extent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;spatial&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;usage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">license_text</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <h1>Distribution info</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_resource</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span> <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">resources</span> <span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_distributor_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ckan_resource</span><span class="p">):</span>
+        <span class="n">contact_id</span> <span class="o">=</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;distributor&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">contact_id</span><span class="p">:</span>
+            <span class="n">party</span> <span class="o">=</span> <span class="n">ResponsibleParty</span><span class="o">.</span><span class="n">by_id</span><span class="p">(</span><span class="n">contact_id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_contact</span><span class="p">(</span><span class="n">party</span><span class="p">,</span> <span class="s">&quot;distributor&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_metadata_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">contact_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;metadata_contact&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">contact_id</span><span class="p">:</span>
+            <span class="n">party</span> <span class="o">=</span> <span class="n">ResponsibleParty</span><span class="o">.</span><span class="n">by_id</span><span class="p">(</span><span class="n">contact_id</span><span class="p">)</span>
+            <span class="n">contact</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_contact</span><span class="p">(</span><span class="n">party</span><span class="p">,</span> <span class="s">&quot;pointOfContact&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">contact</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_dataset_creators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">creators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;creators&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="c"># should later support multiplicity</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>creators = json.loads(creators)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_contact</span><span class="p">(</span><span class="n">ResponsibleParty</span><span class="o">.</span><span class="n">by_id</span><span class="p">(</span><span class="n">creator</span><span class="p">),</span> <span class="s">&quot;author&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">creator</span> <span class="ow">in</span> <span class="n">creators</span> <span class="p">]</span> <span class="c"># should that hard-wire to author?</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">build_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">responsible_party</span><span class="p">,</span> <span class="n">role</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">&quot;person&quot;</span><span class="p">:</span> <span class="n">responsible_party</span><span class="p">,</span>
+            <span class="s">&quot;role&quot;</span><span class="p">:</span> <span class="n">role</span>        
+        <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">make_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ckan_resource</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="s">&quot;url&quot;</span><span class="p">:</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="s">&quot;distributor&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distributor_contact</span><span class="p">(</span><span class="n">ckan_resource</span><span class="p">),</span>
+            <span class="s">&quot;protocol&quot;</span><span class="p">:</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;protocol&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+            <span class="s">&quot;layer&quot;</span><span class="p">:</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;layer&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+            <span class="s">&quot;format&quot;</span><span class="p">:</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;format&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+            <span class="s">&quot;ordering&quot;</span><span class="p">:</span> <span class="n">ckan_resource</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;ordering&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">distributionHelper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;distributor&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">distributor_id</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;distributor&quot;</span><span class="p">][</span><span class="s">&quot;person&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">if</span> <span class="n">distributor_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">obj</span><span class="p">[</span><span class="n">distributor_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;distributor&quot;</span><span class="p">:</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;distributor&quot;</span><span class="p">],</span> <span class="s">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[]</span> <span class="p">}</span>
+                <span class="n">obj</span><span class="p">[</span><span class="n">distributor_id</span><span class="p">][</span><span class="s">&quot;resources&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s">&quot;no-distributor-specified&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">obj</span><span class="p">[</span><span class="s">&quot;no-distributor-specified&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;distributor&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&quot;resources&quot;</span><span class="p">:</span> <span class="p">[]</span> <span class="p">}</span>
+                <span class="n">obj</span><span class="p">[</span><span class="s">&quot;no-distributor-specified&quot;</span><span class="p">][</span><span class="s">&quot;resources&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">license_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>            
+        <span class="n">licenses</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;cc-by&quot;</span><span class="p">:</span> <span class="s">&quot;Creative Commons Attribution&quot;</span><span class="p">,</span>
+          <span class="s">&quot;cc-by-sa&quot;</span><span class="p">:</span> <span class="s">&quot;Creative Commons Attribution Share-Alike&quot;</span><span class="p">,</span>
+          <span class="s">&quot;cc-zero&quot;</span><span class="p">:</span> <span class="s">&quot;Creative Commons CCZero&quot;</span><span class="p">,</span>
+          <span class="s">&quot;cc-nc&quot;</span><span class="p">:</span> <span class="s">&quot;Creative Commons Non-Commercial (Any)&quot;</span><span class="p">,</span>
+          <span class="s">&quot;gfdl&quot;</span><span class="p">:</span> <span class="s">&quot;GNU Free Documentation License&quot;</span><span class="p">,</span>
+          <span class="s">&quot;notspecified&quot;</span><span class="p">:</span> <span class="s">&quot;License Not Specified&quot;</span><span class="p">,</span>
+          <span class="s">&quot;odc-by&quot;</span><span class="p">:</span> <span class="s">&quot;Open Data Commons Attribution License&quot;</span><span class="p">,</span>
+          <span class="s">&quot;odc-odbl&quot;</span><span class="p">:</span> <span class="s">&quot;Open Data Commons Open Database License (ODbL)&quot;</span><span class="p">,</span>
+          <span class="s">&quot;odc-pddl&quot;</span><span class="p">:</span> <span class="s">&quot;Open Data Commons Public Domain Dedication and Licence (PDDL)&quot;</span><span class="p">,</span>
+          <span class="s">&quot;other-at&quot;</span><span class="p">:</span> <span class="s">&quot;Other (Attribution)&quot;</span><span class="p">,</span>
+          <span class="s">&quot;other-nc&quot;</span><span class="p">:</span> <span class="s">&quot;Other (Non-Commercial)&quot;</span><span class="p">,</span>
+          <span class="s">&quot;other-closed&quot;</span><span class="p">:</span> <span class="s">&quot;Other (Not Open)&quot;</span><span class="p">,</span>
+          <span class="s">&quot;other-open&quot;</span><span class="p">:</span> <span class="s">&quot;Other (Open)&quot;</span><span class="p">,</span>
+          <span class="s">&quot;other-pd&quot;</span><span class="p">:</span> <span class="s">&quot;Other (Public Domain)&quot;</span><span class="p">,</span>
+          <span class="s">&quot;uk-ogl&quot;</span><span class="p">:</span> <span class="s">&quot;UK Open Government Licence (OGL)&quot;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">licenses</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ckan_package</span><span class="o">.</span><span class="n">license_id</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Create ISO19139 XML in accordance with the USGIN metadata profile</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">to_iso_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">namespaces</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;gmd&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.isotc211.org/2005/gmd&quot;</span><span class="p">,</span>
+            <span class="s">&quot;gco&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.isotc211.org/2005/gco&quot;</span><span class="p">,</span>
+            <span class="s">&quot;gml&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.opengis.net/gml&quot;</span><span class="p">,</span>
+            <span class="s">&quot;xlink&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.w3.org/1999/xlink&quot;</span><span class="p">,</span>
+            <span class="s">&quot;xsi&quot;</span><span class="p">:</span> <span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>            
+        <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Return a namespace-qualified element name</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">qualifiedName</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">return</span> <span class="s">&#39;{</span><span class="si">%s</span><span class="s">}</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">namespaces</span><span class="p">[</span><span class="n">ns</span><span class="p">],</span> <span class="n">element</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">fileIdentifier</span><span class="p">():</span>
+            <span class="n">fileId</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;fileIdentifier&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">fileId</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">fileId</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">metadataLanguage</span><span class="p">():</span>
+            <span class="n">lang</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;language&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;language&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">lang</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">charSet</span><span class="p">():</span>
+            <span class="n">charSet</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;characterSet&quot;</span><span class="p">))</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;codeList&quot;</span><span class="p">:</span> <span class="s">&quot;http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode&quot;</span><span class="p">,</span>
+                <span class="s">&quot;codeListValue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;charset&quot;</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">charSet</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_CharacterSetCode&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;charset&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">charSet</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">hierarchyLevel</span><span class="p">():</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;hierarchyLevel&quot;</span><span class="p">))</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;codeList&quot;</span><span class="p">:</span> <span class="s">&quot;http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ScopeCode&quot;</span><span class="p">,</span>
+                <span class="s">&quot;codeListValue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;category&quot;</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_ScopeCode&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;category&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">level</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">hierarchyLevelName</span><span class="p">():</span>
+            <span class="n">levelName</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;hierarchyLevelName&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">levelName</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;category&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">levelName</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">responsibleParty</span><span class="p">(</span><span class="n">contact</span><span class="p">):</span>
+            <span class="n">person</span> <span class="o">=</span> <span class="n">contact</span><span class="p">[</span><span class="s">&quot;person&quot;</span><span class="p">]</span>
+            
+            <span class="n">party</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_ResponsibleParty&quot;</span><span class="p">))</span>
+            
+            <span class="n">name</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">party</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;individualName&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">name</span>            
+            
+            <span class="n">orgName</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">party</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;organisationName&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">orgName</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">organization</span>
+            
+            <span class="n">contact_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">party</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;contactInfo&quot;</span><span class="p">))</span>
+            <span class="n">contact</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">contact_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_Contact&quot;</span><span class="p">))</span>
+            
+            <span class="n">phone_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">contact</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;phone&quot;</span><span class="p">))</span>
+            <span class="n">phone</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">phone_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_Telephone&quot;</span><span class="p">))</span>
+            <span class="n">voice</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">phone</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;voice&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">voice</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">phone</span>
+            
+            <span class="n">address_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">contact</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;address&quot;</span><span class="p">))</span>
+            <span class="n">address</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">address_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_Address&quot;</span><span class="p">))</span>
+            
+            <span class="n">delivery</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;deliveryPoint&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">delivery</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">street</span>
+            
+            <span class="n">city</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;city&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">city</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">city</span>
+            
+            <span class="n">area</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;administrativeArea&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">state</span>
+            
+            <span class="n">zipcode</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;postalCode&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">zipcode</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">zip</span>
+            
+            <span class="n">country</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;country&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">country</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">country</span>
+            
+            <span class="n">email</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;electronicMailAddress&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span>
+            
+            <span class="n">role_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">party</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;role&quot;</span><span class="p">))</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;codeList&quot;</span><span class="p">:</span> <span class="s">&quot;http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode&quot;</span><span class="p">,</span>
+                <span class="s">&quot;codeListValue&quot;</span><span class="p">:</span> <span class="s">&quot;pointofContact&quot;</span> <span class="c">#contact[&quot;role&quot;]                </span>
+            <span class="p">}</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">role_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_RoleCode&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">contact</span><span class="p">[</span><span class="s">&quot;role&quot;</span><span class="p">]</span>
+            
+            <span class="k">return</span> <span class="n">party</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">metadataContact</span><span class="p">():</span>
+            <span class="n">contact</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;contact&quot;</span><span class="p">))</span>
+            <span class="n">contact_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;contact&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">contact_obj</span><span class="p">:</span>
+                <span class="n">contact</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">responsibleParty</span><span class="p">(</span><span class="n">contact_obj</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">contact</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">dateStamp</span><span class="p">():</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;dateStamp&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;DateTime&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;updated&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">date</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">metadataStandardName</span><span class="p">():</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;metadataStandardName&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;standard&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">name</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">metadataStandardVersion</span><span class="p">():</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;metadataStandardVersion&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_info</span><span class="p">[</span><span class="s">&quot;version&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">version</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">datasetUri</span><span class="p">():</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;dataSetURI&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;uri&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">uri</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">title</span><span class="p">():</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;title&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">title</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">publicationDate</span><span class="p">():</span>
+            <span class="n">date_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;date&quot;</span><span class="p">))</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">date_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_Date&quot;</span><span class="p">))</span>
+            <span class="n">subDate</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;date&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">subDate</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;DateTime&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;publication_date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+            <span class="n">dateType</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;dateType&quot;</span><span class="p">))</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;codeList&quot;</span><span class="p">:</span> <span class="s">&quot;http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode&quot;</span><span class="p">,</span>
+                <span class="s">&quot;codeListValue&quot;</span><span class="p">:</span> <span class="s">&quot;publication&quot;</span>
+            <span class="p">}</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">dateType</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_DateTypeCode&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;publication&quot;</span>
+            <span class="k">return</span> <span class="n">date_attr</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">citedResponsibleParties</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">creator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;creators&quot;</span><span class="p">]:</span>
+                <span class="n">cited</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;citedResponsibleParty&quot;</span><span class="p">))</span>
+                <span class="n">cited</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">responsibleParty</span><span class="p">(</span><span class="n">creator</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">abstract</span><span class="p">():</span>
+            <span class="n">abstract_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;abstract&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;quality&quot;</span><span class="p">]:</span>
+                <span class="n">abstract_str</span> <span class="o">+=</span> <span class="s">&quot; QualityStatement: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;quality&quot;</span><span class="p">]</span>
+                
+            <span class="n">abstract</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;abstract&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">abstract</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">abstract_str</span>
+            <span class="k">return</span> <span class="n">abstract</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">status</span><span class="p">():</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;status&quot;</span><span class="p">))</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;codeList&quot;</span><span class="p">:</span> <span class="s">&quot;http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ProgressCode&quot;</span><span class="p">,</span>        
+                <span class="s">&quot;codeListValue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;status&quot;</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_ProgressCode&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;status&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">status</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">themeKeywords</span><span class="p">():</span>
+            <span class="n">keyword_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;descriptiveKeywords&quot;</span><span class="p">))</span>
+            <span class="n">keywords</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">keyword_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_Keywords&quot;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;keywords&quot;</span><span class="p">]:</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;keyword&quot;</span><span class="p">))</span>
+                <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">keyword</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">keyword_type</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">))</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;codeList&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+                <span class="s">&quot;codeListValue&quot;</span><span class="p">:</span> <span class="s">&quot;theme&quot;</span>        
+            <span class="p">}</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">keyword_type</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_KeywordTypeCode&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;theme&quot;</span>
+            <span class="k">return</span> <span class="n">keyword_attr</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">extentKeyword</span><span class="p">():</span>
+            <span class="n">keyword_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;descriptiveKeywords&quot;</span><span class="p">))</span>
+            <span class="n">keywords</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">keyword_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_Keywords&quot;</span><span class="p">))</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;keyword&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;extent_keyword&quot;</span><span class="p">]</span>
+            <span class="n">keyword_type</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">))</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;codeList&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+                <span class="s">&quot;codeListValue&quot;</span><span class="p">:</span> <span class="s">&quot;location&quot;</span>        
+            <span class="p">}</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">keyword_type</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_KeywordTypeCode&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">&quot;location&quot;</span>
+            <span class="k">return</span> <span class="n">keyword_attr</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">datasetLanguage</span><span class="p">():</span>
+            <span class="n">lang</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;language&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;language&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">lang</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">topicCategory</span><span class="p">():</span>
+            <span class="n">topic</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;topicCategory&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_TopicCategoryCode&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;topic&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">topic</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">bbox</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>Fails if an extent was not specified</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">geo</span> <span class="o">=</span> <span class="n">asShape</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;extent&quot;</span><span class="p">]))</span>
+            
+            <span class="n">bbox</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;EX_GeographicBoundingBox&quot;</span><span class="p">))</span>
+            
+            <span class="n">west</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;westBoundLongitude&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">west</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;Decimal&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            
+            <span class="n">east</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;eastBoundLongitude&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">east</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;Decimal&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            
+            <span class="n">south</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;southBoundLatitude&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">south</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;Decimal&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            
+            <span class="n">north</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;northBoundLatitude&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">north</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;Decimal&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            
+            <span class="k">return</span> <span class="n">bbox</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">extent</span><span class="p">():</span>
+            <span class="n">extent</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;extent&quot;</span><span class="p">))</span>
+            <span class="n">ex_extent</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">extent</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;EX_Extent&quot;</span><span class="p">))</span>
+            <span class="n">geo</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">ex_extent</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;geographicElement&quot;</span><span class="p">))</span>
+            <span class="n">geo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">extent</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">distributionIdFor</span><span class="p">(</span><span class="n">resource</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s">&quot;distribution-</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;id&quot;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">distributor</span><span class="p">(</span><span class="n">dist_info</span><span class="p">):</span>
+            <span class="n">dist_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;distributor&quot;</span><span class="p">))</span>
+            <span class="n">distributor</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">dist_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_Distributor&quot;</span><span class="p">))</span>
+            <span class="n">contact</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">distributor</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;distributorContact&quot;</span><span class="p">))</span>
+            <span class="n">contact</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">responsibleParty</span><span class="p">(</span><span class="n">dist_info</span><span class="p">[</span><span class="s">&quot;distributor&quot;</span><span class="p">]))</span>
+            <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">dist_info</span><span class="p">[</span><span class="s">&quot;resources&quot;</span><span class="p">]:</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;xlink&quot;</span><span class="p">,</span> <span class="s">&quot;href&quot;</span><span class="p">):</span> <span class="s">&quot;#</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">distributionIdFor</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span> <span class="p">}</span>
+                <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">distributor</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;distributorTransferOptions&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">dist_attr</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">distributors</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+            <span class="n">helper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributionHelper</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">dist_id</span><span class="p">,</span> <span class="n">dist_info</span> <span class="ow">in</span> <span class="n">helper</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">dist_info</span><span class="p">[</span><span class="s">&quot;distributor&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">parent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distributor</span><span class="p">(</span><span class="n">dist_info</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">onlineResource</span><span class="p">(</span><span class="n">resource</span><span class="p">):</span>
+            <span class="n">online</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_OnlineResource&quot;</span><span class="p">))</span>
+            
+            <span class="n">link</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">online</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;linkage&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;URL&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;url&quot;</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;protocol&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">protocol</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">online</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;protocol&quot;</span><span class="p">))</span>
+                <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;protocol&quot;</span><span class="p">]</span> 
+            
+            <span class="n">name</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">online</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
+            
+            <span class="n">description</span> <span class="o">=</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;description&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;layer&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span> <span class="n">description</span> <span class="o">+=</span> <span class="s">&quot;LayerName: &quot;</span> <span class="o">+</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;layer&quot;</span><span class="p">]</span>
+            <span class="n">desc</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">online</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;description&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">description</span>
+            
+            <span class="k">return</span> <span class="n">online</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">transferOption</span><span class="p">(</span><span class="n">resource</span><span class="p">):</span>
+            <span class="n">option</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;transferOptions&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="s">&quot;url&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">distributionIdFor</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span> <span class="p">}</span>
+                <span class="n">digital</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_DigitalTransferOptions&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
+                <span class="n">online</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">digital</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;onLine&quot;</span><span class="p">))</span>
+                <span class="n">online</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">onlineResource</span><span class="p">(</span><span class="n">resource</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+            
+            <span class="k">return</span> <span class="n">option</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">transferOptions</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>         
+            <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">:</span>
+                <span class="n">parent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transferOption</span><span class="p">(</span><span class="n">resource</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">usageConstraints</span><span class="p">():</span>
+            <span class="n">usage</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;useLimitation&quot;</span><span class="p">))</span>
+            <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">usage</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gco&quot;</span><span class="p">,</span> <span class="s">&quot;CharacterString&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;usage&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">usage</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>Create the root element</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">schemaLocation</span> <span class="o">=</span> <span class="p">{</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;xsi&quot;</span><span class="p">,</span> <span class="s">&quot;schemaLocation&quot;</span><span class="p">):</span> <span class="s">&quot;http://www.isotc211.org/2005/gmd http://schemas.opengis.net/csw/2.0.2/profiles/apiso/1.0.0/apiso.xsd&quot;</span> <span class="p">}</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_Metadata&quot;</span><span class="p">),</span> <span class="n">nsmap</span><span class="o">=</span><span class="n">namespaces</span><span class="p">,</span> <span class="o">**</span><span class="n">schemaLocation</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <p>Metadata info</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fileIdentifier</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metadataLanguage</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charSet</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hierarchyLevel</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hierarchyLevelName</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metadataContact</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dateStamp</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metadataStandardName</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metadataStandardVersion</span><span class="p">())</span>
+        <span class="n">record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datasetUri</span><span class="p">())</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Create the identificationInfo section</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">idInfo_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;identificationInfo&quot;</span><span class="p">))</span>
+        <span class="n">idInfo</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">idInfo_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_DataIdentification&quot;</span><span class="p">))</span>
+        
+        <span class="n">cit_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">idInfo</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;citation&quot;</span><span class="p">))</span>
+        <span class="n">citation</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">cit_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;CI_Citation&quot;</span><span class="p">))</span>
+        
+        <span class="n">citation</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">title</span><span class="p">())</span>
+        <span class="n">citation</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">publicationDate</span><span class="p">())</span>
+        <span class="n">citedResponsibleParties</span><span class="p">(</span><span class="n">citation</span><span class="p">)</span>
+        <span class="n">idInfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status</span><span class="p">())</span>
+        
+        <span class="n">idInfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">abstract</span><span class="p">())</span>        
+        <span class="n">idInfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">themeKeywords</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_info</span><span class="p">[</span><span class="s">&quot;extent_keyword&quot;</span><span class="p">]:</span> <span class="n">idInfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extentKeyword</span><span class="p">())</span>
+        <span class="n">idInfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datasetLanguage</span><span class="p">())</span>
+        <span class="n">idInfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">topicCategory</span><span class="p">())</span>
+        <span class="n">idInfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extent</span><span class="p">())</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <p>Create the distributionInfo section</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">distInfo_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;distributionInfo&quot;</span><span class="p">))</span>
+        <span class="n">distInfo</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">distInfo_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_Distribution&quot;</span><span class="p">))</span>
+            
+        <span class="n">distributors</span><span class="p">(</span><span class="n">distInfo</span><span class="p">)</span>
+        <span class="n">transferOptions</span><span class="p">(</span><span class="n">distInfo</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>Constraints</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">constraint_attr</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;metadataConstraints&quot;</span><span class="p">))</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">constraint_attr</span><span class="p">,</span> <span class="n">qualifiedName</span><span class="p">(</span><span class="s">&quot;gmd&quot;</span><span class="p">,</span> <span class="s">&quot;MD_Constraints&quot;</span><span class="p">))</span>
+        <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">usageConstraints</span><span class="p">())</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>Convert to a string and return it.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="nb">unicode</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
