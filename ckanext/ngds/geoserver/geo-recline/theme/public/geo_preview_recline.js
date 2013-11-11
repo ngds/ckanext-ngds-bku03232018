@@ -109,7 +109,15 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
           view: new recline.View.Map({
             model: dataset
           })
-        }
+        },
+        // @NGDS: added a tab for histograms
+        {
+            id: 'histogram',
+            label: 'Histogram',
+            view: new recline.View.FlotHisto({
+              model: dataset
+            })
+          }
       ];
 
       var sidebarViews = [
