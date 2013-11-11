@@ -1,8 +1,0 @@
-{% extends "page_ngds.html" %}
-{% block content %}
-
-<div class="info_content">
-    {% include "info/content/contact.html" %}
-</div>
-
-{% endblock %}
