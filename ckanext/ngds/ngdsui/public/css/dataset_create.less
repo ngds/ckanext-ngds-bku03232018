@@ -206,3 +206,52 @@ div {
 span.mandatory {
     color:#ff0000;
 }
+
+.add-responsible {
+  margin-top: 10px;
+  margin-bottom: 0px;
+
+  label {
+    width: 120px;
+    display: inline-block;
+    text-align: right;
+  }
+  label.required {
+    color: #b55457;
+  }
+  .mandatory {
+    color: #BB0000;
+  }
+  input {
+    width: 275px;
+    border-radius: 3px 3px 3px 3px;
+    margin-bottom: 0px;
+  }
+  input[type="email"] {
+    margin-bottom: 0px;
+  }
+  input.required {
+    border-color: #b55457;
+  }
+  .missing-field-show {
+    width: 175px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 20px;
+    border: 1px solid #b55457;
+    background-color: #c6898b;
+    border-color: #b55457;
+    border-radius: 0 0 3px 3px;
+    display: inline-block;
+    padding-left: 10px;
+    text-align: left;
+    font-weight: normal;
+  }
+  .missing-field-hide {
+    display: none;
+  }
+  .add-err-label {
+    width: 120px;
+    display: block;
+  }
+}
