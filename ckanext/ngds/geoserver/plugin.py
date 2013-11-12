@@ -19,7 +19,7 @@ import ckan.plugins as p
 from ckan.plugins import ITemplateHelpers, IRoutes, IResourcePreview
 import ckanext.ngds.geoserver.logic.action as action
 import ckanext.ngds.geoserver.model.GMLtoReclineJSON as recline
-import ckanext.ngds.geoserver.model.OGCtoReclinePreview as ogc_recline
+import ckanext.ngds.geoserver.model.OGCtoReclinePreview as ogc
 import ckanext.datastore.logic.auth as auth
 import ckanext.datastore.logic.action as ds_action
 from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
@@ -137,13 +137,13 @@ class GeoserverPlugin(p.SingletonPlugin):
         resource = data_dict.get("resource", {})
         if resource.get("protocol", {}) == "OGC:WMS":
             resourceURL = resource.get("url", {})
-            armchair = ogc_recline.WMSDataServiceToReclineJS(resourceURL)
+            armchair = ogc.WMSDataServiceToReclineJS(resourceURL)
             ottoman = armchair.recline_ogc_wms(data_dict)
             p.toolkit.c.resource["wms_url"] = ottoman["url"]
             p.toolkit.c.resource["layer_name"] = ottoman["layer"].lower()
         elif resource.get("protocol", {}) == "OGC:WFS":
             resourceURL = resource.get("url", {})
-            armchair = ogc_recline.WFSDataServiceToReclineJS(resourceURL)
+            armchair = ogc.WFSDataServiceToReclineJS(resourceURL)
             reclineJSON = armchair.MakeReclineJSON(data_dict)
             p.toolkit.c.resource["reclineJSON"] = reclineJSON
 

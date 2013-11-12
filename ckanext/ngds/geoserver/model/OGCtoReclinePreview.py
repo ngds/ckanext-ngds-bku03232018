@@ -30,7 +30,7 @@ class WMSDataServiceToReclineJS():
     def get_layers(self):
         return list(self.wms.contents)
 
-    def get_srs(self, layer, srs):
+    def get_srs(self, layer, srs='EPSG:4326'):
         thisSRS = srs
         thisLayer = self.wms[layer]
         srsList = thisLayer.crsOptions
@@ -51,30 +51,30 @@ class WMSDataServiceToReclineJS():
         methods = self.get_service_methods()
         return methods['Get']['url']
 
-    def get_service_format_options(self, format):
+    def get_service_format_options(self, format='image/png'):
         thisFormat = format
         thisWMS = self.wms.getOperationByName('GetMap').formatOptions
         if thisFormat in thisWMS:
             return thisFormat
         else:
-            return thisFormat + " not found"
+            return thisWMS
 
     def get_layer_details(self, layer):
         keys = ['layer', 'bbox', 'srs', 'format']
         thisLayer = self.wms[layer]
         bbox = thisLayer.boundingBoxWGS84
-        thisSRS = self.get_srs(layer, srs)
+        thisSRS = self.get_srs(layer)
         return dict(zip(keys,[thisLayer,bbox,thisSRS,'none']))
 
     def get_service_url(self, layer):
         thisFormat = self.get_service_format_options(format)
         layer_details = self.get_layer_details(layer)
-        serviceURL = self.wms.getmap(	layers=[layer],
+        serviceURL = self.wms.getmap(layers=[layer],
                                 srs=layer_details['srs'],
                                 bbox=layer_details['bbox'],
                                 size=self.size,
                                 format=thisFormat)
-        return serviceURL.url
+        return serviceURL
 
     def hack_up_a_layer_name(self, data_dict):
         data = data_dict.get("resource")
@@ -97,6 +97,9 @@ class WMSDataServiceToReclineJS():
         layer = self.hack_up_a_layer_name(data)
         url = self.get_GET_url()
         return dict(zip(keys,[layer,url]))
+
+    def ogc_wms_variables(self, data_dict):
+        data
 
 class WFSDataServiceToReclineJS():
 
@@ -147,6 +150,9 @@ class WFSDataServiceToReclineJS():
         thisGML = self.get_GML_format_option(thisOperation)
         response = self.wfs.getfeature(typename=thisLayer)
         return response
+
+    def get_items(self):
+        return self.wfs.items()
 
     def hack_up_a_layer_name(self, data_dict):
         data = data_dict.get("resource")
