@@ -395,6 +395,12 @@ class NgdsuiPlugin(SingletonPlugin):
             #print "search_results: ",search_results
         return search_results
 
+    def before_view(self,pkg):
+        # pkg['title'] = "Muhaha"
+        # print pkg
+        # TODO - Use for rendering packages. Process resources to get more responsible party information from the email.
+        return pkg
+
     implements(IFacets, inherit=True)
 
     def dataset_facets(self, facets_dict, package_type):

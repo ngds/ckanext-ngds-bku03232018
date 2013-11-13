@@ -210,8 +210,10 @@ if (typeof ngds.Map !== 'undefined') {
 
     });
 
-    $('.map-search-results').on('click', null, function (ev) {
+    $('.map-search-results').on('click', ".result", function (ev) {
+        console.log($(this).attr("class"));
         var node = '';
+        console.log("here");
         if (typeof ev.srcElement === 'undefined') {
             node = ev.target;
         }

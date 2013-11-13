@@ -343,5 +343,6 @@ def validate_extras(key, data, errors, context):
     if ("extras", 9, "key") not in data or data[("extras", 9, "value")] == "":
         errors[("dataset_lang",)] = [_("Missing value")]
 
-    if ("extras", 10, "key") not in data or data[("extras", 10, "value")] == "":
-        errors[("spatial",)] = [_("Missing value")]
+    # if ("extras", 10, "key") not in data or data[("extras", 10, "value")] == "":
+    #     errors[("spatial",)] = [_("Missing value")]
+    #     TODO - Validate JSON against some kind of schema.
