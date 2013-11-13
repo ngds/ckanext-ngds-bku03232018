@@ -125,7 +125,7 @@ def validate_distributor(key, data, errors, context):
 
 def validate_protocol(key, data, errors, context):
     if existence_check(key, data, errors, context):
-        if data[key].lower() not in ['ogc:wms', 'ogc:wfs', 'wcs', 'esri_map_service', 'csw', 'sos', 'opendap', 'other']:
+        if data[key].lower() not in ['ogc:wms', 'ogc:wfs', 'ogc:wcs', 'esri', 'ogc:csw', 'ogc:sos', 'opendap', 'other']:
             error_append(key, errors, _('Option %s for protocol not recognized' % data[key]))
 
 
