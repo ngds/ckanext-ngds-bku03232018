@@ -31,20 +31,34 @@ class TestLibrarySearch(seltestbase):
     def test_basic_library_search(self):
         '''Basic test of the library search for data sets'''
         driver = self.driver
-        driver.get(self.base_url + "/")
-        
+              
         self.SB_enter_search_field(driver, "Virginia")
-        # Warning: verifyTextPresent may require manual changes
-        try: self.assertRegexpMatches(driver.find_element_by_css_selector("BODY").text, r"^[\s\S]*dataset found for[\s\S]*$")
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        self.SB_enter_search_field(driver, "Arkansas")
+        self.SB_verify_text(driver, "dataset found")
         self.SB_enter_search_field(driver,"AkJDKDJSDpioSDLKJFSDLKJF")
-        # Warning: verifyTextPresent may require manual changes
-        try: self.assertRegexpMatches(driver.find_element_by_css_selector("BODY").text, r"^[\s\S]*no datasets found for[\s\S]*$")
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        self.SB_reset_to_start_page(driver)
-   
+        self.SB_verify_text(driver, "no datasets found for")
+        #self.SB_reset_to_start_page(driver)
+        
+    def test_nevada_search_error(self):
+        '''Test for issue 28, Nevada search causing server error'''
+        driver = self.driver
+        # go to central site where the issue was
+        self.driver.get(self.central_url)
+        self.SB_enter_search_field(driver, "Nevada")
+        self.SB_verify_text(driver, "datasets found")
     
+    '''
+    def test_tagged_search(self):
+        #Basic test of library search using tags 
+        driver = self.driver
+        
+        self.SB_select_library_page(driver);
+        self.SB_select_tag_group(driver, 2);
+        self.SB_select_tag_group(driver, 3);
+        self.SB_select_tag_subgroup(driver, 3, 1);
+        self.SB_verify_text(driver, "dataset found")
+        
+    '''  
+        
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
