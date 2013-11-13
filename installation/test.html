@@ -1,0 +1,150 @@
+{# ___NGDS_HEADER_BEGIN___
+
+National Geothermal Data System - NGDS
+https://github.com/ngds
+
+File: <filename>
+
+Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+
+Please Refer to the README.txt file in the base directory of the NGDS
+project:
+https://github.com/ngds/ckanext-ngds/README.txt
+
+___NGDS_HEADER_END___ #}
+
+{% extends "page_ngds.html" %}
+{% set active_page = "home" %}
+{% block bodytag %}
+
+{%- endblock -%}
+{%- block content %}
+
+<div id="search-datawatch-container">
+    <div id="search-container">
+        <p class="main-menu-item menu-align">{{_('SEARCH')}}</p>
+
+        <p class="menu-caption">Find geothermal data, images, publications and more</p>
+        <hr/>
+        <!-- <select class="search-combo"><option>Map</option><option>Search</option></select> -->
+        <form action="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='initiate_search' %}"
+              method="post">
+            <input type="text" name="query" class="search-bar"/>
+            &nbsp;{{_('in')}}&nbsp;
+            <select name="search-type">
+                <option value="map">{{_('Map')}}</option>
+                <option value="library">{{_('Library')}}</option>
+            </select>
+            <input type="submit" class="search-button" value="Go">
+        </form>
+    </div>
+    <div id="data-watch-container">
+        <p class="main-menu-item menu-align">{{_('DATA WATCH')}}</p>
+
+        <p class="menu-caption">{{_('Recently shared with NGDS')}}</p>
+        <hr/>
+        {% for user in c.recent_activity %}
+        <div>
+            <a href="{{ h.url_for(controller='package', action='read', id=user['data']['package']['name']) }}"
+               target="_blank">{{user['data']['package']['title']|truncate(100)}}</a>
+
+            <p class="data-watch-feed-caption"><span>By <a
+                    href="{{ h.url_for(controller='user', action='read', id=user['user_id']) }}"
+                    target="_blank">{{h.username_for_id(user['user_id'])}}</a>, </span>
+                <span>{{_('Posted')}} {{ h.get_formatted_date(user['timestamp'])}}</span></p>
+        </div>
+        {% endfor %}
+    </div>
+</div> <!-- End of Search Daawatch Container -->
+
+<div id="showcase-find-map-container">
+    <div id="showcase-container">
+        <!-- Placeholder for the flashy image showcase widget in the middle of the home page. -->
+
+        <div>
+            <div id="slide-controls">
+                <a href="#"><i class="icon-arrow-left" id="prev"></i></a>
+                <a href="#" id="pause"><i class="icon-pause" id="pause-button"></i><i class="icon-play"
+                                                                                      id="play-button"></i></a>
+                <a href="#"><i class="icon-arrow-right" id="next"></i></a>
+            </div>
+            <div id="slides" class="wraptocenter">
+                {% if c.image_files %}
+                {% for image_path in c.image_files.keys() %}
+                <a href="{{c.image_files.get(image_path)}}" target="_blank"><img src="{{image_path}}"/></a>
+                <!--                        <a href="http://www.siemens.com" target="_blank"> <img src="/assets/banner_image1.png" width="840" height="400"/></a>
+                                        <a href="http://www.USA.gov" target="_blank"> <img src="/assets/banner_image2.png" width="840" height="400"/></a>-->
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <!-- <img src="/assets/banner_image.png" class="showcase-image" alt=""/> -->
+    </div>
+    <div id="map-it-container">
+        <a href="http://geothermal.smu.edu/" target="_blank">
+                  <span class="map-it-content menu-item-large">
+                    <img src="/assets/smu-link.png" class="star-it-pointer-img" alt="V"/>
+                  </span>
+        </a>
+    </div>
+
+    <div id="find-in-library-container">
+        {% if g.central %}
+        <a href="{% url_for controller='package', action='search', _tags_limit=0 %}">
+            {% else %}
+            <a href="{% url_for controller='organization', id=default_group , action='read', _tags_limit=0 %}">
+                {% endif %}
+                  <span class="find-it-content menu-item-large">
+                    <img src="/assets/find-in-library.png" class="star-it-pointer-img" alt="VS"/>
+                  </span>
+            </a>
+    </div>
+
+</div> <!-- End of Showcase, Find in Library and Map Container -->
+
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+
+<script type="text/javascript" src="http://malsup.github.io/jquery.cycle.all.js"></script>
+<script type="text/javascript">
+
+    $('#play-button').hide();
+    var toggler = function () {
+        var is_pause = false;
+        return {
+            'toggle': function () {
+                if (is_pause === false) {
+                    is_pause = true;
+                    $('#play-button').show();
+                    $('#pause-button').hide();
+                }
+                else {
+                    $('#play-button').hide();
+                    $('#pause-button').show();
+                    is_pause = false;
+                }
+            }
+        }
+    };
+
+    my_toggler = new toggler();
+
+    $('#pause').click(function () {
+        $('#slides').cycle('toggle');
+        my_toggler.toggle();
+    });
+
+    $('#slides').cycle({
+        fx: 'fade',
+        speed: 1000,
+        prev: '#prev',
+        next: '#next',
+        pause: true,
+        timeout: 2000
+    });
+
+
+</script>
+{% endblock %}
