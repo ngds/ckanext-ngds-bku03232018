@@ -18,8 +18,7 @@ import logging
 import ckan.plugins as p
 from ckan.plugins import ITemplateHelpers, IRoutes, IResourcePreview
 import ckanext.ngds.geoserver.logic.action as action
-import ckanext.ngds.geoserver.model.GMLtoReclineJSON as recline
-import ckanext.ngds.geoserver.model.OGCtoReclinePreview as ogc
+from ckanext.ngds.geoserver.model import OGCServices as ogc
 import ckanext.datastore.logic.auth as auth
 import ckanext.datastore.logic.action as ds_action
 from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
@@ -137,14 +136,17 @@ class GeoserverPlugin(p.SingletonPlugin):
         resource = data_dict.get("resource", {})
         if resource.get("protocol", {}) == "OGC:WMS":
             resourceURL = resource.get("url", {})
-            armchair = ogc.WMSDataServiceToReclineJS(resourceURL)
-            ottoman = armchair.recline_ogc_wms(data_dict)
-            p.toolkit.c.resource["wms_url"] = ottoman["url"]
-            p.toolkit.c.resource["layer_name"] = ottoman["layer"].lower()
+            armchair = ogc.HandleWMS(resourceURL)
+            ottoman = armchair.get_layer_info(data_dict)
+            p.toolkit.c.resource["layer"] = ottoman["layer"]
+            p.toolkit.c.resource["bbox"] = ottoman["bbox"]
+            p.toolkit.c.resource["srs"] = ottoman["srs"]
+            p.toolkit.c.resource["format"] = ottoman["format"]
+            p.toolkit.c.resource["service_url"] = ottoman["service_url"]
         elif resource.get("protocol", {}) == "OGC:WFS":
             resourceURL = resource.get("url", {})
-            armchair = ogc.WFSDataServiceToReclineJS(resourceURL)
-            reclineJSON = armchair.MakeReclineJSON(data_dict)
+            armchair = ogc.HandleWFS(resourceURL)
+            reclineJSON = armchair.make_recline_json(data_dict)
             p.toolkit.c.resource["reclineJSON"] = reclineJSON
 
     # Render the jinja2 template which builds the recline preview

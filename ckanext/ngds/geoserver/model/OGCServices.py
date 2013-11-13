@@ -28,6 +28,20 @@ class HandleWMS():
         self.abstract = self.wms.identification.abstract
         self.size = (256, 256)
 
+    def get_layers(self):
+        layer_list = list(self.wms.contents)
+        if ":" in layer_list:
+            layer_dict = dict((item, (key, value)) for key, value in (item.split(":")
+                            for item in layer_list) for item in layer_list)
+            return {
+                "layer_list": layer_list,
+                "layer_dict": layer_dict
+            }
+        else:
+            return {
+                "layer_list": layer_list
+            }
+
     def get_service_url(self, method='Get'):
         return self.wms.getOperationByName('GetMap').methods[method]['url']
 
@@ -51,17 +65,21 @@ class HandleWMS():
         return this_layer.boundingBoxWGS84
 
     def do_layer_check(self, data_dict):
-        layers = list(self.wms.contents)
-        pkg_id = data_dict.get("pkg_id")
-        pkg = toolkit.get_action("package_show")(None, {'id': pkg_id})
-        resource = pkg.get('resources')
+        layers = self.get_layers()
+        resource = data_dict.get("resource", {})
         try:
-            first_layer = layers[0]
-            if 'layer_name' in resource:
-                if resource.get('layer_name') in layers:
-                    return resource.get('layer_name')
+            first_layer = layers["layer_list"][0]
+            if "layer_dict" in layers:
+                for key, value in layers["layer_dict"].iteritems():
+                    if resource.get("layer") in value[1]:
+                        return key
+                    else:
+                        return first_layer
             else:
-                return first_layer
+                if resource.get("layer") in layers["layer_list"]:
+                    return resource.get("layer")
+                else:
+                    return first_layer
         except Exception:
             pass
 
@@ -88,18 +106,25 @@ class HandleWFS():
         self.title = self.wfs.identification.title
         self.abstract = self.wfs.identification.abstract
 
+    def get_layers(self):
+        layer_list = list(self.wfs.contents)
+        layer_dict = dict((item, (key, value)) for key, value in
+                    (item.split(":") for item in layer_list) for item in layer_list)
+        return {
+            "layer_list": layer_list,
+            "layer_dict": layer_dict
+        }
+
     def do_layer_check(self, data_dict):
-        layers = list(self.wfs.contents)
-        pkg_id = data_dict.get("pkg_id")
-        pkg = toolkit.get_action("package_show")(None, {'id': pkg_id})
-        resource = pkg.get('resources')
+        layers = self.get_layers()
+        resource = data_dict.get("resource", {})
         try:
-            first_layer = layers[0]
-            if 'layer_name' in resource:
-                if resource.get('layer_name') in layers:
-                    return resource.get('layer_name')
-            else:
-                return first_layer
+            first_layer = layers["layer_list"][0]
+            for key, value in layers["layer_dict"].iteritems():
+                if resource.get('layer') in value[1]:
+                    return [key]
+                else:
+                    return [first_layer]
         except Exception:
             pass
 
