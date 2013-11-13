@@ -28,10 +28,6 @@ class HandleWMS():
         self.abstract = self.wms.identification.abstract
         self.size = (256, 256)
 
-    def get_service_operations(self):
-        wms = self.wms.operations
-        return [op.name for op in wms]
-
     def get_service_url(self, method='Get'):
         return self.wms.getOperationByName('GetMap').methods[method]['url']
 
@@ -43,12 +39,16 @@ class HandleWMS():
             return formats
 
     def get_srs(self, layer, srs='EPSG:4326'):
-        thisLayer = self.wms[layer]
-        srsList = thisLayer.crsOptions
-        if srs in srsList:
+        this_layer = self.wms[layer]
+        srs_list = this_layer.crsOptions
+        if srs in srs_list:
             return srs
         else:
             return "SRS Not Found"
+
+    def get_bbox(self, layer):
+        this_layer = self.wms[layer]
+        return this_layer.boundingBoxWGS84
 
     def do_layer_check(self, data_dict):
         layers = list(self.wms.contents)
@@ -65,8 +65,9 @@ class HandleWMS():
         except Exception:
             pass
 
-    def get_layer_info(self, layer):
-        bbox = layer.boundingBoxWGS84
+    def get_layer_info(self, data_dict):
+        layer = self.do_layer_check(data_dict)
+        bbox = self.get_bbox(layer)
         srs = self.get_srs(layer)
         format = self.get_format_options()
         service_url = self.get_service_url()
@@ -78,10 +79,59 @@ class HandleWMS():
             'service_url': service_url
         }
 
-url = 'http://kyanite/ArcGIS/services/aasggeothermal/TXActiveFaults/MapServer/WMSServer'
+class HandleWFS():
 
-a = HandleWMS(url)
-b = a.get_service_operations()
-c = a.get_service_methods()
-print b
-print c
+    def __init__(self, url, version="1.0.0"):
+        self.wfs = WebFeatureService(url, version=version)
+        self.type = self.wfs.identification.type
+        self.version = self.wfs.identification.version
+        self.title = self.wfs.identification.title
+        self.abstract = self.wfs.identification.abstract
+
+    def do_layer_check(self, data_dict):
+        layers = list(self.wfs.contents)
+        pkg_id = data_dict.get("pkg_id")
+        pkg = toolkit.get_action("package_show")(None, {'id': pkg_id})
+        resource = pkg.get('resources')
+        try:
+            first_layer = layers[0]
+            if 'layer_name' in resource:
+                if resource.get('layer_name') in layers:
+                    return resource.get('layer_name')
+            else:
+                return first_layer
+        except Exception:
+            pass
+
+    def build_url(self, typename=None, method='{http://www.opengis.net/wfs}Get',
+                  operation='{http://www.opengis.net/wfs}GetFeature'):
+        service_url = self.wfs.getOperationByName(operation).methods[method]['url']
+        request = {'service': 'WFS', 'version': self.version, 'request': 'GetFeature'}
+        try:
+            assert len(typename) > 0
+            request['typename'] = ','.join(typename)
+        except Exception:
+            request['typename'] = ','.join('ERROR_HERE')
+            pass
+        encoded_request = "&".join("%s=%s" % (key,value) for (key,value) in request.items())
+        url = service_url + encoded_request
+        return url
+
+    def make_geojson(self, data_dict):
+        geojson = []
+        type_name = self.do_layer_check(data_dict)
+        wfs_url = self.build_url(type_name)
+        source = ogr.Open(wfs_url)
+        layer = source.GetLayerByIndex(0)
+        for feature in layer:
+            geojson.append(feature.ExportToJson(as_object=True))
+        return geojson
+
+    def make_recline_json(self, data_dict):
+        recline_json = []
+        geojson = self.make_geojson(data_dict)
+        for i in geojson:
+            properties = i['properties']
+            properties.update(dict(geometry=i['geometry']))
+            recline_json.append(properties)
+        return recline_json
