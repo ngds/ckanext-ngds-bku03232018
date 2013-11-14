@@ -35,6 +35,8 @@ to database tables that can be accessed via [CKAN's Data API](http://docs.ckan.o
 - [ckanext-harvest](https://github.com/okfn/ckanext-harvest): Support for harvesting metadata content from one CKAN
 instance to another.
 
+- [ckanext-importlib](https://github.com/okfn/ckanext-importlib): Supports bulk upload of datasets into CKAN.
+
 ## Fundamental Operating Modes
 
 This extension is designed to run two different types of CKAN sites to serve two different purposes within the NGDS.
