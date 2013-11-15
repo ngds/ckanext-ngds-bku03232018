@@ -60,7 +60,7 @@ class HandleWMS():
             if this_layer in layer_list:
                 return this_layer
             elif this_layer.lower() in layer_list:
-                return this_layer
+                return this_layer.lower()
             else:
                 return first_layer
         except Exception:
@@ -98,7 +98,7 @@ class HandleWFS():
             if this_layer in layer_list:
                 return this_layer
             elif this_layer.lower() in layer_list:
-                return this_layer
+                return this_layer.lower()
             else:
                 return first_layer
         except Exception:
