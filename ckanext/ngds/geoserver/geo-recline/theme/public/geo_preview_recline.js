@@ -73,7 +73,7 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
             var baseUrl='http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8';
             var osmAttrib='Map data © OpenStreetMap contributors';
             var osm = new L.TileLayer(baseUrl, {minZoom: 1, maxZoom: 12, attribution: osmAttrib});
-            var wms = new L.TileLayer.WMS(resourceData.url, {
+            var wms = new L.TileLayer.WMS(resourceData.service_url, {
                 layers: resourceData.layer,
                 format: "image/png",
                 transparent: true

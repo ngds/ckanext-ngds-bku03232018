@@ -166,20 +166,15 @@ class Layer(object):
             'parent_resource': self.file_resource['id'],
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             'protocol': 'OGC:WMS',
-            'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
             'layer':"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
-            #'layer' We should also be creating valid NGDS resources since we're enforcing structure.
-            #"resource_format": self.file_resource.get("resource_format")
-            'resource_format':'data-service',
-            # Why does this have to be structured as opposed to a data-service type? Isn't a WMS a data service?
-#            'geom_extent': self.returnGeomExtent()
+            'resource_format': 'data-service',
+            'format': ''
         }
         if self.file_resource.get("content_model_version") and self.file_resource.get("content_model_uri"):
             data_dict.update({
                 "content_model_version": self.file_resource.get("content_model_version"),
                 "content_model_uri": self.file_resource.get("content_model_uri")
             })
-        
         self.wms_resource = toolkit.get_action('resource_create')(context, data_dict)
 
         # WFS Resource Creation
@@ -190,8 +185,8 @@ class Layer(object):
             "description": "WFS for %s" % self.file_resource["name"],
             "protocol": "OGC:WFS",
             "layer":"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
-            'layer_name': "%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
-            'resource_format':'data-service'
+            'resource_format': 'data-service',
+            'format': ''
         })
         self.wfs_resource = toolkit.get_action('resource_create')(context, data_dict)
 
