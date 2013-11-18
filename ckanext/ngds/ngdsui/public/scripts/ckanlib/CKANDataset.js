@@ -80,22 +80,34 @@ ngds.ckandataset = function (raw) {
                 'attributes': {
                     'class': 'tags'
                 },
-                'children': []
+                'children': [{
+                    'tag':'span',
+                    'attributes':{
+                        'text':'Tags : '
+                    }
+                }]
             };
 
             popup_skeleton['children'].push(tag_div);
             var counter = 0;
-            for (var tag in raw.tags) {
-                if (raw.tags[tag]['name'].length > 25 || tag >= 6) {
+
+            for (var i = 0; i < raw.tags.length; i++) {
+                if (counter > 5) {
                     break;
                 }
+                var tag = raw.tags[i];
+                var display_name = tag['display_name'];
+                if (display_name.length > 25) {
+                    continue;
+                }
                 tag_div['children'].push({
-                                             'tag': 'div',
-                                             'attributes': {
-                                                 'class': 'ngds-tag',
-                                                 'text': raw.tags[tag]['name']
-                                             }
-                                         });
+                    'tag': 'div',
+                    'attributes': {
+                        'class': 'ngds-tag',
+                        'text': display_name
+                    }
+                });
+                counter++;
             }
 
             var popupHTML = ngds.util.dom_element_constructor(popup_skeleton)[0].innerHTML;

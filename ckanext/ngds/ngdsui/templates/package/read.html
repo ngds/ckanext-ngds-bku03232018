@@ -3,25 +3,30 @@
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
-File: <filename>
+File:
+<filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+    Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+    Please Refer to the README.txt file in the base directory of the NGDS
+    project:
+    https://github.com/ngds/ckanext-ngds/README.txt
 
-___NGDS_HEADER_END___ #}
+    ___NGDS_HEADER_END___ #}
 
-{% ckan_extends %}
+    {% ckan_extends %}
 
-{% block secondary_content %}
-  {{ super() }}
+    {% block secondary_content %}
+    {{ super() }}
 
-  {% set dataset_extent = h.get_pkg_dict_extra(c.pkg_dict, 'spatial', '') %}
-  {% if dataset_extent %}
+    {% set dataset_extent = h.get_pkg_dict_extra(c.pkg_dict, 'spatial', '') %}
+    {% if dataset_extent %}
     {% snippet "spatial/snippets/dataset_map_sidebar.html", extent=dataset_extent %}
     {% snippet "snippets/ratings.html", pkg_id = pkg.id, user = c.user %}
-  {% endif %}
-
-{% endblock %}
+    {% endif %}
+    {% endblock %}
+    {% block scripts %}
+    {{super()}}
+    <script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
+    <script type="text/javascript" src="/scripts/publish/resource_publish.js"></script>
+    {% endblock %}

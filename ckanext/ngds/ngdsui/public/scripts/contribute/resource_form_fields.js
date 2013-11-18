@@ -555,49 +555,49 @@ ngds.form.data_service_form_fields = [
                     'tag': 'option',
                     'attributes': {
                         'value': 'OGC:WMS',
-                        'text': 'OGC:WMS'
+                        'text': 'WMS'
                     }
                 },
                 {
                     'tag': 'option',
                     'attributes': {
                         'value': 'OGC:WFS',
-                        'text': 'OGC:WFS'
+                        'text': 'WFS'
                     }
                 },
                 {
                     'tag': 'option',
                     'attributes': {
                         'value': 'OGC:WCS',
-                        'text': 'OGC:WCS'
+                        'text': 'WCS'
                     }
                 },
                 {
                     'tag': 'option',
                     'attributes': {
-                        'value': 'esri_map_service',
+                        'value': 'ESRI',
                         'text': 'ESRI Map Service'
                     }
                 },
                 {
                     'tag': 'option',
                     'attributes': {
-                        'value': 'csw',
+                        'value': 'OGC:CSW',
                         'text': 'CSW'
                     }
                 },
                 {
                     'tag': 'option',
                     'attributes': {
-                        'value': 'sos',
+                        'value': 'OGC:SOS',
                         'text': 'SOS'
                     }
                 },
                 {
                     'tag': 'option',
                     'attributes': {
-                        'value': 'opendap',
-                        'text': 'Open DAP'
+                        'value': 'OPeNDAP',
+                        'text': 'OPeNDAP'
                     }
                 },
                 {

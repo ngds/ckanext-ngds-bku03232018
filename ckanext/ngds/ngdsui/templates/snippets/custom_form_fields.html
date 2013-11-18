@@ -40,9 +40,17 @@ File:
     {% macro get_value(key,extra) -%}
     {% for extra in extras -%}
     {% if extra.key == key -%}
-    {{ extra.value }}
+    {{extra.value}}
     {%- endif %}
     {%- endfor %}
+    {%- endmacro %}
+
+    {% macro add_button_author() -%}
+    <button class="btn" type="button" data-add-rs-author title="{{_('Add New Responsible Party')}}" style="vertical-align: 60%">+</button>
+    {%- endmacro %}
+
+    {% macro add_button_maintainer() -%}
+    <button class="btn" type="button" data-add-rs-maintainer title="{{_('Add New Responsible Party')}}" style="vertical-align: 60%">+</button>
     {%- endmacro %}
 
     <div data-module="custom-fields">
@@ -52,15 +60,14 @@ File:
         'data-module-source': 'responsible_parties?q=?'} %}
         {{ form.input('extras__0__value', id='field-authors', label=_('Authors'), placeholder=_('eg. John Doe, Jane
         Doe'),
-        value=get_value('authors',extras), error=errors.authors, classes=['control-full'], attrs=authors_attrs) }}
+        value=get_value('authors',extras), error=errors.authors, classes=['control-full'], attrs=authors_attrs, caller=add_button_author) }}
     </div>
 
     <input type="hidden" name="extras__1__key" value="maintainer"/>
     {% set maintainer_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete',
     'data-module-source': 'responsible_parties?q=?'} %}
     {{ form.input('extras__1__value', id='field-maintainer', label=_('Maintainer'), placeholder=_('eg. John Doe'),
-    value=get_value('maintainer',extras), error=errors.maintainer, classes=['control-full'], attrs=maintainer_attrs) }}
-    <p>Can't find a maintainer? Create one.</p>
+    value=get_value('maintainer',extras), error=errors.maintainer, classes=['control-full'], attrs=maintainer_attrs, caller=add_button_maintainer) }}
 
     <input type="hidden" name="extras__2__key" value="spatial_word"/>
     {{ form.input('extras__2__value', id='field-spatial-location', label=_('Spatial Location'),
@@ -158,10 +165,11 @@ File:
             {% endif %}
         </div>
     </div>
-
-    <div class="input-group">
-        <div class="sp-label"><label>{{_('Dataset Extent')}}</label></div>
-        <div id="bbox-map"></div>
+    <div class="additional-metadata-map-container">
+        <div class="input-group">
+            <div class="sp-label"><label>{{_('Dataset Extent')}}</label></div>
+            <div id="bbox-map"></div>
+        </div>
     </div>
 
 

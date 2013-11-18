@@ -29,7 +29,7 @@ import ckan.logic as logic
 
 def ngds_resource_schema():
     resource_update_schema = default_update_resource_schema()
-    resource_update_schema['resource_format'] = [valid_resource_type]
+    resource_update_schema['resource_format'] = [not_missing, not_empty, valid_resource_type]
     resource_update_schema['ordering_procedure'] = [ignore_missing]
     resource_update_schema['distributor'] = [ignore_missing]
     resource_update_schema['format'] = [ignore_missing]
@@ -74,6 +74,9 @@ def valid_resource_type(key, data, errors, context):
             validate_structured_resource_fields_present(key, data, errors, context)
         elif data[key] == 'unstructured':
             validate_unstructured_resource_fields_present(key, data, errors, context)
+        else:
+            raise Invalid(_(
+                'NGDS does not recognize resource type %s' % data[key]))
     return data[key]
 
 
@@ -121,7 +124,9 @@ def validate_distributor(key, data, errors, context):
 
 
 def validate_protocol(key, data, errors, context):
-    existence_check(key, data, errors, context)
+    if existence_check(key, data, errors, context):
+        if data[key].lower() not in ['ogc:wms', 'ogc:wfs', 'ogc:wcs', 'esri', 'ogc:csw', 'ogc:sos', 'opendap', 'other']:
+            error_append(key, errors, _('Option %s for protocol not recognized' % data[key]))
 
 
 def validate_layer(key, data, errors, context):
@@ -152,15 +157,21 @@ def line_count(key, data, errors, context, key_stub):
     else:
         lcount_key = ('lcount', )
 
-    modified_resource_url = url.replace("%3A", ":")
-    truncated_url = modified_resource_url.split("/storage/f/")[1]
-    filename_withfile = get_url_for_file(truncated_url)
+    if not url.endswith('csv'):
+        return
 
-    if filename_withfile:
-        f = open(filename_withfile.split("file://")[1])
-        count = len([line for line in f.readlines()])
-        data[lcount_key] = count
-        f.close()
+    try:
+        modified_resource_url = url.replace("%3A", ":")
+        truncated_url = modified_resource_url.split("/storage/f/")[1]
+        filename_withfile = get_url_for_file(truncated_url)
+
+        if filename_withfile:
+            f = open(filename_withfile.split("file://")[1])
+            count = len([line for line in f.readlines()])
+            data[lcount_key] = count
+            f.close()
+    except Exception:
+        return
 
 
 def construct_key(key, field):
@@ -210,12 +221,18 @@ def validate_offline_resource_fields_present(key, data, errors, context):
 def validate_data_service_resource_fields_present(key, data, errors, context):
     key_stub = key[0:2]
 
-    protocol_key = key_stub + ('protocol',)
-    layer_key = key_stub + ('layer',)
+    if key_stub[0] == 'resources':
+        distributor_key = key_stub + ('distributor',)
+        protocol_key = key_stub + ('protocol',)
+        layer_key = key_stub + ('layer',)
+    else:
+        distributor_key = ('distributor',)
+        protocol_key = ('protocol',)
+        layer_key = ('layer',)
 
-    validate_distributor(key, data, errors, context)
+    validate_distributor(distributor_key, data, errors, context)
     validate_protocol(protocol_key, data, errors, context)
-    validate_layer(layer_key, data, errors, context)
+    #validate_layer(layer_key, data, errors, context)
 
 
 def validate_structured_resource_fields_present(key, data, errors, context):
@@ -226,16 +243,21 @@ def validate_structured_resource_fields_present(key, data, errors, context):
         content_model_version_key = key_stub + ('content_model_version',)
         url_key = key_stub + ('url',)
         res_id_key = key_stub + ('id',)
+        format_key = key_stub + ('format',)
+        distributor_key = key_stub + ('distributor',)
     else:
         key_stub = None
         content_model_key = ('content_model_uri',)
         content_model_version_key = ('content_model_version',)
         url_key = ('url',)
         res_id_key = ('id',)
+        format_key = ('format',)
+        distributor_key = ('distributor',)
 
     line_count(url_key, data, errors, context, key_stub=key_stub)
 
-    validate_distributor(key, data, errors, context)
+    validate_distributor(distributor_key, data, errors, context)
+    validate_format(format_key, data, errors, context)
     cm_none = is_content_model_none(content_model_key, data, errors, context)
     if cm_none:
         #if is_content_model_version_none(content_model_version_key, data, errors, context):
@@ -264,11 +286,23 @@ def has_resource_url_changed(id_key, url_key, data):
 
 def validate_unstructured_resource_fields_present(key, data, errors, context):
     key_stub = key[0:2]
-    validate_distributor(key, data, errors, context)
+    if key_stub[0] == 'resources':
+        format_key = key_stub + ('format',)
+        distributor_key = key_stub + ('distributor',)
+    else:
+        format_key = ('format',)
+        distributor_key = ('distributor',)
+
+    validate_distributor(distributor_key, data, errors, context)
+    validate_format(format_key, data, errors, context)
 
 
 def validate_owner_org(key, data, errors, context):
     data[key] = "public"
+
+
+def validate_format(key, data, errors, context):
+    existence_check(key, data, errors, context)
 
 
 def validate_extras(key, data, errors, context):
@@ -288,23 +322,20 @@ def validate_extras(key, data, errors, context):
     if ("extras", 1, "key") not in data or data[("extras", 1, "value")] == "":
         errors[("maintainer",)] = [_("Missing value")]
 
-    if ("extras", 2, "key") not in data or data[("extras", 2, "value")] == "":
-        errors[("spatial_word",)] = [_("Missing value")]
-
     if ("extras", 3, "key") not in data or data[("extras", 3, "value")] == "":
         errors[("dataset_category",)] = [_("Missing value")]
-
-    if ("extras", 4, "key") not in data or data[("extras", 4, "value")] == "":
-        errors[("dataset_uri",)] = [_("Missing value")]
-
-    if ("extras", 5, "key") not in data or data[("extras", 5, "value")] == "":
-        errors[("quality",)] = [_("Missing value")]
-
-    if ("extras", 6, "key") not in data or data[("extras", 6, "value")] == "":
-        errors[("lineage",)] = [_("Missing value")]
+    else:
+        if data[("extras", 3, "value")] not in ['Dataset', 'Physical Collection', 'Catalog', 'Movie or Video',
+                                                'Drawing', 'Photograph', 'Remotely Sensed Image', 'Map',
+                                                'Text Document', 'Physical Artifact', 'Desktop Application',
+                                                'Web Application']:
+            errors[("dataset_category",)] = [_("Option %s for category not recognized" % data[("extras", 3, "value")])]
 
     if ("extras", 7, "key") not in data or data[("extras", 7, "value")] == "":
         errors[("status",)] = [_("Missing value")]
+    else:
+        if data[("extras", 7, "value")] not in ['ongoing', 'completed', 'deprecated']:
+            errors[("status",)] = [_("Option %s for status not recognized" % data[("extras", 7, "value")])]
 
     if ("extras", 8, "key") not in data or data[("extras", 8, "value")] == "":
         errors[("publication_date",)] = [_("Missing value")]
@@ -312,5 +343,6 @@ def validate_extras(key, data, errors, context):
     if ("extras", 9, "key") not in data or data[("extras", 9, "value")] == "":
         errors[("dataset_lang",)] = [_("Missing value")]
 
-    if ("extras", 10, "key") not in data or data[("extras", 10, "value")] == "":
-        errors[("spatial",)] = [_("Missing value")]
+    # if ("extras", 10, "key") not in data or data[("extras", 10, "value")] == "":
+    #     errors[("spatial",)] = [_("Missing value")]
+    #     TODO - Validate JSON against some kind of schema.

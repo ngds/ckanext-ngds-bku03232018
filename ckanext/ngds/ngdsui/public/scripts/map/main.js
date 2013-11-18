@@ -71,10 +71,6 @@ if (typeof ngds.Map !== 'undefined') {
         });
 
     };
-
-//    $("#map-query").on("change", function () {
-//        ngds.publish("Map.clear_rect", {});
-//    });
 }
 
 (function publish_pager_advance() {
@@ -134,7 +130,6 @@ if (typeof ngds.Map !== 'undefined') {
 
 (function subscribe_data_loaded() {
     ngds.subscribe('data-loaded', function (msg, data) {
-        ngds.publish('Map.results_rendered', {});
         ngds.Map.map.fireEvent('dataload');
     })
 })();
@@ -215,8 +210,10 @@ if (typeof ngds.Map !== 'undefined') {
 
     });
 
-    $('.map-search-results').on('click', null, function (ev) {
+    $('.map-search-results').on('click', ".result", function (ev) {
+        console.log($(this).attr("class"));
         var node = '';
+        console.log("here");
         if (typeof ev.srcElement === 'undefined') {
             node = ev.target;
         }
@@ -449,6 +446,19 @@ if (typeof ngds.Map !== 'undefined') {
 
 
 ngds.subscribe('Map.results_rendered', function (topic, data) {
+//    TODO - This is a good place to put in layer sorting.
+    var bounds = ngds.util.state['map_features'].map(function (item) {
+        var b = item.getBounds();
+        var sw = b.getSouthWest();
+        var ne = b.getNorthEast();
+        return new L.LatLngBounds(sw, ne);
+    });
+
+    for (var i = 0; i < bounds.length; i++) {
+        bounds[i].extend(bounds[i - 1]);
+    }
+
+    ngds.Map.map.fitBounds(bounds[bounds.length - 1]);
     $(".visibility-managed").show();
     $(".results").jScrollPane({contentWidth: '0px', hideFocus: true});
 });
@@ -493,6 +503,35 @@ $(document).ready(function () {
 
 $(document).ready(function () {
     ngds.Map.map.on('zoomend', ngds.util.make_prominent);
+
+    $(".map-search").on("click", ".wms", function (ev) {
+        ev.preventDefault();
+        ckan.notify("Please wait while the Web Map Services you requested are fetched", "", "info");
+        var package_id = $(this).attr("data-package-id");
+        ngds.ckanlib.get_wms_urls(package_id, function (wms_mappings) {
+            for (var i = 0; i < wms_mappings.length; i++) {
+                var mapping = wms_mappings[i];
+                var wms_params = {
+                    'layers': mapping['layer'],
+                    'format': 'image/png',
+                    'transparent': true,
+                    'attribution': 'NGDS',
+                    'tileSize': 128,
+                    'opacity': 0.9999,
+                    'version': '1.1.1'
+                };
+
+                var layer = L.tileLayer.wms(mapping['url'], wms_params);
+
+                ngds.Map.layer_control.addOverlay(layer, mapping['layer']);
+                ngds.Map.map.addLayer(layer);
+            }
+            ckan.notify("The Web Map Services you requested have been added to the map.", "", "success");
+
+        });
+        return false;
+    });
+
 });
 
 ngds.subscribe('Map.layer_added', function () {

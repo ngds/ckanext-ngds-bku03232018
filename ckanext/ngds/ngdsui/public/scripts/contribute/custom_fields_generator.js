@@ -576,42 +576,42 @@ var data_service_raw = {
                                     'tag': 'option',
                                     'attributes': {
                                         'text': 'WMS',
-                                        'value': 'wms'
+                                        'value': 'OGC:WMS'
                                     }
                                 },
                                 {
                                     'tag': 'option',
                                     'attributes': {
                                         'text': 'WFS',
-                                        'value': 'wfs'
+                                        'value': 'OGC:WFS'
                                     }
                                 },
                                 {
                                     'tag': 'option',
                                     'attributes': {
                                         'text': 'ESRI Map Service',
-                                        'value': 'esri_map_service'
+                                        'value': 'ESRI'
                                     }
                                 },
                                 {
                                     'tag': 'option',
                                     'attributes': {
                                         'text': 'CSW',
-                                        'value': 'csw'
+                                        'value': 'OGC:CSW'
                                     }
                                 },
                                 {
                                     'tag': 'option',
                                     'attributes': {
                                         'text': 'SOS',
-                                        'value': 'sos'
+                                        'value': 'OGC:SOS'
                                     }
                                 },
                                 {
                                     'tag': 'option',
                                     'attributes': {
-                                        'text': 'Open DAP',
-                                        'value': 'opendap'
+                                        'text': 'OPeNDAP',
+                                        'value': 'OPeNDAP'
                                     }
                                 },
                                 {

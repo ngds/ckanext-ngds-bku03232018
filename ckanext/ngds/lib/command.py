@@ -52,6 +52,11 @@ class APICommand(CkanCommand):
             sc = ScriptCompiler(uipath)
             sc.compile_less()
             sc.minify_js()
+
+        elif cmd == "create_ngds_org":
+            from ckanext.ngds.lib.customize.customize import Customize
+            cust = Customize()
+            cust.customize()
         else:
             print "Command %s not recognized" % cmd
 

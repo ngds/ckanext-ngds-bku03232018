@@ -26,6 +26,7 @@
     position: absolute;
     right: 20px;
     display: inline;
+    z-index: 20;
 
     button {
       //      .ngds-button(20px);
@@ -134,6 +135,7 @@
     .visibility-toggler {
       right: 5px;
       position: '';
+      z-index: 20;
     }
   }
 
@@ -672,4 +674,8 @@ div.red-marker:after {
 
 .leaflet-control-container .leaflet-right .leaflet-control-layers {
   margin-right: 5px;
+}
+
+.no-click {
+  cursor: default;
 }
