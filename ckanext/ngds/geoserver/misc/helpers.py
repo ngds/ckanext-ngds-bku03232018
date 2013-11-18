@@ -31,7 +31,7 @@ def is_spatialized(resource):
             try:
                 toolkit.get_action('resource_show')(None, { 'id':resource.id,'for-view':True })
             except (NotFound):
-                return False
+                continue
 
             if extras['parent_resource'] == resource_id\
                 and ( extras['protocol'].lower() == 'ogc:wms' or extras['ogc_type'].lower() == 'ogc:wfs'):

@@ -1,4 +1,4 @@
-{# ___NGDS_HEADER_BEGIN___
+''' ___NGDS_HEADER_BEGIN___
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
@@ -11,15 +11,14 @@ Please Refer to the README.txt file in the base directory of the NGDS
 project:
 https://github.com/ngds/ckanext-ngds/README.txt
 
-___NGDS_HEADER_END___ #}
+___NGDS_HEADER_END___ '''
 
-<h2>
-    Frequently Asked Questions
-</h2>
+# this is a namespace package
+try:
+    import pkg_resources
 
-<ol>
-    <li>
-      1. How to use NGDS?
-      Answer)
-    </li>
-</ol>
+    pkg_resources.declare_namespace(__name__)
+except ImportError:
+    import pkgutil
+
+    __path__ = pkgutil.extend_path(__path__, __name__)

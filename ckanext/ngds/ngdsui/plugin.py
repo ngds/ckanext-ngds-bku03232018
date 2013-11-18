@@ -373,6 +373,19 @@ class NgdsuiPlugin(SingletonPlugin):
         return search_params
 
     def after_search(self, search_results, search_params):
+
+        def mark_wms_pkgs(pkg):
+
+            def is_wms_resource(resource):
+                if 'protocol' in resource and resource['protocol'].lower() == 'ogc:wms':
+                    return True
+                return False
+
+            if True in map(is_wms_resource, pkg['resources']):
+                pkg['hasWMSResources'] = True
+
+        map(mark_wms_pkgs, search_results['results'])
+
         try:
             if g.facet_json_data:
                 print "global value is there..."
@@ -381,6 +394,12 @@ class NgdsuiPlugin(SingletonPlugin):
             helpers.load_ngds_facets()
             #print "search_results: ",search_results
         return search_results
+
+    def before_view(self,pkg):
+        # pkg['title'] = "Muhaha"
+        # print pkg
+        # TODO - Use for rendering packages. Process resources to get more responsible party information from the email.
+        return pkg
 
     implements(IFacets, inherit=True)
 
@@ -434,6 +453,7 @@ class NgdsuiPlugin(SingletonPlugin):
         return 'package/edit.html'
 
     def setup_template_variables(self, context, data_dict):
+        toolkit.DefaultDatasetForm().setup_template_variables(context, data_dict)
         return data_dict
 
     def create_package_schema(self):

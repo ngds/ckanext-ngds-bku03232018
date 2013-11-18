@@ -61,10 +61,17 @@ class NgdsCrudController():
     def create(self, data):
         """Save a new object to the database"""
         if self.valid_data(data):
-            instance = self.model(**data)
-            instance.save() # Automatically commits, save() defined by ckan.model.domain_object:DomainObject
-            print instance.as_dict()
-            return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
+            try:
+                instance = self.model(**data)
+                instance.save() # Automatically commits, save() defined by ckan.model.domain_object:DomainObject
+                print instance.as_dict()
+                return instance.as_dict() # as_dict() defined by ckan.model.domain_object:DomainObject
+            except Exception as ex: #
+                if 'duplicate' in ex.__str__():
+                    raise toolkit.ValidationError({}, toolkit._("Duplicate Entry: %s" % ex.__str__()))
+                else:
+                    raise toolkit.ValidateError({}, toolkit._(ex.__str__()))
+
         else: # 400 if the data is not valid
             raise toolkit.ValidationError({}, toolkit._("Please supply a 'data' attribute containing the appropriate content for a %s instance.") % self.model.__name__)
 

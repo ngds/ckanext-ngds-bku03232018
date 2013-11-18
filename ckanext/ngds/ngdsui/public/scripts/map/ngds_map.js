@@ -19,7 +19,9 @@ ngds.Map = {
         var soil_url = "http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/Soil_Survey_Map/MapServer/"; //layer ?
         var water_url = "http://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer/";
 
-        var base = new L.TileLayer('http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8');
+        var base = new L.TileLayer('http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8', {
+            attribution: "Map &copy; <a href='http://developer.here.com'>Nokia</a>, Data &copy; NAVTEQ 2012"
+        });
 
         var map = this.map = new L.Map('map-container', {
             layers: [base],
@@ -27,15 +29,6 @@ ngds.Map = {
             zoom: 3,
             zoomControl: false
         });
-
-//	L.tileLayer.betterWms('http://localhost:8080/geoserver/NGDS/wms', {
-//        layers: 'NGDS:1ee1ce06-b0a0-4a5b-8823-679fc17b71dd',
-//        transparent: true,
-//        format: 'image/png',
-//        srs:'EPSG:4326'
-//      }).addTo(map);
-
-
 
         var loadingControl = L.Control.loading({
             separate: true,
@@ -149,7 +142,7 @@ ngds.Map = {
             'NEXRAD Weather': weather_wms
         };
 
-        layer_control = new L.control.layers(baseMaps, overlayMaps, {autoZIndex: true});
+        var layer_control = ngds.Map.layer_control = new L.control.layers(baseMaps, overlayMaps, {autoZIndex: true});
         layer_control.addTo(map);
 
         map.on('layeradd', function (lev) { // Every time a layer is added or removed, make sure our geojson layer is the top-most one.

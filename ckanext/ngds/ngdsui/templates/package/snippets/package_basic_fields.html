@@ -15,6 +15,13 @@ File:
     ___NGDS_HEADER_END___ #}
     {% ckan_extends %}
 
+    {% block package_basic_fields_org %}
+    {% endblock %}
+
+    {% block package_basic_fields_title %}
+    {{ form.input('title', id='field-title', label='%s <span class="mandatory">*</span>'|format(_('Title'))|safe, placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
+    {% endblock %}
+
     {% block package_basic_fields_license %}
 
     <div class="control-group">
