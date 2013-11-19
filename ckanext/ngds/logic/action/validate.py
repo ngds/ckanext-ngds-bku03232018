@@ -15,6 +15,16 @@ ___NGDS_HEADER_END___ '''
 
 import json
 
+### ----------------------------------------------------------------------------------------- ###
+### ----------------------------------------------------------------------------------------- ###
+### ----------------------------------------------------------------------------------------- ###
+###                                                                                           ###
+### READ THIS: https://github.com/ngds/ckanext-ngds/wiki/The-NGDS-Package-and-Resource-Schema ###
+###                                                                                           ###
+### ----------------------------------------------------------------------------------------- ###
+### ----------------------------------------------------------------------------------------- ###
+### ----------------------------------------------------------------------------------------- ###
+
 # CKAN Toolkit provides an interface for reusable validation criteria
 from ckan.plugins import toolkit as tk
 optional = tk.get_validator('ignore_missing')
@@ -71,8 +81,20 @@ def ngds_update_schema(schema):
 
     # Make NGDS additions
     schema = _ngds_create_additions(schema)
+    schema = _ngds_update_additions(schema)
 
     # and return the schema
+    return schema
+
+def _ngds_update_additions(schema):
+    """
+    This basically adds resource validation to the package. The rules are conditional, based on the content in the
+    `resource_format` field. Therefore, we can only add validation to that one field, and then the
+    `validate_resources` function needs to make sure that other fields are in fact valid.
+    """
+
+    schema['resources']['resource_format'] = [required, validate_resources]
+
     return schema
 
 def validate_extras(key, data, errors, context):
@@ -138,28 +160,138 @@ def validate_extras(key, data, errors, context):
 
     # Now validate the single key that we were given on this iteration
     field_name = data[key]
-    value = extras[field_name]
 
     # Check if this particular key satisfies all validation criteria
     criteria = required_criteria.get(field_name, optional_criteria.get(field_name, []))
+    validation_runner(field_name, extras, errors, criteria)
+
+def validate_resources(key, data, errors, context):
+    """
+    This function will be invoked once per resource, and must check to see that all the fields in the resource are
+    acceptable. The `key` will always be `('resources', some-integer, 'resource_format'). The integer can be used to
+    find other values from the same resource. `data` is the "flat" version of the entire Package dictionary.
+    """
+
+    # Information about this resource that I can take from the given key
+    resource_index = key[1]
+    resource_format = data[key]
+
+    # Simplify the resource into a dictionary of key/value pairs
+    resource = dict((t[2], data[t]) for t in data.keys() if t[0] == 'resources' and t[1] == resource_index)
+
+    # Check for fields that are always required by NGDS for resources of any type
+    field_name = 'resource_format'
+    validation_runner(
+        field_name,
+        resource,
+        errors,
+        ["structured", "unstructured", "offline-resource", "data-service"],
+        key[0:2] + (field_name,)
+    )
+
+    field_name = 'distributor'
+    validation_runner(
+        field_name,
+        resource,
+        errors,
+        [required, ngds_rules.is_valid_json, ngds_rules.is_valid_contact],
+        key[0:2] + (field_name,)
+    )
+
+    # Now things depend on the current resource's `resource_format`
+    if resource_format in ['structured', 'unstructured']:
+        # These are uploaded files. `format` is needed
+        field_name = 'format'
+        validation_runner(
+            field_name,
+            resource,
+            errors,
+            [optional],
+            key[0:2] + (field_name,)
+        )
+
+    if resource_format == 'structured':
+        # These are content-model-aware file uploads
+        field_name = 'content_model_uri'
+        validation_runner(
+            field_name,
+            resource,
+            errors,
+            [],
+            key[0:2] + (field_name,)
+        )
+
+        field_name = 'content_model_version'
+        validation_runner(
+            field_name,
+            resource,
+            errors,
+            [],
+            key[0:2] + (field_name,)
+        )
+
+    if resource_format == 'data-service':
+        # These are linked data services
+        field_name = 'protocol'
+        validation_runner(
+            field_name,
+            resource,
+            errors,
+            [ngds_rules.is_in_list(['OGC:WMS', 'OGC:WFS', 'OGC:WCS', 'OGC:CSW', 'OGC:SOS', 'OPeNDAP', 'ESRI', 'other'])],
+            key[0:2] + (field_name,)
+        )
+
+        field_name = 'layer'
+        validation_runner(
+            field_name,
+            resource,
+            errors,
+            [optional],
+            key[0:2] + (field_name,)
+        )
+
+    if resource_format == 'offline-resource':
+        # These are offline things
+        field_name = 'ordering_procedure'
+        validation_runner(
+            field_name,
+            resource,
+            errors,
+            [required],
+            key[0:2] + (field_name,)
+        )
+
+def validation_runner(field_name, data, errors, criteria, error_key=None):
+    """
+    This is a stand-in for CKAN's internal validation runner for situations where I want to call a bunch of validator
+    functions (defined with signature `validator(key, data, errors, context)`), but I have customized some of the
+    parameters and need to "mask" the default error handling. This happens in validation of resources and extras,
+    where our validation requirements put us a little outside what CKAN is setup to handle.
+    """
+
+    # You have to be really careful about what you feed the `errors` object. If the keys are wrong you'll get 500
+    # errors. This is a place that is likely to be broken by future CKAN changes. For example, you feed in different
+    # keys to indicate invalid package.extras than you do to indicate invalid content contained in a resource.
+    if error_key is None: error_key = (field_name,)
+
     for validation_function in criteria:
         # Make a stand-in for the errors object
         err = {field_name: []}
 
         # Fabricate an error indicator in the real `errors` object, in case this field fails to validate
-        errors[(field_name,)] = []
+        errors[error_key] = []
 
         # In case things go wrong...
         i_believe_there_was_a_problem = False
 
         try:
             # Run the validator function
-            validation_function(field_name, extras, err, {})
+            validation_function(field_name, data, err, {})
         except Exception as ex:
             i_believe_there_was_a_problem = True
         finally:
             # Union any errors into the real errors object
-            errors[(field_name,)] = list(set(errors[(field_name,)]) | set(err[field_name]))
+            errors[error_key] = list(set(errors[error_key]) | set(err[field_name]))
 
             # Stop processing validation criteria if there was an exception
             if i_believe_there_was_a_problem:
