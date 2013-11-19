@@ -18,6 +18,13 @@ import sys
 import os
 import argparse
 
+
+parser = argparse.ArgumentParser(description='Load NGDS configuration properties')
+parser.add_argument('-f','--filename', help='Config File to be updated(Full file Path)', required=True)
+parser.add_argument('-d','--deployment', help='Deployment type of NGDS. node/central', required=True)
+parser.add_argument('-r','--root', help='Directory where ckanext-ngds is located, for example ~/home/ubuntu/ckanenv/src', required=True)
+args = parser.parse_args()
+
 # Add .ini parameters that should be set here as (key, value)
 params_to_set = [
     ("ckan.extra_resource_fields", "parent_resource distributor layer_name content_model_version content_model_uri","Extra Resources fields"),
@@ -43,13 +50,13 @@ params_to_set = [
     ("ngds.csw.contact.hours", "0800h - 1600h EST"),
     ("ngds.csw.contact.instructions", "During hours of service"),
     ("ngds.csw.contact.role", "pointOfContact"),
-    ("ngds.facets_config", "/home/ubuntu/ckanenv/src/ckanext-ngds/facet-config.json"),
-    ("ngds.default_group_name", "public"),    
-    ("ngds.resources_dir", "/home/ubuntu/ckanenv/src/ckanext-ngds/ckanext/ngds/base/resources"),
-    ("ngds.contributors_config", "/home/ngds/pyenv2/src/ckanext-ngds/contributors_config.json"),
+    ("ngds.facets_config", args.root + "/ckanext-ngds/facet-config.json"),
+    ("ngds.default_group_name", "public"),
+    ("ngds.resources_dir", args.root + "/ckanext-ngds/ckanext/ngds/base/resources"),
+    ("ngds.contributors_config", args.root + "/ckanext-ngds/contributors_config.json"),
     ("extra_public_paths", "/home/ngds/extrapublic/"),
     ("solr_url", "http://localhost:8983/solr"),
-    ("ckan.i18n_directory", "/home/ngds/pyenv2/src/ckanext-ngds"),
+    ("ckan.i18n_directory", args.root + "/ckanext-ngds"),
     ("search.facets.limits", "5000")
 ]
 
@@ -60,8 +67,8 @@ node_params = [
     ("geoserver.workspace_name", "ngds","Geoserver Workspace Name"),
     ("geoserver.workspace_uri", "http://localhost:5000/ngds","Geoserver Workspace URI"),
     ("ngds.bulk_upload_dir", "/home/ngds/work/bulkupload/"),
-    ("ngds.client_config_file", "/home/ngds/pyenv2/src/ckanext-ngds/ckanclient.cfg"),
-    ("ckan.site_logo", "/assets/nib.png")
+    ("ngds.client_config_file", args.root + "/ckanext-ngds/ckanclient.cfg"),
+    ("ckan.site_logo", args.root + "/ckanext-ngds/ckanext/ngds/ngdsui/public/assets/nib.png")
 ]
 
 node_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query datastorer csw metadata geoserver ngdsui'
@@ -70,17 +77,11 @@ central_params = [
     ("ngds.deployment", "central"),
     ("ngds.home_images_dir", "assets"),
     ("ngds.logo_text", "CONTRIBUTING GEOTHERMAL DATA"),
-    ("ngds.home_images_config_path", "/home/ngds/pyenv2/src/ckanext-ngds/home_images.cfg"),
-    ("ckan.site_logo", "/assets/logo.png")
+    ("ngds.home_images_config_path", args.root + "/ckanext-ngds/home_images.cfg"),
+    ("ckan.site_logo", args.root + "/ckanext-ngds/ckanext/ngds/ngdsui/public/assets/logo.png")
 ]
 
 central_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query harvest spatial_harvest_metadata_api csw_harvester csw metadata geoserver ngdsui'
-
-parser = argparse.ArgumentParser(description='Load NGDS configuration properties')
-parser.add_argument('-f','--filename', help='Config File to be updated(Full file Path)', required=True)
-parser.add_argument('-d','--deployment', help='Deployment type of NGDS. node/central', required=True)
-args = parser.parse_args()
-
 
 if not os.path.exists(args.filename):
     print "Could not find config file: %s" % args.filename
