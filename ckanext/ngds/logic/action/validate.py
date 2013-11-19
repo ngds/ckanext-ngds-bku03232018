@@ -13,336 +13,154 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ '''
 
-__author__ = 'vivek'
-from ckan.logic.schema import default_update_resource_schema, default_update_package_schema, default_create_package_schema
-from ckan.lib.navl.validators import Invalid, not_empty, ignore_missing, not_missing, keep_extras, ignore
-from ckan.logic.validators import extras_unicode_convert
-from pylons.i18n import _
-
-from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile
-from pylons import request
 import json
-from ckanext.ngds.contentmodel.logic.ContentModel_Utilities import get_url_for_file
-from ckanext.ngds.logic.file_processors.FileProcessorFactory import FileProcessorFactory
-import ckan.logic as logic
-
-
-def ngds_resource_schema():
-    resource_update_schema = default_update_resource_schema()
-    resource_update_schema['resource_format'] = [not_missing, not_empty, valid_resource_type]
-    resource_update_schema['ordering_procedure'] = [ignore_missing]
-    resource_update_schema['distributor'] = [ignore_missing]
-    resource_update_schema['format'] = [ignore_missing]
-    resource_update_schema['protocol'] = [ignore_missing]
-    resource_update_schema['layer'] = [ignore_missing]
-    resource_update_schema['content_model_uri'] = [ignore_missing]
-    resource_update_schema['content_model_version'] = [ignore_missing]
 
-    return resource_update_schema
-
+# CKAN Toolkit provides an interface for reusable validation criteria
+from ckan.plugins import toolkit as tk
+optional = tk.get_validator('ignore_missing')
+required = tk.get_validator('not_empty')
 
-def ngds_package_schema():
-    package_update_schema = default_update_package_schema()
-    package_update_schema['resources'] = ngds_resource_schema()
-    package_update_schema['owner_org'] = [validate_owner_org]
-    package_update_schema['extras'] = {
-        'id': [ignore],
-        'key': [not_empty, unicode, validate_extras],
-        'value': [not_missing],
-        'state': [ignore],
-        'deleted': [ignore_missing],
-        'revision_timestamp': [ignore],
-    }
-    return package_update_schema
+# Grab NGDS validators
+from ckanext.ngds.logic.action import validators as ngds_rules
 
+def ngds_create_schema(schema):
+    """
+    A schema used to validate Packages when they are created, i.e. during `package_create` actions. Please note that
+    `package_create` happens when you fill in *the first page of the forms* that are exposed on the site. Subsequent
+    pages trigger `package_update` actions.
+    """
 
-def default_package_schema():
-    return default_create_package_schema()
+    # Make NGDS additions
+    schema = _ngds_create_additions(schema)
 
+    # And return the schema
+    return schema
 
-def valid_resource_type(key, data, errors, context):
-    resource_types = ("structured", 'unstructured', 'offline-resource', 'data-service')
-    if "resource_format" not in key and data[key] not in resource_types:
-        raise Invalid(_(
-            'Selecting a resource type is mandatory. Please select one of - Structured, Unstructured, Offline Resource or Data Service'))
-    else:
-        if data[key] == "offline-resource":
-            validate_offline_resource_fields_present(key, data, errors, context)
-        elif data[key] == 'data-service':
-            validate_data_service_resource_fields_present(key, data, errors, context)
-        elif data[key] == 'structured':
-            validate_structured_resource_fields_present(key, data, errors, context)
-        elif data[key] == 'unstructured':
-            validate_unstructured_resource_fields_present(key, data, errors, context)
-        else:
-            raise Invalid(_(
-                'NGDS does not recognize resource type %s' % data[key]))
-    return data[key]
+def _ngds_create_additions(schema):
+    """
+    This function adjusts a CKAN schema object to contain validation requirements of the NGDS.
 
+    The schema object is a dictionary. Each key corresponds to a field in the CKAN Package. The values in the schema
+    object are arrays of validation functions. CKAN offeres a number of validation functions which should be accessed
+    through ckan.plugins.toolkit.get_validator. CKAN also commonly exposes Python types as items in the array. My
+    assumption is that then the content is coerced into that type (for example, Unicode).
 
-def resource_metadata_validator(key, data, errors, context):
-    resource_format_key = key[0:2] + ('resource_format',)
-    if resource_format_key not in data:
-        raise Invalid(_(
-            'Selecting a resource type is mandatory. Please select one of - Structured, Unstructured, Offline Resource or Data Service'))
+    See `./validators.py` for more description of validation functions.
 
-    return data[key]
+    Adding the following code:
 
+        schema['notes'] = [required, unicode]
 
-def error_append(key, errors, err):
-    if key in errors:
-        errors[key].append(err)
-    else:
-        errors[key] = []
-        errors[key].append(err)
-
-
-def existence_check(key, data, errors, context):
-    if key not in data:
-        error_append(key, errors, _('Missing value'))
-        return False
-
-    if data[key] == '':
-        error_append(key, errors, _('Missing value'))
-        return False
-
-    return True
-
-
-def validate_ordering_procedure(key, data, errors, context):
-    existence_check(key, data, errors, context)
-
-
-def validate_distributor(key, data, errors, context):
-    if key[0] == 'resources':
-        key_stub = key[0:2]
-        distributor_key = key_stub + ('distributor',)
-    else:
-        distributor_key = ('distributor',)
-
-    existence_check(distributor_key, data, errors, context)
+    Would be equivalent to saying "There must be a field in the Package called "notes" and it must have content (see
+    the definition of the `required` function above), and that content must be able to be coerced into a unicode object.
+    """
 
+    schema['notes'] = [required, unicode]
+    schema['owner_org'] = [ngds_rules.apply_default_org]
 
-def validate_protocol(key, data, errors, context):
-    if existence_check(key, data, errors, context):
-        if data[key].lower() not in ['ogc:wms', 'ogc:wfs', 'ogc:wcs', 'esri', 'ogc:csw', 'ogc:sos', 'opendap', 'other']:
-            error_append(key, errors, _('Option %s for protocol not recognized' % data[key]))
-
-
-def validate_layer(key, data, errors, context):
-    existence_check(key, data, errors, context)
-
-
-def is_content_model_none(key, data, errors, context):
-    if not key in data:
-        return True
-    if data[key] == "None" or data[key] == "none":
-        return True
-    return False
+    # Extras are a tricky beast. See below for more info
+    schema['extras']['key'].append(validate_extras)
 
+    return schema
 
-def is_content_model_version_none(key, data, errors, context):
-    if not existence_check(key, data, errors, context):
-        return True
-    return False
-
-
-def line_count(key, data, errors, context, key_stub):
-    if key not in data or data[key] == "":
-        return
-
-    url = data[key]
-    if key_stub:
-        lcount_key = key_stub + ('lcount', )
-    else:
-        lcount_key = ('lcount', )
-
-    if not url.endswith('csv'):
-        return
-
-    try:
-        modified_resource_url = url.replace("%3A", ":")
-        truncated_url = modified_resource_url.split("/storage/f/")[1]
-        filename_withfile = get_url_for_file(truncated_url)
-
-        if filename_withfile:
-            f = open(filename_withfile.split("file://")[1])
-            count = len([line for line in f.readlines()])
-            data[lcount_key] = count
-            f.close()
-    except Exception:
-        return
-
-
-def construct_key(key, field):
-    if len(key) == 1:
-        return (field,)
-    return key[0:2] + (field, )
-
-
-def conforms_to_content_model(key, data, errors, context):
-    url_key = construct_key(key, 'url')
-    cm_key = construct_key(key, 'content_model_uri')
-    cmv_key = construct_key(key, 'content_model_version')
-    err_key = construct_key(key, 'content_model')
-
-    url = data[url_key]
-    cm = data[cm_key]
-    cmv = data[cmv_key]
-    split_version = cmv.split('/')
-    cm_version = split_version[len(split_version) - 1]
-    data_dict = {'cm_uri': cm, 'cm_version': cm_version, 'cm_resource_url': url}
-
-    if url != "":
-        cm_validation_results = contentmodel_checkFile({}, data_dict)
-        if not cm_validation_results['valid']:
-            error_append(err_key, errors, cm_validation_results['messages'])
-        else:
-            fpf = FileProcessorFactory
-            modified_resource_url = url.replace("%3A", ":")
-            truncated_url = modified_resource_url.split("/storage/f/")[1]
-            csv_filename_withfile = get_url_for_file(truncated_url).split("file://")[1]
-            results = fpf.get_file_processor(csv_filename_withfile, cm, cmv, 'dummy_res_id').run_processes()
-            for result in results:
-                k = construct_key(key, result)
-                data[k] = str(results[result])
-
-
-def validate_content_model_version(key, data, errors, context):
-    existence_check(key, data, errors, context)
-
-
-def validate_offline_resource_fields_present(key, data, errors, context):
-    key_stub = key[0:2]
-    ordering_procedure_key = key_stub + ('ordering_procedure',)
-    validate_ordering_procedure(ordering_procedure_key, data, errors, context)
-
-
-def validate_data_service_resource_fields_present(key, data, errors, context):
-    key_stub = key[0:2]
-
-    if key_stub[0] == 'resources':
-        distributor_key = key_stub + ('distributor',)
-        protocol_key = key_stub + ('protocol',)
-        layer_key = key_stub + ('layer',)
-    else:
-        distributor_key = ('distributor',)
-        protocol_key = ('protocol',)
-        layer_key = ('layer',)
-
-    validate_distributor(distributor_key, data, errors, context)
-    validate_protocol(protocol_key, data, errors, context)
-    #validate_layer(layer_key, data, errors, context)
-
-
-def validate_structured_resource_fields_present(key, data, errors, context):
-    key_stub = key[0:2]
-
-    if key_stub[0] == 'resources':
-        content_model_key = key_stub + ('content_model_uri',)
-        content_model_version_key = key_stub + ('content_model_version',)
-        url_key = key_stub + ('url',)
-        res_id_key = key_stub + ('id',)
-        format_key = key_stub + ('format',)
-        distributor_key = key_stub + ('distributor',)
-    else:
-        key_stub = None
-        content_model_key = ('content_model_uri',)
-        content_model_version_key = ('content_model_version',)
-        url_key = ('url',)
-        res_id_key = ('id',)
-        format_key = ('format',)
-        distributor_key = ('distributor',)
-
-    line_count(url_key, data, errors, context, key_stub=key_stub)
-
-    validate_distributor(distributor_key, data, errors, context)
-    validate_format(format_key, data, errors, context)
-    cm_none = is_content_model_none(content_model_key, data, errors, context)
-    if cm_none:
-        #if is_content_model_version_none(content_model_version_key, data, errors, context):
-        #    error_append(content_model_version_key, errors, _('Missing Value'))
-        if content_model_key in data:
-            data.pop(content_model_key)
-    else:
-        cmv_none = is_content_model_version_none(content_model_version_key, data, errors, context)
-        if not cm_none and not cmv_none:
-            if has_resource_url_changed(res_id_key, url_key, data):
-                conforms_to_content_model(content_model_key, data, errors, context)
-
-
-def has_resource_url_changed(id_key, url_key, data):
-    if not id_key in data:
-        return True
-
-    old_res = logic.get_action('resource_show')({}, {
-                                                        'id': data[id_key]
-                                                    })
-    if not old_res['url'] == data[url_key]:
-        return True
-
-    return False
-
-
-def validate_unstructured_resource_fields_present(key, data, errors, context):
-    key_stub = key[0:2]
-    if key_stub[0] == 'resources':
-        format_key = key_stub + ('format',)
-        distributor_key = key_stub + ('distributor',)
-    else:
-        format_key = ('format',)
-        distributor_key = ('distributor',)
-
-    validate_distributor(distributor_key, data, errors, context)
-    validate_format(format_key, data, errors, context)
-
-
-def validate_owner_org(key, data, errors, context):
-    data[key] = "public"
-
-
-def validate_format(key, data, errors, context):
-    existence_check(key, data, errors, context)
+def ngds_update_schema(schema):
+    """
+    A schema used to validate Packages when they are updated, i.e. during `package_update` actions. These happen
+    more frequently than you might think. See `ngds_create_schema` above.
+    """
 
+    # Make NGDS additions
+    schema = _ngds_create_additions(schema)
+
+    # and return the schema
+    return schema
 
 def validate_extras(key, data, errors, context):
-    if request.params.get('save') and request.params.get('save') == 'go-dataset':
+    """
+    This function validates the extras on a package to make sure they conform to NGDS rules.
+
+    *Important*: This function will be called for each extra in the array. That means you should only be validating
+    the current extra. However, we also need to be sure that all the required fields are present, so there is
+    redundancy in that check (it is done every time).
+
+    *Also Important*: `key` will be a tuple like `('extras', 0, 'key')` and `data` will be a "flat" dictionary that
+    has keys that are like that tuple and values that are basically primitives (string, boolean, number). The first
+    thing we do is remap `data` into something more comprehensible -- a simple dictionary of key/value pairs
+    representing the set of extras
+
+    *More Notes*: Its really important to understand the relationship between `package_create`, `package_update`,
+    and the web-based UI. The first form doesn't add any extras, and it fires `package_create`. The second form
+    creates resources, and fires `package_update`. The third form adds extras and fires `package_update`.
+
+    Fortunately, this function will not fire unless there are actually some extras included in the package,
+    so its safe to put this in the `package_create` schema. This also ensures that pacakges that are created
+    programmatically (i.e. harvested records) must satisfy the same validation criteria as those created through the
+    web interface.
+    """
+
+    # Remap the messy data dictionary into a simple key/value object representing extras
+    #  This is messy and could be botched by future changes to CKAN's validation internals
+    indexes = [t[1] for t in data.keys() if t[0] == 'extras' and t[2] == 'key']
+    extras = dict((data[('extras', num, 'key')], data[('extras', num, 'value')]) for num in indexes)
+
+    # Define validation criteria for each of the extra NGDS fields
+    required_criteria = {
+        "authors": [required, ngds_rules.is_valid_json, ngds_rules.is_valid_list_of_contacts],
+        "maintainer": [required, ngds_rules.is_valid_json, ngds_rules.is_valid_contact],
+        "dataset_category": [required, ngds_rules.is_in_list([
+            "Dataset", "Physical Collection", "Catalog",
+            "Movie or Video", "Drawing", "Photograph",
+            "Remotely Sensed Image", "Map", "Text Document",
+            "Physical Artifact", "Desktop Application", "Web Application"
+        ])],
+        "status": [required, ngds_rules.is_in_list([
+            "completed", "ongoing", "deprecated"
+        ])],
+        "publication_date": [required, ngds_rules.is_valid_date],
+        "dataset_lang": [required],
+        "spatial": [required, ngds_rules.is_valid_json, ngds_rules.is_valid_rectangle]
+    }
+
+    optional_criteria = {
+        "spatial_word": [optional],
+        "dataset_uri": [optional],
+        "quality": [optional],
+        "lineage": [optional]
+    }
+
+    # Make sure that required fields are all present
+    required_fields = required_criteria.keys()
+    existing_fields = extras.keys()
+    overlap = list(set(existing_fields) & set(required_fields))
+    if len(overlap) < len(required_fields):
+        errors[key].append(_('Some required NGDS fields were not present'))
         return
 
-    if ("extras", 0, "key") not in data or data[("extras", 0, "value")] == "":
-        errors[("authors",)] = [_("Missing value")]
-    else:
+    # Now validate the single key that we were given on this iteration
+    field_name = data[key]
+    value = extras[field_name]
+
+    # Check if this particular key satisfies all validation criteria
+    criteria = required_criteria.get(field_name, optional_criteria.get(field_name, []))
+    for validation_function in criteria:
+        # Make a stand-in for the errors object
+        err = {field_name: []}
+
+        # Fabricate an error indicator in the real `errors` object, in case this field fails to validate
+        errors[(field_name,)] = []
+
+        # In case things go wrong...
+        i_believe_there_was_a_problem = False
+
         try:
-            pattempt = json.loads(data[("extras", 0, "value")])
-            if not isinstance(pattempt, list):
-                data[("extras", 0, "value")] = "[" + data[("extras", 0, "value")] + "]"
-        except Exception:
-            data[("extras", 0, "value")] = "[" + data[("extras", 0, "value")] + "]"
+            # Run the validator function
+            validation_function(field_name, extras, err, {})
+        except Exception as ex:
+            i_believe_there_was_a_problem = True
+        finally:
+            # Union any errors into the real errors object
+            errors[(field_name,)] = list(set(errors[(field_name,)]) | set(err[field_name]))
 
-    if ("extras", 1, "key") not in data or data[("extras", 1, "value")] == "":
-        errors[("maintainer",)] = [_("Missing value")]
-
-    if ("extras", 3, "key") not in data or data[("extras", 3, "value")] == "":
-        errors[("dataset_category",)] = [_("Missing value")]
-    else:
-        if data[("extras", 3, "value")] not in ['Dataset', 'Physical Collection', 'Catalog', 'Movie or Video',
-                                                'Drawing', 'Photograph', 'Remotely Sensed Image', 'Map',
-                                                'Text Document', 'Physical Artifact', 'Desktop Application',
-                                                'Web Application']:
-            errors[("dataset_category",)] = [_("Option %s for category not recognized" % data[("extras", 3, "value")])]
-
-    if ("extras", 7, "key") not in data or data[("extras", 7, "value")] == "":
-        errors[("status",)] = [_("Missing value")]
-    else:
-        if data[("extras", 7, "value")] not in ['ongoing', 'completed', 'deprecated']:
-            errors[("status",)] = [_("Option %s for status not recognized" % data[("extras", 7, "value")])]
-
-    if ("extras", 8, "key") not in data or data[("extras", 8, "value")] == "":
-        errors[("publication_date",)] = [_("Missing value")]
-
-    if ("extras", 9, "key") not in data or data[("extras", 9, "value")] == "":
-        errors[("dataset_lang",)] = [_("Missing value")]
-
-    # if ("extras", 10, "key") not in data or data[("extras", 10, "value")] == "":
-    #     errors[("spatial",)] = [_("Missing value")]
-    #     TODO - Validate JSON against some kind of schema.
+            # Stop processing validation criteria if there was an exception
+            if i_believe_there_was_a_problem:
+                break;
