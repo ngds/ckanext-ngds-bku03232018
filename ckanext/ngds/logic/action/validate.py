@@ -178,6 +178,10 @@ def validate_extras(key, data, errors, context):
     criteria = required_criteria.get(field_name, optional_criteria.get(field_name, []))
     validation_runner(field_name, extras, errors, criteria)
 
+    # Send and changes that the validation_runner made to the `extras` object back into the original `data` object
+    reverser = dict((data[('extras', num, 'key')], ('extras', num, 'value')) for num in indexes)
+    data[reverser[field_name]] = extras[field_name]
+
 def validate_resources(key, data, errors, context):
     """
     This function will be invoked once per resource, and must check to see that all the fields in the resource are

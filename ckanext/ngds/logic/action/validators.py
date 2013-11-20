@@ -66,8 +66,8 @@ def is_valid_list_of_contacts(key, data, errors, context):
     value = json.loads(data[key])
 
     if not isinstance(value, list):
-        errors[key].append(_('Not a valid list of NGDS contacts'))
-        return
+        value = [value]
+        data[key] = unicode(json.dumps(value))
 
     for c in value:
         keys = c.keys()
@@ -81,8 +81,8 @@ def is_valid_rectangle(key, data, errors, context):
 
     try:
         if value['type'] != 'Polygon': valid = False
-        if len(value['coordinates']) != 5: valid = False
-        if value['coordinates'][0] != value['coordinates'][4]: valid = False
+        if len(value['coordinates'][0]) != 5: valid = False
+        if value['coordinates'][0][0] != value['coordinates'][0][4]: valid = False
     except:
         valid = False
 
