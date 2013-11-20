@@ -43,8 +43,8 @@ class ScriptCompiler(object):
         else:
             if scripts_path.endswith('min.js'):
                 return
-            #if not scripts_path.endswith('.js'):
-            #    return
+            if not scripts_path.endswith('.js'):
+                return
             print("Minify .js files:  " + "yui-compressor -o "),  # "," supresses newline
             print os.path.splitext(scripts_path)[0] + "-min.js " + scripts_path
             subprocess.call(["yui-compressor -o " + os.path.splitext(scripts_path)[0] + ".min.js " + scripts_path],
