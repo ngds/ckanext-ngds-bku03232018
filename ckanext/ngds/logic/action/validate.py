@@ -91,9 +91,22 @@ def _ngds_update_additions(schema):
     This basically adds resource validation to the package. The rules are conditional, based on the content in the
     `resource_format` field. Therefore, we can only add validation to that one field, and then the
     `validate_resources` function needs to make sure that other fields are in fact valid.
+
+    However you have to add your addditional fields to the schema, otherwise they end up as "extras" attached to the
+    resource.
     """
 
-    schema['resources']['resource_format'] = [required, validate_resources]
+    ngds_resource_additions = {
+        "resource_format": [required, validate_resources],
+        "distributor": [optional],
+        "protocol": [optional],
+        "layer": [optional],
+        "ordering_procedure": [optional],
+        "content_model_uri": [optional],
+        "content_model_version": [optional]
+    }
+
+    schema['resources'] = dict(schema['resources'].items() + ngds_resource_additions.items())
 
     return schema
 
