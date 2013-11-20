@@ -40,17 +40,6 @@ $(document).ready(function () {
                console.log("No original dataset extent layer.  Error: " + err);
            }
        }
-/*
-           var get_layer = function (key) {
-               if (key in this.layers) {
-                   return this.layers[key];
-               }
-               throw "No layer exists with the key : " + key;
-           };
-           map.get_layer('drawnItems').clearLayers();
-           ngds.publish('Map.clear_rect', {});
-       }
-*/
    });
 
 // Add the control panel
@@ -63,53 +52,19 @@ $(document).ready(function () {
     });
     map.addControl(drawControl);
 
-// Add callbacks for when drawing is completed
-    var drawnItems = new L.LayerGroup();
-//map.on('draw:poly-created', function(e) {
-//	drawnItems.clearLayers();
-//	drawnItems.addLayer(e.poly);
-//	geojson = getGeoJSON("Polygon", e.poly._latlngs);
-//	writeGeoJson(geojson);
-//});
-
     var clearControl = new L.Clear({
         position: 'topright'
     });
     map.addControl(clearControl);
 
+// Add callbacks for when drawing is completed
+    var drawnItems = new L.LayerGroup();
+    map.addLayer(drawnItems);
+
     map.on('draw:rectangle-created', function (e) {
         drawnItems.clearLayers();
         drawnItems.addLayer(e.rect);
-        geojson = getGeoJSON("Polygon", e.rect._latlngs);
-        writeGeoJson(geojson);
-    });
-//map.on('draw:marker-created', function (e) {
-//	drawnItems.clearLayers();
-//	drawnItems.addLayer(e.marker);
-//	geojson = getGeoJSON("Point", e.marker._latlng);
-//	writeGeoJson(geojson);
-//});
-    map.addLayer(drawnItems);
-
-// Custom function to write GeoJSON from LatLngs
-//  I have a hunch there's a better way to do this lurking in Leaflet somewhere
-    function getGeoJSON(geometryType, latLngs) {
-        var coords = [];
-        if (geometryType === 'Point') {
-            coords = [ latLngs.lng, latLngs.lat ]
-        } else {
-            coords.push([]);
-            for (var i = 0; i < latLngs.length; i++) {
-                coords[0].push([latLngs[i].lng, latLngs[i].lat]);
-            }
-        }
-        return JSON.stringify({type: geometryType, coordinates: coords});
-    }
-
-// Stupid function to put the value into the first "extra" field
-    function writeGeoJson(geojson) {
-//        $('#field-extras-10-key').val('spatial');
+        var geojson = JSON.stringify(e.rect.toGeoJSON().geometry);
         $('#field-extras-10-value').val(geojson);
-    }
-
+    });
 });
