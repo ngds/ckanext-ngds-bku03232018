@@ -22,7 +22,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Load NGDS configuration properties')
 parser.add_argument('-f','--filename', help='Config File to be updated(Full file Path)', required=True)
 parser.add_argument('-d','--deployment', help='Deployment type of NGDS. node/central', required=True)
-parser.add_argument('-r','--root', help='Directory where ckanext-ngds is located, for example ~/home/ubuntu/ckanenv/src', required=True)
+parser.add_argument('-r','--root', help='Path to CKAN NGDS Extension, for example ~/home/ubuntu/ckanenv/src/ckanext-ngds', required=True)
 args = parser.parse_args()
 
 # Add .ini parameters that should be set here as (key, value)
@@ -50,13 +50,13 @@ params_to_set = [
     ("ngds.csw.contact.hours", "0800h - 1600h EST"),
     ("ngds.csw.contact.instructions", "During hours of service"),
     ("ngds.csw.contact.role", "pointOfContact"),
-    ("ngds.facets_config", args.root + "/ckanext-ngds/facet-config.json"),
+    ("ngds.facets_config", args.root + "/facet-config.json"),
     ("ngds.default_group_name", "public"),
-    ("ngds.resources_dir", args.root + "/ckanext-ngds/ckanext/ngds/base/resources"),
-    ("ngds.contributors_config", args.root + "/ckanext-ngds/contributors_config.json"),
+    ("ngds.resources_dir", args.root + "/ckanext/ngds/base/resources"),
+    ("ngds.contributors_config", args.root + "/contributors_config.json"),
     ("extra_public_paths", "/home/ngds/extrapublic/"),
     ("solr_url", "http://localhost:8983/solr"),
-    ("ckan.i18n_directory", args.root + "/ckanext-ngds"),
+    ("ckan.i18n_directory", args.root),
     ("search.facets.limits", "5000")
 ]
 
@@ -67,7 +67,7 @@ node_params = [
     ("geoserver.workspace_name", "ngds","Geoserver Workspace Name"),
     ("geoserver.workspace_uri", "http://localhost:5000/ngds","Geoserver Workspace URI"),
     ("ngds.bulk_upload_dir", "/home/ngds/work/bulkupload/"),
-    ("ngds.client_config_file", args.root + "/ckanext-ngds/ckanclient.cfg"),
+    ("ngds.client_config_file", args.root + "/ckanclient.cfg"),
     ("ckan.site_logo", "/assets/nib.png")
 ]
 
@@ -77,7 +77,7 @@ central_params = [
     ("ngds.deployment", "central"),
     ("ngds.home_images_dir", "assets"),
     ("ngds.logo_text", "CONTRIBUTING GEOTHERMAL DATA"),
-    ("ngds.home_images_config_path", args.root + "/ckanext-ngds/home_images.cfg"),
+    ("ngds.home_images_config_path", args.root + "/home_images.cfg"),
     ("ckan.site_logo", "/assets/logo.png")
 ]
 
