@@ -27,7 +27,8 @@ ngds.Map = {
             layers: [base],
             center: new L.LatLng(34.1618, -100.53332),
             zoom: 3,
-            zoomControl: false
+            zoomControl: false,
+            attributionControl: true
         });
 
         var loadingControl = L.Control.loading({
