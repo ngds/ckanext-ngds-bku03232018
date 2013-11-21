@@ -559,16 +559,15 @@ function configure_ngds() {
 
     run_or_die sudo cp $CKAN_ETC/default/development.ini $deployment_file
 
-    $PYENV_DIR/bin/python $APPS_SRC/ckanext-ngds/scripts/ngds_config_file.py -f $deployment_file -d $deployment_type
-
-    #$PYENV_DIR/bin/python /home/ngds/install/configobjtest.py -f $deployment_file -d $deployment_type
-   
-
     NGDS_CUSTOM_PATH=$CKAN_ETC/default/ngds
     NGDS_CONFIG_PATH=$NGDS_CUSTOM_PATH/config
     NGDS_SRC=$APPS_SRC/ckanext-ngds
     NGDS_CUSTOM_PUBLIC=$NGDS_CUSTOM_PATH/public
-    
+
+    $PYENV_DIR/bin/python $APPS_SRC/ckanext-ngds/scripts/ngds_config_file.py -f $deployment_file -d $deployment_type -r $NGDS_SRC
+
+    #$PYENV_DIR/bin/python /home/ngds/install/configobjtest.py -f $deployment_file -d $deployment_type -r $NGDS_SRC
+
 
     #Move configuration files to the etc/default path.
     run_or_die sudo mkdir -p $NGDS_CUSTOM_PATH
