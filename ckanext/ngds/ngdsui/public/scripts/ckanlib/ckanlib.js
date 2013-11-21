@@ -315,7 +315,7 @@ ngds.ckanlib = {
     },
     'get_wms_urls': function (package_id, callback) {
         $.ajax({
-            'url': '/api/action/get_wms_for_pkg',
+            'url': '/api/action/get_wms',
             'type': 'POST',
             'data': JSON.stringify({
                 'pkg_id': package_id

@@ -72,7 +72,7 @@ class GeoserverPlugin(p.SingletonPlugin):
             'geoserver_publish_layer': action.publish,
             'geoserver_layer_exists': action.layer_exists,
             'geoserver_unpublish_layer': action.unpublish,
-            'get_wms_for_pkg': action.get_wms_for_pkg,
+            'get_wms': action.map_search_wms,
         }
 
         return actions
@@ -137,7 +137,7 @@ class GeoserverPlugin(p.SingletonPlugin):
         if resource.get("protocol", {}) == "OGC:WMS":
             resourceURL = resource.get("url", {})
             armchair = ogc.HandleWMS(resourceURL)
-            ottoman = armchair.get_layer_info(data_dict)
+            ottoman = armchair.get_layer_info(resource)
             p.toolkit.c.resource["layer"] = ottoman["layer"]
             p.toolkit.c.resource["bbox"] = ottoman["bbox"]
             p.toolkit.c.resource["srs"] = ottoman["srs"]

@@ -13497,3 +13497,7 @@ section.help-main section.help-content {
 section.help-main section.help-content h3 {
   font-size: 20px;
 }
+
+#map-container .leaflet-control-container {
+    position: initial;
+}
