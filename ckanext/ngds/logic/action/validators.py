@@ -154,18 +154,24 @@ def is_valid_model_uri(key, data, errors, context):
     """
     Checks that a uri is valid
     """
-    models = models_list({}, {})
+    uris = [cm.uri for cm in models_list({}, {})]
     uri = data[key]
+    if uri not in uris:
+        errors[key].append(_('Invalid Content Model URI'))
 
 
 def is_valid_model_version(key, data, errors, context):
     """
     Checks that a version is valid.
     """
-    models = models_list({}, {})
+
+    models = dict((cm.uri, cm) for cm in models_list({}, {}))
     uri = data.get('content_model_version', '')
     version = data[key]
 
+    valid_versions = models.get(uri, [])
+    if version not in [v.version for v in valid_versions]:
+        errors[key].append(_('Invalid Content Model Version'))
 
 def check_uploaded_file(resource, errors, error_key):
     """
@@ -174,7 +180,7 @@ def check_uploaded_file(resource, errors, error_key):
     """
     validation_results = check_model_file({}, {
         "cm_uri": resource["content_model_uri"],
-        "cm_version": resource["content_model_version"],
+        "cm_version": resource["content_model_version"].split('/')[-1], # field contains the version URI
         "cm_resource_url": resource["url"]
     })
 
