@@ -190,11 +190,22 @@ def validate_resources(key, data, errors, context):
     """
 
     # Information about this resource that I can take from the given key
-    resource_index = key[1]
     resource_format = data[key]
 
-    # Simplify the resource into a dictionary of key/value pairs
-    resource = dict((t[2], data[t]) for t in data.keys() if t[0] == 'resources' and t[1] == resource_index)
+    # Simplify the resource into a dictionary of key/value pairs. Sometimes the function is passed a dict with complex
+    # tuples for keys, sometimes it is passed pretty simple ones.
+    if len(key) > 1:
+        resource_index = key[1]
+        resource = dict((t[2], data[t]) for t in data.keys() if t[0] == 'resources' and t[1] == resource_index)
+    else:
+        resource = dict((t[1], data[t]) for t in data.keys())
+
+    # A way to make sure I always have the right key, regardless of the idiosyncracies of what might get sent in
+    def real_key(field_name):
+        if len(key) > 1:
+            return key[0:2] + (field_name,)
+        else:
+            return (field_name,)
 
     # Check for fields that are always required by NGDS for resources of any type
     field_name = 'resource_format'
@@ -203,7 +214,7 @@ def validate_resources(key, data, errors, context):
         resource,
         errors,
         ["structured", "unstructured", "offline-resource", "data-service"],
-        key[0:2] + (field_name,)
+        real_key(field_name)
     )
 
     field_name = 'distributor'
@@ -212,7 +223,7 @@ def validate_resources(key, data, errors, context):
         resource,
         errors,
         [required, ngds_rules.is_valid_json, ngds_rules.is_valid_contact],
-        key[0:2] + (field_name,)
+        real_key(field_name)
     )
 
     # Now things depend on the current resource's `resource_format`
@@ -224,7 +235,7 @@ def validate_resources(key, data, errors, context):
             resource,
             errors,
             [optional],
-            key[0:2] + (field_name,)
+            real_key(field_name)
         )
 
     if resource_format == 'structured':
@@ -234,8 +245,8 @@ def validate_resources(key, data, errors, context):
             field_name,
             resource,
             errors,
-            [],
-            key[0:2] + (field_name,)
+            [required, ngds_rules.is_valid_model_uri], # TODO: Check if the model uri is valid
+            real_key(field_name)
         )
 
         field_name = 'content_model_version'
@@ -243,9 +254,13 @@ def validate_resources(key, data, errors, context):
             field_name,
             resource,
             errors,
-            [],
-            key[0:2] + (field_name,)
+            [required, ngds_rules.is_valid_model_version], # TODO: Check if the model version is valid
+            real_key(field_name)
         )
+
+        # If the model version and uri are valid, then check the uploaded file against the content model
+        if len(errors[real_key('content_model_uri')]) == 0 and len(errors[real_key('content_model_version')]) == 0:
+            ngds_rules.check_uploaded_file(resource, errors, real_key('content_model'))
 
     if resource_format == 'data-service':
         # These are linked data services
@@ -255,7 +270,7 @@ def validate_resources(key, data, errors, context):
             resource,
             errors,
             [ngds_rules.is_in_list(['OGC:WMS', 'OGC:WFS', 'OGC:WCS', 'OGC:CSW', 'OGC:SOS', 'OPeNDAP', 'ESRI', 'other'])],
-            key[0:2] + (field_name,)
+            real_key(field_name)
         )
 
         field_name = 'layer'
@@ -264,7 +279,7 @@ def validate_resources(key, data, errors, context):
             resource,
             errors,
             [optional],
-            key[0:2] + (field_name,)
+            real_key(field_name)
         )
 
     if resource_format == 'offline-resource':
@@ -275,8 +290,9 @@ def validate_resources(key, data, errors, context):
             resource,
             errors,
             [required],
-            key[0:2] + (field_name,)
+            real_key(field_name)
         )
+
 
 def validation_runner(field_name, data, errors, criteria, error_key=None):
     """

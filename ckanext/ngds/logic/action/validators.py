@@ -17,6 +17,11 @@ from pylons.i18n import _
 from ckan.plugins import toolkit as tk
 import json, datetime
 
+# Content Model utilities
+from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile as check_model_file
+from ckanext.ngds.contentmodel.logic.action import contentmodel_list_short as models_list
+
+
 """
 A validation function has a signature that looks like this:
 
@@ -145,3 +150,33 @@ def is_valid_date(key, data, errors, context):
         raise Invalid(_('Date format incorrect'))
     return date
 
+def is_valid_model_uri(key, data, errors, context):
+    """
+    Checks that a uri is valid
+    """
+    models = models_list({}, {})
+    uri = data[key]
+
+
+def is_valid_model_version(key, data, errors, context):
+    """
+    Checks that a version is valid.
+    """
+    models = models_list({}, {})
+    uri = data.get('content_model_version', '')
+    version = data[key]
+
+
+def check_uploaded_file(resource, errors, error_key):
+    """
+    This function appends errors to the error dictionary if an uploaded file does not conform to the specified
+    content model. It assumes that the resource_dict has valid model_uri and model_version.
+    """
+    validation_results = check_model_file({}, {
+        "cm_uri": resource["content_model_uri"],
+        "cm_version": resource["content_model_version"],
+        "cm_resource_url": resource["url"]
+    })
+
+    if not validation_results['valid']:
+        errors[error_key] = list(set(errors.get(error_key, [])) & set(validation_results['messages']))

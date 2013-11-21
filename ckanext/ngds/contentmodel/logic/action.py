@@ -28,6 +28,7 @@ from ContentModel_Utilities import *
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
+CONTENTMODELS = None
 
 @logic.side_effect_free
 def contentmodel_refreshCache(context, data_dict):
@@ -46,7 +47,9 @@ def contentmodel_refreshCache(context, data_dict):
     :rtype: dictionary
     '''  
     remotefile = urllib2.urlopen(ckanext.ngds.contentmodel.model.contentmodels.usgin_url)
-    ckanext.ngds.contentmodel.model.contentmodels.contentmodels = simplejson.load(remotefile)
+    CONTENTMODELS = simplejson.load(remotefile)
+    ckanext.ngds.contentmodel.model.contentmodels.contentmodels = CONTENTMODELS
+
     # return ckanext.ngds.contentmodel.model.contentmodels.contentmodels
 
 @logic.side_effect_free
