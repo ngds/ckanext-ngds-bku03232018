@@ -245,7 +245,7 @@ def validate_resources(key, data, errors, context):
             field_name,
             resource,
             errors,
-            [required, ngds_rules.is_valid_model_uri], # TODO: Check if the model uri is valid
+            [required, ngds_rules.is_valid_model_uri],
             real_key(field_name)
         )
 
@@ -254,7 +254,7 @@ def validate_resources(key, data, errors, context):
             field_name,
             resource,
             errors,
-            [required, ngds_rules.is_valid_model_version], # TODO: Check if the model version is valid
+            [required, ngds_rules.is_valid_model_version],
             real_key(field_name)
         )
 

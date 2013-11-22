@@ -15,12 +15,17 @@ ___NGDS_HEADER_END___ '''
 
 from pylons.i18n import _
 from ckan.plugins import toolkit as tk
-import json, datetime
+import json, datetime, re
 
 # Content Model utilities
 from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile as check_model_file
 from ckanext.ngds.contentmodel.logic.action import contentmodel_list_short as models_list
 
+# Hack to make simple tests work when pylons is not configured
+try:
+    result = _('translate')
+except TypeError:
+    def _(s): return s
 
 """
 A validation function has a signature that looks like this:
@@ -142,19 +147,18 @@ def is_valid_date(key, data, errors, context):
 
     if isinstance(value, datetime.datetime):
         return value
-    if value == '':
-        return None
+
     try:
         date = date_str_to_datetime(value)
     except (TypeError, ValueError), e:
-        raise Invalid(_('Date format incorrect'))
-    return date
+        errors[key].append(_('Date format incorrect'))
 
 def is_valid_model_uri(key, data, errors, context):
     """
     Checks that a uri is valid
     """
-    uris = [cm.uri for cm in models_list({}, {})]
+    models = models_list({}, {})
+    uris = [cm['uri'] for cm in models]
     uri = data[key]
     if uri not in uris:
         errors[key].append(_('Invalid Content Model URI'))
@@ -165,12 +169,12 @@ def is_valid_model_version(key, data, errors, context):
     Checks that a version is valid.
     """
 
-    models = dict((cm.uri, cm) for cm in models_list({}, {}))
-    uri = data.get('content_model_version', '')
+    models = dict((cm['uri'], cm) for cm in models_list({}, {}))
+    uri = data.get('content_model_uri', '')
     version = data[key]
 
-    valid_versions = models.get(uri, [])
-    if version not in [v.version for v in valid_versions]:
+    the_model = models.get(uri, {})
+    if version not in [v['version'] for v in the_model.get('versions', [])]:
         errors[key].append(_('Invalid Content Model Version'))
 
 def check_uploaded_file(resource, errors, error_key):

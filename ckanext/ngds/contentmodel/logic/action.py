@@ -45,7 +45,10 @@ def contentmodel_refreshCache(context, data_dict):
     **Results:**
     :returns: A status object (either success, or failed).
     :rtype: dictionary
-    '''  
+    '''
+
+    if ckanext.ngds.contentmodel.model.contentmodels.usgin_url is None:
+        ckanext.ngds.contentmodel.model.contentmodels.usgin_url = "http://schemas.usgin.org/contentmodels.json"
     remotefile = urllib2.urlopen(ckanext.ngds.contentmodel.model.contentmodels.usgin_url)
     CONTENTMODELS = simplejson.load(remotefile)
     ckanext.ngds.contentmodel.model.contentmodels.contentmodels = CONTENTMODELS
@@ -62,6 +65,7 @@ def contentmodel_list(context, data_dict):
     :returns: The list of all available content models.
     :rtype: list
     '''
+    if len(ckanext.ngds.contentmodel.model.contentmodels.contentmodels) == 0: contentmodel_refreshCache({}, {})
     return ckanext.ngds.contentmodel.model.contentmodels.contentmodels
 
 @logic.side_effect_free
@@ -89,7 +93,8 @@ def contentmodel_list_short(context, data_dict):
     :returns: The list of all available content models.
     :rtype: list
     '''
-    modelsshort= [] 
+    modelsshort= []
+    if len(ckanext.ngds.contentmodel.model.contentmodels.contentmodels) == 0: contentmodel_refreshCache({}, {})
     for model in ckanext.ngds.contentmodel.model.contentmodels.contentmodels:
         m= {}
         m['title']= model['title']
