@@ -114,7 +114,7 @@ class HandleWFS():
             request['typename'] = ','.join('ERROR_HERE')
             pass
         encoded_request = "&".join("%s=%s" % (key,value) for (key,value) in request.items())
-        url = service_url + encoded_request
+        url = service_url + "&" + encoded_request
         return url
 
     def make_geojson(self, data_dict):

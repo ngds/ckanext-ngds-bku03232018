@@ -38,7 +38,7 @@ except ImportError:
     from sqlalchemy.util import OrderedDict
 
 
-class NgdsuiPlugin(SingletonPlugin):
+class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
     def customize_ckan_for_ngds(self):
         """
         Load ckan's authorization module and update the default role with NGDS specific roles.
@@ -457,12 +457,12 @@ class NgdsuiPlugin(SingletonPlugin):
         return data_dict
 
     def create_package_schema(self):
-        package_create_schema = ngds_validator.default_package_schema()
-        return package_create_schema
+        default_schema = super(NgdsuiPlugin, self).create_package_schema()
+        return ngds_validator.ngds_create_schema(default_schema)
 
     def update_package_schema(self):
-        package_update_schema = ngds_validator.ngds_package_schema()
-        return package_update_schema
+        default_schema = super(NgdsuiPlugin, self).update_package_schema()
+        return ngds_validator.ngds_update_schema(default_schema)
 
     def show_package_schema(self):
         pass
