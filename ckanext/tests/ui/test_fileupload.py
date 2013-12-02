@@ -21,23 +21,33 @@ from selenium.common.exceptions import NoSuchElementException
 from seltestbase import seltestbase
 import unittest, time, re
 
-
 class TestFileUpload(seltestbase):
     
     def setUp(self):
         self.SB_setup_webdriver()
+        driver = self.driver
+        self.SB_login_as_admin(driver)
         
         
     
-    def test_basic(self):
-        '''Basic test of the map search for data sets'''
+    def test_basic_file_upload_access(self):
+        ''' Basic test of file upload access, login and go to page enter title and then cancel '''
         driver = self.driver
-        driver.get(self.base_url + "/")
-        # login is not working, needs to pass a cookie that its not
-        self.SB_login_as_admin(driver)
-        #driver.find_element_by_css_selector("p.title").click()
-        #driver.find_element_by_xpath("//div[@id='main-nav']/nav/a[4]/span/span").click()
-        time.sleep(10)       
+        self.SB_select_contribute_page_single_file_upload(driver)
+        self.SB_file_upload_enter_title(driver, "MyTitle")
+        self.SB_file_upload_cancel(driver)
+
+       
+    def test_file_upload_licenses_populated(self):
+        '''ISSUE-29, assert that license list is filled'''
+        driver = self.driver
+        self.SB_select_contribute_page_single_file_upload(driver)
+        driver.find_element_by_css_selector("div.controls > div.select2-container > a.select2-choice > div > b").click()
+        try: self.assertEqual("License Not Specified", driver.find_element_by_css_selector("div.select2-container.select2-container-active > a.select2-choice > span").text)
+        except AssertionError as e: self.verificationErrors.append(str(e))
+        self.SB_file_upload_cancel(driver)
+               
+          
 
         
     def tearDown(self):
