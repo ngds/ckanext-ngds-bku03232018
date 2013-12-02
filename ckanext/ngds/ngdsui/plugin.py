@@ -190,6 +190,7 @@ class NgdsuiPlugin(SingletonPlugin):
         map.connect("partners", "/ngds/partners", controller=home_controller, action="render_partners")
         map.connect("data", "/ngds/data", controller=home_controller, action="render_data")
         map.connect("history", "/ngds/history", controller=home_controller, action="render_history")
+        map.connect("developers", "/ngds/develop", controller=home_controller, action="render_developers")
         map.connect("new_to_ngds", "/ngds/new_to_ngds", controller=home_controller, action="render_new_to_ngds")
         map.connect("faq", "/ngds/faq", controller=home_controller, action="render_faq")
         map.connect("contributors_list", "/ngds/contributors_list", controller=home_controller,

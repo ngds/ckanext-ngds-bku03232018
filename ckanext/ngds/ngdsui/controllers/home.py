@@ -173,6 +173,12 @@ class HomeController(NGDSBaseController):
         """
         return render('info/master/history_master.html')
 
+    def render_developers(self):
+        """
+        Renders the developers page
+        """
+        return render('info/master/developers_master.html')
+
     def render_new_to_ngds(self):
         """
         This function is responsible for rendering the New to NGDS page via the template defined at templates/info/master/new_to_ngds_master.html
