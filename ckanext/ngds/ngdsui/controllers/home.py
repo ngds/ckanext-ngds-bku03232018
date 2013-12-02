@@ -70,11 +70,15 @@ class HomeController(NGDSBaseController):
         """
         This function is responsible for rendering the Map Search page.
         """
-        data = clean_dict(unflatten(tuplize_dict(parse_params(request.params))))
-        if data.get('query'):
-            c.query = data['query']
+        if not request.params or (len(request.params) == 1 and '__no_cache__'
+                                  in request.params):
+            return render('map/map.html')
+        else:
+            data = clean_dict(unflatten(tuplize_dict(parse_params(request.params))))
+            if data.get('query'):
+                c.query = data['query']
 
-        return render('map/map.html')
+            return render('map/map.html')
 
     def render_library(self):
 
