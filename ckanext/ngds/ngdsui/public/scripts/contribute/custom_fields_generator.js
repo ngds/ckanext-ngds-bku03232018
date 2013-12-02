@@ -223,10 +223,10 @@ $(document).ready(function () {
                     }
 //                    $("[name=content_model_version]").prop("selectedIndex", -1);
                 }
+
             };
 
             $("[name=content_model_uri]").on('change', function (ev) {
-                console.log("here");
                 var val = ev.val;
                 console.log(val);
                 if (val === "None" || val==="none") {
@@ -246,6 +246,9 @@ $(document).ready(function () {
             }
         });
         $("[name=content_model_version]").select2();
+
+        ngds.setup_responsible_party();
+
     };
 
     ngds.resource_type_change = function (resource_type) {
@@ -275,7 +278,50 @@ $(document).ready(function () {
             ckan.module.initializeElement($("#field-protocol")[0]);
         }
 
+        ngds.setup_responsible_party();
+
         ngds.restore_additional_fields(resource_type);
+
+    };
+
+
+    //  Setup handler, format override for Distributor (Responsible Party).
+    var ngds_override_distrib_timer;
+    ngds.setup_responsible_party = function() {
+
+        if ($("#field-distributor").length) {
+            // Add handler to add new Responsible Party (brings up dialog to fill-in email, etc.)
+            // make sure any previously attached handler is removed.
+            try {
+                $("#field-distributor").off(ngds.distributor_on_change);
+            }
+            catch(err){}
+            $("#field-distributor").on("change", ngds.distributor_on_change);
+
+            // Since $("#field-distributor").data("select2").opts not yet defined, need to setup
+            // a recurring timer to check for it's existence, then override initSelection()
+            if(!ngds_override_distrib_timer)
+                ngds_override_distrib_timer = setInterval(ngds.override_distrib_initSelection, 10);
+        }
+    }
+
+    ngds.distributor_on_change = function(e){
+        try {
+            $.parseJSON(e.val);  // if parses successfully, then already well formed and not a new Responsible Party
+        }
+        catch(err) {
+            ngds.responsible_parties.add_new("Add New Distributor", "#field-distributor", e.val);
+        }
+    }
+
+    // Need to override the select2 initSelection() function for #field-distributor since value is JSON string rather Name.
+    ngds.override_distrib_initSelection = function() {
+        if ($("#field-distributor").data("select2") && $("#field-distributor").data("select2").opts){
+            clearInterval(ngds_override_distrib_timer);
+            ngds_override_distrib_timer = undefined;
+            ngds.responsible_parties.overrideInitSelection("#field-distributor");
+            $("#field-distributor").trigger("change");
+        }
     };
 
     ngds.load_content_model_widget($("[name=resource_format]:checked").val());
