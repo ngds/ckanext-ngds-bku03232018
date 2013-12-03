@@ -58,16 +58,15 @@ File:
         {% set authors_attrs = {'data-module-tags':
         '','data-module-key':'value','multiple':'','data-module-label':'name','data-module': 'autocomplete',
         'data-module-source': 'responsible_parties?q=?'} %}
-        {{ form.input('extras__0__value', id='field-authors', label=_('Authors'), placeholder=_('eg. John Doe, Jane
-        Doe'),
-        value=get_value('authors',extras), error=errors.authors, classes=['control-full'], attrs=authors_attrs, caller=add_button_author) }}
+        {{ form.input('extras__0__value', id='field-authors', label=_('Authors'), placeholder=_('eg. John Doe, Jane Doe'),
+        value=get_value('authors',extras), error=errors.authors, classes=['control-full'], attrs=authors_attrs) }}
     </div>
 
     <input type="hidden" name="extras__1__key" value="maintainer"/>
     {% set maintainer_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete',
     'data-module-source': 'responsible_parties?q=?'} %}
     {{ form.input('extras__1__value', id='field-maintainer', label=_('Maintainer'), placeholder=_('eg. John Doe'),
-    value=get_value('maintainer',extras), error=errors.maintainer, classes=['control-full'], attrs=maintainer_attrs, caller=add_button_maintainer) }}
+    value=get_value('maintainer',extras), error=errors.maintainer, classes=['control-full'], attrs=maintainer_attrs) }}
 
     <input type="hidden" name="extras__2__key" value="spatial_word"/>
     {{ form.input('extras__2__value', id='field-spatial-location', label=_('Spatial Location'),
