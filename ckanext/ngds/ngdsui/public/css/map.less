@@ -600,7 +600,8 @@ div.red-marker:after {
 
 .leaflet-popup-content-wrapper {
   border: 1px solid grey;
-  border-radius: 0px !important;
+  //border-radius: 0px !important;
+  border-radius: 3px !important;
   background: @left-pane-back !important;
   opacity: @map-pane-oapcity;
 
@@ -642,9 +643,19 @@ div.red-marker:after {
       margin-bottom: 6px;
       margin-top: 6px;
       font-weight: bold;
-      color: grey;
+      //color: grey;
+      color: @ngds-blue;
       border-bottom: 1px dotted grey;
       padding-bottom: 5px;
+    }
+
+    span.resources {
+      font-weight: bold;
+      color: @ngds-blue;
+    }
+
+    div.resources {
+      padding-bottom: 8px;
     }
 
     div.tags {
@@ -654,6 +665,7 @@ div.red-marker:after {
         margin-right: 5px;
         margin-top: 5px;
         border: 1px solid grey;
+
       }
     }
   }

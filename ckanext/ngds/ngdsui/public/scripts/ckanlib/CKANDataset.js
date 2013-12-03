@@ -63,7 +63,7 @@ ngds.ckandataset = function (raw) {
                     {
                         'tag': 'p',
                         'attributes': {
-                            'text': raw.num_resources + (function (n) {
+                            'text': "Dataset has " + raw.num_resources + (function (n) {
                                 if (n === 1) {
                                     return " resource";
                                 } else {
@@ -78,12 +78,13 @@ ngds.ckandataset = function (raw) {
             var tag_div = {
                 'tag': 'div',
                 'attributes': {
-                    'class': 'tags'
+                    'class': 'resources'
                 },
                 'children': [{
                     'tag':'span',
                     'attributes':{
-                        'text':'Tags : '
+                        'class': 'resources',
+                        'text':(raw.tags.length==1 ? 'Keyword: ' : 'Keywords: ')
                     }
                 }]
             };
@@ -101,13 +102,31 @@ ngds.ckandataset = function (raw) {
                     continue;
                 }
                 tag_div['children'].push({
-                    'tag': 'div',
+                    'tag': 'span', // div
                     'attributes': {
-                        'class': 'ngds-tag',
-                        'text': display_name
+                        'class': 'description', // ngds-tag
+                        'text': (counter>0 ? ', ' : '') + display_name
                     }
                 });
                 counter++;
+            }
+            if (counter==0){
+                tag_div['children'].push({
+                    'tag': 'span',
+                    'attributes': {
+                        'class': 'description',
+                        'text': 'None'
+                    }
+                });
+            }
+            if (raw.tags.length>counter) {
+                tag_div['children'].push({
+                    'tag': 'span',
+                    'attributes': {
+                        'class': 'description',
+                        'text': ', ...'
+                    }
+                });
             }
 
             var popupHTML = ngds.util.dom_element_constructor(popup_skeleton)[0].innerHTML;
