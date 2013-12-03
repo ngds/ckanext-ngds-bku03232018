@@ -914,6 +914,20 @@ def get_cur_page():
     return unsp
 
 
+def get_cur_page_help():
+    unsp = request.path_info
+    if unsp.startswith("/"):
+        segmentsList = unsp[1:len(unsp)].split("/")
+        if len(segmentsList) == 2:
+            if segmentsList[0] == 'dataset':
+                return 'datasetDetails'
+        elif len(segmentsList) == 4:
+            if segmentsList[0] == 'dataset' and segmentsList[2] == 'resource':
+                return 'resourceDetails'
+        return unsp[1:len(unsp)]
+    return unsp
+
+
 def metadata_fields_to_display_for_cm(uri, version):
     registry = PR.get_registry()
     cm = CMC.ContentModelValue(uri, version)

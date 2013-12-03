@@ -184,10 +184,13 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
         map.connect("execute_fulltext_indexer", "/ngds/execute_fulltext_indexer", controller=contribute_controller,
                     action="execute_fulltext_indexer")
 
+        #Help related paths
+
         #Footer URLS
         map.connect("partners", "/ngds/partners", controller=home_controller, action="render_partners")
         map.connect("data", "/ngds/data", controller=home_controller, action="render_data")
         map.connect("history", "/ngds/history", controller=home_controller, action="render_history")
+        map.connect("developers", "/ngds/develop", controller=home_controller, action="render_developers")
         map.connect("new_to_ngds", "/ngds/new_to_ngds", controller=home_controller, action="render_new_to_ngds")
         map.connect("faq", "/ngds/faq", controller=home_controller, action="render_faq")
         map.connect("contributors_list", "/ngds/contributors_list", controller=home_controller,
@@ -289,6 +292,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_status_for_ui': helpers.get_status_for_ui,
             'get_languages_for_ui': helpers.get_languages_for_ui,
             'get_cur_page': helpers.get_cur_page,
+            'get_cur_page_help': helpers.get_cur_page_help,
             'get_content_model_dict': helpers.get_content_model_dict,
             'metadata_fields_to_display_for_cm': helpers.metadata_fields_to_display_for_cm
         }

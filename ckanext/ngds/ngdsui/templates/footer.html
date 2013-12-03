@@ -25,9 +25,6 @@ ___NGDS_HEADER_END___ #}
                     <span><a class="footer-link"
                              href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_data' %}">{{
                         _('Data') }}</a></span>
-                    <span><a class="footer-link"
-                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_history' %}">{{
-                        _('History') }}</a></span>
                 </div>
                 <div>
                     <p>Help</p>
@@ -41,6 +38,9 @@ ___NGDS_HEADER_END___ #}
                 <div>
                     <p>I want to ...</p>
                     <span><a class="footer-link">{{ _('Contribute data to NGDS') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_developers' %}">{{
+                        _('Develop an NGDS app') }}</a></span>
                 </div>
 
             </div>
@@ -63,7 +63,7 @@ ___NGDS_HEADER_END___ #}
                 {% endfor %}
             </ul>
             <p>
-                <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_contributors' %}">{{_('Full
+                <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_partners' %}">{{_('Full
                     list of contributors')}}</a></p>
         </div>
         {% endif %}
