@@ -282,6 +282,7 @@ $(document).ready(function () {
 
         ngds.restore_additional_fields(resource_type);
 
+
     };
 
 
@@ -293,7 +294,7 @@ $(document).ready(function () {
             // Add handler to add new Responsible Party (brings up dialog to fill-in email, etc.)
             // make sure any previously attached handler is removed.
             try {
-                $("#field-distributor").off(ngds.distributor_on_change);
+                $("#field-distributor").off("change", ngds.distributor_on_change);
             }
             catch(err){}
             $("#field-distributor").on("change", ngds.distributor_on_change);
