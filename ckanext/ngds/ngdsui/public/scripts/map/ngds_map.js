@@ -25,8 +25,9 @@ ngds.Map = {
 
         var map = this.map = new L.Map('map-container', {
             layers: [base],
-            center: new L.LatLng(34.1618, -100.53332),
-            zoom: 3,
+            center: new L.LatLng(39.977120098439634, -97.646484375),
+            maxBounds: L.latLngBounds([-84, -179], [84, 179]),
+            zoom: 4,
             zoomControl: false,
             attributionControl: true
         });
