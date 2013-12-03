@@ -37,7 +37,8 @@ ___NGDS_HEADER_END___ #}
                 </div>
                 <div>
                     <p>I want to ...</p>
-                    <span><a class="footer-link">{{ _('Contribute data to NGDS') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_data' %}#publish-data">{{ _('Contribute data to NGDS') }}</a></span>
                     <span><a class="footer-link"
                              href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_developers' %}">{{
                         _('Develop an NGDS app') }}</a></span>
