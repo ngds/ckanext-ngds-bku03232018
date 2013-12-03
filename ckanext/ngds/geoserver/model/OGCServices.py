@@ -104,7 +104,7 @@ class HandleWFS():
             pass
 
     def build_url(self, typename=None, method='{http://www.opengis.net/wfs}Get',
-                  operation='{http://www.opengis.net/wfs}GetFeature'):
+                  operation='{http://www.opengis.net/wfs}GetFeature', maxFeatures=None):
         service_url = self.wfs.getOperationByName(operation).methods[method]['url']
         request = {'service': 'WFS', 'version': self.version}
         try:
@@ -113,6 +113,9 @@ class HandleWFS():
         except Exception:
             request['typename'] = ','.join('ERROR_HERE')
             pass
+
+        if maxFeatures: request['maxfeatures'] = str(maxFeatures)
+
         encoded_request = "&".join("%s=%s" % (key,value) for (key,value) in request.items())
         url = service_url + "&" + encoded_request
         return url
@@ -120,7 +123,7 @@ class HandleWFS():
     def make_geojson(self, data_dict):
         geojson = []
         type_name = self.do_layer_check(data_dict)
-        wfs_url = self.build_url(type_name)
+        wfs_url = self.build_url(type_name, maxFeatures=100)
         source = ogr.Open(wfs_url)
         layer = source.GetLayerByIndex(0)
         for feature in layer:

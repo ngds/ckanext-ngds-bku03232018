@@ -24,6 +24,7 @@ import ckanext.datastore.logic.action as ds_action
 from ckanext.ngds.geoserver.model.ShapeFile import Shapefile
 import ckan.logic as logic
 import ckanext.ngds.geoserver.misc.helpers as helpers
+from urllib2 import HTTPError
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust

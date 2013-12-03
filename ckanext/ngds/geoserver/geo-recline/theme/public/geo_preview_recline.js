@@ -62,7 +62,6 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
       var errorMsg, dataset;
 
       if (resourceData.protocol === "OGC:WFS") {
-          //jsondata = JSON.parse(resourceData.reclineJSON);
           resourceData.backend = 'memory';
           dataset = new recline.Model.Dataset({records:resourceData.reclineJSON});
           dataset.fetch().done(function(dataset){self.initializeDataExplorer(dataset)});
