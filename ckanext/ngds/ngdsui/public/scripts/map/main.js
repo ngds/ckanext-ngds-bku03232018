@@ -211,9 +211,7 @@ if (typeof ngds.Map !== 'undefined') {
     });
 
     $('.map-search-results').on('click', ".result", function (ev) {
-        console.log($(this).attr("class"));
         var node = '';
-        console.log("here");
         if (typeof ev.srcElement === 'undefined') {
             node = ev.target;
         }
@@ -507,13 +505,14 @@ $(document).ready(function () {
     $(".map-search").on("click", ".wms", function (ev) {
         ev.preventDefault();
         ckan.notify("Please wait while the Web Map Services you requested are fetched", "", "info");
-        var package_id = $(this).attr("data-package-id");
+        var package_id = $(this).attr("id");
         ngds.ckanlib.get_wms_urls(package_id, function (wms_mappings) {
             for (var i = 0; i < wms_mappings.length; i++) {
                 var mapping = wms_mappings[i];
+
                 var wms_params = {
                     'layers': mapping['layer'],
-                    'format': 'image/png',
+                    'format': mapping['format'],
                     'transparent': true,
                     'attribution': 'NGDS',
                     'tileSize': 128,
@@ -521,7 +520,7 @@ $(document).ready(function () {
                     'version': '1.1.1'
                 };
 
-                var layer = L.tileLayer.wms(mapping['url'], wms_params);
+                var layer = L.tileLayer.wms(mapping['service_url'], wms_params);
 
                 ngds.Map.layer_control.addOverlay(layer, mapping['layer']);
                 ngds.Map.map.addLayer(layer);

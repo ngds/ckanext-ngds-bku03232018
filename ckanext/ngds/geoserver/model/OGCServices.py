@@ -51,9 +51,8 @@ class HandleWMS():
         this_layer = self.wms[layer]
         return this_layer.boundingBoxWGS84
 
-    def do_layer_check(self, data_dict):
+    def do_layer_check(self, resource):
         layer_list = list(self.wms.contents)
-        resource = data_dict.get("resource", {})
         this_layer = resource.get("layer")
         try:
             first_layer = layer_list[0]
@@ -115,7 +114,7 @@ class HandleWFS():
             request['typename'] = ','.join('ERROR_HERE')
             pass
         encoded_request = "&".join("%s=%s" % (key,value) for (key,value) in request.items())
-        url = service_url + encoded_request
+        url = service_url + "&" + encoded_request
         return url
 
     def make_geojson(self, data_dict):

@@ -1,4 +1,4 @@
-''' ___NGDS_HEADER_BEGIN___
+""" ___NGDS_HEADER_BEGIN___
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
@@ -11,82 +11,190 @@ Please Refer to the README.txt file in the base directory of the NGDS
 project:
 https://github.com/ngds/ckanext-ngds/README.txt
 
-___NGDS_HEADER_END___ '''
+___NGDS_HEADER_END___ """
 
-__author__ = 'Vivek'
-import ckanext.ngds.logic.action.validate as validate_action
+from ckanext.ngds.logic.action import validators
+from ckanext.ngds.logic.action.validate import validate_extras, validate_resources
+import json
 
-def test_validate_no_resource_format_provided():
-    response = validate_action.validate_resource(None,{})
-    assert response['success'] == False
-    assert len(response['messages']) == 1
-    assert response['messages'][0]['message'] == "Expecting parameter resource_format indicating the type of resource being validated. One of unstructured,structured,\
-                          data-service,offline-resource"
+def test_apply_default_org():
+    data = {"key": "something"}
+    errors = {"key": []}
+    validators.apply_default_org("key", data, errors, {})
+    assert data["key"] == "public"
 
-def test_validate_empty_offline_resource():
-    response = validate_action.validate_resource(None,{'resource_format':'offline-resource'})
+def test_is_valid_json():
+    data = {"key": "not({ okay"}
+    errors = {"key": []}
+    validators.is_valid_json("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-    assert response['success'] == False
-    assert len(response['messages']) == 2
+    data = {"key": '{"this":"is fine"}'}
+    errors = {"key": []}
+    validators.is_valid_json("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-    fields = get_fields(response)
-    messages = get_messages(response)
+def test_is_valid_contact():
+    data = {"key": '{"name":"Chuck", "email":"chunk@chub.com"}'}
+    errors = {"key": []}
+    validators.is_valid_contact("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-    assert 'ordering_procedure' and 'name' in fields
-    assert (len(message)>0 for message in messages)
+    data = {"key": '{"name":"Chuck"}'}
+    errors = {"key": []}
+    validators.is_valid_contact("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-def test_validate_offline_resource_no_ordering_procedure():
-    response = validate_action.validate_resource(None,{'resource_format':'offline-resource','name':'an_offline_resource'})
+def test_is_valid_list_of_contacts():
+    data = {"key": '[{"name":"Chuck", "email":"chunk@chub.com"}]'}
+    errors = {"key": []}
+    validators.is_valid_list_of_contacts("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-    assert response['success'] == False
-    assert len(response['messages']) == 1
+    data = {"key": '{"name":"Chuck", "email":"chunk@chub.com"}'}
+    errors = {"key": []}
+    validators.is_valid_list_of_contacts("key", data, errors, {})
+    assert len(errors["key"]) == 0
+    assert isinstance(json.loads(data["key"]), list)
 
-    fields = get_fields(response)
-    messages = get_messages(response)
+    data = {"key": '[{"name":"Chuck"}]'}
+    errors = {"key": []}
+    validators.is_valid_list_of_contacts("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-    assert 'name' not in fields and 'ordering_procedure' in fields
-    assert 'Ordering Procedure must be non-empty' in messages
+    data = {"key": '{"name":"Chuck"}'}
+    errors = {"key": []}
+    validators.is_valid_list_of_contacts("key", data, errors, {})
+    assert len(errors["key"]) == 1
+    assert isinstance(json.loads(data["key"]), list)
 
-def test_validate_offline_resource_no_name():
-    response = validate_action.validate_resource(None,{'resource_format':'offline-resource','ordering_procedure':'This is the ordering procedure for this item'})
+def test_is_valid_rectangle():
+    geo = json.dumps({"type": "Polygon", "coordinates": [[
+        [0,0], [1,0], [1,1], [0,1], [0,0]
+    ]]})
+    data = {"key": geo}
+    errors = {"key": []}
+    validators.is_valid_rectangle("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-    assert response['success'] == False
-    assert len(response['messages']) == 1
+    geo = json.dumps({"type": "Fake", "coordinates": [[
+        [0,0], [1,0], [1,1], [0,1], [0,0]
+    ]]})
+    data = {"key": geo}
+    errors = {"key": []}
+    validators.is_valid_rectangle("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-    fields = get_fields(response)
-    messages = get_messages(response)
+    geo = json.dumps({"type": "Polygon", "coordinates": [[
+        [0,0], [1,0], [1,1], [0,1]
+    ]]})
+    data = {"key": geo}
+    errors = {"key": []}
+    validators.is_valid_rectangle("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-    assert 'name' in fields and 'ordering_procedure' not in fields
-    assert 'Name must be non-empty' in messages
+    geo = json.dumps({"type": "Polygon", "coordinates": [[
+        [0,0], [1,0], [1,1], [0,1], [0,3]
+    ]]})
+    data = {"key": geo}
+    errors = {"key": []}
+    validators.is_valid_rectangle("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-def test_validate_offline_resource_valid():
-    response = validate_action.validate_resource(None,{'resource_format':'offline-resource','name':'a_name_for_this_resource','ordering_procedure':'This is the ordering procedure for this item'})
+def test_is_in_list():
+    valid = ["one", "two"]
+    validation = validators.is_in_list(valid)
+    data = {"key": "one"}
+    errors = {"key": []}
+    validation("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-    assert response['success'] == True
-    assert 'messages' not in response
+    data = {"key": "pants"}
+    validation("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
+def test_is_valid_date():
+    data = {"key": "2013-10-10T00:00:00"}
+    errors = {"key": []}
+    validators.is_valid_date("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-def test_validate_data_service_empty():
-    response = validate_action.validate_resource(None,{'resource_format':'data-service'})
+    data = {"key": "2013-10-10"}
+    errors = {"key": []}
+    validators.is_valid_date("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-    print response
-    assert response['success'] == False
+    data = {"key": "03/04/2014"}
+    errors = {"key": []}
+    validators.is_valid_date("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-    fields = get_fields(response)
-    messages = get_messages(response)
+    data = {"key": None}
+    errors = {"key": []}
+    validators.is_valid_date("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-    assert set(['url','name','protocol','layer']).issuperset(fields)
+    data = {"key": ""}
+    errors = {"key": []}
+    validators.is_valid_date("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
+def test_is_valid_model_uri():
+    data = {"key": "http://schemas.usgin.org/uri-gin/ngds/dataschema/activefault/"}
+    errors = {"key": []}
+    validators.is_valid_model_uri("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-def get_fields(wrapper):
-    return set((item['field']) for item in wrapper['messages'])
+    data = {"key": "http://schemas.usgin.org/uri-gin/hambone/dataschema/activefault/"}
+    errors = {"key": []}
+    validators.is_valid_model_uri("key", data, errors, {})
+    assert len(errors["key"]) == 1
 
-def get_messages(wrapper):
-    return set((item['message']) for item in wrapper['messages'])
+def test_is_valid_model_version():
+    data = {
+        "content_model_uri": "http://schemas.usgin.org/uri-gin/ngds/dataschema/activefault/",
+        "key": "1.1"
+    }
+    errors = {"key": []}
+    validators.is_valid_model_version("key", data, errors, {})
+    assert len(errors["key"]) == 0
 
-test_validate_no_resource_format_provided()
-test_validate_empty_offline_resource()
-test_validate_offline_resource_no_ordering_procedure()
-test_validate_offline_resource_no_name()
-test_validate_offline_resource_valid()
-test_validate_data_service_empty()
+    data = {
+        "content_model_uri": "http://schemas.usgin.org/uri-gin/ngds/dataschema/activefault/",
+        "key": "100.12"
+    }
+    errors = {"key": []}
+    validators.is_valid_model_version("key", data, errors, {})
+    assert len(errors["key"]) == 1
+
+    data = {
+        "content_model_uri": "http://faker",
+        "key": "1.1"
+    }
+    errors = {"key": []}
+    validators.is_valid_model_version("key", data, errors, {})
+    assert len(errors["key"]) == 1
+
+def test_check_uploaded_file():
+    pass
+
+def test_validate_extras():
+    # Harder to test because these have real CKAN dependencies
+    pass
+
+def test_validate_resources():
+    # Harder to test because these have real CKAN dependencies
+    pass
+
+test_apply_default_org()
+test_is_valid_json()
+test_is_valid_contact()
+test_is_valid_list_of_contacts()
+test_is_valid_rectangle()
+test_is_in_list()
+test_is_valid_date()
+test_is_valid_model_uri()
+test_is_valid_model_version()
+test_check_uploaded_file()
+test_validate_extras()
+test_validate_resources()

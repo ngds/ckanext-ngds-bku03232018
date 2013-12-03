@@ -79,7 +79,12 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
                 transparent: true
              });
 
-            map.setView(new L.LatLng(34.1618, -100.53332),3);
+            var bbox = resourceData.bbox;
+            var bounds = L.latLngBounds([
+                [bbox[1], bbox[0]],
+                [bbox[3], bbox[2]]
+            ]);
+            map.fitBounds(bounds);
             map.addLayer(osm);
             map.addLayer(wms);
         }

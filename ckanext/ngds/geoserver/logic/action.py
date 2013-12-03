@@ -17,9 +17,9 @@ import logging
 import ckan.logic as logic
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
 from ckanext.ngds.geoserver.model.Layer import Layer
+from ckanext.ngds.geoserver.model.OGCServices import HandleWMS
 from ckan.plugins import toolkit
 from ckanext.ngds.env import ckan_model, h, _
-from owslib.wms import WebMapService
 import socket
 
 
@@ -136,7 +136,30 @@ def unpublish(context, data_dict):
         _("This resource has successfully been unpublished."))
     return True
 
+def map_search_wms(context, data_dict):
 
+    def wms_resource(resource):
+        if resource.get("protocol", {}) == "OGC:WMS":
+            return True
+        else:
+            return False
+
+    def get_wms_data(resource):
+        resourceURL = resource.get("url", {})
+        this_wms = HandleWMS(resourceURL)
+        return this_wms.get_layer_info(resource)
+
+    pkg_id = data_dict.get("pkg_id")
+    pkg = toolkit.get_action("package_show")(None, {'id': pkg_id})
+    resources = filter(wms_resource, pkg.get('resources'))
+
+    this_data = map(get_wms_data, resources)
+
+    return this_data
+
+
+
+'''
 def get_wms_for_pkg(context, data_dict):
     """
     This method takes in a data_dict that contains a key called pkg_id whose value is the id of a ckan package
@@ -178,30 +201,4 @@ def get_wms_for_pkg(context, data_dict):
 
     wms_urls = map(construct_wms_url, wms_resources)
     return wms_urls
-
-#def GETLayerNameWMS(context, data_dict):
-#    resource_id = data_dict.get("resource_id")
-#    file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
-#    thisData = file_resource
-#    thisURL = thisData.get("url")
-#    thisWMS = WebMapService(thisURL, "1.1.1")
-#
-#    def get_layer_list():
-#        return list(thisWMS.contents)
-#
-#    def get_first_layer():
-#        theseLayers = get_layer_list()
-#        return theseLayers[0]
-#
-#    layers = list(thisWMS.contents)
-#
-#    given_layer = thisData.get("layer_name")
-#    if not given_layer:
-#        thisData.get("layer")
-#    if not given_layer:
-#        thisData.get("layers")
-#
-#    if given_layer in layers:
-#        return given_layer
-#    else:
-#        return get_first_layer()
+'''

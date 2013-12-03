@@ -31,23 +31,20 @@ class TestMapSearch(seltestbase):
     def test_basic_map_search(self):
         '''Basic test of the map search for data sets'''
         driver = self.driver
-        driver.get(self.base_url + "/")
+        self.SB_enter_map_search_field(driver, "ohio heat flow")
+        self.SB_click_wms(driver)
         
-        driver.find_element_by_css_selector("span.main-menu-text").click()
-        driver.find_element_by_id("map-query").clear()
-        driver.find_element_by_id("map-query").send_keys("heat flow")
-        driver.find_element_by_id("map-search").click()
-        driver.find_element_by_xpath("//button[@class='wms ngds-slug']").click()
-        driver.find_element_by_link_text("Ohio heat flow demo data").click()
+        self.SB_click_datalink(driver, "Ohio heat flow demo data")
+        
         #select the new window 
-        driver.switch_to_window(driver.window_handles[-1])
+        self.SB_select_new_window(driver)
+        
         #click the preview button for the first data set TODO need to improve this
-        driver.find_element_by_id("dataset-resources")
-        driver.find_element_by_link_text("Preview").click()
-        # remove this one have some kind of assert that we found the data
-        time.sleep(10)
-        #driver.find_element_by_xpath("//a[text()='Preview']").click()
-        #driver.find_element_by_css_selector("a.leaflet-popup-close-button").click()
+        self.SB_select_first_preview(driver);
+       
+               
+        self.SB_verify_iframe_exists_and_does_not_contain_server_error(driver)
+                
         self.SB_reset_to_start_page(driver)
         
 

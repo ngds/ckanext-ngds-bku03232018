@@ -22,29 +22,20 @@ from seltestbase import seltestbase
 import unittest, time, re
 
 
-class TestLibrarySearch(seltestbase):
+class TestAboutPage(seltestbase):
     
     def setUp(self):
         self.SB_setup_webdriver()
         
     
-    def test_basic_library_search(self):
-        '''Basic test of the library search for data sets'''
+    def test_about_page_has_version_identifier(self):
+        '''ISSUE-138 About page should identify github version '''
         driver = self.driver
               
-        self.SB_enter_search_field(driver, "Virginia")
-        self.SB_verify_text_not_present(driver, "no datasets found")
-        self.SB_enter_search_field(driver,"AkJDKDJSDpioSDLKJFSDLKJF")
-        self.SB_verify_text(driver, "no datasets found for")
-        #self.SB_reset_to_start_page(driver)
-        
-    def test_nevada_search_error(self):
-        '''ISSUE-28 Nevada search causing server error on central node'''
-        driver = self.driver
-        # go to central site where the issue was
-        self.driver.get(self.central_url)
-        self.SB_enter_search_field(driver, "Nevada")
-        self.SB_verify_text(driver, "datasets found")
+        self.SB_select_about_page(driver)
+        self.SB_verify_version_info_exists(driver)
+         
+   
     
     
     def tearDown(self):

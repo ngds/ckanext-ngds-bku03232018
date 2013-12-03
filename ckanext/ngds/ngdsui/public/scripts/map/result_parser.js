@@ -18,9 +18,28 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
 
     $(".map-search-results").prepend($("<div/>", {"class": clazz, "id": "results"}));
 
+    var wms_mapping = {
+
+    };
+
     for (var i = 0; i < results.length; i++) {
-        var pkg = results[i], results
-        [i]["type"] = results[i]["type"][0].toUpperCase() + results[i]["type"].slice(1, results[i]["type"].length);
+        var is_wms_present = false;
+        for (var j = 0; j < results[i].resources.length; j++) {
+            var resource = results[i].resources[j];
+            if (resource.protocol === 'OGC:WMS') {
+                is_wms_present = true;
+                wms_mapping[results[i].id] = wms_mapping[results[i].id] || ( wms_mapping[results[i].id] = [ ] );
+
+                wms_mapping[results[i].id].push({
+                    'id': resource.id,
+                    'url': resource.url.split('?')[0],
+                    'layer': 'undefined',
+                    'name': resource.description
+                });
+            }
+        }
+
+        results[i]["type"] = results[i]["type"][0].toUpperCase() + results[i]["type"].slice(1, results[i]["type"].length);
 
         var skeleton = {
             'tag': 'div',
@@ -74,6 +93,7 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
                         {
                             'tag': 'button',
                             'attributes': {
+//                                'text': "T",
                                 'class': 'visible',
                                 'data-seq': seq.current(),
                                 'title': 'Hide/Show this result on the map'
@@ -91,23 +111,14 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
             }
         };
 
-        var has_wms_resources = (function (pkg) {
-            var hasWMSResources = pkg['hasWMSResources'];
-            if (typeof hasWMSResources !== 'undefined') {
-                return hasWMSResources;
-            }
-            return false;
-        })(pkg);
-
-        if (has_wms_resources === true) {
+        if (is_wms_present === true) {
             dataset_resources.children = [];
             dataset_resources.children.push({
                 'tag': 'button',
                 'attributes': {
                     'class': 'wms ngds-slug',
                     'text': 'WMS',
-                    'data-package-id': results[i].id,
-                    'type': 'button'
+                    'id': results[i].id
                 }
             });
         }
@@ -265,28 +276,6 @@ ngds.render_search_results = function (topic, result) { //Subscription - 'Map.re
     $('.results').before(reader);
 
     var inc = inc || (inc = 0);
-
-    var hack_up_a_layer_name = function (resource_id, callback) {
-        var this_layer;
-        var resource_id = resource_id;
-        $.ajax({
-            url: '/api/action/geoserver_proxy_layer_name',
-            type: 'POST',
-            data: JSON.stringify({
-                'resource_id': resource_id
-            }),
-            success: function (data) {
-                this_layer = data.result;
-                console.log(this_layer);
-                ckan.notify("Successfully added the WMS requested to the map.", "", "success");
-                callback(null, this_layer);
-            },
-            error: function () {
-                ckan.notify("Encountered an error while trying to add this WMS to the map.", "", "error");
-                callback(new Error("Error getting data"));
-            }
-        });
-    };
 
     (function doc_ready_section() {
         $(document).ready(function () {

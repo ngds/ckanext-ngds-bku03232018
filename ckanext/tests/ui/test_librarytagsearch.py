@@ -21,32 +21,24 @@ from selenium.common.exceptions import NoSuchElementException
 from seltestbase import seltestbase
 import unittest, time, re
 
-
-class TestLibrarySearch(seltestbase):
+class TestLibraryTagSearch(seltestbase):
     
     def setUp(self):
         self.SB_setup_webdriver()
-        
     
-    def test_basic_library_search(self):
-        '''Basic test of the library search for data sets'''
+    
+    def test_tagged_search(self):
+        #Basic test of library search using tags 
         driver = self.driver
-              
-        self.SB_enter_search_field(driver, "Virginia")
-        self.SB_verify_text_not_present(driver, "no datasets found")
-        self.SB_enter_search_field(driver,"AkJDKDJSDpioSDLKJFSDLKJF")
-        self.SB_verify_text(driver, "no datasets found for")
-        #self.SB_reset_to_start_page(driver)
         
-    def test_nevada_search_error(self):
-        '''ISSUE-28 Nevada search causing server error on central node'''
-        driver = self.driver
-        # go to central site where the issue was
-        self.driver.get(self.central_url)
-        self.SB_enter_search_field(driver, "Nevada")
-        self.SB_verify_text(driver, "datasets found")
-    
-    
+        self.SB_select_library_page(driver);
+        #self.SB_select_tag_group(driver, 0);
+        self.SB_select_tag_group(driver, 1);
+        #self.SB_select_tag_subgroup(driver, 1, 1);
+        self.SB_verify_text(driver, " found")
+        # this is just to visually verify test verify is working, remove 
+        time.sleep(10)
+        
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
