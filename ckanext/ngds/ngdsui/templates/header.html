@@ -101,8 +101,8 @@ pass in the tab that is being rendered and the active_tab variable that we get f
             <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_resources' %}">
                 {% if active_tab == "resources" %} <span class="active main-nav-span borders"> {% else %} <span
                     class="main-nav-span borders"> {% endif %}
-								<span class="main-menu-item">{{ _('RESOURCES') }}</span>
-								<span class="main-menu-text">{{ _('Websites & tools for geothermal exploration') }}</span>
+								<span class="main-menu-item">{{ _('TOOLS') }}</span>
+								<span class="main-menu-text">{{ _('Use or add to our list of websites and tools for geothermal exploration') }}</span>
 							</span>
             </a>
             {% if g.central %}
