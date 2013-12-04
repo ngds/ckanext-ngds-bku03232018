@@ -13,6 +13,8 @@
 # 
 # ___NGDS_HEADER_END___ */
 
+@border-spec: 1px solid #bababa;
+
 .res-container {
   display: table;
   margin-left: 50px;
@@ -24,21 +26,17 @@
     display: table-row;
     position: relative;
 
-    .res-websites-section-head-title {
-      display: table-cell;
-      width: 250px;
-      text-align: center;
-      background-color: #eaeaea;
-      position: relative;
-      border: 1px solid #bababa;
-
-      p {
-        position: relative;
-        font-size: 17px;
-        font-weight: bold;
-      }
-
+    .res-websites-section-head,
+    .res-websites-section-content {
+      border-top: @border-spec;
+      border-left: @border-spec;
     }
+
+    .res-websites-section-head:last-child,
+    .res-websites-section-content:last-child {
+      border-right: @border-spec;
+    }
+
 
     .res-websites-section-head {
       display: table-cell;
@@ -46,7 +44,6 @@
       text-align: center;
       background-color: #eaeaea;
       position: relative;
-      border: 1px solid #bababa;
       vertical-align: middle;
 
       p {
@@ -63,9 +60,6 @@
       padding-bottom: 40px;
       width: 830px;
       padding-left: 50px;
-      border-top: 1px solid #bababa;
-      border-right: 1px solid #bababa;
-      border-bottom: 1px solid #bababa;
 
       p {
         font-size: 14px;
@@ -91,10 +85,15 @@
         }
       }
     }
+
     .smaller {
       top: 40%;
     }
+  }
 
+  .res-table:last-child .res-websites-section-head,
+  .res-table:last-child .res-websites-section-content {
+    border-bottom: @border-spec;
   }
 }
 
