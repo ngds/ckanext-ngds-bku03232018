@@ -6,8 +6,51 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<style >
+    h2, h3 {
+        text-align: center;
+    }
+    .error-table {
+        display: table;
+        margin: 0 auto;
+        max-width: 70%;
+    }
+    ul #error-list {
+        padding-top: 20px;
+        list-style-type: circle;
+    }
+    ul #example {
+        list-style: none;
+    }
+    #error-list li {
+        font-size: 14px;
+    }
+    .indent-me {
+        padding-top: 5px;
+        text-indent: 50px;
+    }
+</style>
 <body>
-    <p>OH MY GOD THIS IS WORKING</p>
+    <h2>Sorry, We Weren't Able to Process Your OGC Service</h2>
+    <h3>Here is a list of the most common errors users face:</h3>
+    <div class="error-table">
+        <ul id="error-list">
+            <li><b>OGC Compliance: </b>This system only supports OGC (Open Geospatial Consortium) WMS and WFS
+            services.  If this service has been uploaded through NGDS from an ESRI Shapefile or a CSV file, then this
+            is an OGC service served through Geoserver.  If this is a linked data service, it is possible that it does
+            not conform to OGC specifications.
+                <ul id="example">
+                    <li><b>Confusion: </b>ArcGIS Server distinguishes between an ArcGIS REST Service and an OGC
+                    Service.  A service endpoint for an ArcGIS REST Service might look something like this:
+                        <p class="indent-me">http://services.azgs.az.gov/arcgis/rest/services/aasggeothermal/TXActiveFaults/MapServer</p>
+                    Whereas a service endpoint for an ArcGIS OGC WFS Service might look something like this:
+                        <p class="indent-me">http://services.azgs.az.gov/arcgis/services/aasggeothermal/TXActiveFaults/MapServer/WFSServer?</p>
+                    </li>
+                </ul>
+            </li>
+            <li><b>Layer(s) Nonexistent: </b></li>
+        </ul>
+    </div>
 </body>
 </html>
   {% resource 'geo-reclinepreview/main' %}
