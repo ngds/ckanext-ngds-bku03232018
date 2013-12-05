@@ -158,11 +158,12 @@ class GeoserverPlugin(p.SingletonPlugin):
     def preview_template(self, context, data_dict):
         error_log = data_dict.get("resource", {}).get("error", {})
         try:
-            if error_log is True:
-                return "preview_error.html"
-        except error_log is False:
             protocol = data_dict.get("resource", {}).get("protocol", {})
-            if protocol == "OGC:WFS":
+            if error_log is False and protocol == "OGC:WFS":
                 return "wfs_preview_template.html"
-            elif protocol == "OGC:WMS":
+            elif error_log is False and protocol == "OGC:WMS":
                 return "wms_preview_template.html"
+        except error_log is True:
+            return "preview_error.html"
+        else:
+            return "preview_error.html"
