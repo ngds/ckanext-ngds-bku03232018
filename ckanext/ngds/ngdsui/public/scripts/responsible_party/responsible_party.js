@@ -45,6 +45,11 @@ $(document).ready(function () {
                 $("#field-authors").val('');
             }
         }
+
+        // cleanup missing json array brackets
+        var raw_val = $("#field-authors").val();
+        raw_val = raw_val.replace(/\[/g,'').replace(/\]/g,'');
+        $("#field-authors").val("[" + raw_val + "]");
     });
 
     $("#field-maintainer").on("change", function(e){
@@ -58,33 +63,7 @@ $(document).ready(function () {
     });
 
 
-
     ngds.responsible_parties = {
-
-        'cleanupList': function (field) {
-            var data = [];
-            try {
-                var list = JSON.parse($(field).val());
-                $.each(list, function(index, value){
-                    data.push({id: JSON.stringify(value), text: value.name});
-                });
-            }
-            catch(err) {
-                data.push({id: "failed", text: "Failed to Clean List"})
-            }
-
-            $(field).data("select2").data(data);
-        },
-
-        'cleanupItem': function(field) {
-            try {
-                var item = JSON.parse($(field).val());
-                $(field).data("select2").data({id: $(field).val(), text: item.name});
-            }
-            catch(err) {
-                $(field).data("select2").data({id: "failed", text: "Failed to Clean Item"});
-            }
-        },
 
         'initSelection': function (element, callback) {
             var data = [];
@@ -97,6 +76,10 @@ $(document).ready(function () {
                     // remove contents from val() - if left - end up with double entries with misplaced []
                     element.val('');
                     callback(data);
+                    // cleanup json array brackets []
+                    if ($(element).data("select2").opts.multiple && $(element).val()[0]!="[") {
+                        $(element).val( "[" + $(element).val() + "]");
+                    }
                 }
                 else {
                     callback({id: JSON.stringify(party), text: party.name});
@@ -232,8 +215,6 @@ $(document).ready(function () {
                             }
                         });
 
-                    //alert(json_data);
-
                     $.ajax({
                         'url': '/api/action/additional_metadata',
                         'type': 'POST',
@@ -249,10 +230,11 @@ $(document).ready(function () {
                                 data[data.length-1].id = JSON.stringify(new_id);
                                 data[data.length-1].text = new_id.name;
 
-                                var val = data[0].id;
+                                var val = "[" + data[0].id;
                                 for (var i=1; i<data.length; i++){
                                     val += "," + data[i].id;
                                 }
+                                val += "]";
                                 $(field_name).val(val);
                                 $(field_name).trigger("change");
 
