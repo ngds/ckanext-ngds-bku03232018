@@ -46,9 +46,12 @@ $(document).ready(function () {
             }
         }
 
-        // cleanup missing json array brackets
+        // cleanup json array brackets (missing or misplaced)
         var raw_val = $("#field-authors").val();
-        raw_val = raw_val.replace(/\[/g,'').replace(/\]/g,'');
+        raw_val = raw_val.replace(/\[/g,'').replace(/\]/g,'').replace(/^s+|\s+$/g,"");  // remove [,], and trim whitespace
+        if (raw_val[0]==',') {
+            raw_val = raw_val.substring(1);
+        }
         $("#field-authors").val("[" + raw_val + "]");
     });
 
