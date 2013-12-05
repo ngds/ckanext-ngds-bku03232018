@@ -13,16 +13,12 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ '''
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-from seltestbase import seltestbase
-import unittest, time, re
+
+from sb_page_objects import sbpageobjects
+import unittest
 
 
-class TestMapSearch(seltestbase):
+class TestMapSearch(sbpageobjects):
     
     def setUp(self):
         self.SB_setup_webdriver()
@@ -30,27 +26,27 @@ class TestMapSearch(seltestbase):
     
     def test_basic_map_search(self):
         '''Basic test of the map search for data sets'''
-        driver = self.driver
-        self.SB_enter_map_search_field(driver, "ohio heat flow")
-        self.SB_click_wms(driver)
         
-        self.SB_click_datalink(driver, "Ohio heat flow demo data")
+        self.SB_enter_map_search_field("ohio heat flow")
+        self.SB_click_wms()
+        
+        self.SB_click_datalink("Ohio heat flow demo data")
         
         #select the new window 
-        self.SB_select_new_window(driver)
+        self.SB_select_new_window()
         
         #click the preview button for the first data set TODO need to improve this
-        self.SB_select_first_preview(driver);
+        self.SB_select_first_preview();
        
                
-        self.SB_verify_iframe_exists_and_does_not_contain_server_error(driver)
+        self.SB_verify_iframe_exists_and_does_not_contain_server_error()
                 
-        self.SB_reset_to_start_page(driver)
+        self.SB_reset_to_start_page()
         
 
         
     def tearDown(self):
-        self.driver.quit()
+        self.SB_stop_webdriver()
         self.assertEqual([], self.verificationErrors)
 
 if __name__ == "__main__":
