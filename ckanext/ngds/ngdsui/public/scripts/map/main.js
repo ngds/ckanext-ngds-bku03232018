@@ -515,8 +515,6 @@ $(document).ready(function () {
                     'format': mapping['format'],
                     'transparent': true,
                     'attribution': 'NGDS',
-                    'tileSize': 128,
-                    'opacity': 0.9999,
                     'version': '1.1.1'
                 };
 
