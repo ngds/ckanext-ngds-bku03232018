@@ -510,6 +510,8 @@ $(document).ready(function () {
             for (var i = 0; i < wms_mappings.length; i++) {
                 var mapping = wms_mappings[i];
 
+                if (mapping['ERROR']) return ckan.notify('Sorry, there was an error in retrieving your data', '', 'error');
+
                 var wms_params = {
                     'layers': mapping['layer'],
                     'format': mapping['format'],
