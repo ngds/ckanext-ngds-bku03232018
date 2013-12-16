@@ -1,19 +1,116 @@
 $(document).ready(function () {
-    /*$("[data-rs]").each(function () {
 
-    });*/
 
-    $("button[data-add-rs-maintainer]").click(function (ev) {
-        ngds.responsible_parties.add_new(this.title, "#field-maintainer");
+    //  Since the "opts" property is not yet defined when then $(document).ready() function runs, need to set timer
+    //  interval to watch for existence of "opts" before overriding initSelection() (a member of opts).  This applies
+    //  to both #field-authors and #field-maintainer elements
+
+    var timeoutAuthors = setInterval(cleanupAuthors, 10);
+    function cleanupAuthors(){
+        if ($("#field-authors").data("select2") && $("#field-authors").data("select2").opts) {
+            clearInterval(timeoutAuthors);
+            ngds.responsible_parties.overrideInitSelection("#field-authors");
+            $("#field-authors").trigger("change");
+        }
+    }
+
+    var timeoutMaintainer = setInterval(cleanupMaintainer, 10);
+    function cleanupMaintainer(){
+        if ($("#field-maintainer").data("select2") && $("#field-maintainer").data("select2").opts) {
+            clearInterval(timeoutMaintainer);
+            ngds.responsible_parties.overrideInitSelection("#field-maintainer");
+            $("#field-maintainer").trigger("change");
+        }
+    }
+
+
+    $("#field-authors").on("change", function(e){
+        //console.log("#field-authors - change event: " + JSON.stringify({val:e.val, added: e.added, removed: e.removed}));
+        if (e.added && (e.added.id == e.added.text)) {
+            // since id==text, this is a select of new item (not from responsible_parties table)
+            ngds.responsible_parties.add_new("Add New Author", "#field-authors", e.added);
+        }
+        if (e.removed) {
+            // For reasons unknown, when overriding initSelection, removal no longer updates element.val() properly
+            // so need to reconstruct from newly updated select2("data")
+            var data = $("#field-authors").select2("data");
+            if (data.length>0){
+                var val = data[0].id;
+                for (var i=1; i<data.length; i++) {
+                    val += "," + data[i].id;
+                }
+                $("#field-authors").val(val);
+            }
+            else {
+                $("#field-authors").val('');
+            }
+        }
+
+        // cleanup json array brackets (missing or misplaced)
+        var raw_val = $("#field-authors").val();
+        raw_val = raw_val.replace(/\[/g,'').replace(/\]/g,'').replace(/^s+|\s+$/g,"");  // remove [,], and trim whitespace
+        if (raw_val[0]==',') {
+            raw_val = raw_val.substring(1);
+        }
+        $("#field-authors").val("[" + raw_val + "]");
     });
 
-    $("button[data-add-rs-author]").click(function(ev){
-       ngds.responsible_parties.add_new(this.title, "#field-authors")
+    $("#field-maintainer").on("change", function(e){
+        //console.log("#field-maintainer - change event: " + JSON.stringify({val:e.val, added: e.added, removed: e.removed}));
+        try {
+            $.parseJSON(e.val);  // if parses successfully, then already well-formed and not a new Responsible Party
+        }
+        catch(err) {
+            ngds.responsible_parties.add_new("Add New Maintainer", "#field-maintainer", e.val);
+        }
     });
+
 
     ngds.responsible_parties = {
-        'add_new': function (popup_title, field_name) {
-            console.log("responsible_parties.add_new( ," + field_name + ")");
+
+        'initSelection': function (element, callback) {
+            var data = [];
+            try {
+                var party = $.parseJSON(element.val());
+                if (party instanceof Array){
+                    $.each(party, function (index, value){
+                        data.push({id: JSON.stringify(value), text: value.name});
+                    });
+                    // remove contents from val() - if left - end up with double entries with misplaced []
+                    element.val('');
+                    callback(data);
+                    // cleanup json array brackets []
+                    if ($(element).data("select2").opts.multiple && $(element).val()[0]!="[") {
+                        $(element).val( "[" + $(element).val() + "]");
+                    }
+                }
+                else {
+                    callback({id: JSON.stringify(party), text: party.name});
+                }
+            }
+            catch(err){
+
+            }
+        },
+
+
+        'overrideInitSelection':function (field_name) {
+            //console.log(field_name + ": override initSelection()");
+            $(field_name).data("select2").opts.initSelection = ngds.responsible_parties.initSelection;
+
+            $(field_name).data("select2").opts.formatSelection = function(data, container) {
+                try {
+                    var party = JSON.parse(data.id);
+                    return "<span title='" + party.name + "\n" + party.email + "'>" + data.text + "</span>";
+                }
+                catch(err) {
+                    return data.text;
+                }
+            }
+        },
+
+        'add_new': function (popup_title, field_name, new_value) {
+            //console.log("responsible_parties.add_new( ," + field_name + ")");
             var template = [
                 '<div class="modal" style="top: 10%">',
                     '<div class="modal-header">',
@@ -56,8 +153,19 @@ $(document).ready(function () {
             var element = $(template);
             var modal = element.modal({'show': true});
 
+            var new_val = (new_value.id || new_value);
+
+            if (new_val.indexOf("@")>=0) {
+                $("#rs_email").val(new_val);
+            }
+            else {
+                $("#rs_name").val(new_val);
+            }
+
+
+
             element.on('click', '.btn-primary', function (ev) {
-                    ev.preventDefault();
+                ev.preventDefault();
 
                 var missing_required = false;
 
@@ -110,16 +218,36 @@ $(document).ready(function () {
                             }
                         });
 
-                    //alert(json_data);
-
                     $.ajax({
                         'url': '/api/action/additional_metadata',
                         'type': 'POST',
                         'data': json_data,
                         'success': function (response) {
-                            console.log(response);
-                            // TODO: Add newly created name to input box
-                            // TODO: // $(field_name).val($(field_name).val() + "," + $(".modal #rs_name").val());
+                            var new_id = {name: $("#rs_name").val(), email: $("#rs_email").val()};
+                            var new_data;
+
+
+                            if ($(field_name).data("select2").opts.multiple) {  // update id of last item, otherwise just replace
+
+                                var data = $(field_name).data("select2").data();
+                                data[data.length-1].id = JSON.stringify(new_id);
+                                data[data.length-1].text = new_id.name;
+
+                                var val = "[" + data[0].id;
+                                for (var i=1; i<data.length; i++){
+                                    val += "," + data[i].id;
+                                }
+                                val += "]";
+                                $(field_name).val(val);
+                                $(field_name).trigger("change");
+
+                            }
+                            else {
+//                                $(field_name).data("select2").data(new_id);
+                                $(field_name).val(JSON.stringify(new_id));
+                                $(field_name).trigger("change");
+                            }
+
                             modal.modal('hide');
                             modal.remove();
                         },
@@ -133,16 +261,24 @@ $(document).ready(function () {
                         }
                     });
 
-                    }
                 }
-            );
+            });
 
             element.on('click', '.btn-cancel', function (ev) {
-                    ev.preventDefault();
-                    modal.modal('hide');
-                    modal.remove();
+                ev.preventDefault();
+                if ($(field_name).data("select2").opts.multiple) { // data is array, remove last
+                    var cur_data = $(field_name).data("select2").data();
+                    cur_data.pop();
+                    $(field_name).data("select2").data(cur_data);
+                }
+                else { // single item which must be removed
+                    $(field_name).data("select2").data('');
+                }
+                modal.modal('hide');
+                modal.remove();
             });
 
         }
     };
+
 });

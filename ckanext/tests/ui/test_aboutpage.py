@@ -13,16 +13,11 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ '''
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-from seltestbase import seltestbase
-import unittest, time, re
+from sb_page_objects import sbpageobjects
+import unittest
 
 
-class TestAboutPage(seltestbase):
+class TestAboutPage(sbpageobjects):
     
     def setUp(self):
         self.SB_setup_webdriver()
@@ -30,16 +25,12 @@ class TestAboutPage(seltestbase):
     
     def test_about_page_has_version_identifier(self):
         '''ISSUE-138 About page should identify github version '''
-        driver = self.driver
-              
-        self.SB_select_about_page(driver)
-        self.SB_verify_version_info_exists(driver)
-         
-   
-    
-    
+                      
+        self.SB_select_about_page()
+        self.SB_verify_version_info_exists()
+ 
     def tearDown(self):
-        self.driver.quit()
+        self.SB_stop_webdriver()
         self.assertEqual([], self.verificationErrors)
 
 if __name__ == "__main__":

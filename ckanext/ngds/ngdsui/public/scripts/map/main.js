@@ -515,15 +515,34 @@ $(document).ready(function () {
                     'format': mapping['format'],
                     'transparent': true,
                     'attribution': 'NGDS',
-                    'tileSize': 128,
-                    'opacity': 0.9999,
                     'version': '1.1.1'
                 };
 
                 var layer = L.tileLayer.wms(mapping['service_url'], wms_params);
 
-                ngds.Map.layer_control.addOverlay(layer, mapping['layer']);
-                ngds.Map.map.addLayer(layer);
+                // check whether the WMS is already added to the layer
+                var layerExist = false;
+                for(var li in ngds.Map.layer_control._layers) {
+                    var lo = ngds.Map.layer_control._layers[li];
+                    if(lo.layer._url == mapping['service_url']) {
+                        // use the existing layer to instead
+                        layer = lo.layer;
+
+                        layerExist = true;
+                        break;
+                    }
+                }
+                if(layerExist == false) {
+                    ngds.Map.layer_control.addOverlay(layer, mapping['layer']);
+                    ngds.Map.map.addLayer(layer);
+                }
+                else {
+                    // check whether the WMS is showing
+                    var layerShowing = ngds.Map.map.hasLayer(layer);
+                    if(layerShowing == false) {
+                        ngds.Map.map.addLayer(layer);
+                    }
+                }
             }
             ckan.notify("The Web Map Services you requested have been added to the map.", "", "success");
 

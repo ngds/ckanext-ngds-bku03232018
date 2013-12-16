@@ -13,16 +13,12 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ '''
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-from seltestbase import seltestbase
-import unittest, time, re
+
+from sb_page_objects import sbpageobjects
+import unittest
 
 
-class TestLibrarySearch(seltestbase):
+class TestLibrarySearch(sbpageobjects):
     
     def setUp(self):
         self.SB_setup_webdriver()
@@ -30,25 +26,25 @@ class TestLibrarySearch(seltestbase):
     
     def test_basic_library_search(self):
         '''Basic test of the library search for data sets'''
-        driver = self.driver
+        
               
-        self.SB_enter_search_field(driver, "Virginia")
-        self.SB_verify_text_not_present(driver, "no datasets found")
-        self.SB_enter_search_field(driver,"AkJDKDJSDpioSDLKJFSDLKJF")
-        self.SB_verify_text(driver, "no datasets found for")
-        #self.SB_reset_to_start_page(driver)
+        self.SB_enter_search_field("Virginia")
+        self.SB_verify_text_not_present("no datasets found")
+        self.SB_enter_search_field("AkJDKDJSDpioSDLKJFSDLKJF")
+        self.SB_verify_text( "no datasets found for")
+        
         
     def test_nevada_search_error(self):
         '''ISSUE-28 Nevada search causing server error on central node'''
-        driver = self.driver
+       
         # go to central site where the issue was
-        self.driver.get(self.central_url)
-        self.SB_enter_search_field(driver, "Nevada")
-        self.SB_verify_text(driver, "datasets found")
+        self.SB_goto_central()
+        self.SB_enter_search_field("Nevada")
+        self.SB_verify_text("datasets found")
     
     
     def tearDown(self):
-        self.driver.quit()
+        self.SB_stop_webdriver()
         self.assertEqual([], self.verificationErrors)
 
 if __name__ == "__main__":

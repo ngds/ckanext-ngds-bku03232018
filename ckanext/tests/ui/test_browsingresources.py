@@ -13,16 +13,12 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ '''
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-from seltestbase import seltestbase
-import unittest, time, re
+
+from sb_page_objects import sbpageobjects
+import unittest, time
 
 
-class TestBrowsingResources(seltestbase):
+class TestBrowsingResources(sbpageobjects):
     
     def setUp(self):
         self.SB_setup_webdriver()
@@ -30,22 +26,21 @@ class TestBrowsingResources(seltestbase):
     
     def test_failed_resource_viewing(self):
         '''ISSUE-86 Browsing resource causes internal server error on central node'''
-        driver = self.driver
+        
         # go to central site where the issue was
-        self.driver.get(self.central_url)
-              
-        self.SB_enter_search_field(driver, "California Active Faults")
-        #driver.find_element_by_link_text("California Active Faults").click()
-        self.SB_click_datalink(driver, "California Active Faults")
-        driver.find_element_by_xpath("(//a[contains(text(),'Preview')])[2]").click()
+        self.SB_goto_central()
+        
+        self.SB_enter_search_field("California Active Faults")
+        
+        self.SB_click_datalink("California Active Faults")
+        self.SB_click_preview_button()
         time.sleep(25)
-        self.SB_verify_iframe_exists_and_does_not_contain_server_error(driver)
-        
-        
+        self.SB_verify_iframe_exists_and_does_not_contain_server_error()
+      
       
     
     def tearDown(self):
-        self.driver.quit()
+        self.SB_stop_webdriver()
         self.assertEqual([], self.verificationErrors)
 
 if __name__ == "__main__":

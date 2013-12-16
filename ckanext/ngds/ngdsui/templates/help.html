@@ -21,7 +21,7 @@
             access to all types of geothermal data to enable geothermal analysis and widespread public use in an effort
             to reduce the risk of geothermal energy development.</p>
 			
-		<p>This website, the NGDS Node-in-a-Box, is a CKAN extension designed to facilitate user access to NGDS data resources by providing a search interface for the NGDS metadata catalog. The NGDS metadata catalog is a collection of metadata records that describe NGDS data resources; users can use these metadata records to locate and access the data resources described by these metadata records. In addition, the NGDS Node-in-a-Box provides users with utilities that can be used to create and manage metadata records within the NGDS metadata catalog.</p>
+		<p>This website, the NGDS Node-in-a-Box, is a CKAN extension designed to facilitate user access to NGDS data resources by providing a search interface for the NGDS metadata catalog. In addition, the NGDS Node-in-a-Box provides users with utilities that can be used to create and manage metadata records within the NGDS metadata catalog.</p>
 
         <p>Download a two-page handout on the NGDS created by the Department of Energy’s Geothermal Technologies
             Program.</p>
@@ -42,14 +42,14 @@
         <p>The map is used to search the NGDS metadata catalog; search results are displayed in list form in the search interface on the left side of the map; and as colored rectangles on the map representing the physical extent of the features described by each dataset. Map controls are as follows:</p>
 		<ul>
 		<li><strong>Search by Keyword</strong> (<img src="/images/help/screen-map_controls-search.PNG"></img>): Search the metadata catalog by keyword(s); enter search terms and press the <strong>Enter</strong> key or click the <strong>magnifying glass</strong> button; the results will appear in list form beneath the search field as well as on the map</li>
-		<li><strong>Draw a Rectangle</strong> (<img src="/images/help/screen-map_controls-search_by_area.PNG"></img>): Use this tool to search for results within a given area by drawing a rectangle on the map. When you have drawn a rectangle, click the <strong>magnifying glass</strong> button; any dataset describing features within the box you have just drawn will appear as search results</li>
-		<li><strong>Clear Rectangle</strong> (<img src="/images/help/screen-map_controls-stop_searching_by_area.PNG"></img>): Use this tool to stop drawing a rectangle or remove a rectangle that you have drawn with the <strong>Draw a Rectangle tool</strong></li>
+		<li><strong>Draw a Rectangle</strong> (<img src="/images/help/screen-map_controls-search_by_area.PNG"></img>): Use this tool to search for results within a given area by drawing a rectangle on the map. Having drawn a rectangle, click the <strong>magnifying glass</strong> button; any dataset describing features within the rectangle that has just been drawn will appear as search results</li>
+		<li><strong>Clear Rectangle</strong> (<img src="/images/help/screen-map_controls-stop_searching_by_area.PNG"></img>): Use this tool to stop drawing a rectangle or remove a rectangle that has been drawn with the <strong>Draw a Rectangle tool</strong></li>
 		<li><strong>Clear Results</strong> (<img src="/images/help/screen-map_controls-remove_layer.PNG"></img>): Click this button to remove all search results from the map</li>
 		<li><strong>Show/Hide Results</strong> (<img src="/images/help/screen-map_controls-center_layer.PNG"></img>): Click this button to toggle the visibility of search results</li>
 		<li><strong>Center Results</strong> (<img src="/images/help/screen-map_controls-center_layer.PNG"></img>): Click this button beneath a given search result to center those results on the map</li>
 		<li><strong>Zoom In</strong> (<img src="/images/help/screen-map_controls-zoom_in.PNG"></img>): Click this button to zoom in on the map</li>
 		<li><strong>Zoom Out</strong> (<img src="/images/help/screen-map_controls-zoom_out.PNG"></img>): Click this button to zoom out</li>
-		<li><strong>Full Screen</strong> (<img src="/images/help/screen-map_controls-fullscreen.PNG"></img>): Click this button to view the view the metadata catalog search in fullscreen mode; note that leaving fullscreen mode will clear your search results</li>
+		<li><strong>Full Screen</strong> (<img src="/images/help/screen-map_controls-fullscreen.PNG"></img>): Click this button to view the view the metadata catalog search in fullscreen mode; note that leaving fullscreen mode will clear any search results</li>
 		<li><strong>Basemap</strong> (<img src="/images/help/screen-map_controls-basemap.PNG"></img>): Mouse over this button to reveal a dropdown list of different <em>basemaps</em>. Basemaps are maps that are used as a background for the NGDS metadata catalog search map. Click the desired basemap in the basemap menu to change the basemap for the catalog search map. Basemaps can be changed at any time</li>
 		</ul>
     </section>
@@ -79,7 +79,6 @@
 		<li>Apps Developed for NGDS
 		<ul>
 		<li><a href="http://lab.usgin.org/applications/doc/3rd-version-csw-client-application" target="_blank">ArcMap Catalog Search Plug-in</a></li>
-		<li><a href="http://search.geothermaldatasystem.org" target="_blank">Catalog Search and Map Interface</a></li>
 		<li><a href="http://data.geothermaldatasystem.org/" target="_blank">NGDS Data Explorer</a></li>
 		</ul>
 		</li>
@@ -112,7 +111,7 @@
 
         <h3>Contribute</h3>
 		<p style="text-align: center;"><img src="/images/help/contribute.PNG" style="float: inherit;" width="66%"></img></p>
-        <p>The <strong>Contribute</strong> page allows users to contribute to NGDS by creating and managing metadata records describing NGDS data resources. To contribute, <strong>sign up</strong> for an account and click <strong>Contribute</strong>; you will be prompted to log in to your account if you have not already logged in.</p>
+        <p>The <strong>Contribute</strong> page allows users to contribute to NGDS by creating and managing metadata records describing NGDS data resources. To contribute, <strong>sign up</strong> for an account and click <strong>Contribute</strong>; if they are not logged in, users will be prompted to do so upon clicking <strong>Contribute</strong>.</p>
 		
 		<p>Clicking <strong>Contribute</strong> leads to the <strong>Contribute</strong> page; here, users are presented with two options:</p>
 		<ul>
@@ -134,7 +133,7 @@
 		<p style="text-align: center;"><img src="/images/help/contribute-individual-1.PNG" style="float: inherit;" width="66%"></img></p>
 		<p>Clicking <strong>Individual Upload</strong> on the <strong>Contribute</strong> page leads to the <strong>Create a Collection</strong> form; as the name implies, populating this form will create a collection for metadata records, which is the first step of the <strong>Individual Upload</strong> process. The fields on this form are as follows:</p>
 		<ul>
-		<li><strong>Title</strong>: Collection</li>
+		<li><strong>Title</strong>: Collection title</li>
 		<li><strong>URL</strong>: The URL at which this collection will be found. This URL is automatically generated when the <strong>Title</strong> field is populated, but it can be modified manually</li>
 		<li><strong>Description</strong>: A description of the collection and the metadata records stored in it</li>
 		<li><strong>Tags</strong>: Keywords that can be used to search for this collection and any metadata records stored in it</li>
@@ -149,7 +148,7 @@
 		<p>When finished, click <strong>Next: Add Data</strong>.</p>
 		<h4>Individual Upload Step 2: Add Data</h4>
 		<p style="text-align: center;"><img src="/images/help/contribute-individual-2.PNG" style="float: inherit;" width="66%"></img></p>
-		<p>Clicking <strong>Next: Add Data</strong> on the <strong>Create Collection</strong> form leads to the <strong>Add Data</strong>. Populating this form creates a metadata record describing a specified data resource; this metadata record is added to the collection created in Step 1ta record to the collection you created in Step 1. Fields found on this form regardless of the type of resource described by this metadata record are as follows:</p>
+		<p>Clicking <strong>Next: Add Data</strong> on the <strong>Create Collection</strong> form leads to the <strong>Add Data</strong> form. Populating this form creates a metadata record describing a specified data resource; this metadata record is added to the collection created in Step 1. Fields found on this form regardless of the type of resource described by this metadata record are as follows:</p>
 		<ul>
 		<li><strong>Resource</strong>: The URL by which the data resource described by this metadata record can be accessed; if a data resource is instead uploaded to the NGDS Node-in-a-Box Repository, this field will be automatically populated</li>
 		<li><strong>Name</strong>: The name of the data resource described by this metadata record as it will appear in the metadata catalog</li>
@@ -178,8 +177,8 @@
 		</li>
 		<li><strong>Data Service</strong>: Data that is available as a <em>web service</em>; specify the type of web service. Fields specific to this resource type are as follows:
 		<ul>
-		<li><strong>Distributor</strong>: The individual, agency, company, or organization responsible for distributing the data resource described by your metadata record</li>
-		<li><strong>Protocol</strong>: The specific web service protocol used by the web service you have specified as the data resource described by your metadata record; examples include:
+		<li><strong>Distributor</strong>: The individual, agency, company, or organization responsible for distributing the data resource described by this metadata record</li>
+		<li><strong>Protocol</strong>: The specific web service protocol used by the web service specified as the data resource described by this metadata record; examples include:
 		<ul>
 		<li><strong>WMS</strong>: Open Geospatial Consortium (OGC) web map service (WMS); typically used to provide raster images of georeferenced features</li>
 		<li><strong>WFS</strong>: Open Geospatial Consortium (OGC) web feature service (WFS); typically used to provide georeferenced features described by attributes</li>
@@ -202,7 +201,7 @@
 		<p>Clicking <strong>Next: Additional Info</strong> leads to the <strong>Collection Metadata</strong> form. Here, provide metadata that applies to the collection created in Step 1 and the metadata records within it created in Step 2.</p>
 		<p>The <strong>Collection Metadata</strong> form includes the following fields:</p>
 		<ul>
-		<li><strong>Visibility</strong>: Determines whether or not this collection and the metadata records within it are visible to the public</li>
+		<li><strong>Visibility</strong>: Determines whether or not this collection and the metadata record(s) within it are visible to the public</li>
 		<li><strong>Authors</strong>: The authors of the data resource(s) described by metadata record(s) in the collection</li>
 		<li><strong>Maintainer</strong>: The individual, agency, company, or organization responsible for the data resource(s) described by metadata record(s) in the collection</li>
 		<li><strong>Spatial Location</strong>: A rough approximation of the features in the data resource(s) described by metadata record(s) in the collection</li>
@@ -215,10 +214,10 @@
 		<li><strong>Language</strong>: The language in which the data resource(s) described by metadata record(s) in the collection are written</li>
 		<li><strong>Dataset Extent</strong>: The physical extent of features in the data resource(s) described by metadata record(s) in the collection; click the <strong>Draw a rectangle button</strong> (<img src="/images/help/screen-map_controls-search_by_area.PNG"></img>) to draw a box indicating the dataset extent</li>
 		</ul>
-		<p>When you are done, click <strong>Finish</strong>. This will finalize your collection and all metadata records within it; these records will be added to the catalog.</p>
+		<p>When done, click <strong>Finish</strong>. Doing so will finalize this collection and all metadata records within it; these records will be added to the catalog.</p>
 		<h4>Bulk Uploads</h4>
 		<p style="text-align: center;"><img src="/images/help/bulk_upload.PNG" style="float: inherit;" width="66%"></img></p>
-		<p>Clicking <strong>Bulk Upload</strong> brings you to the <strong>Bulk Upload</strong> form. Here, you have the opportunity to upload a .ZIP file containing numerous data resources; the Bulk Upload feature will automatically generate metadata records for each data resource in the ZIP file</p>
+		<p>Clicking <strong>Bulk Upload</strong> leads to the <strong>Bulk Upload</strong> form. Here, users have the opportunity to upload a .ZIP file containing numerous data resources; the Bulk Upload feature will automatically generate metadata records for each data resource in the ZIP file</p>
 		<p>To proceed, click the <strong>Choose File</strong> button on the second row; in the window that appears, locate the desired .ZIP file and click <strong>Open</strong>. In the <strong>Bulk Upload</strong> form, click <strong>Submit</strong>.
     </section>
 
