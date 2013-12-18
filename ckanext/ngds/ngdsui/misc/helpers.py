@@ -934,3 +934,26 @@ def metadata_fields_to_display_for_cm(uri, version):
     if cm in registry:
         return map(lambda x: x['metadata_field'], registry[cm])
     return []
+
+
+def get_role_for_username(username):
+    print "username: ", username
+    if not username:
+        return ['default']
+
+    group_name = get_default_group()
+    group = model.Group.get(group_name)
+
+    q = model.Session.query(model.User, model.Member). \
+        filter(model.Member.table_id == model.User.id). \
+        filter(model.Member.group_id == group.id). \
+        filter(model.Member.state == "active"). \
+        filter(model.Member.table_name == "user"). \
+        filter(~ model.User.name.in_((model.PSEUDO_USER__LOGGED_IN, model.PSEUDO_USER__VISITOR))) .\
+        filter(model.User.name == username)
+
+    role_list = [m.Member.capacity for m in q.all()]
+    print "role_list: ", role_list
+    return role_list
+
+
