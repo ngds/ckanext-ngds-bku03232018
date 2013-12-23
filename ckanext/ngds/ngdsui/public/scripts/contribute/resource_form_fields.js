@@ -164,6 +164,7 @@ ngds.form.structured_form_fields = [
                 'attributes': {
                     'type': 'text',
                     'placeholder': 'Eg. Well Log Headers',
+                    'id': 'field-name',
                     'name': 'name',
                     'class': 'structured-input',
                     'title': 'A name for this resource'
@@ -290,6 +291,7 @@ ngds.form.unstructured_form_fields = [
                 'attributes': {
                     'type': 'text',
                     'name': 'name',
+                    'id': 'field-name',
                     'placeholder': 'Eg. Well Log Headers',
                     'class': 'structured-input',
                     'title': 'A name for this resource'
@@ -400,6 +402,7 @@ ngds.form.offline_form_fields = [
                 'tag': 'input',
                 'attributes': {
                     'type': 'text',
+                    'id': 'field-name',
                     'name': 'name',
                     'placeholder': 'Eg. Well Log Headers',
                     'class': 'structured-input',
@@ -426,6 +429,53 @@ ngds.form.offline_form_fields = [
             }
         ]
     },
+
+
+    {
+        'label': 'Distributor',
+        'div_classes': ['distributor'],
+        'inputs': [
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'text',
+                    'placeholder': 'Begin typing a distributor\'s name and suggestions will be made. Create one by clicking on the + icon to the right.',
+                    'id': 'distributor_fake',
+                    'class': 'structured-input',
+                    'title': 'The distributor for this resource'
+                }
+            },
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor',
+                    'name': 'distributor'
+                }
+            },
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor_name'
+                }
+            },
+            {
+                'tag': 'input',
+                'attributes': {
+                    'type': 'hidden',
+                    'id': 'distributor_email'
+                }
+            },
+            {
+                'tag': 'div',
+                'attributes': {
+                    'class': 'distributor-tag retreived-tags'
+                }
+            }
+        ]
+    },
+
     {
         'label': 'Ordering Procedure',
         'label_div_classes': ['description-label-div'],
@@ -472,6 +522,7 @@ ngds.form.data_service_form_fields = [
                 'attributes': {
                     'type': 'text',
                     'placeholder': 'Eg. Well Log Headers',
+                    'id': 'field-name',
                     'name': 'name',
                     'class': 'structured-input',
                     'title': 'A name for this resource'
@@ -632,7 +683,6 @@ ngds.form.data_service_form_fields = [
 var position_file_uploader = function (selector) {
     if (typeof selector === 'undefined') {
         $(".resource-upload-field").addClass("display-none");
-        $(".resource-upload-field").css("display", "none");
         return;
     }
 
