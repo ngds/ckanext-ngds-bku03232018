@@ -1,0 +1,29 @@
+Content Models,Keywords
+ActiveFaults,fault|movement|movement sense|slip rate|slip interval|geologic|geologic age|faults|cross-section|geochronology|active fault
+AqueousChemistry,thermal|spring|springs|geothermal|aqueous|chemical|analysis|well|hydrogeology|hydrology|water|geothermal fluid|aqueous|chemistry|isotope
+BoreholeLithIntercepts,borehole|lithologic|intercepts|intervals|formation|top|bottom|well|lithology
+BoreholeLithIntervals,borehole|lithologic|intercepts|intervals|formation|top|bottom|well|lithology
+BoreholeTemperatures,bottomhole|bottom hole|temperature|borehole|geothermal
+ContourLines,structure|contour|maps|isoline|elevation|gravity|anomaly|line
+DirectUseSites,direct|use|sites|greenhouse|space heating|geothermal|resource assessment|system
+FluidFluxInjectionDisposal,injection|disposal|fluid|flux|well|volume|contact|production|flow
+GeologicReservoirs,geologic|geothermal|reservoir|potential|hydraulic|fault|production
+GeothermalAreas,geothermal|area|system|reservoir|monitoring|power|generation|use|sites|facilities
+GravityStations,gravity|acceleration|bouguer|station|free|air|correction
+HeatFlow,geothermal|heat|gradient|gradients|flow intervals|thermal conductivity|physical property|temperature|heat flow
+HeatPumpFacilities,goethermal facilities| geothemal|survey|heat pump|temperature|ground source|system
+HydraulicProperties,permeability|porosity|hydraulic|geothermal|physical property|geothermal|system|engineering
+PhysicalSamples,geologic|unit|age|lithology|rock|samples|cross-section|geochronology|geochemical
+PowellCummingsGeothermometry,gas|liquid|analysis|geothermometry|well|spring|chemical|geochemical
+PowerPlantFacilities,power|plant|facilities|sites|power|generation|geothermal|resource|use|system
+PowerPlantProduction,power|plant|production|facilities|electrical|geothermal|net|capacity
+RadiogenicHeatProduction,geothermal|heat|production|geothermal|radiogenic|flow|rock|sample|uranium|potassium|thorium|isotope
+RockChemistry,analytes|rock|chemistry|chemical|geochemical|whole|major|elements|uranium|potassium|thorium|isotope|sample
+SeismicHypocenters,seismic|hypocenter|earthquake|event|fault|zone|fracture
+ThermalConductivity,heat|heat flow|thermal|diffusivity|physical property|heat|temperature|conductivity|log|well
+ThermalSprings,geothermal|spring|heat|chemical|analysis|hot|thermal|warm|fluid|flow|temperature
+VolcanicVents,lithology|geologic|age|unit|cone|stratovolcano|dome|vent|volcanic|volcanism|geochronology|material|flow
+WellFluidProduction,well|fluid|production|operations|geothermal|flow
+WellHeaders,well|header|borehole
+WellLogs,well|borehole|log|lithology|stratigraphic|temperature|scanned|file
+WellTests,drill|stem|test|well|discharge|production|fluid|injection|buildup|drawdown

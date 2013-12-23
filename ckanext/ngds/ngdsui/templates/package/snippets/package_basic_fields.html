@@ -22,6 +22,10 @@ File:
     {{ form.input('title', id='field-title', label='%s <span class="mandatory">*</span>'|format(_('Title'))|safe, placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
     {% endblock %}
 
+    {% block package_basic_fields_description %}
+    {{ form.markdown('notes', id='field-notes', label='%s <span class="mandatory">*</span>'|format(_('Description'))|safe, placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes) }}
+    {% endblock %}
+
     {% block package_basic_fields_license %}
 
     <div class="control-group">

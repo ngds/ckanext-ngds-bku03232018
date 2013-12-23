@@ -73,7 +73,8 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
             var osmAttrib='Map data © OpenStreetMap contributors';
             var osm = new L.TileLayer(baseUrl, {minZoom: 1, maxZoom: 12, attribution: osmAttrib});
             var serviceUrl = resourceData.service_url.split('?')[0];
-            var wms = new L.tileLayer.wms(serviceUrl, {
+            
+            var wms = new L.TileLayer.WMS(serviceUrl, {
                 layers: resourceData.layer,
                 format: "image/png",
                 transparent: true
