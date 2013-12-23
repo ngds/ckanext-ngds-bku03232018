@@ -62,7 +62,6 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
       var errorMsg, dataset;
 
       if (resourceData.protocol === "OGC:WFS") {
-          //jsondata = JSON.parse(resourceData.reclineJSON);
           resourceData.backend = 'memory';
           dataset = new recline.Model.Dataset({records:resourceData.reclineJSON});
           dataset.fetch().done(function(dataset){self.initializeDataExplorer(dataset)});
@@ -73,7 +72,9 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
             var baseUrl='http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8';
             var osmAttrib='Map data © OpenStreetMap contributors';
             var osm = new L.TileLayer(baseUrl, {minZoom: 1, maxZoom: 12, attribution: osmAttrib});
-            var wms = new L.TileLayer.WMS(resourceData.service_url, {
+            var serviceUrl = resourceData.service_url.split('?')[0];
+            
+            var wms = new L.TileLayer.WMS(serviceUrl, {
                 layers: resourceData.layer,
                 format: "image/png",
                 transparent: true
@@ -84,6 +85,7 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
                 [bbox[1], bbox[0]],
                 [bbox[3], bbox[2]]
             ]);
+
             map.fitBounds(bounds);
             map.addLayer(osm);
             map.addLayer(wms);

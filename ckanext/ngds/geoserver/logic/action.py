@@ -148,15 +148,16 @@ def map_search_wms(context, data_dict):
         resourceURL = resource.get("url", {})
         this_wms = HandleWMS(resourceURL)
         return this_wms.get_layer_info(resource)
+    try:
+        pkg_id = data_dict.get("pkg_id")
+        pkg = toolkit.get_action("package_show")(None, {'id': pkg_id})
+        resources = filter(wms_resource, pkg.get('resources'))
 
-    pkg_id = data_dict.get("pkg_id")
-    pkg = toolkit.get_action("package_show")(None, {'id': pkg_id})
-    resources = filter(wms_resource, pkg.get('resources'))
+        this_data = map(get_wms_data, resources)
 
-    this_data = map(get_wms_data, resources)
-
-    return this_data
-
+        return this_data
+    except:
+        return [{'ERROR':'SERVER_ERROR'}]
 
 
 '''
