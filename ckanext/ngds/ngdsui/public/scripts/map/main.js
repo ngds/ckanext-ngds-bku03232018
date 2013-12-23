@@ -452,11 +452,13 @@ ngds.subscribe('Map.results_rendered', function (topic, data) {
         return new L.LatLngBounds(sw, ne);
     });
 
-    for (var i = 0; i < bounds.length; i++) {
+    for (var i = 1; i < bounds.length; i++) {
         bounds[i].extend(bounds[i - 1]);
     }
 
-    ngds.Map.map.fitBounds(bounds[bounds.length - 1]);
+    if(bounds.length > 0) {
+        ngds.Map.map.fitBounds(bounds[bounds.length - 1]);
+    }
     $(".visibility-managed").show();
     $(".results").jScrollPane({contentWidth: '0px', hideFocus: true});
 });
