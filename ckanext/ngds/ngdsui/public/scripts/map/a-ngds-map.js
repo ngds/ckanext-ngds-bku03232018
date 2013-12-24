@@ -32,14 +32,14 @@ ngds.Map.map.on('draw:created', function (e) {
 })
 
 ngds.Map.makeSearch = function (parameters) {
-    var query = parameters['query'],
+    var query = parameters['q'],
         rows = parameters['rows'],
         action = parameters['action'],
         page = parameters['page'],
         start = (page - 1) * rows,
         extras = {"ext_bbox":"-180,-90,180,90"};
 
-    action({'query': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
+    action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         console.log(response);
     })
 };
@@ -50,7 +50,7 @@ ngds.Map.topLevelSearch = function () {
         'page': 1,
         'action': ngds.ckanlib.package_search,
         'rows': 10,
-        'query': searchQuery
+        'q': searchQuery
     })
 };
 

@@ -351,7 +351,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
 
     def before_search(self, search_params):
 
-        if 'fq' in search_params or 'query' in search_params:
+        if 'fq' in search_params or 'q' in search_params:
             def repl(m):
                 datestr = m.group()
                 datestr = datestr.replace("\"", "")
@@ -359,8 +359,8 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
 
             if 'fq' in search_params:
                 search_params['fq'] = re.sub('publication_date:".*"', repl, search_params['fq'])
-            if 'query' in search_params:
-                search_params['query'] = re.sub('publication_date: ".*"', repl, search_params['query'])
+            if 'q' in search_params:
+                search_params['q'] = re.sub('publication_date: ".*"', repl, search_params['q'])
 
         if 'extras' in search_params and 'poly' in search_params['extras'] and search_params['extras']['poly']:
             # do some validation
@@ -368,10 +368,10 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             # of datasets within the bbox
             x = {'poly': search_params['extras']['poly']}
             bbox_query_ids = get_package_ids_in_poly(x, '4326')
-            q = search_params.get('query', '')
+            q = search_params.get('q', '')
             new_q = '%s AND ' % q if q else ''
             new_q += '(%s)' % ' OR '.join(['id:%s' % id for id in bbox_query_ids])
-            search_params['query'] = new_q
+            search_params['q'] = new_q
         else:
             print "Definitely not in"
 
