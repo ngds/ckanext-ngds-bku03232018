@@ -136,7 +136,7 @@ ngds.ckanlib = {
         var location = null;
 
         var proximity_matched = false;
-        var tokens = parameter_obj['q'].split(" ");
+        var tokens = parameter_obj['query'].split(" ");
         for (var i = 0; i < tokens.length; i++) {
             var space_stripped = tokens[i].replace(" ", "").replace(" ", "");
             if (space_stripped === "near" || space_stripped === "in") {
@@ -148,7 +148,7 @@ ngds.ckanlib = {
         if (proximity_matched === true) {
             location = tokens.splice(i + 1, tokens.length);
             var query = tokens.splice(0, i).join(" ");
-            parameter_obj['q'] = query;
+            parameter_obj['query'] = query;
             var osm_provider = new L.GeoSearch.Provider.OpenStreetMap();
             var g_url = osm_provider.GetServiceUrl(location);
             ngds.publish("data-loading", {});

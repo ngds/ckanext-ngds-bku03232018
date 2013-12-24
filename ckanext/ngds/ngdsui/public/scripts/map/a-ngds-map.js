@@ -31,20 +31,32 @@ ngds.Map.map.on('draw:created', function (e) {
     console.log(layer.getLatLngs());
 })
 
-ngds.Map.topLevelSearch = function () {
-    var searchBox = $('#map-search-query');
-    searchBox.keypress(function (event) {
-        if (event.which == 13) {
-            var searchQuery = searchBox.val();
-        }
+ngds.Map.makeSearch = function (parameters) {
+    var query = parameters['query'],
+        rows = parameters['rows'],
+        action = parameters['action'],
+        page = parameters['page'],
+        start = (page - 1) * rows,
+        extras = {"ext_bbox":"-180,-90,180,90"};
+
+    action({'query': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
+        console.log(response);
     })
 };
 
+ngds.Map.topLevelSearch = function () {
+    var searchQuery = $('#map-search-query').val();
+    ngds.Map.makeSearch({
+        'page': 1,
+        'action': ngds.ckanlib.package_search,
+        'rows': 10,
+        'query': searchQuery
+    })
+};
 
 drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);
 ngds.Map.map.addControl(ngds.Map.controls.doodle);
 ngds.Map.map.addControl(ngds.Map.controls.loading);
-ngds.Map.topLevelSearch();
 
 }).call(this);
