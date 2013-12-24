@@ -28,12 +28,23 @@ ngds.Map = {
 
 ngds.Map.map.on('draw:created', function (e) {
     var layer = e.layer;
-    console.log(layer.getLatLngs().toBBOXString());
+    console.log(layer.getLatLngs());
 })
+
+ngds.Map.topLevelSearch = function () {
+    var searchBox = $('#map-search-query');
+    searchBox.keypress(function (event) {
+        if (event.which == 13) {
+            var searchQuery = searchBox.val();
+        }
+    })
+};
+
 
 drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);
 ngds.Map.map.addControl(ngds.Map.controls.doodle);
 ngds.Map.map.addControl(ngds.Map.controls.loading);
+ngds.Map.topLevelSearch();
 
 }).call(this);
