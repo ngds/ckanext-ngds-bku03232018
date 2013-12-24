@@ -1,6 +1,9 @@
 /**
  * Created by adrian on 12/23/13.
  */
+(function () {
+
+var drawings = new L.FeatureGroup();
 
 ngds.Map = {
     map: L.map('map-container', {center: [39.977, -97.646], zoom: 4,
@@ -15,9 +18,22 @@ ngds.Map = {
         })
     },
     controls: {
-        loading: L.Control.loading({separate: true, position: 'topleft'})
+        loading: L.Control.loading({separate: true, position: 'topleft'}),
+        doodle: new L.Control.Draw({position: 'topleft',
+            draw:{polyline: false, circle: false, marker: false, polygon: false},
+            edit: {featureGroup: drawings, remove: false, edit: false}
+        })
     }
 };
 
+ngds.Map.map.on('draw:created', function (e) {
+    var layer = e.layer;
+    console.log(layer.getLatLngs().toBBOXString());
+})
+
+drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);
+ngds.Map.map.addControl(ngds.Map.controls.doodle);
 ngds.Map.map.addControl(ngds.Map.controls.loading);
+
+}).call(this);

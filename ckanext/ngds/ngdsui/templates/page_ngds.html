@@ -36,11 +36,10 @@ File:
     <script type="text/javascript" src="/scripts/jqueryui/js/jquery-ui-1.10.0.custom-min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="/scripts/jqueryui/css/smoothness/jquery-ui-1.10.0.custom.css"/>
-    {{ h.get_master_style() }}
     <link rel="stylesheet" href="/vendor/leaflet0.6.2/leaflet.css"/>
-    <link rel="stylesheet" type="text/css" href="/vendor/leaflet-draw/leaflet.draw.css"/>
-    <!-- <link rel="stylesheet" href="/vendor/leaflet-draw/leaflet.draw.css" /> -->
+
     <link rel="stylesheet" href="/vendor/geosearch/src/css/l.geosearch.css"/>
+    {{ h.get_master_style() }}
     {% block jquery_no_conflict %}
     <script>
         $(document).ready(function () {
@@ -55,8 +54,6 @@ File:
 
 
     {% if h.is_development() %}
-    <script src="/vendor/leaflet0.6.2/leaflet.js"></script>
-    <script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
     <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
     <script type="text/javascript" src="/vendor/mustache/mustache.js"></script>
     <script type="text/javascript" src="/scripts/utils/utils.js"></script>
@@ -67,8 +64,6 @@ File:
     <script type="text/javascript" src="/scripts/ckanlib/ngds_notify.js"></script>
 
     {% else %}
-    <script src="/vendor/leaflet0.6.2/leaflet.js"></script>
-    <script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
     <script type="text/javascript" src="/vendor/PubSubJS/pubsub.min.js"></script>
     <script type="text/javascript" src="/vendor/mustache/mustache.min.js"></script>
     <script type="text/javascript" src="/scripts/utils/utils.min.js"></script>

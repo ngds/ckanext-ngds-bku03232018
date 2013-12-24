@@ -24,18 +24,22 @@ ___NGDS_HEADER_END___ #}
             <div class="container">
                 <a class="brand" href="#">NGDS Geographic Search</a>
                 <ul class="nav pull-right">
-                    <li class="dropdown open">
+                    <li>
+                        <a href="#">Status</a>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Layers</a>
                         <ul class="dropdown-menu"></ul>
                     </li>
-                    <li class="dropdown open">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Query</a>
-                        <ul class="dropdown-menu"></ul>
-                    </li>
+                    <form class="navbar-search" action>
+                        <span class="bold-theme">Search:</span>
+                        <input type="text" class="search-query span3" placeholder="Active faults near Arizona">
+                    </form>
                 </ul>
             </div>
         </div>
     </div>
+    <div id="map-container"></div>
 </div>
 
 <!--
@@ -76,8 +80,8 @@ ___NGDS_HEADER_END___ #}
       href="/fanstatic/vendor/:version:2013-05-30T10:31:49.79/select2/select2.min.css"/>
 {% block jquery_no_conflict %}
 {% endblock %}
-<link rel="stylesheet" href="/vendor/leaflet0.6.2/leaflet.css"/>
-<link rel="stylesheet" type="text/css" href="/vendor/leaflet-draw/leaflet.draw.css"/>
+<link rel="stylesheet" href="/vendor/Leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/Leaflet.draw/dist/leaflet.draw.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/iconlabel/leaflet.iconlabel.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/jscrollpane/jquery.jscrollpane.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Label/leaflet.label.css"/>
@@ -85,9 +89,9 @@ ___NGDS_HEADER_END___ #}
 
 {% endblock %}
 {% block scripts %}
-<script src="/vendor/leaflet0.6.2/leaflet.js"></script>
-<script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
-        <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
+<script src="/vendor/Leaflet/dist/leaflet.js"></script>
+<script type="application/javascript" src="/vendor/Leaflet.draw/dist/leaflet.draw.js"></script>
+<script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
 <script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
 <script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
 <script type="text/javascript" src="/scripts/map/L.TileLayer.EsriImageExports-min.js"></script>
