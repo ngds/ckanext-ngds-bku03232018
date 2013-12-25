@@ -12077,7 +12077,7 @@ div#showcase-find-map-container .find-it-content img {
 #map-container {
   height: 700px;
   position: relative;
-  z-index: 3000;
+  z-index: 0;
 }
 #map-container label {
   font-weight: normal;
@@ -12375,6 +12375,28 @@ div.red-marker:after {
   height: 25px;
   background-position: 50% 50%;
   display: block;
+}
+#outer-map-container {
+  position: relative;
+}
+#content-legend-menu {
+  background-color: white;
+  position: absolute;
+  border-radius: 4px;
+  top: 5%;
+  right: 0%;
+  width: 30%;
+  height: 90%;
+}
+#toggle-content-menu {
+  background-color: white;
+  position: absolute;
+  display: inline-block;
+  border-right: 4px;
+  top: 47%;
+  left: -25px;
+  width: 25px;
+  height: 80px;
 }
 /* ___NGDS_HEADER_BEGIN___
 # 
