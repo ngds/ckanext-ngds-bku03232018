@@ -26,33 +26,34 @@ ngds.Map = {
     }
 };
 
-ngds.Map.map.on('draw:created', function (e) {
-    var layer = e.layer;
-    console.log(layer.getLatLngs());
-})
-
 ngds.Map.makeSearch = function (parameters) {
-    var query = parameters['q'],
-        rows = parameters['rows'],
-        action = parameters['action'],
-        page = parameters['page'],
+    var action = ngds.ckanlib.package_search,
+        rows = 10,
+        page = 1,
         start = (page - 1) * rows,
-        extras = {"ext_bbox":"-180,-90,180,90"};
+        query = parameters['q'],
+        extras = parameters['extras'];
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         console.log(response);
     })
 };
 
-ngds.Map.topLevelSearch = function () {
-    var searchQuery = $('#map-search-query').val();
+ngds.Map.topLevelSearch = function (bbox) {
+    var extras = bbox || {'ext:bbox': "-180,-90,180,90"},
+        searchQuery = $('#map-search-query').val();
     ngds.Map.makeSearch({
-        'page': 1,
-        'action': ngds.ckanlib.package_search,
-        'rows': 10,
-        'q': searchQuery
+        'q': searchQuery,
+        'extras': extras
     })
 };
+
+ngds.Map.map.on('draw:created', function (e) {
+    var layer = e.layer,
+        theseBounds = layer.getBounds().toBBoxString(),
+        ext_bbox = {'ext_bbox': theseBounds};
+    ngds.Map.topLevelSearch(ext_bbox);
+});
 
 drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);
