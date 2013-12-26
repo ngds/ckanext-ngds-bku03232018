@@ -12438,8 +12438,12 @@ div.red-marker:after {
   overflow: auto;
 }
 .map-search-result {
-  border-radius: 2px;
-  background-color: #808080;
+  background-color: #c0c0c0;
+  border-radius: 4px;
+}
+.map-search-result .accordion-toggle {
+  padding: 4px 4px;
+  color: #000000;
 }
 /* ___NGDS_HEADER_BEGIN___
 # 

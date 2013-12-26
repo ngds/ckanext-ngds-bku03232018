@@ -46,12 +46,17 @@ ngds.Map.makeSearch = function (parameters) {
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         _.each(response.result.results, function (rec) {
             _.each(rec.resources, function (single_resource) {
-                reqData = {'title': rec.title, 'resources': single_resource, 'geo': rec.extras[8].value};
+                var coords = JSON.parse(rec.extras[8].value),
+                    geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon':sw_lon = coords.coordinates[0][0][0],
+                        'nw_lat': coords.coordinates[0][2][1], 'nw_lon': coords.coordinates[0][2][0]};
+
+                reqData = {'title': rec.title, 'resources': single_resource, 'geo': geoData};
                 ngds.Map.returnSearchResult(reqData);
             })
         })
     })
 };
+
 
 ngds.Map.returnSearchResult = function (result) {
     // '/dataset/' + results[i]['name'],
@@ -60,15 +65,16 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div class="accordion" id="accordion-search">';
         html += '<div class="accordion-group">';
         html += '<div class="accordion-heading">';
-        html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + randomNumber + '>';
-        html += result.title;
-        html += result.resources.name + '</a>';
-        html += '</div>'
+        html += '<table><tr><td>';
+        html += '<a class="accordion-toggle glyphicon icon-align-justify" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + randomNumber + '></a></td>';
+        html += '<td>' + result.resources.name + '</td>';
+        html += '</tr></table></div>';
         html += '<div id=collapse' + randomNumber + ' class="accordion-body collapse">';
+        html += '<p>' + result.title + '</p>';
         html += '<p>' + result.resources.layer + '</p>';
         html += '<p>' + result.resources.distributor + '</p>';
         html += '<p>' + result.resources.description + '</p>';
-        html += '<p>' + result.resources.created + '</p>';
+        html += '<p>' + result.geo + '</p>';
         html += '</div></div></div></li>';
     $('#query-tab .results').append(html);
 };
