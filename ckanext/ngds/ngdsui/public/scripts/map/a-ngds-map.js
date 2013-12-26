@@ -26,19 +26,6 @@ ngds.Map = {
     }
 };
 
-ngds.Map.makeSearch = function (parameters) {
-    var action = ngds.ckanlib.package_search,
-        rows = 10,
-        page = 1,
-        start = (page - 1) * rows,
-        query = parameters['q'],
-        extras = parameters['extras'];
-
-    action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
-        console.log(response);
-    })
-};
-
 ngds.Map.topLevelSearch = function (bbox) {
     var extras = bbox || {'ext:bbox': "-180,-90,180,90"},
         searchQuery = $('#map-search-query').val();
@@ -48,12 +35,44 @@ ngds.Map.topLevelSearch = function (bbox) {
     })
 };
 
+ngds.Map.makeSearch = function (parameters) {
+    var action = ngds.ckanlib.package_search,
+        rows = 10,
+        page = 1,
+        start = (page - 1) * rows,
+        query = parameters['q'],
+        extras = parameters['extras'];
+
+    action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
+        _.each(response.result.results, function (rec) {
+            reqData = {'title': rec.title, 'resources': rec.resources, 'geo': rec.extras[8].value};
+            ngds.Map.returnSearchResult(reqData);
+        })
+    })
+};
+
+ngds.Map.returnSearchResult = function (result) {
+    console.log(result);
+};
+
 ngds.Map.map.on('draw:created', function (e) {
     var layer = e.layer,
         theseBounds = layer.getBounds().toBBoxString(),
         ext_bbox = {'ext_bbox': theseBounds};
     ngds.Map.topLevelSearch(ext_bbox);
 });
+
+ngds.Map.toggleContentMenu = function () {
+    if ($('#content-legend-menu').hasClass('shown')) {
+        $('#content-legend-menu').removeClass('shown');
+        $('#line-triangle').removeClass('left-triangle');
+        $('#line-triangle').addClass('right-triangle');
+    } else {
+        $('#content-legend-menu').addClass('shown');
+        $('#line-triangle').removeClass('right-triangle');
+        $('#line-triangle').addClass('left-triangle');
+    }
+};
 
 drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);

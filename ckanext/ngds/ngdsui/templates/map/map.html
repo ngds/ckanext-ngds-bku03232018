@@ -41,8 +41,10 @@ ___NGDS_HEADER_END___ #}
     </div>
     <div id="outer-map-container">
         <div id="map-container"></div>
-        <div id="content-legend-menu" class="shown">
-            <a id="toggle-content-menu" href="#"></a>
+        <div id="content-legend-menu">
+            <a id="content-menu-triangle" class="hide-legend" href="#" onclick="ngds.Map.toggleContentMenu()">
+                <div id="line-triangle" class="left-triangle"></div>
+            </a>
         </div>
     </div>
 </div>
