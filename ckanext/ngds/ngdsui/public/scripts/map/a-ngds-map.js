@@ -45,17 +45,31 @@ ngds.Map.makeSearch = function (parameters) {
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         _.each(response.result.results, function (rec) {
-            reqData = {'title': rec.title, 'resources': rec.resources, 'geo': rec.extras[8].value};
-            ngds.Map.returnSearchResult(reqData);
+            _.each(rec.resources, function (single_resource) {
+                reqData = {'title': rec.title, 'resources': single_resource, 'geo': rec.extras[8].value};
+                ngds.Map.returnSearchResult(reqData);
+            })
         })
     })
 };
 
 ngds.Map.returnSearchResult = function (result) {
-    console.log(result);
-    var html = '<li class="map-search-result">';
-        html += '<p>' + result.title + '</p>';
-        html += '</li>';
+    // '/dataset/' + results[i]['name'],
+    var randomNumber = Math.floor(Math.random()*1000000000000000000000),
+        html = '<li class="map-search-result">';
+        html += '<div class="accordion" id="accordion-search">';
+        html += '<div class="accordion-group">';
+        html += '<div class="accordion-heading">';
+        html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + randomNumber + '>';
+        html += result.title;
+        html += result.resources.name + '</a>';
+        html += '</div>'
+        html += '<div id=collapse' + randomNumber + ' class="accordion-body collapse">';
+        html += '<p>' + result.resources.layer + '</p>';
+        html += '<p>' + result.resources.distributor + '</p>';
+        html += '<p>' + result.resources.description + '</p>';
+        html += '<p>' + result.resources.created + '</p>';
+        html += '</div></div></div></li>';
     $('#query-tab .results').append(html);
 };
 

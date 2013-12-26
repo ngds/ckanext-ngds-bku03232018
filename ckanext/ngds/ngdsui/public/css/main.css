@@ -12432,8 +12432,15 @@ div.red-marker:after {
 #query-tab .results {
   list-style-type: none;
   border-bottom: none;
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 520px;
+  overflow: auto;
 }
-/* #f2f2f2 */
+.map-search-result {
+  border-radius: 2px;
+  background-color: #808080;
+}
 /* ___NGDS_HEADER_BEGIN___
 # 
 # National Geothermal Data System - NGDS
