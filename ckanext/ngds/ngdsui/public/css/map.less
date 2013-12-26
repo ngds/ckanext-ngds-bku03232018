@@ -665,6 +665,7 @@ div.red-marker:after {
 
 #outer-map-container {
   position: relative;
+  overflow: hidden;
 }
 
 #content-legend-menu {
@@ -672,14 +673,14 @@ div.red-marker:after {
   position: absolute;
   border-radius: 4px 0 0 4px;
   top: 5%;
-  right: 0%;
-  width: 0%;
+  right: -30%;
+  width: 30%;
   height: 90%;
   transition: 0.5s linear;
 }
 
 #content-legend-menu.shown {
-  width: 30%;
+  right: 0%;
 }
 
 #content-menu-triangle {
@@ -720,6 +721,11 @@ div.red-marker:after {
   position: relative;
   top: 25px;
   right: 10px;
+}
+
+#query-tab .results {
+  list-style-type: none;
+  border-bottom: none;
 }
 
 /* #f2f2f2 */

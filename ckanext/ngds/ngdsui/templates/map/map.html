@@ -27,10 +27,6 @@ ___NGDS_HEADER_END___ #}
                     <li>
                         <a href="#">Status</a>
                     </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Layers</a>
-                        <ul class="dropdown-menu"></ul>
-                    </li>
                     <form class="navbar-search" action="javascript:ngds.Map.topLevelSearch()">
                         <input type="text" id="map-search-query" class="search-query span3"
                                placeholder="Active faults near Arizona">
@@ -42,9 +38,21 @@ ___NGDS_HEADER_END___ #}
     <div id="outer-map-container">
         <div id="map-container"></div>
         <div id="content-legend-menu">
-            <a id="content-menu-triangle" class="hide-legend" href="#" onclick="ngds.Map.toggleContentMenu()">
+            <a id="content-menu-triangle" class="hide-legend" href="javascript:void(0)" onclick="ngds.Map.toggleContentMenu()">
                 <div id="line-triangle" class="left-triangle"></div>
             </a>
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#query-tab" data-toggle="tab">Query</a></li>
+                    <li><a href="#layers-tab" data-toggle="tab">Layers</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="query-tab">
+                        <ul class="results"></ul>
+                    </div>
+                    <div class="tab-pane" id="layers-tab"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

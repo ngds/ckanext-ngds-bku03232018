@@ -53,6 +53,10 @@ ngds.Map.makeSearch = function (parameters) {
 
 ngds.Map.returnSearchResult = function (result) {
     console.log(result);
+    var html = '<li class="map-search-result">';
+        html += '<p>' + result.title + '</p>';
+        html += '</li>';
+    $('#query-tab .results').append(html);
 };
 
 ngds.Map.map.on('draw:created', function (e) {
