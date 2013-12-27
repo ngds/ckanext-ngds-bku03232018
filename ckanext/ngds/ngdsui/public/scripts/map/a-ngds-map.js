@@ -27,6 +27,7 @@ ngds.Map = {
 };
 
 ngds.Map.topLevelSearch = function (bbox) {
+    $('#query-tab .results').empty();
     var extras = bbox || {'ext:bbox': "-180,-90,180,90"},
         searchQuery = $('#map-search-query').val();
     ngds.Map.makeSearch({
@@ -46,11 +47,16 @@ ngds.Map.makeSearch = function (parameters) {
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         _.each(response.result.results, function (rec) {
             _.each(rec.resources, function (single_resource) {
-                var coords = JSON.parse(rec.extras[8].value),
-                    geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon':sw_lon = coords.coordinates[0][0][0],
-                        'nw_lat': coords.coordinates[0][2][1], 'nw_lon': coords.coordinates[0][2][0]};
+                var randomNumber = Math.floor(Math.random()*1000000000000000000000),
+                    coords = JSON.parse(rec.extras[8].value),
+                    geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
+                        'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
+                    bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
+                    center = bounds.getCenter(),
+                    geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber},
+                        'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
 
-                reqData = {'title': rec.title, 'resources': single_resource, 'geo': geoData};
+                reqData = {'title': rec.title, 'resources': single_resource, 'geojson': geojson};
                 ngds.Map.returnSearchResult(reqData);
             })
         })
@@ -59,17 +65,42 @@ ngds.Map.makeSearch = function (parameters) {
 
 
 ngds.Map.returnSearchResult = function (result) {
+    var circlesLayer = L.geoJson(result.geojson, {pointToLayer: function (f,ll) {
+        return L.circleMarker(ll, {radius: 8, fillColor: '#ff0000', color: '#ff0000',
+            weight: 2, opacity: 1, fillOpacity: 0.5})
+        },
+        onEachFeature: function (feature, layer) {
+            var feature_id = layer.feature.properties.feature_id;
+            layer.on('click', function() {
+                var toggleId = $('#collapse' + feature_id),
+                    collapseId = $('.feature-id-' + feature_id);
+
+                if (collapseId.hasClass('collapsed')) {
+                    toggleId.addClass('in');
+                    collapseId.removeClass('collapsed');
+                } else if (toggleId.hasClass('in')) {
+                    toggleId.removeClass('in');
+                    collapseId.addClass('collapsed');
+                } else {
+                    toggleId.addClass('in');
+                }
+            })
+        }}
+    ).addTo(ngds.Map.map);
+
+    console.log(circlesLayer.getBounds().toBBoxString());
+
     // '/dataset/' + results[i]['name'],
-    var randomNumber = Math.floor(Math.random()*1000000000000000000000),
+    var feature_id = result.geojson.properties.feature_id,
         html = '<li class="map-search-result">';
         html += '<div class="accordion" id="accordion-search">';
         html += '<div class="accordion-group">';
         html += '<div class="accordion-heading">';
         html += '<table><tr><td>';
-        html += '<a class="accordion-toggle glyphicon icon-align-justify" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + randomNumber + '></a></td>';
+        html += '<a class="accordion-toggle glyphicon icon-align-justify feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '></a></td>';
         html += '<td>' + result.resources.name + '</td>';
         html += '</tr></table></div>';
-        html += '<div id=collapse' + randomNumber + ' class="accordion-body collapse">';
+        html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
         html += '<p>' + result.title + '</p>';
         html += '<p>' + result.resources.layer + '</p>';
         html += '<p>' + result.resources.distributor + '</p>';
@@ -84,6 +115,7 @@ ngds.Map.map.on('draw:created', function (e) {
         theseBounds = layer.getBounds().toBBoxString(),
         ext_bbox = {'ext_bbox': theseBounds};
     ngds.Map.topLevelSearch(ext_bbox);
+    ngds.Map.map.fitBounds(layer.getBounds());
 });
 
 ngds.Map.toggleContentMenu = function () {
