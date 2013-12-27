@@ -41,53 +41,13 @@ ___NGDS_HEADER_END___ #}
             <a id="content-menu-triangle" class="hide-legend" href="javascript:void(0)" onclick="ngds.Map.toggleContentMenu()">
                 <div id="line-triangle" class="left-triangle"></div>
             </a>
-            <div class="tabbable">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#query-tab" data-toggle="tab">Query</a></li>
-                    <li><a href="#layers-tab" data-toggle="tab">Layers</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="query-tab">
-                        <ul class="results"></ul>
-                    </div>
-                    <div class="tab-pane" id="layers-tab"></div>
-                </div>
+            <div id="query-results">
+
             </div>
         </div>
     </div>
 </div>
 
-<!--
-<div style="position:absolute; ">
-    <div class="map-search dialog-small-map">
-        <form class="simple-input" action="javascript:ngds.Map.top_level_search()">
-            <fieldset>
-                <div class="field">
-                    {% if c.query %}
-                    <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"
-                           value="{{ c.query }}"/>
-                    {% else %}
-                    <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"/>
-                    {% endif %}
-                    <button id="map-search" type="button" value="GO" class="btn-search"></button>
-                </div>
-            </fieldset>
-        </form>
-        <div class="map-search-results">
-            <div class="search-results-pagination visibility-managed">
-                <div class="search-results-page-nums"></div>
-            </div>
-            <div class="map-expander">
-
-            </div>
-
-        </div>
-    </div>
-
-
-</div>
-<div id="map-container" style=""></div>
--->
 {% endblock %}
 {% block styles %}
 {{ super() }}

@@ -12429,12 +12429,13 @@ div.red-marker:after {
   top: 25px;
   right: 10px;
 }
-#query-tab .results {
+#query-results {
   list-style-type: none;
   border-bottom: none;
+  margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
-  height: 520px;
+  height: 600px;
   overflow: auto;
 }
 .map-search-result {
@@ -12447,6 +12448,27 @@ div.red-marker:after {
 }
 .result-highlight {
   background-color: yellow;
+}
+.search-control {
+  width: 26px;
+  height: 26px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  display: block;
+  padding: 0px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  line-height: 26px;
+  cursor: auto;
+  text-align: center;
+  background-color: #ffffff;
+}
+.search-control:hover {
+  background-color: #f4f4f4;
+}
+a.glyphicon.icon-search {
+  color: black;
 }
 /* ___NGDS_HEADER_BEGIN___
 # 

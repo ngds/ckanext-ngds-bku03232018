@@ -28,8 +28,23 @@ ngds.Map = {
             var container = L.DomUtil.create('div', 'search-control');
             L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation)
                 .on(container, 'dblclick', L.DomEvent.stopPropagation)
-                .on(container, 'mousedown', L.DomEvent.stopPropagation);
-            $(container).addClass('glyphicon icon-search');
+                .on(container, 'mousedown', L.DomEvent.stopPropagation)
+                .addListener(container, 'click', function () {
+                    var layers = ngds.Map.layers.searchResultsGroup;
+                    if ($(container).hasClass('off')) {
+                        $(container).removeClass('off');
+                        $(container).addClass('on');
+                        ngds.Map.map.addLayer(layers);
+                    } else if ($(container).hasClass('on')) {
+                        $(container).removeClass('on');
+                        $(container).addClass('off');
+                        ngds.Map.map.removeLayer(layers);
+                    } else {
+                        $(container).addClass('off');
+                        ngds.Map.map.removeLayer(layers);
+                    }
+                });
+            $(container).append('<a class="glyphicon icon-search" href="#" title="Toggle search results"></a>');
             return container;
         }})
     }
@@ -92,7 +107,7 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<p>' + result.resources.format + '</p>';
         html += '<a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">';
         html += 'WMS</a></div></div></div></li>';
-    $('#query-tab .results').append(html);
+    $('#query-results').append(html);
 
     var defaultStyle = {radius: 8, fillColor: '#ff0000', color: '#ff0000',
             weight: 2, opacity: 1, fillOpacity: 0.5};
@@ -137,7 +152,7 @@ ngds.Map.returnSearchResult = function (result) {
                 layer.setStyle(defaultStyle);
             })
         }}
-    )/*.addTo(ngds.Map.map)*/;
+    );
     ngds.Map.layers.searchResultsGroup.addLayer(circles).addTo(ngds.Map.map);
 };
 
