@@ -208,4 +208,7 @@ ngds.Map.map.addControl(new ngds.Map.controls.search);
 ngds.Map.map.addControl(new ngds.Map.controls.reset);
 ngds.Map.map.addControl(ngds.Map.controls.loading);
 
+$('.leaflet-draw-toolbar-top').removeClass('leaflet-draw-toolbar');
+$('.leaflet-draw-draw-rectangle').addClass('glyphicon icon-pencil');
+
 }).call(this);
