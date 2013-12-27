@@ -7,7 +7,7 @@ var drawings = new L.FeatureGroup();
 
 ngds.Map = {
     map: L.map('map-container', {center: [39.977, -97.646], zoom: 4,
-        maxBounds: [[-84, -179], [84, 179]], attributionControl: true}),
+        maxBounds: [[-84, -179], [84, 179]], attributionControl: true, minZoom: 2}),
     layers: {
         baseLayer: L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
             subdomains: '1234',
@@ -24,8 +24,8 @@ ngds.Map = {
             draw:{polyline: false, circle: false, marker: false, polygon: false},
             edit: {featureGroup: drawings, remove: false, edit: false}
         }),
-        search: L.Control.extend({options: {position: 'topleft'}, onAdd: function (map) {
-            var container = L.DomUtil.create('div', 'search-control');
+        search: L.Control.extend({options: {position: 'topleft'}, onAdd: function () {
+            var container = L.DomUtil.create('div', 'ngds-custom-control search-control');
             L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation)
                 .on(container, 'dblclick', L.DomEvent.stopPropagation)
                 .on(container, 'mousedown', L.DomEvent.stopPropagation)
@@ -45,6 +45,17 @@ ngds.Map = {
                     }
                 });
             $(container).append('<a class="glyphicon icon-search" href="#" title="Toggle search results"></a>');
+            return container;
+        }}),
+        reset: L.Control.extend({options: {position: 'topleft'}, onAdd: function (){
+            var container = L.DomUtil.create('div', 'ngds-custom-control reset-control');
+            L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation)
+                .on(container, 'dblclick', L.DomEvent.stopPropagation)
+                .on(container, 'mousedown', L.DomEvent.stopPropagation)
+                .addListener(container, 'click', function () {
+                    ngds.Map.map.setView([39.977, -97.46], 4);
+                });
+            $(container).append('<a class="glyphicon icon-globe" href="#" title="Reset extent"></a>')
             return container;
         }})
     }
@@ -140,10 +151,7 @@ ngds.Map.returnSearchResult = function (result) {
                 var resultId = $('.result-' + feature_id);
                 resultId.removeClass('result-highlight');
             })
-            var searchResult = $('.map-search-result.result-' + feature_id),
-                domSelector = searchResult.selector.split('.')[2],
-                dataSelector = 'result-' + layer.feature.properties.feature_id;
-
+            var searchResult = $('.map-search-result.result-' + feature_id);
             searchResult.hover(function () {
                 $(searchResult).addClass('result-highlight');
                 layer.setStyle({fillColor: 'yellow'});
@@ -171,11 +179,12 @@ ngds.Map.addWmsLayer = function (thisId) {
                 'layers': wms['layer'],
                 'format': wms['format'],
                 'transparent': true,
-                'attribution': 'NGDS',
                 'version': '1.1.1'
                 },
+                bbox = [[wms.bbox[1], wms.bbox[0]],[wms.bbox[3], wms.bbox[2]]],
                 wmsLayer = L.tileLayer.wms(wms['service_url'], params);
             ngds.Map.map.addLayer(wmsLayer);
+            ngds.Map.map.fitBounds(bbox);
         })
     })
 };
@@ -195,7 +204,8 @@ ngds.Map.toggleContentMenu = function () {
 drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);
 ngds.Map.map.addControl(ngds.Map.controls.doodle);
-ngds.Map.map.addControl(ngds.Map.controls.loading);
 ngds.Map.map.addControl(new ngds.Map.controls.search);
+ngds.Map.map.addControl(new ngds.Map.controls.reset);
+ngds.Map.map.addControl(ngds.Map.controls.loading);
 
 }).call(this);

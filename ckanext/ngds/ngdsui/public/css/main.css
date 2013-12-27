@@ -12449,7 +12449,7 @@ div.red-marker:after {
 .result-highlight {
   background-color: yellow;
 }
-.search-control {
+.ngds-custom-control {
   width: 26px;
   height: 26px;
   background-position: 50% 50%;
@@ -12464,11 +12464,18 @@ div.red-marker:after {
   text-align: center;
   background-color: #ffffff;
 }
-.search-control:hover {
+.search-control:hover,
+.reset-control:hover {
   background-color: #f4f4f4;
 }
 a.glyphicon.icon-search {
   color: black;
+}
+a.glyphicon.icon-globe {
+  color: black;
+  font-size: 20px;
+  width: initial;
+  line-height: 26px;
 }
 /* ___NGDS_HEADER_BEGIN___
 # 
