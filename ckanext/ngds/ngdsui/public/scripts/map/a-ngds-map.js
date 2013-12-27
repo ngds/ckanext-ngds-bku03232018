@@ -56,7 +56,7 @@ ngds.Map.makeSearch = function (parameters) {
                     geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber},
                         'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
 
-                reqData = {'title': rec.title, 'resources': single_resource, 'geojson': geojson};
+                reqData = {'title': rec.title, 'pkg_id': rec.id, 'resources': single_resource, 'geojson': geojson};
                 ngds.Map.returnSearchResult(reqData);
             })
         })
@@ -65,9 +65,10 @@ ngds.Map.makeSearch = function (parameters) {
 
 
 ngds.Map.returnSearchResult = function (result) {
-    var circlesLayer = L.geoJson(result.geojson, {pointToLayer: function (f,ll) {
-        return L.circleMarker(ll, {radius: 8, fillColor: '#ff0000', color: '#ff0000',
-            weight: 2, opacity: 1, fillOpacity: 0.5})
+    var defaultStyle = {radius: 8, fillColor: '#ff0000', color: '#ff0000',
+            weight: 2, opacity: 1, fillOpacity: 0.5};
+    L.geoJson(result.geojson, {pointToLayer: function (f,ll) {
+        return L.circleMarker(ll, defaultStyle)
         },
         onEachFeature: function (feature, layer) {
             var feature_id = layer.feature.properties.feature_id;
@@ -84,15 +85,23 @@ ngds.Map.returnSearchResult = function (result) {
                 } else {
                     toggleId.addClass('in');
                 }
+            }),
+            layer.on('mouseover', function () {
+                layer.setStyle({fillColor: 'yellow'});
+                var resultId = $('.result-' + feature_id);
+                resultId.addClass('result-highlight');
+            }),
+            layer.on('mouseout', function () {
+                layer.setStyle(defaultStyle);
+                var resultId = $('.result-' + feature_id);
+                resultId.removeClass('result-highlight');
             })
         }}
     ).addTo(ngds.Map.map);
 
-    console.log(circlesLayer.getBounds().toBBoxString());
-
     // '/dataset/' + results[i]['name'],
     var feature_id = result.geojson.properties.feature_id,
-        html = '<li class="map-search-result">';
+        html = '<li class="map-search-result result-' + feature_id + '" >';
         html += '<div class="accordion" id="accordion-search">';
         html += '<div class="accordion-group">';
         html += '<div class="accordion-heading">';
@@ -106,7 +115,8 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<p>' + result.resources.distributor + '</p>';
         html += '<p>' + result.resources.description + '</p>';
         html += '<p>' + result.geo + '</p>';
-        html += '</div></div></div></li>';
+        html += '<a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">';
+        html += 'WMS</a></div></div></div></li>';
     $('#query-tab .results').append(html);
 };
 
@@ -117,6 +127,22 @@ ngds.Map.map.on('draw:created', function (e) {
     ngds.Map.topLevelSearch(ext_bbox);
     ngds.Map.map.fitBounds(layer.getBounds());
 });
+
+ngds.Map.addWmsLayer = function (thisId) {
+    ngds.ckanlib.get_wms_urls(thisId, function (wmsMapping) {
+        _.each(wmsMapping, function (wms) {
+            var params = {
+                'layers': wms['layer'],
+                'format': wms['format'],
+                'transparent': true,
+                'attribution': 'NGDS',
+                'version': '1.1.1'
+                },
+                wmsLayer = L.tileLayer.wms(wms['service_url'], params);
+            ngds.Map.map.addLayer(wmsLayer);
+        })
+    })
+};
 
 ngds.Map.toggleContentMenu = function () {
     if ($('#content-legend-menu').hasClass('shown')) {

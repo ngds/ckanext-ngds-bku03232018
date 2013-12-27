@@ -12445,6 +12445,9 @@ div.red-marker:after {
   padding: 4px 4px;
   color: #000000;
 }
+.result-highlight {
+  background-color: yellow;
+}
 /* ___NGDS_HEADER_BEGIN___
 # 
 # National Geothermal Data System - NGDS
