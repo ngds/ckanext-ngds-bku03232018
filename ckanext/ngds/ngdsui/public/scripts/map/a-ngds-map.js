@@ -15,14 +15,23 @@ ngds.Map = {
                 '<a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.' +
                 'org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             detectRetina: true
-        })
+        }),
+        searchResultsGroup: L.layerGroup()
     },
     controls: {
         loading: L.Control.loading({separate: true, position: 'topleft'}),
         doodle: new L.Control.Draw({position: 'topleft',
             draw:{polyline: false, circle: false, marker: false, polygon: false},
             edit: {featureGroup: drawings, remove: false, edit: false}
-        })
+        }),
+        search: L.Control.extend({options: {position: 'topleft'}, onAdd: function (map) {
+            var container = L.DomUtil.create('div', 'search-control');
+            L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation)
+                .on(container, 'dblclick', L.DomEvent.stopPropagation)
+                .on(container, 'mousedown', L.DomEvent.stopPropagation);
+            $(container).addClass('glyphicon icon-search');
+            return container;
+        }})
     }
 };
 
@@ -64,9 +73,30 @@ ngds.Map.makeSearch = function (parameters) {
 };
 
 ngds.Map.returnSearchResult = function (result) {
+    // '/dataset/' + results[i]['name'],
+    var feature_id = result.geojson.properties.feature_id,
+        html = '<li class="map-search-result result-' + feature_id + '" >';
+        html += '<div class="accordion" id="accordion-search">';
+        html += '<div class="accordion-group">';
+        html += '<div class="accordion-heading">';
+        html += '<table><tr><td>';
+        html += '<a class="accordion-toggle glyphicon icon-align-justify feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '></a></td>';
+        html += '<td>' + result.resources.name + '</td>';
+        html += '</tr></table></div>';
+        html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
+        html += '<p>' + result.title + '</p>';
+        html += '<p>' + result.resources.layer + '</p>';
+        html += '<p>' + result.resources.distributor + '</p>';
+        html += '<p>' + result.resources.description + '</p>';
+        html += '<p>' + result.resources.protocol + '</p>';
+        html += '<p>' + result.resources.format + '</p>';
+        html += '<a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">';
+        html += 'WMS</a></div></div></div></li>';
+    $('#query-tab .results').append(html);
+
     var defaultStyle = {radius: 8, fillColor: '#ff0000', color: '#ff0000',
             weight: 2, opacity: 1, fillOpacity: 0.5};
-    L.geoJson(result.geojson, {pointToLayer: function (f,ll) {
+    var circles = L.geoJson(result.geojson, {pointToLayer: function (f,ll) {
         return L.circleMarker(ll, defaultStyle)
         },
         onEachFeature: function (feature, layer) {
@@ -95,28 +125,20 @@ ngds.Map.returnSearchResult = function (result) {
                 var resultId = $('.result-' + feature_id);
                 resultId.removeClass('result-highlight');
             })
-        }}
-    ).addTo(ngds.Map.map);
+            var searchResult = $('.map-search-result.result-' + feature_id),
+                domSelector = searchResult.selector.split('.')[2],
+                dataSelector = 'result-' + layer.feature.properties.feature_id;
 
-    // '/dataset/' + results[i]['name'],
-    var feature_id = result.geojson.properties.feature_id,
-        html = '<li class="map-search-result result-' + feature_id + '" >';
-        html += '<div class="accordion" id="accordion-search">';
-        html += '<div class="accordion-group">';
-        html += '<div class="accordion-heading">';
-        html += '<table><tr><td>';
-        html += '<a class="accordion-toggle glyphicon icon-align-justify feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '></a></td>';
-        html += '<td>' + result.resources.name + '</td>';
-        html += '</tr></table></div>';
-        html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
-        html += '<p>' + result.title + '</p>';
-        html += '<p>' + result.resources.layer + '</p>';
-        html += '<p>' + result.resources.distributor + '</p>';
-        html += '<p>' + result.resources.description + '</p>';
-        html += '<p>' + result.geo + '</p>';
-        html += '<a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">';
-        html += 'WMS</a></div></div></div></li>';
-    $('#query-tab .results').append(html);
+            searchResult.hover(function () {
+                $(searchResult).addClass('result-highlight');
+                layer.setStyle({fillColor: 'yellow'});
+            }, function () {
+                $(searchResult).removeClass('result-highlight');
+                layer.setStyle(defaultStyle);
+            })
+        }}
+    )/*.addTo(ngds.Map.map)*/;
+    ngds.Map.layers.searchResultsGroup.addLayer(circles).addTo(ngds.Map.map);
 };
 
 ngds.Map.map.on('draw:created', function (e) {
@@ -159,5 +181,6 @@ drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);
 ngds.Map.map.addControl(ngds.Map.controls.doodle);
 ngds.Map.map.addControl(ngds.Map.controls.loading);
+ngds.Map.map.addControl(new ngds.Map.controls.search);
 
 }).call(this);
