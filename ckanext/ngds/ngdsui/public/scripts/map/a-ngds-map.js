@@ -63,7 +63,6 @@ ngds.Map.makeSearch = function (parameters) {
     })
 };
 
-
 ngds.Map.returnSearchResult = function (result) {
     var defaultStyle = {radius: 8, fillColor: '#ff0000', color: '#ff0000',
             weight: 2, opacity: 1, fillOpacity: 0.5};
