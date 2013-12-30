@@ -69,6 +69,7 @@ ngds.Map.topLevelSearch = function (bbox) {
         'q': searchQuery,
         'extras': extras
     })
+    $('#content-legend-menu').addClass('shown');
 };
 
 ngds.Map.makeSearch = function (parameters) {
@@ -81,25 +82,32 @@ ngds.Map.makeSearch = function (parameters) {
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         _.each(response.result.results, function (rec) {
-            _.each(rec.resources, function (single_resource) {
-                var randomNumber = Math.floor(Math.random()*1000000000000000000000),
-                    coords = JSON.parse(rec.extras[8].value),
-                    geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
-                        'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
-                    bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
-                    center = bounds.getCenter(),
-                    geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber},
-                        'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
-
-                reqData = {'title': rec.title, 'pkg_id': rec.id, 'resources': single_resource, 'geojson': geojson};
-                ngds.Map.returnSearchResult(reqData);
-            })
+            var randomNumber = Math.floor(Math.random()*1000000000000000000000),
+                coords = JSON.parse(rec.extras[8].value),
+                geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
+                    'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
+                bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
+                center = bounds.getCenter(),
+                geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber},
+                    'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
+                reqData = {'title': rec.title, 'name': rec.name, 'notes': rec.notes, 'pkg_id': rec.id,
+                    'resources': rec.resources, 'geojson': geojson};
+            ngds.Map.returnSearchResult(reqData);
         })
     })
 };
 
 ngds.Map.returnSearchResult = function (result) {
-    // '/dataset/' + results[i]['name'],
+    var resources = _.map(result.resources, function (data) {
+        if (data.format) {
+            html = '<p>' + data.format + '</p>';
+            return html;
+        } else if (data.protocol) {
+            html = '<p>' + data.protocol + '</p>';
+            return html;
+        }
+    }).join('');
+
     var feature_id = result.geojson.properties.feature_id,
         html = '<li class="map-search-result result-' + feature_id + '" >';
         html += '<div class="accordion" id="accordion-search">';
@@ -107,15 +115,10 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div class="accordion-heading">';
         html += '<table><tr><td>';
         html += '<a class="accordion-toggle glyphicon icon-align-justify feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '></a></td>';
-        html += '<td>' + result.resources.name + '</td>';
-        html += '</tr></table></div>';
+        html += '</td><td>' + result.title + '</td></tr></table></div>';
         html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
-        html += '<p>' + result.title + '</p>';
-        html += '<p>' + result.resources.layer + '</p>';
-        html += '<p>' + result.resources.distributor + '</p>';
-        html += '<p>' + result.resources.description + '</p>';
-        html += '<p>' + result.resources.protocol + '</p>';
-        html += '<p>' + result.resources.format + '</p>';
+        html += '<div class="resource-content"></div>';
+        html += resources;
         html += '<a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">';
         html += 'WMS</a></div></div></div></li>';
     $('#query-results').append(html);
