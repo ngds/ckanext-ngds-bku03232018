@@ -55,7 +55,7 @@ ngds.Map = {
                 .addListener(container, 'click', function () {
                     ngds.Map.map.setView([39.977, -97.46], 4);
                 });
-            $(container).append('<a class="glyphicon icon-globe" href="#" title="Reset extent"></a>')
+            $(container).append('<a class="glyphicon icon-home" href="#" title="Reset extent"></a>')
             return container;
         }})
     }
@@ -100,10 +100,35 @@ ngds.Map.makeSearch = function (parameters) {
 ngds.Map.returnSearchResult = function (result) {
     var resources = _.map(result.resources, function (data) {
         if (data.format) {
-            html = '<p>' + data.format + '</p>';
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<table><tr><td><span class="label label-success">' + data.format + '</span></td><td>';
+            html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-search-result" href=#collapse' + data.id + '>' + data.name + '</a></div>';
+            html += '</td></tr></table>';
+            html += '<div id=collapse' + data.id + ' class="accordion-body collapse">';
+            html += '<p>' + data.description + '</p>';
+            html += '</div></div></div>';
+            return html;
+        } else if (data.protocol === 'OGC:WMS') {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<table><tr><td><span class="label label-success">' + data.protocol + '</span></td><td>';
+            html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-search-result" href=#collapse' + data.id + '>' + data.layer + '</a></div>';
+            html += '</td></tr></table>';
+            html += '<div id=collapse' + data.id + ' class="accordion-body collapse">';
+            html += '<p>' + data.description + '</p>';
+            html += '<a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">WMS</a>';
+            html += '</div></div></div>';
             return html;
         } else if (data.protocol) {
-            html = '<p>' + data.protocol + '</p>';
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<table><tr><td><span class="label label-success">' + data.protocol + '</span></td><td>';
+            html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-search-result" href=#collapse' + data.id + '>' + data.layer + '</a></div>';
+            html += '</td></tr></table>';
+            html += '<div id=collapse' + data.id + ' class="accordion-body collapse">';
+            html += '<p>' + data.description + '</p>';
+            html += '</div></div></div>';
             return html;
         }
     }).join('');
@@ -117,10 +142,8 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<a class="accordion-toggle glyphicon icon-align-justify feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '></a></td>';
         html += '</td><td>' + result.title + '</td></tr></table></div>';
         html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
-        html += '<div class="resource-content"></div>';
-        html += resources;
-        html += '<a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">';
-        html += 'WMS</a></div></div></div></li>';
+        html += '<div class="resource-content">' + resources + '</div>';
+        html += '</div></div></div></li>';
     $('#query-results').append(html);
 
     var defaultStyle = {radius: 8, fillColor: '#ff0000', color: '#ff0000',

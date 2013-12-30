@@ -12439,15 +12439,36 @@ div.red-marker:after {
   overflow: auto;
 }
 .map-search-result {
-  background-color: #c0c0c0;
+  background-color: #f5f5f5;
+  border: 0px;
+  border-radius: 4px;
+}
+.map-search-result .accordion-heading {
+  font-size: 14px;
+}
+.map-search-result .accordion-body {
+  font-size: 12px;
+}
+.map-search-result .accordion-group {
+  border: 0px;
+  border-radius: 4px;
+}
+#accordion-search-result .accordion-group {
   border-radius: 4px;
 }
 .map-search-result .accordion-toggle {
   padding: 4px 4px;
   color: #000000;
 }
+.map-search-result .resource-content {
+  margin-left: 30px;
+  margin-right: 10px;
+}
+.map-search-result .resource-content :hover {
+  background-color: grey;
+}
 .result-highlight {
-  background-color: yellow;
+  background-color: lightgrey;
 }
 .ngds-custom-control {
   width: 26px;
@@ -12471,11 +12492,17 @@ div.red-marker:after {
 a.glyphicon.icon-search {
   color: black;
 }
-a.glyphicon.icon-globe {
+a.glyphicon.icon-home {
   color: black;
   font-size: 20px;
   width: initial;
   line-height: 26px;
+}
+.label.label-success {
+  background-color: #2F9621;
+}
+div.glyhicon.icon-globe {
+  font-size: 20px;
 }
 /* ___NGDS_HEADER_BEGIN___
 # 
