@@ -12440,21 +12440,14 @@ div.red-marker:after {
 }
 .map-search-result {
   background-color: #f5f5f5;
-  border: 0px;
   border-radius: 4px;
-}
-.map-search-result .accordion-heading {
-  font-size: 14px;
 }
 .map-search-result .accordion-body {
   font-size: 12px;
 }
 .map-search-result .accordion-group {
-  border: 0px;
   border-radius: 4px;
-}
-#accordion-search-result .accordion-group {
-  border-radius: 4px;
+  border: 0;
 }
 .map-search-result .accordion-toggle {
   padding: 4px 4px;
@@ -12464,8 +12457,10 @@ div.red-marker:after {
   margin-left: 30px;
   margin-right: 10px;
 }
-.map-search-result .resource-content :hover {
-  background-color: grey;
+#accordion-search-result .accordion-heading {
+  border-radius: 4px;
+  background-color: #c4c4c4;
+  margin-bottom: 10px;
 }
 .result-highlight {
   background-color: lightgrey;

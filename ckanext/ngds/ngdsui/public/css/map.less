@@ -735,12 +735,7 @@ div.red-marker:after {
 
 .map-search-result {
   background-color: #f5f5f5;
-  border: 0px;
   border-radius: 4px;
-}
-
-.map-search-result .accordion-heading {
-  font-size: 14px;
 }
 
 .map-search-result .accordion-body {
@@ -748,12 +743,8 @@ div.red-marker:after {
 }
 
 .map-search-result .accordion-group {
-  border: 0px;
   border-radius: 4px;
-}
-
-#accordion-search-result .accordion-group {
-  border-radius: 4px;
+  border: 0;
 }
 
 .map-search-result .accordion-toggle {
@@ -764,9 +755,12 @@ div.red-marker:after {
 .map-search-result .resource-content {
   margin-left: 30px;
   margin-right: 10px;
-  :hover {
-    background-color: grey;
-  }
+}
+
+#accordion-search-result .accordion-heading {
+  border-radius: 4px;
+  background-color: #c4c4c4;
+  margin-bottom: 10px;
 }
 
 .result-highlight {

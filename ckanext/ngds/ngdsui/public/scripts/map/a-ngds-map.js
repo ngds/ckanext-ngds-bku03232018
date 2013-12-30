@@ -62,7 +62,9 @@ ngds.Map = {
 };
 
 ngds.Map.topLevelSearch = function (bbox) {
-    $('#query-tab .results').empty();
+    var theseLayers = ngds.Map.layers.searchResultsGroup;
+    if (theseLayers.getLayers().length > 1) {theseLayers.clearLayers();}
+    $('#query-results').empty();
     var extras = bbox || {'ext:bbox': "-180,-90,180,90"},
         searchQuery = $('#map-search-query').val();
     ngds.Map.makeSearch({
@@ -117,8 +119,9 @@ ngds.Map.returnSearchResult = function (result) {
             html += '</td></tr></table>';
             html += '<div id=collapse' + data.id + ' class="accordion-body collapse">';
             html += '<p>' + data.description + '</p>';
-            html += '<a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">WMS</a>';
-            html += '</div></div></div>';
+            html += '<table><tr><td><div class="glyphicon icon-globe"</td>';
+            html += '<td><a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">WMS Layer</a></td>';
+            html += '</tr></table></div></div></div>';
             return html;
         } else if (data.protocol) {
             html = '<div class="accordion-group" id="accordion-search-result">';
@@ -138,9 +141,9 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div class="accordion" id="accordion-search">';
         html += '<div class="accordion-group">';
         html += '<div class="accordion-heading">';
-        html += '<table><tr><td>';
-        html += '<a class="accordion-toggle glyphicon icon-align-justify feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '></a></td>';
-        html += '</td><td>' + result.title + '</td></tr></table></div>';
+        html += '<table><tr><td><span class="glyphicon icon-plus-sign"></span></td><td>';
+        html += '<a class="accordion-toggle feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '>' + result.title + '</a></td>';
+        html += '</td></tr></table></div>';
         html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
         html += '<div class="resource-content">' + resources + '</div>';
         html += '</div></div></div></li>';
