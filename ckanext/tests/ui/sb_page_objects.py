@@ -22,14 +22,16 @@ class sbpageobjects(sddriverlayer):
     Common base class for running Selenium tests with a library of methods to use 
     See also sb_driver_layer
     '''
-    
+        
     def SB_setup_webdriver(self):
+        ''' basic web driver initialization call '''
         self.base_url = "http://node.usgin.org"
         self.central_url = "http://central.usgin.org"
         self.SD_setup_webdriver()
 
         
     def SB_stop_webdriver(self):
+        ''' stop the web driver '''
         self.SD_stop_webdriver()
         
         
@@ -39,9 +41,11 @@ class sbpageobjects(sddriverlayer):
         self.SD_select_main_menu()
         
     def SB_goto_central(self):
+        ''' Go to the central web site for NGDS '''
         self.SD_goto_central()
         
     def SB_zoom_in(self):
+        ''' Zoom in to the map closer '''
         self.SD_zoom_in()
         
     def SB_select_about_page(self):
@@ -60,6 +64,7 @@ class sbpageobjects(sddriverlayer):
         self.SD_select_single_file_upload()
         
     def SB_click_preview_button(self):
+        ''' Assumes the preview button is visible and clicks it '''
         self.SD_click_preview_button()
         
     def SB_file_upload_enter_title(self, mytitle):

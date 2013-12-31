@@ -28,19 +28,26 @@ class sddriverlayer(unittest.TestCase):
     '''
     
     def SD_setup_webdriver(self):
+        ''' Initialize the Selenium web driver as the firefox driver '''
         self.driver = webdriver.Firefox()
+        ''' Set how long to wait when trying to locate an element '''
         self.driver.implicitly_wait(30)
+        ''' Set the url locations for the central and node under test '''
         self.base_url = "http://node.usgin.org"
         self.central_url = "http://central.usgin.org"
+        ''' All errors will be put into this array '''
         self.verificationErrors = []
+        ''' Maximize the window to be sure all is displayed '''
         self.SD_maximize_window()
         self.accept_next_alert = True
         self.driver.get(self.base_url)
 
     def SD_stop_webdriver(self):
+        ''' Stop the selenium web driver '''
         self.driver.quit()
         
     def SD_goto_central(self):
+        ''' Navigate the browser to the central url '''
         self.driver.get(self.central_url)
         
     def SD_maximize_window(self) :
@@ -48,13 +55,16 @@ class sddriverlayer(unittest.TestCase):
         self.driver.maximize_window()
         
     def SD_select_link_text(self, linkName):
+        ''' Select the link text with this name '''
         self.driver.find_element_by_link_text(linkName).click()
         
     def SD_select_main_menu(self):
+        ''' Select the main menu '''
         self.driver.find_element_by_css_selector("span.main-menu-text").click()
                
         
     def SD_select_contribute_page(self):
+        ''' Select the contribute page '''
         self.driver.get(self.base_url + "/ngds/contribute")
         
     def SD_select_single_file_upload(self):
