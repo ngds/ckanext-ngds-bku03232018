@@ -3,5 +3,5 @@ gsconfig
 iso8601
 gdal
 flask
-owslib==0.7.2
+owslib==0.8.2
 configobj
