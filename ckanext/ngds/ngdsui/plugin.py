@@ -89,7 +89,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
         if "usgin_url" in config:
             contentmodels.usgin_url = config["usgin_url"]
         else:
-            contentmodels.usgin_url = "http://schemas.usgin.org/contentmodels.json"
+            contentmodels.usgin_url = "http://localhost:8000/newcontentmodels.json"#"http://schemas.usgin.org/contentmodels.json"
             # Access the URL and fill the cache
         print "Caching Content Models from USGIN: " + contentmodels.usgin_url
         contentmodel_action.contentmodel_refreshCache(None, None)

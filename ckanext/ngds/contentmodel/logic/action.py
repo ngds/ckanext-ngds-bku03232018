@@ -48,7 +48,7 @@ def contentmodel_refreshCache(context, data_dict):
     '''
 
     if ckanext.ngds.contentmodel.model.contentmodels.usgin_url is None:
-        ckanext.ngds.contentmodel.model.contentmodels.usgin_url = "http://schemas.usgin.org/contentmodels.json"
+        ckanext.ngds.contentmodel.model.contentmodels.usgin_url = "http://localhost:8000/newcontentmodels.json"
     remotefile = urllib2.urlopen(ckanext.ngds.contentmodel.model.contentmodels.usgin_url)
     CONTENTMODELS = simplejson.load(remotefile)
     ckanext.ngds.contentmodel.model.contentmodels.contentmodels = CONTENTMODELS
