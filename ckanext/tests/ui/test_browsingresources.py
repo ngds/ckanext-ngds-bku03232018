@@ -17,7 +17,6 @@ ___NGDS_HEADER_END___ '''
 from sb_page_objects import sbpageobjects
 import unittest, time
 
-
 class TestBrowsingResources(sbpageobjects):
     
     def setUp(self):

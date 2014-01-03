@@ -36,7 +36,7 @@ selected
 
 {% block basic_fields_data %}
 <div class="controls"
-{% if allow_upload %} data-module="resource-upload-field"{% endif %}>
+{% if allow_upload %} junk="junky" data-module="resource-upload-field"{% endif %}>
 {#
 This block uses a slightly odd pattern. Unlike the rest of the radio
 buttons which are wrapped _inside_ the labels here we place the label
@@ -132,11 +132,11 @@ of the radio using css. eg. input[type=radio]+label {}
 
     {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete',
     'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
-    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'),
+    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('Eg. John Doe'),
     value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
     {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source':
     '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
-    {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('eg. CSV, XML or JSON'),
+    {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('Eg. CSV, XML or JSON'),
     value=data.format, error=errors.format, classes=['control-medium'], attrs=format_attrs) %}
     {% endcall %}
 
@@ -148,17 +148,27 @@ of the radio using css. eg. input[type=radio]+label {}
 
     {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source':
     '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
-    {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('eg. CSV, XML or JSON'),
+    {% call form.input('format', id='field-format', label=_('Format'), placeholder=_('Eg. CSV, XML or JSON'),
     value=data.format, error=errors.format, classes=['control-medium'], attrs=format_attrs) %}
     {% endcall %}
 
-    {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':'Ex: John
+    {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':'Eg. John
     Doe','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source':
     'responsible_parties?q=?'} %}
-    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'),
+    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('Eg. John Doe'),
     value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
     {% elif resource and resource.resource_format == 'offline-resource' %}
+
+    {% if data.distributor %}
+    {% set distributor = h.parseJSON(data.distributor) %}
+    {% endif %}
+
+    {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':'Eg. John
+    Doe','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source':
+    'responsible_parties?q=?'} %}
+    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('Eg. John Doe'),
+    value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
     {{ form.markdown('ordering_procedure', id='field-ordering-procedure', label=_('Ordering Procedure'),
     placeholder=_('Indicate how a person can go about obtaining this resource.'), value=data.ordering_procedure,
@@ -168,7 +178,7 @@ of the radio using css. eg. input[type=radio]+label {}
 
     {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete',
     'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
-    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('eg. John Doe'),
+    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('Eg. John Doe'),
     value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
     {% if "protocol" in errors %}

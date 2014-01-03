@@ -247,6 +247,9 @@ $(document).ready(function () {
         });
         $("[name=content_model_version]").select2();
 
+        if (resource_type===undefined) {
+            $(".resource-upload-field").css("display", "none");
+        }
         ngds.setup_responsible_party();
 
     };
@@ -260,22 +263,27 @@ $(document).ready(function () {
             ngds.load_content_model_widget("structured");
             ckan.module.initializeElement($("#field-distributor")[0]);
             ckan.module.initializeElement($("#field-format")[0]);
+            $(".resource-upload-field").css("display", "inline-block");
         }
 
         if (resource_type === 'unstructured') {
             $(".additional-resource-fields").replaceWith(ngds.forms.unstructured_form.form);
             ckan.module.initializeElement($("#field-distributor")[0]);
             ckan.module.initializeElement($("#field-format")[0]);
+            $(".resource-upload-field").css("display", "inline-block");
         }
 
         if (resource_type === 'offline-resource') {
             $(".additional-resource-fields").replaceWith(ngds.forms.offline_form.form);
+            ckan.module.initializeElement($("#field-distributor")[0]);
+            $(".resource-upload-field").css("display", "none");
         }
 
         if (resource_type === 'data-service') {
             $(".additional-resource-fields").replaceWith(ngds.forms.data_service_form.form);
             ckan.module.initializeElement($("#field-distributor")[0]);
             ckan.module.initializeElement($("#field-protocol")[0]);
+            $(".resource-upload-field").css("display", "none");
         }
 
         ngds.setup_responsible_party();
@@ -805,6 +813,36 @@ var offline_form_raw = {
                 'class': 'control-group control-full'
             },
             'children': [
+                    {
+                        'tag': 'label',
+                        'attributes': {
+                            'class': 'control-label',
+                            'for': 'field-distributor',
+                            'text': 'Distributor'
+                        }
+                    },
+                    {
+                        'tag': 'div',
+                        'attributes': {
+                            'class': 'controls'
+                        },
+                        'children': [
+                            {
+                                'tag': 'input',
+                                'attributes': {
+                                    'id': 'field-distributor',
+                                    'type': 'text',
+                                    'name': 'distributor',
+                                    'placeholder': 'Ex: ' +
+                                        'John Doe',
+                                    'data-module-label': "name",
+                                    'data-module': "autocomplete",
+                                    'data-module-source': "responsible_parties?q=?",
+                                    'data-module-key': "value"
+                                }
+                            }
+                        ]
+                },
                 {
                     'tag': 'label',
                     'attributes': {
