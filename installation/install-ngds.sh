@@ -235,7 +235,7 @@ function run_or_die() {
         LOGFILE="/dev/null"
     }
     fi
-    echo "$this_script: running '$*'" | tee -a $LOGFILE
+    echo -n "$this_script: running '$*': " | tee -a $LOGFILE
     # Execute the command and redirect both stdout and stderr to the LOGFILE
     $* &>>$LOGFILE
     # Using tee here causes $? to get the return value of tee, not that of
@@ -243,12 +243,12 @@ function run_or_die() {
 #    $* 2>>$LOGFILE #| tee -a $LOGFILE
     local ret=$?
     if [ $ret -ne 0 ]; then {
-        echo "$this_script: '$*' failed." | tee -a $LOGFILE 
+        echo "failed." | tee -a $LOGFILE 
         echo "$this_script: See the log file '$LOGFILE' to fix the issue and try again."
         exit $ret
     }
     else {
-        echo "$this_script: '$*' succeeded." | tee -a $LOGFILE
+        echo "succeeded." | tee -a $LOGFILE
         return
     }
     fi
@@ -297,6 +297,9 @@ function install_ckan() {
     # Step 2b
     # TODO
     # Make sure this git URL is correct.
+    # Note to developers: The current method of tracking CKAN is to bind NGDS           
+    # to a specific versioned GitHub URL of CKAN (as opposed to forking it.)            
+    # See https://github.com/ngds/ckanext-ngds/issues/107  
     run_or_die $PYENV_DIR/bin/pip install -e 'git+https://github.com/okfn/ckan.git@ckan-2.0.1#egg=ckan'
     #
     # Step 2c
@@ -304,7 +307,7 @@ function install_ckan() {
     # Before running this step, make sure pip-requirements.txt contains the full
     # set of requirements needed by NGDS.
     run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckan/pip-requirements.txt
-    run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckan/pip-requirements-test.txt
+    #run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckan/pip-requirements-test.txt
     deactivate
     . $PYENV_DIR/bin/activate
     
@@ -322,9 +325,9 @@ function install_ckan() {
     #
     #
     # Step 4: Create a CKAN config file
-    pushd $APPS_SRC/ckan
+    pushd $APPS_SRC/ckan > /dev/null
     run_or_die $PYENV_DIR/bin/paster make-config ckan $CKAN_ETC/default/development.ini
-    popd
+    popd > /dev/null
     #
     # Generate an awk script to modify the development.ini
     #echo "/^sqlalchemy\.url/ { sub(/sqlalchemy\.url = postgresql:\/\/[^:]+:[^@]+@localhost\/.+$/, \"sqlalchemy.url = postgresql://$pg_id_for_ckan:$pg_pw_for_ckan@localhost/$pg_db_for_ckan\") }; { print }" > $TEMPDIR/modify-development-ini.awk
@@ -357,10 +360,11 @@ function install_ckan() {
     # TODO
     # fill this in when on-line again
     #
+
     # Step 6: Create database tables
-    pushd $APPS_SRC/ckan
+    pushd $APPS_SRC/ckan > /dev/null
     run_or_die $PYENV_DIR/bin/paster db init -c $CKAN_ETC/default/development.ini
-    popd
+    popd > /dev/null
 
     #
     #
@@ -379,9 +383,9 @@ function install_ckan() {
     #
     # Step 9: Run CKAN in the development web server
     # Run the dev server (without Apache httpd)
-    pushd $APPS_SRC/ckan
+    #pushd $APPS_SRC/ckan > /dev/null
     #run_or_die $PYENV_DIR/bin/paster serve $CKAN_ETC/default/development.ini
-    popd
+    #popd > /dev/null
 
     #
     #
@@ -412,9 +416,9 @@ function install_datastore() {
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -k ckan.datastore.read_url -v "postgresql://$pg_id_datastore:$pg_pw_datastore@localhost/$pg_db_for_datastore"    
 
     #Set Permissions
-    pushd $APPS_SRC/ckan
+    pushd $APPS_SRC/ckan > /dev/null
     run_or_die $PYENV_DIR/bin/paster datastore set-permissions postgres -c $CKAN_ETC/default/development.ini
-    popd
+    popd > /dev/null
 
     #Setup Filestore
     run_or_die sudo mkdir -p $FILESTORE_DIRECTORY
@@ -465,19 +469,21 @@ function install_postgis() {
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f $TEMPDIR/grants_on_template_postgis.sql
 
     # Download libxml and setup.
-    wget ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz -O $TEMPDIR/libxml.tar.gz
-    pushd $TEMPDIR
-    run_or_die tar zxvf libxml.tar.gz
-    pushd libxml2-2.9.0
+    # run_or_die apt-get -y install make
+    run_or_die apt-get -y install build-essential
+    run_or_die wget -nv ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz -O $TEMPDIR/libxml.tar.gz
+    pushd $TEMPDIR > /dev/null
+    run_or_die tar zxf libxml.tar.gz
+    pushd libxml2-2.9.0 > /dev/null
     libxmlso_file_loc=$(find /usr -name "libxml2.so" | head -1)
     libxmlso_path=${libxmlso_file_loc%/*}
     echo "libxml path : $libxmlso_path"
     run_or_die ./configure --libdir=$libxmlso_path
     echo $libxmlso_path
-    run_or_die make
+    run_or_die sudo make
     run_or_die sudo make install
-    popd
-    popd        
+    popd > /dev/null
+    popd > /dev/null
 
     run_or_die xmllint --version
 
@@ -540,11 +546,11 @@ function install_gdal() {
 
     run_or_die $PYENV_DIR/bin/pip install --no-install GDAL
 
-    pushd $PYENV_DIR/build/GDAL
+    pushd $PYENV_DIR/build/GDAL > /dev/null
     $PYENV_DIR/bin/python  setup.py build_ext --include-dirs=/usr/include/gdal/
 
     run_or_die $PYENV_DIR/bin/pip install --no-download GDAL
-    popd
+    popd > /dev/null
 }
 
 
@@ -687,23 +693,23 @@ EOF
 
 function get_tomcat() {
     wget http://apache.openmirror.de/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz -P $TEMPDIR
-    pushd $TEMPDIR
+    pushd $TEMPDIR > /dev/null
     #pushd /home/ngds/install/download/
     tar -xvf apache-tomcat-7.0.42.tar.gz
     sudo mv apache-tomcat-7.0.42/ $CATALINA_HOME/
-    popd
+    popd > /dev/null
 }
 
 function get_solr() {
     wget http://www.apache.org/dist/lucene/solr/4.4.0/solr-4.4.0.tgz -P $TEMPDIR
-    pushd $TEMPDIR
+    pushd $TEMPDIR > /dev/null
     tar -xzvf solr-4.4.0.tgz
     mkdir -p $SOLR_LIB/example/
-    pushd solr-4.4.0/example
+    pushd solr-4.4.0/example > /dev/null
     cp -r solr $SOLR_LIB/example/
     cp lib/ext/*.jar $CATALINA_HOME/lib/
-    popd
-    popd    
+    popd > /dev/null
+    popd > /dev/null
 
     cp $TEMPDIR/solr-4.4.0/dist/solr-4.4.0.war $SOLR_LIB/example/solr/solr.war 
 }
@@ -778,15 +784,15 @@ function setup_geoserver() {
 
     run_or_die wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip -P $TEMPDIR
     #run_or_die cp /home/ngds/Downloads/geoserver-2.4.0-war.zip $TEMPDIR
-    pushd $TEMPDIR
+    pushd $TEMPDIR > /dev/null
     run_or_die unzip geoserver-2.4.0-war.zip -d geoserver
-    pushd geoserver
+    pushd geoserver > /dev/null
 
     cp geoserver.war $GEOSERVER_CATALINA_BASE/webapps
 
     run_or_die unzip geoserver.war "data/*" -d $GEOSERVER_LIB
-    popd
-    popd    
+    popd > /dev/null
+    popd > /dev/null
 
     run_or_die create_geoserver_script
 }
@@ -849,7 +855,7 @@ function run() {
     install_ckan
 
     # This is for updating server configuration file (developement.ini)
-    run_or_die $PYENV_DIR/bin/pip install configobj
+    #run_or_die $PYENV_DIR/bin/pip install configobj
 
     install_datastore
 
@@ -914,8 +920,11 @@ while getopts ":hf:g" opt; do
 done
 
 # Prepare the log file
+# Absolute path to this script
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
 timestamp=`date +%F_%H-%M`
-LOGFILE="log_install-ngds-$timestamp.log"
+LOGFILE="$SCRIPTPATH/log_install-ngds-$timestamp.log"
 echo "Writing log into file '$LOGFILE'"
 echo "Log file generated by $this_script on $timestamp" > $LOGFILE
 # TODO
