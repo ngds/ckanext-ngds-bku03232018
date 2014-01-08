@@ -15,51 +15,37 @@ ___NGDS_HEADER_END___ #}
 
 {% extends "page_ngds.html" %}
 {% set active_page = "map" %}
-<style>
-    .select2-container {
-        margin-right: 15px;
-        padding-left: 0px;
-        vertical-align: bottom;
-    }
-</style>
+
 {%- block content %}
 
-<div style="position:absolute; ">
-    <div class="map-search dialog-small-map">
-        <form class="simple-input" action="javascript:ngds.Map.top_level_search()">
-            <fieldset>
-                <div class="field">
-                    {% if c.query %}
-                    <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"
-                           value="{{ c.query }}"/>
-                    {% else %}
-                    <input id="map-query" type="text" placeholder="E.g. Active Faults near Arizona"/>
-                    {% endif %}
-                    <button id="map-search" type="button" value="GO" class="btn-search"></button>
-                </div>
-            </fieldset>
-        </form>
-        <div class="map-search-results">
-            <!--<div id="results" class="results visibility-managed">-->
-
-            <!--</div>-->
-            <div class="search-results-pagination visibility-managed">
-                <div class="search-results-page-nums"></div>
+<div class="geographic-search-container">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="#">NGDS Geographic Search</a>
+                <ul class="nav pull-right">
+                    <form class="navbar-search" action="javascript:ngds.Map.topLevelSearch()">
+                        <span>Search: </span>
+                        <input type="text" id="map-search-query" class="search-query span3"
+                               placeholder="Active faults near Arizona">
+                    </form>
+                </ul>
             </div>
-            <div class="map-expander">
-
-            </div>
-
         </div>
     </div>
+    <div id="outer-map-container">
+        <div id="map-container"></div>
+        <div id="content-legend-menu">
+            <a id="content-menu-triangle" class="hide-legend" href="javascript:void(0)" onclick="ngds.Map.toggleContentMenu()">
+                <div id="line-triangle" class="left-triangle"></div>
+            </a>
+            <div id="query-results">
 
-
+            </div>
+        </div>
+    </div>
 </div>
-<div id="map-container" style=""></div>
-<!-- <div id="temporary-wms-div" style="position:absolute; bottom:0px; left:0px; background-color:#dadada; width:310px;">
-	<label for="wms" style="font-family:arial; font-size:12px;">Temporary WMS viewer</label>
-	<input name="wms" type="text" id="wms" style="width:150px;">
-</div> -->
+
 {% endblock %}
 {% block styles %}
 {{ super() }}
@@ -67,8 +53,8 @@ ___NGDS_HEADER_END___ #}
       href="/fanstatic/vendor/:version:2013-05-30T10:31:49.79/select2/select2.min.css"/>
 {% block jquery_no_conflict %}
 {% endblock %}
-<link rel="stylesheet" href="/vendor/leaflet0.6.2/leaflet.css"/>
-<link rel="stylesheet" type="text/css" href="/vendor/leaflet-draw/leaflet.draw.css"/>
+<link rel="stylesheet" href="/vendor/leaflet0.8/dist/leaflet.css"/>
+<link rel="stylesheet" type="text/css" href="/vendor/leaflet-draw/dist/leaflet.draw.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/iconlabel/leaflet.iconlabel.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/jscrollpane/jquery.jscrollpane.css"/>
 <link rel="stylesheet" type="text/css" href="/vendor/Leaflet.Label/leaflet.label.css"/>
@@ -76,9 +62,9 @@ ___NGDS_HEADER_END___ #}
 
 {% endblock %}
 {% block scripts %}
-<script src="/vendor/leaflet0.6.2/leaflet.js"></script>
-<script type="application/javascript" src="/vendor/leaflet-draw/leaflet.draw.js"></script>
-        <script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
+<script src="/vendor/leaflet0.8/dist/leaflet.js"></script>
+<script type="application/javascript" src="/vendor/leaflet-draw/dist/leaflet.draw.js"></script>
+<script type="text/javascript" src="/vendor/TinyScrollbar/tinyscrollbar.js"></script>
 <script type="text/javascript" src="/vendor/zoomfs/leaflet.zoomfs.js"></script>
 <script type="text/javascript" src="/vendor/iconlabel/leaflet.iconlabel.js"></script>
 <script type="text/javascript" src="/scripts/map/L.TileLayer.EsriImageExports-min.js"></script>
@@ -92,36 +78,24 @@ ___NGDS_HEADER_END___ #}
 <script type="text/javascript" src="/vendor/Leaflet.Label/leaflet.label.js"></script>
 <script type="text/javascript" src="/vendor/Leaflet.Loading/Control.Loading.min.js"></script>
 
-{% if h.is_development() %}
 
 
+<script type="text/javascript" src="/scripts/map/L.TileLayer.EsriImageExports.min.js"></script>
+<script type="text/javascript" src="/scripts/map/L.Draw.Clear.min.js"></script>
+<script type="text/javascript" src="/scripts/map/L.FullScreen.min.js"></script>
 
-<script type="text/javascript" src="/scripts/map/L.Draw.Clear.js"></script>
-<script type="text/javascript" src="/scripts/map/L.FullScreen.js"></script>
-<script type="text/javascript" src="/scripts/map/ngds_zoom.js"></script>
-<script type="text/javascript" src="/scripts/map/ngds_map.js"></script>
-<script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
-<script type="text/javascript" src="/scripts/map/pager.js"></script>
-<script type="text/javascript" src="/scripts/map/main.js"></script>
+<!-- dev files -->
+<script type="text/javascript" src="/scripts/map/a-ngds-map.js"></script>
+<script type="text/javascript" src="/scripts/map/a-bounding-box.js"></script>
+<script type="text/javascript" src="/scripts/map/a-pager.js"></script>
+<script type="text/javascript" src="/scripts/map/a-main.js"></script>
+
 <script type="text/javascript" src="/scripts/ckanlib/CKANDataset.js"></script>
 <script type="text/javascript" src="/scripts/ckanlib/ckanlib.js"></script>
 <script type="text/javascript" src="/scripts/ckanlib/search_result.js"></script>
-<script type="text/javascript" src="/scripts/map/ZoomHandler.js"></script>
-<script type="text/javascript" src="/scripts/map/result_parser.js"></script>
-<script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
-    <script>
-        function processFeatureInfo(data) {
-            console.log(data);
-        };
+<!-- end dev files -->
 
-    </script>
-
-{% else %}
-
-<script type="text/javascript" src="/scripts/map/L.TileLayer.EsriImageExports.min.js"></script>
-
-<script type="text/javascript" src="/scripts/map/L.Draw.Clear.min.js"></script>
-<script type="text/javascript" src="/scripts/map/L.FullScreen.min.js"></script>
+<!--
 <script type="text/javascript" src="/scripts/map/ngds_zoom.min.js"></script>
 <script type="text/javascript" src="/scripts/map/ngds_map.min.js"></script>
 <script type="text/javascript" src="/scripts/map/bounding_box.min.js"></script>
@@ -130,11 +104,11 @@ ___NGDS_HEADER_END___ #}
 <script type="text/javascript" src="/scripts/ckanlib/CKANDataset.min.js"></script>
 <script type="text/javascript" src="/scripts/ckanlib/ckanlib.min.js"></script>
 <script type="text/javascript" src="/scripts/ckanlib/search_result.min.js"></script>
+-->
+
 <script type="text/javascript" src="/scripts/map/ZoomHandler.min.js"></script>
 <script type="text/javascript" src="/scripts/map/result_parser.min.js"></script>
 <script type="text/javascript" src="/scripts/notifications/handlers.min.js"></script>
-
-{% endif %}
 
 <script type="text/javascript"
         src="/fanstatic/vendor/:version:2013-05-30T10:31:49.79/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js"></script>
