@@ -22,6 +22,15 @@
 #   * commands that are logged have both their stdout and stderr
 #     written to $LOGFILE via redirection ('&>>$LOGFILE')
 
+
+# RECOMMENDATIONS FOR VARIABLES THAT SHOULD BE EXTERNALIZED
+# APPS
+# CATALINA_HOME
+# GIT_UNAME?
+# GIT_PASSWD?
+# SOLR_HOME
+
+
 this_script=`basename $0`
 MYUSERID=ngds
 
@@ -33,8 +42,9 @@ MYUSERID=ngds
 # tools specific to any given component that is being installed.)
 function install_prereqs(){
     run_or_die sudo apt-get --assume-yes --quiet update
-    run_or_die apt-get --assume-yes --quiet install build-essential
+#    run_or_die apt-get --assume-yes --quiet install build-essential
     run_or_die apt-get --assume-yes --quiet install unzip
+    run_or_die apt-get --assume-yes --quiet install openjdk-6-jdk
 }
 
 # configure_properties
@@ -126,6 +136,8 @@ function setup_env() {
     FILESTORE_DIRECTORY=$CKAN_LIB/filestore
 
     SOLR_CATALINA_BASE=$APPS_ETC/tomcat/solr
+    SOLR_HOME=$APPS/solr
+
     GEOSERVER_CATALINA_BASE=$APPS_ETC/tomcat/geoserver
 
     SOLR_LIB=$APPS_LIB/solr
@@ -706,50 +718,62 @@ function get_tomcat() {
     pushd $TEMPDIR > /dev/null
     #pushd /home/ngds/install/download/
     tar -zxf apache-tomcat-7.0.42.tar.gz
-    sudo mv apache-tomcat-7.0.42/ $CATALINA_HOME/
+    mv apache-tomcat-7.0.42/ $CATALINA_HOME/
     popd > /dev/null
 }
 
 function get_solr() {
-    run_or_die wget --no-verbose http://www.apache.org/dist/lucene/solr/4.4.0/solr-4.4.0.tgz --directory-prefix $TEMPDIR
+    run_or_die wget --no-verbose http://archive.apache.org/dist/lucene/solr/4.6.0/solr-4.6.0.tgz --directory-prefix $TEMPDIR
     pushd $TEMPDIR > /dev/null
-    tar -zxf solr-4.4.0.tgz
-    mkdir -p $SOLR_LIB/example/
-    pushd solr-4.4.0/example > /dev/null
-    cp -r solr $SOLR_LIB/example/
+    tar -zxf solr-4.6.0.tgz
+    #mkdir -p $SOLR_LIB/example/
+    pushd solr-4.6.0/example > /dev/null
+    cp -r solr/* $SOLR_HOME #$SOLR_LIB/example/
+    mv $SOLR_HOME/solr.xml $SOLR_HOME/solr.xml.bak
     cp lib/ext/*.jar $CATALINA_HOME/lib/
     popd > /dev/null
     popd > /dev/null
 
-    cp $TEMPDIR/solr-4.4.0/dist/solr-4.4.0.war $SOLR_LIB/example/solr/solr.war 
+    cp $TEMPDIR/solr-4.6.0/dist/solr-4.6.0.war $SOLR_HOME/solr.war 
 }
 
 function setup_solr() {
+    #Download Solr and extract its contents
+    get_solr
 
-mkdir $SOLR_CATALINA_BASE/conf $SOLR_CATALINA_BASE/logs $SOLR_CATALINA_BASE/temp $SOLR_CATALINA_BASE/webapps $SOLR_CATALINA_BASE/work
-cp $CATALINA_HOME/conf/server.xml $SOLR_CATALINA_BASE/conf/server.xml.TEMPLATE
-cat $SOLR_CATALINA_BASE/conf/server.xml.TEMPLATE | \
-    sed "s|Server port=\"8005\"|Server port=\"8015\"|" | \
-    sed "s|Connector port=\"8080\"|Connector port=\"8983\"|" > $SOLR_CATALINA_BASE/conf/server.xml
+    #mkdir $SOLR_CATALINA_BASE/conf $SOLR_CATALINA_BASE/logs $SOLR_CATALINA_BASE/temp $SOLR_CATALINA_BASE/webapps $SOLR_CATALINA_BASE/work
 
-rm $SOLR_CATALINA_BASE/conf/server.xml.TEMPLATE
+    # We suppress this for now to have all Tomcat webapps run on 8080, distinguished by webapp name rather than port.
+    #cp $CATALINA_HOME/conf/server.xml $SOLR_HOME/conf/server.xml.TEMPLATE
+    #cat $SOLR_CATALINA_BASE/conf/server.xml.TEMPLATE | \
+    #    sed "s|Server port=\"8005\"|Server port=\"8015\"|" | \
+    #    sed "s|Connector port=\"8080\"|Connector port=\"8983\"|" > $#$SOLR_CATALINA_BASE/conf/server.xml
 
-cp $CATALINA_HOME/conf/web.xml $SOLR_CATALINA_BASE/conf
+    #rm $SOLR_HOME/conf/server.xml.TEMPLATE
 
-#Download SOlr and extract its contents
-get_solr
+    # Why is this necessary?
+    #cp $CATALINA_HOME/conf/web.xml $SOLR_HOME/conf
 
-mkdir $SOLR_CATALINA_BASE/conf/Catalina
-chmod 755 -R $SOLR_CATALINA_BASE/conf/Catalina
-mkdir $SOLR_CATALINA_BASE/conf/Catalina/localhost
+    #mkdir $SOLR_CATALINA_BASE/conf/Catalina
+    #chmod 755 -R $SOLR_CATALINA_BASE/conf/Catalina
+    #mkdir $SOLR_CATALINA_BASE/conf/Catalina/localhost
+    cat > $CATALINA_BASE/conf/Catalina/localhost/solr.xml <<ENDSOLRXML
+<?xml version="1.0" encoding="utf-8"?>
 
-echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Context docBase=\"$SOLR_LIB/example/solr/solr.war\" debug=\"0\" privileged=\"true\" allowLinking=\"true\" crossContext=\"true\">\n<Environment name=\"solr/home\" type=\"java.lang.String\" value=\"$SOLR_LIB/example/solr\" override=\"true\" />\n</Context>" | sudo tee -a $SOLR_CATALINA_BASE/conf/Catalina/localhost/solr.xml
-mv $SOLR_LIB/example/solr/collection1/conf/schema.xml $SOLR_LIB/example/solr/collection1/conf/schema.xml.bak
-cp $NGDS_SRC/installation/schema.xml $SOLR_LIB/example/solr/collection1/conf/schema.xml
+<Context docBase="$SOLR_HOME/solr.war" debug="0" crossContext="true">
+  <Environment name="solr/home" type="java.lang.String" value="$SOLR_HOME" override="true"/>
+</Context>
+ENDSOLRXML
 
+    #echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Context docBase=\"$SOLR_LIB/example/solr/solr.war\" debug=\"0\" privileged=\"true\" allowLinking=\"true\" crossContext=\"true\">\n<Environment name=\"solr/home\" type=\"java.lang.String\" value=\"$SOLR_LIB/example/solr\" override=\"true\" />\n</Context>" | sudo tee -a $SOLR_CATALINA_BASE/conf/Catalina/localhost/solr.xml
 
-create_solr_server_script
+    #mv $SOLR_LIB/example/solr/collection1/conf/schema.xml $SOLR_LIB/example/solr/collection1/conf/schema.xml.bak
+    mv $SOLR_HOME/collection1/conf/schema.xml $SOLR_HOME/collection1/conf/schema.xml.bak
 
+    #TODO: wget the installation/schema.xml from git directly to avoid having
+    # to install ckanext-ngds first.
+    cp $NGDS_SRC/installation/schema.xml $SOLR_HOME/collection1/conf/schema.xml
+    #create_solr_server_script
 }
 
 function create_solr_server_script() {
@@ -921,11 +945,7 @@ function run_tmp(){
 
 #    install_ckanext_importlib    
 
-#    setup_solr
-
 #    create_ngds_scripts
-
-#    install_ngds
 
 #    deploy_in_webserver
 
@@ -933,6 +953,10 @@ function run_tmp(){
     
     setup_geoserver
     
+    setup_solr
+
+#    install_ngds
+
 }
 
 # # Process command-line arguments
