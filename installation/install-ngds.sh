@@ -262,24 +262,24 @@ function install_ckan() {
     # Step 1: Install the required packages
     run_or_die apt-get -y update
     #run_or_die apt-get -y upgrade
-    run_or_die apt-get -y install python-dev
-    run_or_die apt-get -y install postgresql-9.1-postgis
-    run_or_die apt-get -y install libpq-dev
-    run_or_die apt-get -y install python-pip
-    run_or_die apt-get -y install python-virtualenv
-    run_or_die apt-get -y install git-core
+    run_or_die apt-get --assume-yes --quiet install python-dev
+    run_or_die apt-get --assume-yes --quiet install postgresql-9.1-postgis
+    run_or_die apt-get --assume-yes --quiet install libpq-dev
+    run_or_die apt-get --assume-yes --quiet install python-pip
+    run_or_die apt-get --assume-yes --quiet install python-virtualenv
+    run_or_die apt-get --assume-yes --quiet install git-core
     
     # TODO
     # Here we might want to get just the solr WAR file and install it into Tomcat
     # instead of having a whole other Java container running.
-    run_or_die apt-get -y install solr-jetty
+    run_or_die apt-get --assume-yes --quiet install solr-jetty
     # TODO
     # Here we might want to try using the Oracle JDK and even adding in the
     # native iamging extensions to improve map creation and handling.
     # TODO
     # What if Oracle's JDK is already installed? Will this install OpenJDK?
     # Should we be testing for that?
-    run_or_die apt-get -y install openjdk-6-jdk
+    run_or_die apt-get --assume-yes --quiet install openjdk-6-jdk
 
     # The following steps are taken directly from the CKAN 2.0.1 installation
     # instructions.
@@ -456,9 +456,9 @@ function install_datastorer() {
 
 function install_postgis() {
 
-    run_or_die apt-get -y install libxml2-dev
-    run_or_die apt-get -y install libxslt1-dev
-    run_or_die apt-get -y install libgeos-c1
+    run_or_die apt-get --assume-yes --quiet install libxml2-dev
+    run_or_die apt-get --assume-yes --quiet install libxslt1-dev
+    run_or_die apt-get --assume-yes --quiet install libgeos-c1
 
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
@@ -469,8 +469,8 @@ function install_postgis() {
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f $TEMPDIR/grants_on_template_postgis.sql
 
     # Download libxml and setup.
-    # run_or_die apt-get -y install make
-    run_or_die apt-get -y install build-essential
+    # run_or_die apt-get --assume-yes --quiet install make
+    run_or_die apt-get --assume-yes --quiet install build-essential
     run_or_die wget -nv ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz -O $TEMPDIR/libxml.tar.gz
     pushd $TEMPDIR > /dev/null
     run_or_die tar zxf libxml.tar.gz
@@ -493,7 +493,7 @@ function install_postgis() {
 
 function install_ckanext_harvest() {
 
-    run_or_die apt-get -y install rabbitmq-server
+    run_or_die apt-get --assume-yes --quiet install rabbitmq-server
 
     run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-harvest.git@release-v2.0#egg=ckanext-harvest
 
@@ -539,7 +539,7 @@ function install_ngds() {
 
 function install_gdal() {
     . $PYENV_DIR/bin/activate
-    run_or_die sudo apt-get -y install python-software-properties
+    run_or_die sudo apt-get --assume-yes --quiet install python-software-properties
     run_or_die sudo apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable
     run_or_die sudo apt-get update
     run_or_die sudo apt-get -y --force-yes install libgdal-dev gdal-bin
@@ -633,9 +633,9 @@ function deploy_in_webserver() {
     #run_or_die cp $CKAN_ETC/default/central.ini $CKAN_ETC/default/production.ini
     run_or_die cp $deployment_file $CKAN_ETC/default/production.ini
 
-    run_or_die apt-get -y install apache2 libapache2-mod-wsgi
+    run_or_die apt-get --assume-yes --quiet install apache2 libapache2-mod-wsgi
 
-    #run_or_die apt-get -y install postfix
+    #run_or_die apt-get --assume-yes --quiet install postfix
 
     WSGI_SCRIPT=$CKAN_ETC/default/apache.wsgi
 
@@ -780,7 +780,7 @@ function setup_geoserver() {
     cp $CATALINA_HOME/conf/server.xml $GEOSERVER_CATALINA_BASE/conf/server.xml
     cp $CATALINA_HOME/conf/web.xml $GEOSERVER_CATALINA_BASE/conf
 
-    run_or_die apt-get -y install unzip
+    run_or_die apt-get --assume-yes --quiet install unzip
 
     run_or_die wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip -P $TEMPDIR
     #run_or_die cp /home/ngds/Downloads/geoserver-2.4.0-war.zip $TEMPDIR
