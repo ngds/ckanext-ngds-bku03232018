@@ -22,11 +22,31 @@
 #   * commands that are logged have both their stdout and stderr
 #     written to $LOGFILE via redirection ('&>>$LOGFILE')
 
+
+# RECOMMENDATIONS FOR VARIABLES THAT SHOULD BE EXTERNALIZED
+# APPS
+# CATALINA_HOME
+# GIT_UNAME?
+# GIT_PASSWD?
+# SOLR_HOME
+
+
 this_script=`basename $0`
 MYUSERID=ngds
 
 
 #
+# install tools
+#
+# Install tools needed for this script to proceed (as opposed to
+# tools specific to any given component that is being installed.)
+function install_prereqs(){
+    run_or_die sudo apt-get --assume-yes --quiet update
+#    run_or_die apt-get --assume-yes --quiet install build-essential
+    run_or_die apt-get --assume-yes --quiet install unzip
+    run_or_die apt-get --assume-yes --quiet install openjdk-6-jdk
+}
+
 # configure_properties
 #
 # Update this section to load required properties or path for NGDS Installation.
@@ -36,10 +56,12 @@ MYUSERID=ngds
 function configure_properties() {
     
     #Path where application and data are installed.
-    APPS=/opt/local
+    #APPS=/opt/local
+    APPS=/opt/ngds
 
     #Tomcat Installation Path
-    CATALINA_HOME=/usr/share/tomcat
+    #CATALINA_HOME=/usr/share/tomcat
+    CATALINA_HOME=$APPS/tomcat
     
     #Github Account Details
     GIT_UNAME=
@@ -114,6 +136,8 @@ function setup_env() {
     FILESTORE_DIRECTORY=$CKAN_LIB/filestore
 
     SOLR_CATALINA_BASE=$APPS_ETC/tomcat/solr
+    SOLR_HOME=$APPS/solr
+
     GEOSERVER_CATALINA_BASE=$APPS_ETC/tomcat/geoserver
 
     SOLR_LIB=$APPS_LIB/solr
@@ -260,26 +284,25 @@ function run_or_die() {
 #
 function install_ckan() {
     # Step 1: Install the required packages
-    run_or_die apt-get -y update
     #run_or_die apt-get -y upgrade
-    run_or_die apt-get -y install python-dev
-    run_or_die apt-get -y install postgresql-9.1-postgis
-    run_or_die apt-get -y install libpq-dev
-    run_or_die apt-get -y install python-pip
-    run_or_die apt-get -y install python-virtualenv
-    run_or_die apt-get -y install git-core
+    run_or_die apt-get --assume-yes --quiet install python-dev
+    run_or_die apt-get --assume-yes --quiet install postgresql-9.1-postgis
+    run_or_die apt-get --assume-yes --quiet install libpq-dev
+    run_or_die apt-get --assume-yes --quiet install python-pip
+    run_or_die apt-get --assume-yes --quiet install python-virtualenv
+    run_or_die apt-get --assume-yes --quiet install git-core
     
     # TODO
     # Here we might want to get just the solr WAR file and install it into Tomcat
     # instead of having a whole other Java container running.
-    run_or_die apt-get -y install solr-jetty
+    run_or_die apt-get --assume-yes --quiet install solr-jetty
     # TODO
     # Here we might want to try using the Oracle JDK and even adding in the
     # native iamging extensions to improve map creation and handling.
     # TODO
     # What if Oracle's JDK is already installed? Will this install OpenJDK?
     # Should we be testing for that?
-    run_or_die apt-get -y install openjdk-6-jdk
+    run_or_die apt-get --assume-yes --quiet install openjdk-6-jdk
 
     # The following steps are taken directly from the CKAN 2.0.1 installation
     # instructions.
@@ -456,9 +479,9 @@ function install_datastorer() {
 
 function install_postgis() {
 
-    run_or_die apt-get -y install libxml2-dev
-    run_or_die apt-get -y install libxslt1-dev
-    run_or_die apt-get -y install libgeos-c1
+    run_or_die apt-get --assume-yes --quiet install libxml2-dev
+    run_or_die apt-get --assume-yes --quiet install libxslt1-dev
+    run_or_die apt-get --assume-yes --quiet install libgeos-c1
 
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
@@ -469,9 +492,8 @@ function install_postgis() {
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f $TEMPDIR/grants_on_template_postgis.sql
 
     # Download libxml and setup.
-    # run_or_die apt-get -y install make
-    run_or_die apt-get -y install build-essential
-    run_or_die wget -nv ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz -O $TEMPDIR/libxml.tar.gz
+    # run_or_die apt-get --assume-yes --quiet install make
+    run_or_die wget --no-verbose ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz --output-document $TEMPDIR/libxml.tar.gz
     pushd $TEMPDIR > /dev/null
     run_or_die tar zxf libxml.tar.gz
     pushd libxml2-2.9.0 > /dev/null
@@ -493,7 +515,7 @@ function install_postgis() {
 
 function install_ckanext_harvest() {
 
-    run_or_die apt-get -y install rabbitmq-server
+    run_or_die apt-get --assume-yes --quiet install rabbitmq-server
 
     run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-harvest.git@release-v2.0#egg=ckanext-harvest
 
@@ -539,7 +561,7 @@ function install_ngds() {
 
 function install_gdal() {
     . $PYENV_DIR/bin/activate
-    run_or_die sudo apt-get -y install python-software-properties
+    run_or_die sudo apt-get --assume-yes --quiet install python-software-properties
     run_or_die sudo apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable
     run_or_die sudo apt-get update
     run_or_die sudo apt-get -y --force-yes install libgdal-dev gdal-bin
@@ -633,9 +655,9 @@ function deploy_in_webserver() {
     #run_or_die cp $CKAN_ETC/default/central.ini $CKAN_ETC/default/production.ini
     run_or_die cp $deployment_file $CKAN_ETC/default/production.ini
 
-    run_or_die apt-get -y install apache2 libapache2-mod-wsgi
+    run_or_die apt-get --assume-yes --quiet install apache2 libapache2-mod-wsgi
 
-    #run_or_die apt-get -y install postfix
+    #run_or_die apt-get --assume-yes --quiet install postfix
 
     WSGI_SCRIPT=$CKAN_ETC/default/apache.wsgi
 
@@ -692,54 +714,66 @@ EOF
 }
 
 function get_tomcat() {
-    wget http://apache.openmirror.de/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz -P $TEMPDIR
+    run_or_die wget --no-verbose http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz --directory-prefix $TEMPDIR
     pushd $TEMPDIR > /dev/null
     #pushd /home/ngds/install/download/
-    tar -xvf apache-tomcat-7.0.42.tar.gz
-    sudo mv apache-tomcat-7.0.42/ $CATALINA_HOME/
+    tar -zxf apache-tomcat-7.0.42.tar.gz
+    mv apache-tomcat-7.0.42/ $CATALINA_HOME/
     popd > /dev/null
 }
 
 function get_solr() {
-    wget http://www.apache.org/dist/lucene/solr/4.4.0/solr-4.4.0.tgz -P $TEMPDIR
+    run_or_die wget --no-verbose http://archive.apache.org/dist/lucene/solr/4.6.0/solr-4.6.0.tgz --directory-prefix $TEMPDIR
     pushd $TEMPDIR > /dev/null
-    tar -xzvf solr-4.4.0.tgz
-    mkdir -p $SOLR_LIB/example/
-    pushd solr-4.4.0/example > /dev/null
-    cp -r solr $SOLR_LIB/example/
+    tar -zxf solr-4.6.0.tgz
+    #mkdir -p $SOLR_LIB/example/
+    pushd solr-4.6.0/example > /dev/null
+    cp -r solr/* $SOLR_HOME #$SOLR_LIB/example/
+    mv $SOLR_HOME/solr.xml $SOLR_HOME/solr.xml.bak
     cp lib/ext/*.jar $CATALINA_HOME/lib/
     popd > /dev/null
     popd > /dev/null
 
-    cp $TEMPDIR/solr-4.4.0/dist/solr-4.4.0.war $SOLR_LIB/example/solr/solr.war 
+    cp $TEMPDIR/solr-4.6.0/dist/solr-4.6.0.war $SOLR_HOME/solr.war 
 }
 
 function setup_solr() {
+    #Download Solr and extract its contents
+    get_solr
 
-mkdir $SOLR_CATALINA_BASE/conf $SOLR_CATALINA_BASE/logs $SOLR_CATALINA_BASE/temp $SOLR_CATALINA_BASE/webapps $SOLR_CATALINA_BASE/work
-cp $CATALINA_HOME/conf/server.xml $SOLR_CATALINA_BASE/conf/server.xml.TEMPLATE
-cat $SOLR_CATALINA_BASE/conf/server.xml.TEMPLATE | \
-    sed "s|Server port=\"8005\"|Server port=\"8015\"|" | \
-    sed "s|Connector port=\"8080\"|Connector port=\"8983\"|" > $SOLR_CATALINA_BASE/conf/server.xml
+    #mkdir $SOLR_CATALINA_BASE/conf $SOLR_CATALINA_BASE/logs $SOLR_CATALINA_BASE/temp $SOLR_CATALINA_BASE/webapps $SOLR_CATALINA_BASE/work
 
-rm $SOLR_CATALINA_BASE/conf/server.xml.TEMPLATE
+    # We suppress this for now to have all Tomcat webapps run on 8080, distinguished by webapp name rather than port.
+    #cp $CATALINA_HOME/conf/server.xml $SOLR_HOME/conf/server.xml.TEMPLATE
+    #cat $SOLR_CATALINA_BASE/conf/server.xml.TEMPLATE | \
+    #    sed "s|Server port=\"8005\"|Server port=\"8015\"|" | \
+    #    sed "s|Connector port=\"8080\"|Connector port=\"8983\"|" > $#$SOLR_CATALINA_BASE/conf/server.xml
 
-cp $CATALINA_HOME/conf/web.xml $SOLR_CATALINA_BASE/conf
+    #rm $SOLR_HOME/conf/server.xml.TEMPLATE
 
-#Download SOlr and extract its contents
-get_solr
+    # Why is this necessary?
+    #cp $CATALINA_HOME/conf/web.xml $SOLR_HOME/conf
 
-mkdir $SOLR_CATALINA_BASE/conf/Catalina
-chmod 755 -R $SOLR_CATALINA_BASE/conf/Catalina
-mkdir $SOLR_CATALINA_BASE/conf/Catalina/localhost
+    #mkdir $SOLR_CATALINA_BASE/conf/Catalina
+    #chmod 755 -R $SOLR_CATALINA_BASE/conf/Catalina
+    #mkdir $SOLR_CATALINA_BASE/conf/Catalina/localhost
+    cat > $CATALINA_BASE/conf/Catalina/localhost/solr.xml <<ENDSOLRXML
+<?xml version="1.0" encoding="utf-8"?>
 
-echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Context docBase=\"$SOLR_LIB/example/solr/solr.war\" debug=\"0\" privileged=\"true\" allowLinking=\"true\" crossContext=\"true\">\n<Environment name=\"solr/home\" type=\"java.lang.String\" value=\"$SOLR_LIB/example/solr\" override=\"true\" />\n</Context>" | sudo tee -a $SOLR_CATALINA_BASE/conf/Catalina/localhost/solr.xml
-mv $SOLR_LIB/example/solr/collection1/conf/schema.xml $SOLR_LIB/example/solr/collection1/conf/schema.xml.bak
-cp $NGDS_SRC/installation/schema.xml $SOLR_LIB/example/solr/collection1/conf/schema.xml
+<Context docBase="$SOLR_HOME/solr.war" debug="0" crossContext="true">
+  <Environment name="solr/home" type="java.lang.String" value="$SOLR_HOME" override="true"/>
+</Context>
+ENDSOLRXML
 
+    #echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Context docBase=\"$SOLR_LIB/example/solr/solr.war\" debug=\"0\" privileged=\"true\" allowLinking=\"true\" crossContext=\"true\">\n<Environment name=\"solr/home\" type=\"java.lang.String\" value=\"$SOLR_LIB/example/solr\" override=\"true\" />\n</Context>" | sudo tee -a $SOLR_CATALINA_BASE/conf/Catalina/localhost/solr.xml
 
-create_solr_server_script
+    #mv $SOLR_LIB/example/solr/collection1/conf/schema.xml $SOLR_LIB/example/solr/collection1/conf/schema.xml.bak
+    mv $SOLR_HOME/collection1/conf/schema.xml $SOLR_HOME/collection1/conf/schema.xml.bak
 
+    #TODO: wget the installation/schema.xml from git directly to avoid having
+    # to install ckanext-ngds first.
+    cp $NGDS_SRC/installation/schema.xml $SOLR_HOME/collection1/conf/schema.xml
+    #create_solr_server_script
 }
 
 function create_solr_server_script() {
@@ -775,26 +809,27 @@ $NGDS_SCRIPTS/solr-server.sh start
 
 function setup_geoserver() {
 
-    mkdir $GEOSERVER_CATALINA_BASE/conf $GEOSERVER_CATALINA_BASE/logs $GEOSERVER_CATALINA_BASE/temp $GEOSERVER_CATALINA_BASE/webapps $GEOSERVER_CATALINA_BASE/work
+    #mkdir $GEOSERVER_CATALINA_BASE/conf $GEOSERVER_CATALINA_BASE/logs $GEOSERVER_CATALINA_BASE/temp $GEOSERVER_CATALINA_BASE/webapps $GEOSERVER_CATALINA_BASE/work
 
-    cp $CATALINA_HOME/conf/server.xml $GEOSERVER_CATALINA_BASE/conf/server.xml
-    cp $CATALINA_HOME/conf/web.xml $GEOSERVER_CATALINA_BASE/conf
+    #cp $CATALINA_HOME/conf/server.xml $GEOSERVER_CATALINA_BASE/conf/server.xml
+    #cp $CATALINA_HOME/conf/web.xml $GEOSERVER_CATALINA_BASE/conf
 
-    run_or_die apt-get -y install unzip
+    #run_or_die apt-get -y install unzip
 
-    run_or_die wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip -P $TEMPDIR
+    run_or_die wget --no-verbose http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip --directory-prefix=$TEMPDIR
     #run_or_die cp /home/ngds/Downloads/geoserver-2.4.0-war.zip $TEMPDIR
     pushd $TEMPDIR > /dev/null
     run_or_die unzip geoserver-2.4.0-war.zip -d geoserver
     pushd geoserver > /dev/null
 
-    cp geoserver.war $GEOSERVER_CATALINA_BASE/webapps
+    #cp geoserver.war $GEOSERVER_CATALINA_BASE/webapps
+    mv geoserver.war $CATALINA_HOME/webapps
 
-    run_or_die unzip geoserver.war "data/*" -d $GEOSERVER_LIB
+    #run_or_die unzip geoserver.war "data/*" -d $GEOSERVER_LIB
     popd > /dev/null
     popd > /dev/null
 
-    run_or_die create_geoserver_script
+    #run_or_die create_geoserver_script
 }
 
 function create_geoserver_script() {
@@ -850,6 +885,8 @@ function run1() {
 
 function run() {
 
+    install_prereqs
+
     setup_env
 
     install_ckan
@@ -882,7 +919,45 @@ function run() {
     create_ngds_scripts
 }
 
+#
+# Temporary function to help development by isolating parts of
+# the installation as they are being developed.
+#
+function run_tmp(){
+    install_prereqs
 
+    setup_env
+
+#    install_ckan
+
+    # This is for updating server configuration file (developement.ini)
+    #run_or_die $PYENV_DIR/bin/pip install configobj
+
+#    install_datastore
+
+#    install_datastorer
+
+#    install_postgis
+
+#    install_ckanext_harvest
+
+#    install_ckanext_spatial
+
+#    install_ckanext_importlib    
+
+#    create_ngds_scripts
+
+#    deploy_in_webserver
+
+    get_tomcat
+    
+    setup_geoserver
+    
+    setup_solr
+
+#    install_ngds
+
+}
 
 # # Process command-line arguments
 # if [ $# -eq 0 ]; then {
@@ -935,7 +1010,7 @@ chown $MYUSERID:$MYUSERID $LOGFILE
 
 
 
-run 2>&1 | tee ${LOGFILE}
+run_tmp 2>&1 | tee ${LOGFILE}
 
 function review_and_remove() {
     # Based on Ryan's https://github.com/ngds/dev-info/wiki/Ryan-Installs-ckanext-ngds

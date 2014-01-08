@@ -84,17 +84,31 @@ ngds.Map.makeSearch = function (parameters) {
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         _.each(response.result.results, function (rec) {
-            var randomNumber = Math.floor(Math.random()*1000000000000000000000),
-                coords = JSON.parse(rec.extras[8].value),
-                geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
-                    'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
-                bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
-                center = bounds.getCenter(),
-                geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber},
-                    'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
-                reqData = {'title': rec.title, 'name': rec.name, 'notes': rec.notes, 'pkg_id': rec.id,
-                    'resources': rec.resources, 'geoData': geoData, 'geojson': geojson};
-            ngds.Map.returnSearchResult(reqData);
+            if (rec.extras.length > 11) {
+                var randomNumber = Math.floor(Math.random()*1000000000000000000000),
+                    coords = JSON.parse(rec.extras[22].value),
+                    geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
+                        'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
+                    bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
+                    center = bounds.getCenter(),
+                    geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber},
+                        'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
+                    reqData = {'title': rec.title, 'name': rec.name, 'notes': rec.notes, 'pkg_id': rec.id,
+                        'resources': rec.resources, 'geoData': geoData, 'geojson': geojson};
+                ngds.Map.returnSearchResult(reqData);
+            } else {
+                var randomNumber = Math.floor(Math.random()*1000000000000000000000),
+                    coords = JSON.parse(rec.extras[8].value),
+                    geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
+                        'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
+                    bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
+                    center = bounds.getCenter(),
+                    geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber},
+                        'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
+                    reqData = {'title': rec.title, 'name': rec.name, 'notes': rec.notes, 'pkg_id': rec.id,
+                        'resources': rec.resources, 'geoData': geoData, 'geojson': geojson};
+                ngds.Map.returnSearchResult(reqData);
+            }
         })
     })
 };
