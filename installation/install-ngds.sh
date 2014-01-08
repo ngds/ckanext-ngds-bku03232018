@@ -27,6 +27,16 @@ MYUSERID=ngds
 
 
 #
+# install tools
+#
+# Install tools needed for this script to proceed (as opposed to
+# tools specific to any given component that is being installed.)
+function install_prereqs(){
+    run_or_die sudo apt-get --assume-yes --quiet update
+    run_or_die apt-get --assume-yes --quiet install build-essential
+    run_or_die apt-get --assume-yes --quiet install unzip
+}
+
 # configure_properties
 #
 # Update this section to load required properties or path for NGDS Installation.
@@ -260,7 +270,6 @@ function run_or_die() {
 #
 function install_ckan() {
     # Step 1: Install the required packages
-    run_or_die apt-get -y update
     #run_or_die apt-get -y upgrade
     run_or_die apt-get --assume-yes --quiet install python-dev
     run_or_die apt-get --assume-yes --quiet install postgresql-9.1-postgis
@@ -470,7 +479,6 @@ function install_postgis() {
 
     # Download libxml and setup.
     # run_or_die apt-get --assume-yes --quiet install make
-    run_or_die apt-get --assume-yes --quiet install build-essential
     run_or_die wget --no-verbose ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz --output-document $TEMPDIR/libxml.tar.gz
     pushd $TEMPDIR > /dev/null
     run_or_die tar zxf libxml.tar.gz
@@ -779,8 +787,6 @@ function setup_geoserver() {
 
     cp $CATALINA_HOME/conf/server.xml $GEOSERVER_CATALINA_BASE/conf/server.xml
     cp $CATALINA_HOME/conf/web.xml $GEOSERVER_CATALINA_BASE/conf
-
-    run_or_die apt-get --assume-yes --quiet install unzip
 
     run_or_die wget --no-verbose http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip --directory-prefix $TEMPDIR
     #run_or_die cp /home/ngds/Downloads/geoserver-2.4.0-war.zip $TEMPDIR
