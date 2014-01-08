@@ -471,7 +471,7 @@ function install_postgis() {
     # Download libxml and setup.
     # run_or_die apt-get --assume-yes --quiet install make
     run_or_die apt-get --assume-yes --quiet install build-essential
-    run_or_die wget -nv ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz -O $TEMPDIR/libxml.tar.gz
+    run_or_die wget --no-verbose ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz --output-document $TEMPDIR/libxml.tar.gz
     pushd $TEMPDIR > /dev/null
     run_or_die tar zxf libxml.tar.gz
     pushd libxml2-2.9.0 > /dev/null
@@ -692,18 +692,18 @@ EOF
 }
 
 function get_tomcat() {
-    wget http://apache.openmirror.de/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz -P $TEMPDIR
+    run_or_die wget --no-verbose http://apache.openmirror.de/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz --directory-prefix $TEMPDIR
     pushd $TEMPDIR > /dev/null
     #pushd /home/ngds/install/download/
-    tar -xvf apache-tomcat-7.0.42.tar.gz
+    tar -zxf apache-tomcat-7.0.42.tar.gz
     sudo mv apache-tomcat-7.0.42/ $CATALINA_HOME/
     popd > /dev/null
 }
 
 function get_solr() {
-    wget http://www.apache.org/dist/lucene/solr/4.4.0/solr-4.4.0.tgz -P $TEMPDIR
+    run_or_die wget --no-verbose http://www.apache.org/dist/lucene/solr/4.4.0/solr-4.4.0.tgz --directory-prefix $TEMPDIR
     pushd $TEMPDIR > /dev/null
-    tar -xzvf solr-4.4.0.tgz
+    tar -zxf solr-4.4.0.tgz
     mkdir -p $SOLR_LIB/example/
     pushd solr-4.4.0/example > /dev/null
     cp -r solr $SOLR_LIB/example/
@@ -782,7 +782,7 @@ function setup_geoserver() {
 
     run_or_die apt-get --assume-yes --quiet install unzip
 
-    run_or_die wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip -P $TEMPDIR
+    run_or_die wget --no-verbose http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip --directory-prefix $TEMPDIR
     #run_or_die cp /home/ngds/Downloads/geoserver-2.4.0-war.zip $TEMPDIR
     pushd $TEMPDIR > /dev/null
     run_or_die unzip geoserver-2.4.0-war.zip -d geoserver
