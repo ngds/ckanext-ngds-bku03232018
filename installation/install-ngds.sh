@@ -700,7 +700,7 @@ EOF
 }
 
 function get_tomcat() {
-    run_or_die wget --no-verbose http://apache.openmirror.de/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz --directory-prefix $TEMPDIR
+    run_or_die wget --no-verbose http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz --directory-prefix $TEMPDIR
     pushd $TEMPDIR > /dev/null
     #pushd /home/ngds/install/download/
     tar -zxf apache-tomcat-7.0.42.tar.gz
