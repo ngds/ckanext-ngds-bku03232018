@@ -172,9 +172,9 @@ def is_valid_model_version(key, data, errors, context):
     models = dict((cm['uri'], cm) for cm in models_list({}, {}))
     uri = data.get('content_model_uri', '')
     version = data[key]
-
-    the_model = models.get(uri, {})
-    if version not in [v['version'] for v in the_model.get('versions', [])]:
+    version_number = version.split('/')[-1]
+    this_model = models.get(uri, {})
+    if version_number not in [v['version'] for v in this_model.get('versions', [])]:
         errors[key].append(_('Invalid Content Model Version'))
 
 def check_uploaded_file(resource, errors, error_key):
@@ -185,7 +185,8 @@ def check_uploaded_file(resource, errors, error_key):
     validation_results = check_model_file({}, {
         "cm_uri": resource["content_model_uri"],
         "cm_version": resource["content_model_version"].split('/')[-1], # field contains the version URI
-        "cm_resource_url": resource["url"]
+        "cm_resource_url": resource["url"],
+        "cm_label": resource["label"]
     })
 
     if not validation_results['valid']:

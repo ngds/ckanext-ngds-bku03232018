@@ -169,6 +169,7 @@ def contentmodel_checkFile(context, data_dict):
     cm_uri     = _get_or_bust(data_dict, 'cm_uri')
     cm_version = _get_or_bust(data_dict, 'cm_version')
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
+    cm_label = _get_or_bust(data_dict, 'cm_label')
     
     log.debug("input URL: " + cm_resource_url)
     modified_resource_url = cm_resource_url.replace("%3A", ":")
@@ -188,13 +189,16 @@ def contentmodel_checkFile(context, data_dict):
     user_schema = contentmodel_get(context, data_dict)
     # print user_schema
     fieldModelList = []
-    field_info_list = user_schema['field_info']
-    for field_info in field_info_list:
-        if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
-            log.debug("found a undefined field: %s" % str(field_info))
-            continue
-        else: 
-            fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
+    field_info_list = user_schema['layers_info']
+    if len(field_info_list) == 1:
+        for field_info in field_info_list[cm_label]:
+            if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
+                log.debug("found a undefined field: %s" % str(field_info))
+                continue
+            else:
+                fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
+    else:
+        print 'multilayers not supported yet'
 
     log.debug(fieldModelList)
     log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
