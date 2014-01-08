@@ -46,10 +46,12 @@ function install_prereqs(){
 function configure_properties() {
     
     #Path where application and data are installed.
-    APPS=/opt/local
+    #APPS=/opt/local
+    APPS=/opt/ngds
 
     #Tomcat Installation Path
-    CATALINA_HOME=/usr/share/tomcat
+    #CATALINA_HOME=/usr/share/tomcat
+    CATALINA_HOME=$APPS/tomcat
     
     #Github Account Details
     GIT_UNAME=
@@ -783,24 +785,27 @@ $NGDS_SCRIPTS/solr-server.sh start
 
 function setup_geoserver() {
 
-    mkdir $GEOSERVER_CATALINA_BASE/conf $GEOSERVER_CATALINA_BASE/logs $GEOSERVER_CATALINA_BASE/temp $GEOSERVER_CATALINA_BASE/webapps $GEOSERVER_CATALINA_BASE/work
+    #mkdir $GEOSERVER_CATALINA_BASE/conf $GEOSERVER_CATALINA_BASE/logs $GEOSERVER_CATALINA_BASE/temp $GEOSERVER_CATALINA_BASE/webapps $GEOSERVER_CATALINA_BASE/work
 
-    cp $CATALINA_HOME/conf/server.xml $GEOSERVER_CATALINA_BASE/conf/server.xml
-    cp $CATALINA_HOME/conf/web.xml $GEOSERVER_CATALINA_BASE/conf
+    #cp $CATALINA_HOME/conf/server.xml $GEOSERVER_CATALINA_BASE/conf/server.xml
+    #cp $CATALINA_HOME/conf/web.xml $GEOSERVER_CATALINA_BASE/conf
 
-    run_or_die wget --no-verbose http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip --directory-prefix $TEMPDIR
+    #run_or_die apt-get -y install unzip
+
+    run_or_die wget --no-verbose http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip --directory-prefix=$TEMPDIR
     #run_or_die cp /home/ngds/Downloads/geoserver-2.4.0-war.zip $TEMPDIR
     pushd $TEMPDIR > /dev/null
     run_or_die unzip geoserver-2.4.0-war.zip -d geoserver
     pushd geoserver > /dev/null
 
-    cp geoserver.war $GEOSERVER_CATALINA_BASE/webapps
+    #cp geoserver.war $GEOSERVER_CATALINA_BASE/webapps
+    mv geoserver.war $CATALINA_HOME/webapps
 
-    run_or_die unzip geoserver.war "data/*" -d $GEOSERVER_LIB
+    #run_or_die unzip geoserver.war "data/*" -d $GEOSERVER_LIB
     popd > /dev/null
     popd > /dev/null
 
-    run_or_die create_geoserver_script
+    #run_or_die create_geoserver_script
 }
 
 function create_geoserver_script() {
@@ -856,6 +861,8 @@ function run1() {
 
 function run() {
 
+    install_prereqs
+
     setup_env
 
     install_ckan
@@ -888,7 +895,45 @@ function run() {
     create_ngds_scripts
 }
 
+#
+# Temporary function to help development by isolating parts of
+# the installation as they are being developed.
+#
+function run_tmp(){
+    install_prereqs
 
+    setup_env
+
+#    install_ckan
+
+    # This is for updating server configuration file (developement.ini)
+    #run_or_die $PYENV_DIR/bin/pip install configobj
+
+#    install_datastore
+
+#    install_datastorer
+
+#    install_postgis
+
+#    install_ckanext_harvest
+
+#    install_ckanext_spatial
+
+#    install_ckanext_importlib    
+
+#    setup_solr
+
+#    create_ngds_scripts
+
+#    install_ngds
+
+#    deploy_in_webserver
+
+    get_tomcat
+    
+    setup_geoserver
+    
+}
 
 # # Process command-line arguments
 # if [ $# -eq 0 ]; then {
@@ -941,7 +986,7 @@ chown $MYUSERID:$MYUSERID $LOGFILE
 
 
 
-run 2>&1 | tee ${LOGFILE}
+run_tmp 2>&1 | tee ${LOGFILE}
 
 function review_and_remove() {
     # Based on Ryan's https://github.com/ngds/dev-info/wiki/Ryan-Installs-ckanext-ngds
