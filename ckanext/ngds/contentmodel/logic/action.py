@@ -168,8 +168,14 @@ def contentmodel_checkFile(context, data_dict):
     :returns: A status object (either success, or failed).
     :rtype: dictionary
     '''
-    cm_uri     = _get_or_bust(data_dict, 'cm_uri')
-    cm_version = _get_or_bust(data_dict, 'cm_version')
+    def get_my_layer(fields, label):
+        if len(fields) == 1 and label.lower() in [key.lower() for key in fields.iterkeys()]:
+            return [key for key in fields.iterkeys()][0]
+        elif len(fields) > 1:
+            return [key for key in fields.iterkeys() if key.lower == label.lower()][0]
+        else:
+            return "undefined"
+
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
 
     log.debug("input URL: " + cm_resource_url)
@@ -192,16 +198,14 @@ def contentmodel_checkFile(context, data_dict):
     fieldModelList = []
     model_label = user_schema['label']
     field_info_list = user_schema['version']['layers_info']
-    if len(field_info_list) == 1 and model_label.lower() in [key.lower() for key in field_info_list.iterkeys()]:
-        model_label = [key for key in field_info_list.iterkeys()][0]
-        for field_info in field_info_list[model_label]:
-            if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
-                log.debug("found a undefined field: %s" % str(field_info))
-                continue
-            else:
-                fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
-    else:
-        print 'multilayers not supported yet'
+    this_layer = get_my_layer(field_info_list, model_label)
+
+    for field_info in field_info_list[this_layer]:
+        if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
+            log.debug("found a undefined field: %s" % str(field_info))
+            continue
+        else:
+            fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
 
     log.debug(fieldModelList)
     log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
