@@ -486,6 +486,38 @@ var structured_form_raw = {
                     'tag': 'label',
                     'attributes': {
                         'class': 'control-label',
+                        'for': 'field-content-model-layer',
+                        'text': 'Content Model Layer'
+                    }
+                },
+                {
+                    'tag': 'div',
+                    'attributes': {
+                        'class': 'controls'
+                    },
+                    'children': [
+                        {
+                            'tag': 'select',
+                            'attributes': {
+                                'id': 'field-content-model-layer',
+                                'type': 'text',
+                                'name': 'content_model_layer'
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            'tag': 'div',
+            'attributes': {
+                'class': 'control-group control-full'
+            },
+            'children': [
+                {
+                    'tag': 'label',
+                    'attributes': {
+                        'class': 'control-label',
                         'for': 'field-distributor',
                         'text': 'Distributor'
                     }
