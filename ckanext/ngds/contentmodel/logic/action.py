@@ -107,6 +107,7 @@ def contentmodel_list_short(context, data_dict):
             versions.append(v)
         m['versions']= versions
         m['uri']= model['uri']
+        m['label'] = model['label']
         modelsshort.append(m)   
 
     # print modelsshort
@@ -136,6 +137,7 @@ def contentmodel_get(context, data_dict):
         ))
     
     # schema is a list with a single entry
+    schema_label = schema[0]['label']
     schema_versions= schema[0]['versions']
     
     version= [ rec for rec in schema_versions if rec['version'] == cm_version]
@@ -145,7 +147,7 @@ def contentmodel_get(context, data_dict):
         ))
         
     # version is again a list with a single entry
-    return version[0]
+    return {'label': schema_label, 'version': version[0]}
 
 @logic.side_effect_free
 def contentmodel_checkFile(context, data_dict):
@@ -169,8 +171,7 @@ def contentmodel_checkFile(context, data_dict):
     cm_uri     = _get_or_bust(data_dict, 'cm_uri')
     cm_version = _get_or_bust(data_dict, 'cm_version')
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
-    cm_label = _get_or_bust(data_dict, 'cm_label')
-    
+
     log.debug("input URL: " + cm_resource_url)
     modified_resource_url = cm_resource_url.replace("%3A", ":")
     truncated_url = modified_resource_url.split("/storage/f/")[1]
@@ -189,9 +190,11 @@ def contentmodel_checkFile(context, data_dict):
     user_schema = contentmodel_get(context, data_dict)
     # print user_schema
     fieldModelList = []
-    field_info_list = user_schema['layers_info']
-    if len(field_info_list) == 1:
-        for field_info in field_info_list[cm_label]:
+    model_label = user_schema['label']
+    field_info_list = user_schema['version']['layers_info']
+    if len(field_info_list) == 1 and model_label.lower() in [key.lower() for key in field_info_list.iterkeys()]:
+        model_label = [key for key in field_info_list.iterkeys()][0]
+        for field_info in field_info_list[model_label]:
             if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
                 log.debug("found a undefined field: %s" % str(field_info))
                 continue
@@ -214,6 +217,7 @@ def contentmodel_checkFile(context, data_dict):
             dataHeaderList = [x.strip() for x in header]
             
             for row in csv_reader:
+                print row
                 new_row = [x.strip() for x in row]
                 dataListList.append(new_row)
         except csv.Error as e:
