@@ -42,9 +42,9 @@ MYUSERID=ngds
 # tools specific to any given component that is being installed.)
 function install_prereqs(){
     run_or_die sudo apt-get --assume-yes --quiet update
-#    run_or_die apt-get --assume-yes --quiet install build-essential
+    run_or_die apt-get --assume-yes --quiet install build-essential
     run_or_die apt-get --assume-yes --quiet install unzip
-    run_or_die apt-get --assume-yes --quiet install openjdk-6-jdk
+#    run_or_die apt-get --assume-yes --quiet install openjdk-6-jdk
 }
 
 # configure_properties
@@ -56,7 +56,6 @@ function install_prereqs(){
 function configure_properties() {
     
     #Path where application and data are installed.
-    #APPS=/opt/local
     APPS=/opt/ngds
 
     #Tomcat Installation Path
@@ -295,14 +294,17 @@ function install_ckan() {
     # TODO
     # Here we might want to get just the solr WAR file and install it into Tomcat
     # instead of having a whole other Java container running.
-    run_or_die apt-get --assume-yes --quiet install solr-jetty
+    # This one goes out. We run solr from the same tomcat as geoserver/
+    # run_or_die apt-get --assume-yes --quiet install solr-jetty
+
     # TODO
     # Here we might want to try using the Oracle JDK and even adding in the
     # native iamging extensions to improve map creation and handling.
     # TODO
     # What if Oracle's JDK is already installed? Will this install OpenJDK?
     # Should we be testing for that?
-    run_or_die apt-get --assume-yes --quiet install openjdk-6-jdk
+    # We decided to expect that there is a jdk
+    # run_or_die apt-get --assume-yes --quiet install openjdk-6-jdk
 
     # The following steps are taken directly from the CKAN 2.0.1 installation
     # instructions.
@@ -329,7 +331,19 @@ function install_ckan() {
     # TODO
     # Before running this step, make sure pip-requirements.txt contains the full
     # set of requirements needed by NGDS.
-    run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckan/pip-requirements.txt
+    
+    # COUNTER=0
+    # while [ $COUNTER -lt 10 ] ; do
+    # 	echo "install pip-requirements.txt [$COUNTER]"
+    #	RETURN_VAL= $PYENV_DIR/bin/pip install -r $APPS_SRC/ckan/pip-requirements.txt
+    #	let COUNTER=COUNTER+1
+    #	if [ $RETURN_VAL -eq 0 ] ; then
+    #		let COUNTER= 10
+    #	else
+		run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckan/pip-requirements.txt
+    #	fi
+    #    done
+
     #run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckan/pip-requirements-test.txt
     deactivate
     . $PYENV_DIR/bin/activate
@@ -607,7 +621,8 @@ function configure_ngds() {
     run_or_die sudo cp $APPS_SRC/ckanext-ngds/facet-config.json $NGDS_CONFIG_PATH/
     run_or_die sudo cp $APPS_SRC/ckanext-ngds/contributors_config.json $NGDS_CONFIG_PATH/
 
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "solr_url" -v "http://127.0.0.1:8983/solr"
+    # $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "solr_url" -v "http://127.0.0.1:8983/solr"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "solr_url" -v "http://127.0.0.1:8080/solr"
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "ngds.facets_config" -v "$NGDS_CONFIG_PATH/facet-config.json"
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "ngds.contributors_config" -v "$NGDS_CONFIG_PATH/contributors_config.json"
@@ -728,6 +743,7 @@ function get_solr() {
     tar -zxf solr-4.6.0.tgz
     #mkdir -p $SOLR_LIB/example/
     pushd solr-4.6.0/example > /dev/null
+    mkdir -p $SOLR_HOME
     cp -r solr/* $SOLR_HOME #$SOLR_LIB/example/
     mv $SOLR_HOME/solr.xml $SOLR_HOME/solr.xml.bak
     cp lib/ext/*.jar $CATALINA_HOME/lib/
@@ -756,8 +772,8 @@ function setup_solr() {
 
     #mkdir $SOLR_CATALINA_BASE/conf/Catalina
     #chmod 755 -R $SOLR_CATALINA_BASE/conf/Catalina
-    #mkdir $SOLR_CATALINA_BASE/conf/Catalina/localhost
-    cat > $CATALINA_BASE/conf/Catalina/localhost/solr.xml <<ENDSOLRXML
+    mkdir -p $CATALINA_HOME/conf/Catalina/localhost
+    cat > $CATALINA_HOME/conf/Catalina/localhost/solr.xml <<ENDSOLRXML
 <?xml version="1.0" encoding="utf-8"?>
 
 <Context docBase="$SOLR_HOME/solr.war" debug="0" crossContext="true">
@@ -772,7 +788,9 @@ ENDSOLRXML
 
     #TODO: wget the installation/schema.xml from git directly to avoid having
     # to install ckanext-ngds first.
-    cp $NGDS_SRC/installation/schema.xml $SOLR_HOME/collection1/conf/schema.xml
+    echo "NGDS_SRC: $NGDS_SRC"
+    echo "SOLR_HOME: $SOLR_HOME"
+    cp $APPS/bin/default/src/ckanext-ngds/installation/schema.xml $SOLR_HOME/collection1/conf/schema.xml
     #create_solr_server_script
 }
 
@@ -949,9 +967,9 @@ function run_tmp(){
 
 #    deploy_in_webserver
 
-    get_tomcat
+#    get_tomcat
     
-    setup_geoserver
+#    setup_geoserver
     
     setup_solr
 
@@ -1010,7 +1028,8 @@ chown $MYUSERID:$MYUSERID $LOGFILE
 
 
 
-run_tmp 2>&1 | tee ${LOGFILE}
+# run_tmp 2>&1 | tee ${LOGFILE}
+run 2>&1 | tee ${LOGFILE}
 
 function review_and_remove() {
     # Based on Ryan's https://github.com/ngds/dev-info/wiki/Ryan-Installs-ckanext-ngds
