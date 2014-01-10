@@ -129,6 +129,19 @@ of the radio using css. eg. input[type=radio]+label {}
         </div>
     </div>
 
+    {% if "content_model_layer" in errors %}
+    {% set cm_layer_error = true %}
+    {% endif %}
+
+    <div class="control-group{% if cm_layer_error %} error{% endif %} control-medium" data-cm>
+        <label class="control-label" for="field-content-model-layer">{{ _("Content Model Layer") }}</label>
+
+        <div class="controls">
+            <select id="field-content-model-layer" name="content_model_layer" data-module="autocomplete">
+
+            </select>
+        </div>
+    </div>
 
     {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete',
     'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
