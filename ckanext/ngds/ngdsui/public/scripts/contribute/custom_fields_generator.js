@@ -234,7 +234,7 @@ $(document).ready(function () {
                         'tag': 'option',
                         'attributes': {
                             'value': version['uri'],
-                            'text': version['layers']
+                            'text': version['versions']
                         }
                     };
                     return ngds.util.dom_element_constructor(option);
@@ -251,7 +251,11 @@ $(document).ready(function () {
                             $("[name=content_model_layer]").empty();
 
                             $("[name=content_model_layer]").append(optionConstructor(versions));
-                            versionsDom.push(optionConstructor(versions));
+                            for (var i = 0; i < versions['layers'].length; i++) {
+                                console.log(versions['layers'][i]);
+                                versionsDom.push(optionConstructor(versions['layers'][i]));
+                                console.log(versionsDom);
+                            }
 
                             if (ngds.memorizer.remind("structured", "content_model_version") !== "") {
                                 $("#field-content-model-layer option").filter("[value=" + ngds.memorizer.remind("structured", "content_model_version")["id"] + "]").prop("selected", true);

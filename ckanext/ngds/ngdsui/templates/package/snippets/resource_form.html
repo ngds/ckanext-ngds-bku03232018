@@ -133,12 +133,15 @@ of the radio using css. eg. input[type=radio]+label {}
     {% set cm_layer_error = true %}
     {% endif %}
 
+    {% if not 'content_model_uri' in data or data['content_model_uri']!="None" %}
+    {% set content_model_layers = h.get_content_model_layers_for_uri(data['content_model_uri']) %}
+    {% endif %}
+
     <div class="control-group{% if cm_layer_error %} error{% endif %} control-medium" data-cm>
         <label class="control-label" for="field-content-model-layer">{{ _("Content Model Layer") }}</label>
 
         <div class="controls">
             <select id="field-content-model-layer" name="content_model_layer" data-module="autocomplete">
-
             </select>
         </div>
     </div>
