@@ -796,7 +796,6 @@ def get_content_model_layers_for_uri(uri):
     content_model = filter(lambda x: True if x['uri'] == uri else False, content_models)
     versions = content_model[0]['versions']
     layers = {value['version']: [key for key in value['layers'].iterkeys()] for value in versions}
-    #layer_names = [key for key in layers.iterkeys()]
     return {'uri': uri, 'versions': layers}
 
 def get_content_model_layers_for_uri_action(context, data_dict):

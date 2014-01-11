@@ -3,6 +3,8 @@ $(document).ready(function () {
         ngds.util.state['prev_resource_type'] = $("[name=resource_format]:checked").val();
         ngds.util.state['versions'] = {};
         ngds.util.state['versions_dom'] = {};
+        ngds.util.state['layers'] = {};
+        ngds.util.state['layers_dom'] = {};
         if ($("[name=content_model_version]").length > 0 && $("[name=content_model_version]").parent().parent().attr("class").indexOf("error") !== -1) {
             $("[name=content_model_version]").prop("selectedIndex", -1);
             // Disobedient select box.
@@ -239,22 +241,22 @@ $(document).ready(function () {
                     };
                     return ngds.util.dom_element_constructor(option);
                 };
-                if (typeof ngds.util.state['versions'][val] === 'undefined') {
+                if (typeof ngds.util.state['layers'][val] === 'undefined') {
                     $.ajax({
                         'url': '/api/action/get_content_model_layers_for_uri',
                         'data': JSON.stringify({'cm_uri': val}),
                         'type': 'POST',
                         'success': function (response) {
                             var versions = response.result;
-                            ngds.util.state['versions'][val] = versions;
-                            var versionsDom = ngds.util.state['versions_dom'][val] = [];
+                            ngds.util.state['layers'][val] = versions;
+                            var layersDom = ngds.util.state['layers_dom'][val] = [];
                             $("[name=content_model_layer]").empty();
 
-                            $("[name=content_model_layer]").append(optionConstructor(versions));
-                            for (var i = 0; i < versions['layers'].length; i++) {
-                                console.log(versions['layers'][i]);
-                                versionsDom.push(optionConstructor(versions['layers'][i]));
-                                console.log(versionsDom);
+                            var selector = $('#field-content-model-version').val().split(/[\s\/]+/).pop();
+
+                            for (var i = 0; i < versions['versions'][selector].length; i++) {
+                                $("[name=content_model_layer]").append(optionConstructor(versions['layers'][i]));
+                                layersDom.push(optionConstructor(versions['layers'][i]));
                             }
 
                             if (ngds.memorizer.remind("structured", "content_model_version") !== "") {
@@ -264,10 +266,10 @@ $(document).ready(function () {
                         }
                     });
                 } else {
-                    var versionsDom = ngds.util.state['versions_dom'][val];
+                    var layersDom = ngds.util.state['layers_dom'][val];
                     $("[name=content_model_layer]").empty();
-                    for (var i = 0; i < versionsDom.length; i++) {
-                        $("[name=content_model_layer]").append(versionsDom[i]);
+                    for (var i = 0; i < layersDom.length; i++) {
+                        $("[name=content_model_layer]").append(layersDom[i]);
                     }
                 }
             };
@@ -279,15 +281,20 @@ $(document).ready(function () {
                     $("[name=content_model_version]").select2("destroy");
                     $("[name=content_model_version]").empty();
                     $("[name=content_model_version]").select2();
-
-                    $("[name=content_model_layer]").select2("destroy");
-                    $("[name=content_model_layer]").empty();
-                    $("[name=content_model_layer]").select2();
-
                     return;
                 }
 
                 load_content_model_versions(val);
+            });
+
+            $("[name=content_model_version]").on('change', function (e) {
+                var val = e.val();
+                if (val === 'None' || val === 'none') {
+                    $("[name=content_model_layer]").select2("destroy");
+                    $("[name=content_model_layer]").empty();
+                    $("[name=content_model_layer]").select2();
+                    return;
+                }
                 loadContentModelLayers(val);
             });
 
@@ -295,8 +302,12 @@ $(document).ready(function () {
 
             if ($("[name=content_model_uri]").length > 0 && $("[name=content_model_uri]").val() !== "None" && $("[name=content_model_uri]").val() !== "none") {
                 load_content_model_versions($("[name=content_model_uri]").val());
-                loadContentModelLayers($("[name=content_model_uri]").val());
             }
+
+            if ($("[name=content_model_version]").length > 0 && $("[name=content_model_version]").val() !== "None" && $("[name=content_model_version]").val() !== "none") {
+                loadContentModelLayers($("[name=content_model_version]").val());
+            }
+
         });
         $("[name=content_model_version]").select2();
 
