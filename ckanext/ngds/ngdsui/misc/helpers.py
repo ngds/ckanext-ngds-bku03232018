@@ -794,11 +794,13 @@ def get_content_model_layers_for_uri(uri):
         return
     content_models = logic.get_action('contentmodel_list_short')()
     content_model = filter(lambda x: True if x['uri'] == uri else False, content_models)
-    return content_model[0]['versions']['layers_info']
+    layers = content_model[0]['versions'][0]['layers']
+    layer_names = [key for key in layers.iterkeys()]
+    return {'uri': uri, 'layers': layer_names}
 
 def get_content_model_layers_for_uri_action(context, data_dict):
     uri = data_dict['cm_uri']
-    return get_content_model_layers_for_uri_action(uri)
+    return get_content_model_layers_for_uri(uri)
 
 def get_contributors_list():
     """

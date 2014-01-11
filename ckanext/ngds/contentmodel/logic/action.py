@@ -104,6 +104,7 @@ def contentmodel_list_short(context, data_dict):
             v= {}
             v['uri']= version['uri']
             v['version']= version['version']
+            v['layers'] = version['layers_info']
             versions.append(v)
         m['versions']= versions
         m['uri']= model['uri']

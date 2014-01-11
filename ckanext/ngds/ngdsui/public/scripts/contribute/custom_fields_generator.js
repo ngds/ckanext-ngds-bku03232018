@@ -226,6 +226,48 @@ $(document).ready(function () {
 
             };
 
+            function loadContentModelLayers(content_model_uri) {
+                $("#field-content-model-layer").select2("destroy");
+                var val = content_model_uri;
+                var optionConstructor = function (version) {
+                    var option = {
+                        'tag': 'option',
+                        'attributes': {
+                            'value': version['uri'],
+                            'text': version['layers']
+                        }
+                    };
+                    return ngds.util.dom_element_constructor(option);
+                };
+                if (typeof ngds.util.state['versions'][val] === 'undefined') {
+                    $.ajax({
+                        'url': '/api/action/get_content_model_layers_for_uri',
+                        'data': JSON.stringify({'cm_uri': val}),
+                        'type': 'POST',
+                        'success': function (response) {
+                            var versions = response.result;
+                            ngds.util.state['versions'][val] = versions;
+                            var versionsDom = ngds.util.state['versions_dom'][val] = [];
+                            $("[name=content_model_layer]").empty();
+
+                            $("[name=content_model_layer]").append(optionConstructor(versions));
+                            versionsDom.push(optionConstructor(versions));
+
+                            if (ngds.memorizer.remind("structured", "content_model_version") !== "") {
+                                $("#field-content-model-layer option").filter("[value=" + ngds.memorizer.remind("structured", "content_model_version")["id"] + "]").prop("selected", true);
+                            }
+                            $("#field-content-model-layer").select2();
+                        }
+                    });
+                } else {
+                    var versionsDom = ngds.util.state['versions_dom'][val];
+                    $("[name=content_model_layer]").empty();
+                    for (var i = 0; i < versionsDom.length; i++) {
+                        $("[name=content_model_layer]").append(versionsDom[i]);
+                    }
+                }
+            };
+
             $("[name=content_model_uri]").on('change', function (ev) {
                 var val = ev.val;
                 console.log(val);
@@ -233,16 +275,23 @@ $(document).ready(function () {
                     $("[name=content_model_version]").select2("destroy");
                     $("[name=content_model_version]").empty();
                     $("[name=content_model_version]").select2();
+
+                    $("[name=content_model_layer]").select2("destroy");
+                    $("[name=content_model_layer]").empty();
+                    $("[name=content_model_layer]").select2();
+
                     return;
                 }
 
                 load_content_model_versions(val);
+                loadContentModelLayers(val);
             });
 
             ngds.restore_additional_fields(resource_type);
 
             if ($("[name=content_model_uri]").length > 0 && $("[name=content_model_uri]").val() !== "None" && $("[name=content_model_uri]").val() !== "none") {
                 load_content_model_versions($("[name=content_model_uri]").val());
+                loadContentModelLayers($("[name=content_model_uri]").val());
             }
         });
         $("[name=content_model_version]").select2();
