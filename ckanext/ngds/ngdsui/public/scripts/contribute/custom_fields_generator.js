@@ -234,12 +234,12 @@ $(document).ready(function () {
             function loadContentModelLayers(content_model_uri) {
                 $("#field-content-model-layer").select2("destroy");
                 var val = content_model_uri;
-                var optionConstructor = function (version) {
+                var optionConstructor = function (this_data) {
                     var option = {
                         'tag': 'option',
                         'attributes': {
-                            'value': version['uri'],
-                            'text': version['versions']
+                            'value': this_data['uri'],
+                            'text': this_data['layer']
                         }
                     };
                     return ngds.util.dom_element_constructor(option);
@@ -258,8 +258,9 @@ $(document).ready(function () {
                             var selector = $('#field-content-model-version').val().split(/[\s\/]+/).pop();
 
                             for (var i = 0; i < versions['versions'][selector].length; i++) {
-                                $("[name=content_model_layer]").append(optionConstructor(versions['layers'][i]));
-                                layersDom.push(optionConstructor(versions['layers'][i]));
+                                var this_data = {'uri': versions['uri'], 'layer': versions['versions'][selector][i]};
+                                $("[name=content_model_layer]").append(optionConstructor(this_data));
+                                layersDom.push(optionConstructor(this_data));
                             }
 
                             if (ngds.memorizer.remind("structured", "content_model_version") !== "") {

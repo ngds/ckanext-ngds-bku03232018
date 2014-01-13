@@ -792,10 +792,11 @@ def get_content_model_version_for_uri_action(context, data_dict):
 def get_content_model_layers_for_uri(uri):
     if not uri or uri == 'none' or uri == 'None':
         return
+    content_model_uri = uri.rsplit('/', 1)[0]
     content_models = logic.get_action('contentmodel_list_short')()
-    content_model = filter(lambda x: True if x['uri'] == uri else False, content_models)
+    content_model = filter(lambda x: True if x['uri'] == content_model_uri or x['uri'] == content_model_uri + '/' else False, content_models)
     versions = content_model[0]['versions']
-    layers = {value['version']: [key for key in value['layers'].iterkeys()] for value in versions}
+    layers = {value['version']: [key for key in value['layers'].iterkeys()] for value in versions if value['uri'] == uri}
     return {'uri': uri, 'versions': layers}
 
 def get_content_model_layers_for_uri_action(context, data_dict):
