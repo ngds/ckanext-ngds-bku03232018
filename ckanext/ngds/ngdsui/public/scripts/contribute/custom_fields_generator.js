@@ -238,7 +238,7 @@ $(document).ready(function () {
                     var option = {
                         'tag': 'option',
                         'attributes': {
-                            'value': this_data['uri'],
+                            'value': this_data['layer'],
                             'text': this_data['layer']
                         }
                     };
@@ -258,7 +258,7 @@ $(document).ready(function () {
                             var selector = $('#field-content-model-version').val().split(/[\s\/]+/).pop();
 
                             for (var i = 0; i < versions['versions'][selector].length; i++) {
-                                var this_data = {'uri': versions['uri'], 'layer': versions['versions'][selector][i]};
+                                var this_data = {'layer': versions['versions'][selector][i]};
                                 $("[name=content_model_layer]").append(optionConstructor(this_data));
                                 layersDom.push(optionConstructor(this_data));
                             }

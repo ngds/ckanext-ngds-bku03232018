@@ -17,6 +17,7 @@ import urllib2, simplejson
 import logging
 import ckan.logic as logic
 import ckan.plugins as p
+import usginmodels
 
 from ckan.plugins import toolkit
 
@@ -169,13 +170,6 @@ def contentmodel_checkFile(context, data_dict):
     :returns: A status object (either success, or failed).
     :rtype: dictionary
     '''
-    def get_my_layer(fields, label):
-        if len(fields) == 1 and label.lower() in [key.lower() for key in fields.iterkeys()]:
-            return [key for key in fields.iterkeys()][0]
-        elif len(fields) > 1:
-            return [key for key in fields.iterkeys() if key.lower == label.lower()][0]
-        else:
-            return "undefined"
 
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
 
@@ -197,9 +191,8 @@ def contentmodel_checkFile(context, data_dict):
     user_schema = contentmodel_get(context, data_dict)
     # print user_schema
     fieldModelList = []
-    model_label = user_schema['label']
     field_info_list = user_schema['version']['layers_info']
-    this_layer = get_my_layer(field_info_list, model_label)
+    this_layer = _get_or_bust(data_dict, 'cm_layer')
 
     for field_info in field_info_list[this_layer]:
         if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
@@ -222,7 +215,6 @@ def contentmodel_checkFile(context, data_dict):
             dataHeaderList = [x.strip() for x in header]
             
             for row in csv_reader:
-                print row
                 new_row = [x.strip() for x in row]
                 dataListList.append(new_row)
         except csv.Error as e:

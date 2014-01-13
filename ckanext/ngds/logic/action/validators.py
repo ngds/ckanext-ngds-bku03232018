@@ -185,7 +185,9 @@ def check_uploaded_file(resource, errors, error_key):
     validation_results = check_model_file({}, {
         "cm_uri": resource["content_model_uri"],
         "cm_version": resource["content_model_version"].split('/')[-1], # field contains the version URI
-        "cm_resource_url": resource["url"]
+        "cm_version_url": resource["content_model_version"],
+        "cm_resource_url": resource["url"],
+        "cm_layer": resource["content_model_layer"]
     })
 
     if not validation_results['valid']:
