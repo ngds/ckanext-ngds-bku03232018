@@ -191,18 +191,16 @@ ngds.Map.returnSearchResult = function (result) {
             })
         }}
     );
-
-    /*
+/*
     var theseBounds = [[result.geoData.sw_lat, result.geoData.sw_lon],
         [result.geoData.ne_lat, result.geoData.ne_lon]];
     var boundingBoxes = L.rectangle(theseBounds, {
         color: '#0014ff',
         weight: 1
     });
-    */
-    
+*/
     ngds.Map.layers.searchResultsGroup.addLayer(circles).addTo(ngds.Map.map);
-    //ngds.Map.layers.searchResultsGroup.addLayer(boundingBoxes).addTo(ngds.Map.map);
+//    ngds.Map.layers.searchResultsGroup.addLayer(boundingBoxes).addTo(ngds.Map.map);
 };
 
 ngds.Map.map.on('draw:created', function (e) {
