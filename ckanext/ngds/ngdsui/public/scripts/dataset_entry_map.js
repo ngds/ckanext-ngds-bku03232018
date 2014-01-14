@@ -42,6 +42,7 @@ $(document).ready(function () {
        }
    });
 
+
 // Add the control panel
     var drawControl = new L.Control.Draw({
         position: 'topright',
