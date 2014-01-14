@@ -224,6 +224,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'contentmodel_checkBulkFile': contentmodel_action.contentmodel_checkBulkFile,
             'get_content_models_for_ui': helpers.get_content_models_for_ui_action,
             'get_content_model_version_for_uri': helpers.get_content_model_version_for_uri_action,
+            'get_better_package_info': helpers.make_better_json
 
             #'create_resource_document_index': lib_action.create_resource_document_index
             # 'validate_resource': validate_action.validate_resource,
