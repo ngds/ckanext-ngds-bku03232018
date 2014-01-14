@@ -16,6 +16,7 @@ ngds.Map = {
                 'org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             detectRetina: true
         }),
+        wmsResultsGroup: {},
         searchResultsGroup: L.layerGroup()
     },
     controls: {
@@ -221,7 +222,9 @@ ngds.Map.addWmsLayer = function (thisId) {
                 'version': '1.1.1'
                 },
                 bbox = [[wms.bbox[1], wms.bbox[0]],[wms.bbox[3], wms.bbox[2]]],
-                wmsLayer = L.tileLayer.wms(wms['service_url'], params);
+                wmsLayer = L.tileLayer.wms(wms['service_url'], params),
+                wmsSearchGroup = ngds.Map.map.layers.wmsResultsGroup;
+
             ngds.Map.map.addLayer(wmsLayer);
             ngds.Map.map.fitBounds(bbox);
         })
@@ -246,6 +249,7 @@ ngds.Map.map.addControl(ngds.Map.controls.doodle);
 ngds.Map.map.addControl(new ngds.Map.controls.search);
 ngds.Map.map.addControl(new ngds.Map.controls.reset);
 ngds.Map.map.addControl(ngds.Map.controls.loading);
+L.control.layers().addTo(ngds.Map.map);
 
 $('.leaflet-draw-toolbar-top').removeClass('leaflet-draw-toolbar');
 $('.leaflet-draw-draw-rectangle').addClass('glyphicon icon-pencil');
