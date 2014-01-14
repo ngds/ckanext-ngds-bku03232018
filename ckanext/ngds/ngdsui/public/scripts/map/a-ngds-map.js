@@ -16,8 +16,7 @@ ngds.Map = {
                 'org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             detectRetina: true
         }),
-        wmsResultsGroup: {},
-        searchResultsGroup: L.layerGroup()
+        searchResultsGroup: {"Search Results": L.layerGroup()}
     },
     controls: {
         loading: L.Control.loading({separate: true, position: 'topleft'}),
@@ -31,7 +30,7 @@ ngds.Map = {
                 .on(container, 'dblclick', L.DomEvent.stopPropagation)
                 .on(container, 'mousedown', L.DomEvent.stopPropagation)
                 .addListener(container, 'click', function () {
-                    var layers = ngds.Map.layers.searchResultsGroup;
+                    var layers = ngds.Map.layers.searchResultsGroup["Search Results"];
                     if ($(container).hasClass('off')) {
                         $(container).removeClass('off');
                         $(container).addClass('on');
@@ -63,7 +62,7 @@ ngds.Map = {
 };
 
 ngds.Map.topLevelSearch = function (bbox) {
-    var theseLayers = ngds.Map.layers.searchResultsGroup;
+    var theseLayers = ngds.Map.layers.searchResultsGroup["Search Results"];
     if (theseLayers.getLayers().length > 1) {theseLayers.clearLayers();}
     $('#query-results').empty();
     var extras = bbox || {'ext:bbox': "-180,-90,180,90"},
@@ -200,7 +199,7 @@ ngds.Map.returnSearchResult = function (result) {
         weight: 1
     });
 */
-    ngds.Map.layers.searchResultsGroup.addLayer(circles).addTo(ngds.Map.map);
+    ngds.Map.layers.searchResultsGroup["Search Results"].addLayer(circles).addTo(ngds.Map.map);
 //    ngds.Map.layers.searchResultsGroup.addLayer(boundingBoxes).addTo(ngds.Map.map);
 };
 
@@ -222,9 +221,8 @@ ngds.Map.addWmsLayer = function (thisId) {
                 'version': '1.1.1'
                 },
                 bbox = [[wms.bbox[1], wms.bbox[0]],[wms.bbox[3], wms.bbox[2]]],
-                wmsLayer = L.tileLayer.wms(wms['service_url'], params),
-                wmsSearchGroup = ngds.Map.map.layers.wmsResultsGroup;
-
+                wmsLayer = L.tileLayer.wms(wms['service_url'], params);
+            layersControl.addOverlay(wmsLayer, 'my_layer');
             ngds.Map.map.addLayer(wmsLayer);
             ngds.Map.map.fitBounds(bbox);
         })
@@ -243,13 +241,16 @@ ngds.Map.toggleContentMenu = function () {
     }
 };
 
+var overlayPane = ngds.Map.layers.searchResultsGroup,
+    layersControl = L.control.layers(null, overlayPane, {position: 'topleft'});
+
 drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);
 ngds.Map.map.addControl(ngds.Map.controls.doodle);
 ngds.Map.map.addControl(new ngds.Map.controls.search);
 ngds.Map.map.addControl(new ngds.Map.controls.reset);
+layersControl.addTo(ngds.Map.map);
 ngds.Map.map.addControl(ngds.Map.controls.loading);
-L.control.layers().addTo(ngds.Map.map);
 
 $('.leaflet-draw-toolbar-top').removeClass('leaflet-draw-toolbar');
 $('.leaflet-draw-draw-rectangle').addClass('glyphicon icon-pencil');
