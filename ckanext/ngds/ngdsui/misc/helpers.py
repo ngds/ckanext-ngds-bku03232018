@@ -962,11 +962,11 @@ def make_better_json(context, data_dict):
         better_packages = []
         for result in search['results']:
             package = {'id': result['id'],
-                       'hasWMS': result['hasWMSResources'],
                        'author': result['author'],
                        'title': result['title'],
                        'name': result['name'],
                        'resources': result['resources'],
+                       'notes': result['notes'],
                        'bbox': [[this_val['value'] for this_val in result['extras'] if
                                  'type' and 'coordinates' in this_val['value']]]}
             better_packages.append(package)

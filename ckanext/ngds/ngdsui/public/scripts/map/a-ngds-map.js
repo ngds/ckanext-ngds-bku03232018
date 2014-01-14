@@ -83,9 +83,9 @@ ngds.Map.makeSearch = function (parameters) {
         extras = parameters['extras'];
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
-        _.each(response.result.results, function (rec) {
+        _.each(response.result, function (rec) {
             var randomNumber = Math.floor(Math.random()*1000000000000000000000),
-                coords = JSON.parse(rec.extras[8].value),
+                coords = JSON.parse(rec.bbox[0]),
                 geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
                     'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
                 bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
