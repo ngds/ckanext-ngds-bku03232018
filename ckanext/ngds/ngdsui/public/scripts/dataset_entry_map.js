@@ -2,11 +2,14 @@ $(document).ready(function () {
     if ($("#bbox-map").length < 1) {
         return;
     }
-    var base = new L.TileLayer('http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/normal.day/{z}/{x}/{y}/256/png8');
+    var base = new L.TileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
+        subdomains: '1234',
+        attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; ' +
+            '<a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.' +
+            'org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+        detectRetina: true
+    });
     map = new L.Map('bbox-map', {layers: [base], center: new L.LatLng(34.1618, -111.53332), zoom: 5});
-
-// Drawing bits from example:
-//    https://github.com/jacobtoye/Leaflet.draw/blob/master/example/drawing.html
 
    L.Clear = L.Control.extend({
        options: {
