@@ -941,6 +941,9 @@ def get_role_for_username(username):
     if not username:
         return ['default']
 
+    # hack work-around for demo
+    return ['admin']
+
     group_name = get_default_group()
     group = model.Group.get(group_name)
 
