@@ -76,9 +76,8 @@ ngds.Map.topLevelSearch = function (bbox) {
 
 ngds.Map.makeSearch = function (parameters) {
     var action = ngds.ckanlib.package_search,
-        rows = 10,
-        page = 1,
-        start = (page - 1) * rows,
+        rows = 10000000,
+        start = 0,
         query = parameters['q'],
         extras = parameters['extras'];
 
@@ -90,7 +89,7 @@ ngds.Map.makeSearch = function (parameters) {
                     'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
                 bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
                 center = bounds.getCenter(),
-                geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber},
+                geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber, 'title': rec.title},
                     'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
                 reqData = {'title': rec.title, 'name': rec.name, 'notes': rec.notes, 'pkg_id': rec.id,
                     'resources': rec.resources, 'geoData': geoData, 'geojson': geojson};
@@ -156,11 +155,15 @@ ngds.Map.returnSearchResult = function (result) {
         return L.circleMarker(ll, defaultStyle)
         },
         onEachFeature: function (feature, layer) {
-            var feature_id = layer.feature.properties.feature_id;
+            var feature_id = layer.feature.properties.feature_id,
+                popupText = layer.feature.properties.title,
+                thisPopup = L.popup().setLatLng(feature).setContent(popupText),
+                searchResult = $('.map-search-result.result-' + feature_id);
+            layer.bindPopup(thisPopup);
             layer.on('click', function() {
                 var toggleId = $('#collapse' + feature_id),
                     collapseId = $('.feature-id-' + feature_id);
-
+                $('#query-results').prepend(searchResult);
                 if (collapseId.hasClass('collapsed')) {
                     toggleId.addClass('in');
                     collapseId.removeClass('collapsed');
@@ -181,7 +184,7 @@ ngds.Map.returnSearchResult = function (result) {
                 var resultId = $('.result-' + feature_id);
                 resultId.removeClass('result-highlight');
             })
-            var searchResult = $('.map-search-result.result-' + feature_id);
+
             searchResult.hover(function () {
                 $(searchResult).addClass('result-highlight');
                 layer.setStyle({fillColor: 'yellow'});

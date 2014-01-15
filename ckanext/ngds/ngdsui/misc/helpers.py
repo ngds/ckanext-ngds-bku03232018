@@ -971,4 +971,5 @@ def make_better_json(context, data_dict):
                                  'type' and 'coordinates' in this_val['value']]]}
             better_packages.append(package)
         return better_packages
-    return make_package(search)
+    these_packages = make_package(search)
+    return these_packages
