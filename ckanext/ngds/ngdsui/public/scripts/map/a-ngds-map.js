@@ -87,18 +87,31 @@ ngds.Map.makeSearch = function (parameters) {
                 coords = JSON.parse(rec.bbox[0]),
                 geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
                     'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
+                geoString = geoData['sw_lat'] + ',' + geoData['sw_lon'] + ',' + geoData['ne_lat'] + ',' + geoData['ne_lon'];
                 bounds = L.latLngBounds([[geoData.sw_lon, geoData.sw_lat],[geoData.ne_lon, geoData.ne_lat]]),
                 center = bounds.getCenter(),
                 geojson = {'type': 'Feature', 'properties': {'feature_id': randomNumber, 'title': rec.title},
                     'geometry': {'type': 'Point', 'coordinates': [center.lat, center.lng]}},
                 reqData = {'title': rec.title, 'name': rec.name, 'notes': rec.notes, 'pkg_id': rec.id,
-                    'resources': rec.resources, 'geoData': geoData, 'geojson': geojson};
+                    'resources': rec.resources, 'geoData': geoData, 'geojson': geojson, 'geoString': geoString};
             ngds.Map.returnSearchResult(reqData);
         })
     })
 };
 
 ngds.Map.returnSearchResult = function (result) {
+    var thisResult = [result];
+    console.log(thisResult);
+    var vanillaOptions = _.map(thisResult, function (data) {
+        if (data.geoData) {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a id="bbox-handle" value="' + result.geoString + '" href="javascript:void(0)" onclick="ngds.Map.addBbox(this)">Show Area on Map</a>';
+            html += '</div></div>';
+            return html;
+        }
+    }).join('');
+
     var resources = _.map(result.resources, function (data) {
         if (data.format) {
             html = '<div class="accordion-group" id="accordion-search-result">';
@@ -156,6 +169,7 @@ ngds.Map.returnSearchResult = function (result) {
         html += '</td></tr></table>';
         html += '<div class="package-description"><p>' + packageDescription['preview'] + '</p></div></div>';
         html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
+        html += '<div class="resource-content">' + vanillaOptions + '</div>';
         html += '<div class="resource-content">' + resources + '</div>';
         //html += '<div class="resource-content">' + resources + '<div class="btn-mini btn-info btn">Bounding Box</div></div>';
         html += '</div></div></div></li>';
@@ -209,16 +223,8 @@ ngds.Map.returnSearchResult = function (result) {
             })
         }}
     );
-/*
-    var theseBounds = [[result.geoData.sw_lat, result.geoData.sw_lon],
-        [result.geoData.ne_lat, result.geoData.ne_lon]];
-    var boundingBoxes = L.rectangle(theseBounds, {
-        color: '#0014ff',
-        weight: 1
-    });
-*/
+
     ngds.Map.layers.searchResultsGroup["Search Results"].addLayer(circles).addTo(ngds.Map.map);
-//    ngds.Map.layers.searchResultsGroup.addLayer(boundingBoxes).addTo(ngds.Map.map);
 };
 
 ngds.Map.map.on('draw:created', function (e) {
@@ -247,6 +253,31 @@ ngds.Map.addWmsLayer = function (thisId) {
     })
 };
 
+ngds.Map.addBbox = function (event) {
+    var theseValues = event.getAttribute('value').split(','),
+        theseCoords = [];
+    _.each(theseValues, function (value) {
+        var coord = parseFloat(value);
+        theseCoords.push(coord);
+    })
+    var theseBounds = [[theseCoords[0], theseCoords[1]], [theseCoords[2], theseCoords[3]]],
+        boundingBox = L.rectangle(theseBounds, {color: 'blue', weight: 1});
+    ngds.Map.layers.searchResultsGroup["Search Results"].addLayer(boundingBox).addTo(ngds.Map.map);
+};
+
+/*
+    var coords = JSON.parse(value),
+        geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
+            'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
+        theseBounds = [[geoData.sw_lat, geoData.sw_lon], [geoData.ne_lat, geoData.ne_lon]],
+        boundingBoxes = L.rectangle(theseBounds, {
+            color: '#0014ff',
+            weight: 1
+        });
+    ngds.Map.layers.searchResultsGroup.addLayer(boundingBoxes).addTo(ngds.Map.map);
+*/
+
+
 ngds.Map.toggleContentMenu = function () {
     if ($('#content-legend-menu').hasClass('shown')) {
         $('#content-legend-menu').removeClass('shown');
@@ -272,5 +303,9 @@ ngds.Map.map.addControl(ngds.Map.controls.loading);
 
 $('.leaflet-draw-toolbar-top').removeClass('leaflet-draw-toolbar');
 $('.leaflet-draw-draw-rectangle').addClass('glyphicon icon-pencil');
+
+$('.bbox-handle').click(function (e) {
+    console.log(e.val());
+});
 
 }).call(this);
