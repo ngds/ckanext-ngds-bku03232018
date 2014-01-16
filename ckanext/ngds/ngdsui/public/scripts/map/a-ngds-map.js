@@ -116,12 +116,15 @@ ngds.Map.returnSearchResult = function (result) {
     var wmsLayerOption = _.map(result.resources, function (data) {
         var layerName = function (data) {
             if ('layer_name' in data && data.layer_name.length > 0 && typeof data.layer_name === 'string') {
+                result.resources['smartLayer'] = data.layer_name;
                 return data.layer_name;
             } else if (data.name) {
                 var unHyphen = data.name.replace(/\s*-\s*/g, ' '),
                     capitalize = unHyphen.replace(/\b./g, function (m) {return m.toUpperCase()});
+                result.resources['smartLayer'] = capitalize;
                 return capitalize;
             } else {
+                result.resources['smartLayer'] = 'Undefined Layer';
                 return 'Undefined Layer';
             }
         };
@@ -145,37 +148,41 @@ ngds.Map.returnSearchResult = function (result) {
     }).join(',');
 
     var resources = _.map(result.resources, function (data) {
-        if (data.format) {
+        var versionUri = data.content_model_version,
+            baseUri = data.content_model_uri;
+        if (baseUri || versionUri) {
+            var getThisUri = function (data) {
+                if (versionUri && baseUri || versionUri && !(baseUri)) {
+                    return '<a class="data-uri-link" href="' + versionUri + '">Go To Content Model URI</a>';
+                } else if (baseUri && !(versionUri)) {
+                    return '<a class="data-uri-link" href="' + baseUri + '">Go To Content Model URI</a>';
+                }
+            };
+            data['smartUri'] = getThisUri(data);
+        };
+
+        if (data.protocol && data.protocol.search('OGC') != -1 && data.url) {
+            var getThisRequest = function (data) {
+                if (data.url.search('getcapabilities') != -1 || data.url.search('GetCapabilities') != -1
+                    || data.url.search('getCapabilities') != -1 || data.url.search('Getcapabilities') != -1) {
+                    return data.url;
+                } else {
+                    return data.url + 'request=GetCapabilities&service=WMS';
+                }
+            }
+            data['smartRequest'] = getThisRequest(data);
+        }
+        if (data.protocol === 'OGC:WMS') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<table><tr><td><span class="label label-success">' + data.format + '</span></td><td>';
-            html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-search-result" href=#collapse' + data.id + '>' + data.name + '</a></div>';
-            html += '</td></tr></table>';
-            html += '<div id=collapse' + data.id + ' class="accordion-body collapse">';
-            html += '<p>' + data.description + '</p>';
-            html += '</div></div></div>';
+            html += '<a class="data-ogc" href="' + data.smartRequest + '">Web Map Service Capabilities</a>';
+            html += '</div></div>';
             return html;
-        } else if (data.protocol === 'OGC:WMS') {
+        } else if (data.protocol === 'OGC:WFS') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<table><tr><td><span class="label label-success">' + data.protocol + '</span></td><td>';
-            html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-search-result" href=#collapse' + data.id + '>' + data.layer + '</a></div>';
-            html += '</td></tr></table>';
-            html += '<div id=collapse' + data.id + ' class="accordion-body collapse">';
-            html += '<p>' + data.description + '</p>';
-            html += '<table><tr><td><div class="glyphicon icon-globe"</td>';
-            html += '<td><a id="' + result.pkg_id + '" class="wms-handle" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this.id)">WMS Layer</a></td>';
-            html += '</tr></table></div></div></div>';
-            return html;
-        } else if (data.protocol) {
-            html = '<div class="accordion-group" id="accordion-search-result">';
-            html += '<div class="accordion-heading">';
-            html += '<table><tr><td><span class="label label-success">' + data.protocol + '</span></td><td>';
-            html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-search-result" href=#collapse' + data.id + '>' + data.layer + '</a></div>';
-            html += '</td></tr></table>';
-            html += '<div id=collapse' + data.id + ' class="accordion-body collapse">';
-            html += '<p>' + data.description + '</p>';
-            html += '</div></div></div>';
+            html += '<a class="data-ogc" href="' + data.smartRequest + '">Web Feature Service Capabilities</a>';
+            html += '</div></div>';
             return html;
         }
     }).join('');
@@ -204,8 +211,7 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div class="resource-content">' + vanillaOptions + '</div>';
         html += '<div class="resource-content">' + wmsLayerOption + '</div>';
         html += '<div class="resource-content">' + datasetDetailsOption + '</div>';
-        html += '<div class="resource-content">' + resources + '</div>';
-        //html += '<div class="resource-content">' + resources + '<div class="btn-mini btn-info btn">Bounding Box</div></div>';
+        html += '<div class="resource-content">Available Resources' + resources + '</div>';
         html += '</div></div></div></li>';
     $('#query-results').append(html);
 
