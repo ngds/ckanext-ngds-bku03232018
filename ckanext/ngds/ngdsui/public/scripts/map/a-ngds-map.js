@@ -16,7 +16,8 @@ ngds.Map = {
                 'org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             detectRetina: true
         }),
-        searchResultsGroup: {"Search Results": L.layerGroup(), "Data Extents": L.layerGroup()}
+        searchResultsGroup: {"Search Results": L.layerGroup()},
+        dataExtentsGroup: {"Data Extents": new Array()}
     },
     controls: {
         loading: L.Control.loading({separate: true, position: 'topleft'}),
@@ -101,7 +102,6 @@ ngds.Map.makeSearch = function (parameters) {
 
 ngds.Map.returnSearchResult = function (result) {
     var thisResult = [result];
-    console.log(thisResult);
     var vanillaOptions = _.map(thisResult, function (data) {
         if (data.geoData) {
             html = '<div class="accordion-group" id="accordion-search-result">';
@@ -254,7 +254,8 @@ ngds.Map.addWmsLayer = function (thisId) {
 };
 
 ngds.Map.addBbox = function (event) {
-    var thisId = $('#' + event.getAttribute('id'));
+    var thisId = $('#' + event.getAttribute('id')),
+        thisUID = thisId[0].id.split('bbox-handle')[1];
     if (thisId.hasClass('extent-absent')) {
         var theseValues = event.getAttribute('value').split(','),
             theseCoords = [];
@@ -264,11 +265,13 @@ ngds.Map.addBbox = function (event) {
         });
         var theseBounds = [[theseCoords[0], theseCoords[1]], [theseCoords[2], theseCoords[3]]],
             boundingBox = L.rectangle(theseBounds, {color: 'blue', weight: 1});
-            searchGroup = ngds.Map.layers.searchResultsGroup;
-        searchGroup['Data Extents'].addLayer(boundingBox).addTo(ngds.Map.map);
+            bboxGroup = ngds.Map.layers.dataExtentsGroup;
+        bboxGroup['Data Extents'][thisUID] = boundingBox;
+        bboxGroup['Data Extents'][thisUID].addTo(ngds.Map.map);
         thisId.removeClass('extent-absent').addClass('extent-present');
     } else if (thisId.hasClass('extent-present')) {
-        searchGroup['Data Extents'].removeLayer('e');
+        var thisLayer = bboxGroup['Data Extents'][thisUID];
+        ngds.Map.map.removeLayer(thisLayer);
         thisId.removeClass('extent-present').addClass('extent-absent');
     }
 };
