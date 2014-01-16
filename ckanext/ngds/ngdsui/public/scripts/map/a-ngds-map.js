@@ -135,14 +135,26 @@ ngds.Map.returnSearchResult = function (result) {
         }
     }).join('');
 
+    var getPackageDescription = function (data) {
+        if (data.length > 200) {
+            return {'preview': data.substr(0,200) + '...', 'full': data}
+        } else if (data.length <= 200) {
+            return data
+        } else {
+            return ''
+        }
+    };
+
     var feature_id = result.geojson.properties.feature_id,
+        packageDescription = getPackageDescription(result.notes),
         html = '<li class="map-search-result result-' + feature_id + '" >';
         html += '<div class="accordion" id="accordion-search">';
         html += '<div class="accordion-group">';
         html += '<div class="accordion-heading">';
-        html += '<table><tr><td><span class="glyphicon icon-plus-sign"></span></td><td>';
-        html += '<a class="accordion-toggle feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '>' + result.title + '</a><br>' + result.notes.substr(0,300) + '...</td>';
-        html += '</td></tr></table></div>';
+        html += '<table>';
+        html += '<a class="accordion-toggle feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '>' + result.title + '</td>';
+        html += '</td></tr></table>';
+        html += '<div class="package-description"><p>' + packageDescription['preview'] + '</p></div></div>';
         html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
         html += '<div class="resource-content">' + resources + '</div>';
         //html += '<div class="resource-content">' + resources + '<div class="btn-mini btn-info btn">Bounding Box</div></div>';
@@ -166,6 +178,7 @@ ngds.Map.returnSearchResult = function (result) {
                 var toggleId = $('#collapse' + feature_id),
                     collapseId = $('.feature-id-' + feature_id);
                 $('#query-results').prepend(searchResult);
+                $('#query-results').animate({scrollTop:0}, 'fast');
                 if (collapseId.hasClass('collapsed')) {
                     toggleId.addClass('in');
                     collapseId.removeClass('collapsed');
