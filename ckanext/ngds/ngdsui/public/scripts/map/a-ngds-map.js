@@ -141,7 +141,7 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div class="accordion-group">';
         html += '<div class="accordion-heading">';
         html += '<table><tr><td><span class="glyphicon icon-plus-sign"></span></td><td>';
-        html += '<a class="accordion-toggle feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '>' + result.title + '</a></td>';
+        html += '<a class="accordion-toggle feature-id-' + feature_id + '" data-toggle="collapse" data-parent="#accordion-search" href=#collapse' + feature_id + '>' + result.title + '</a><br>' + result.notes.substr(0,300) + '...</td>';
         html += '</td></tr></table></div>';
         html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
         html += '<div class="resource-content">' + resources + '</div>';
@@ -149,7 +149,9 @@ ngds.Map.returnSearchResult = function (result) {
         html += '</div></div></div></li>';
     $('#query-results').append(html);
 
-    var defaultStyle = {radius: 8, fillColor: '#ff0000', color: '#ff0000',
+    var defaultStyle = {radius: 8, fillColor: '#ff00ff', color: '#ff00ff',
+            weight: 2, opacity: 1, fillOpacity: 0.5},
+         highlightStyle = {radius: 8, fillColor: 'blue', color: 'blue',
             weight: 2, opacity: 1, fillOpacity: 0.5};
     var circles = L.geoJson(result.geojson, {pointToLayer: function (f,ll) {
         return L.circleMarker(ll, defaultStyle)
@@ -175,7 +177,7 @@ ngds.Map.returnSearchResult = function (result) {
                 }
             }),
             layer.on('mouseover', function () {
-                layer.setStyle({fillColor: 'yellow'});
+                layer.setStyle(highlightStyle);
                 var resultId = $('.result-' + feature_id);
                 resultId.addClass('result-highlight');
             }),
@@ -187,7 +189,7 @@ ngds.Map.returnSearchResult = function (result) {
 
             searchResult.hover(function () {
                 $(searchResult).addClass('result-highlight');
-                layer.setStyle({fillColor: 'yellow'});
+                layer.setStyle(highlightStyle);
             }, function () {
                 $(searchResult).removeClass('result-highlight');
                 layer.setStyle(defaultStyle);
