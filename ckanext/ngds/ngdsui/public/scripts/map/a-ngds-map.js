@@ -106,7 +106,29 @@ ngds.Map.returnSearchResult = function (result) {
         if (data.geoData) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<a id=bbox-handle' + data.pkg_id + ' class="extent-absent" value="' + result.geoString + '" href="javascript:void(0)" onclick="ngds.Map.addBbox(this)">Show Area on Map</a>';
+            html += '<a id=bbox-handle' + data.pkg_id + ' class="toggle-layer-extent extent-absent" value="' + result.geoString + '" href="javascript:void(0)" onclick="ngds.Map.addBbox(this)">Show Area on Map</a>';
+            html += '</div></div>';
+            return html;
+        }
+    }).join('');
+
+    var wmsLayerOption = _.map(result.resources, function (data) {
+        var layerName = function (data) {
+            if ('layer_name' in data && data.layer_name.length > 0 && typeof data.layer_name === 'string') {
+                return data.layer_name;
+            } else if (data.name) {
+                var unHyphen = data.name.replace(/\s*-\s*/g, ' '),
+                    capitalize = unHyphen.replace(/\b./g, function (m) {return m.toUpperCase()});
+                return capitalize;
+            } else {
+                return 'Undefined Layer';
+            }
+        };
+
+        if (data.protocol === 'OGC:WMS') {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a id="' + result.pkg_id + '" class="toggle-layer-wms wms-handle" value="' + layerName(data) + '" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this)">Show Web Map Service</a>'
             html += '</div></div>';
             return html;
         }
@@ -170,6 +192,7 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div class="package-description"><p>' + packageDescription['preview'] + '</p></div></div>';
         html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
         html += '<div class="resource-content">' + vanillaOptions + '</div>';
+        html += '<div class="resource-content">' + wmsLayerOption + '</div>';
         html += '<div class="resource-content">' + resources + '</div>';
         //html += '<div class="resource-content">' + resources + '<div class="btn-mini btn-info btn">Bounding Box</div></div>';
         html += '</div></div></div></li>';
@@ -235,7 +258,10 @@ ngds.Map.map.on('draw:created', function (e) {
     ngds.Map.map.fitBounds(layer.getBounds());
 });
 
-ngds.Map.addWmsLayer = function (thisId) {
+ngds.Map.addWmsLayer = function (event) {
+    var thisElement = $('#' + event.getAttribute('id')),
+        thisId = thisElement[0].id,
+        thisValue = event.getAttribute('value');
     ngds.ckanlib.get_wms_urls(thisId, function (wmsMapping) {
         _.each(wmsMapping, function (wms) {
             var params = {
@@ -246,7 +272,7 @@ ngds.Map.addWmsLayer = function (thisId) {
                 },
                 bbox = [[wms.bbox[1], wms.bbox[0]],[wms.bbox[3], wms.bbox[2]]],
                 wmsLayer = L.tileLayer.wms(wms['service_url'], params);
-            layersControl.addOverlay(wmsLayer, 'my_layer');
+            layersControl.addOverlay(wmsLayer, thisValue);
             ngds.Map.map.addLayer(wmsLayer);
             ngds.Map.map.fitBounds(bbox);
         })
@@ -269,10 +295,12 @@ ngds.Map.addBbox = function (event) {
         bboxGroup['Data Extents'][thisUID] = boundingBox;
         bboxGroup['Data Extents'][thisUID].addTo(ngds.Map.map);
         thisId.removeClass('extent-absent').addClass('extent-present');
+        thisId.text('Hide Area on Map');
     } else if (thisId.hasClass('extent-present')) {
         var thisLayer = bboxGroup['Data Extents'][thisUID];
         ngds.Map.map.removeLayer(thisLayer);
         thisId.removeClass('extent-present').addClass('extent-absent');
+        thisId.text('Show Area on Map');
     }
 };
 
