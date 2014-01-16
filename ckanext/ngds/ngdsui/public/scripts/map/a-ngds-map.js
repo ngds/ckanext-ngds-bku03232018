@@ -17,7 +17,8 @@ ngds.Map = {
             detectRetina: true
         }),
         searchResultsGroup: {"Search Results": L.layerGroup()},
-        dataExtentsGroup: {"Data Extents": new Array()}
+        dataExtentsGroup: {"Data Extents": new Array()},
+        wmsLayersGroup: new Array()
     },
     controls: {
         loading: L.Control.loading({separate: true, position: 'topleft'}),
@@ -128,11 +129,20 @@ ngds.Map.returnSearchResult = function (result) {
         if (data.protocol === 'OGC:WMS') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<a id="' + result.pkg_id + '" class="toggle-layer-wms wms-handle" value="' + layerName(data) + '" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this)">Show Web Map Service</a>'
+            html += '<a id="' + result.pkg_id + '" class="toggle-layer-wms wms-absent" value="' + layerName(data) + '" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this)">Show Web Map Service</a>'
             html += '</div></div>';
             return html;
         }
     }).join('');
+
+    var datasetDetailsOption = _.map(thisResult, function(data) {
+        var link = '/dataset/' + data.name;
+        html = '<div class="accordion-group" id="accordion-search-result">';
+        html += '<div class="accordion-heading">';
+        html += '<a class="data-details-link" href="' + link + '">Go To Dataset Details Page</a>';
+        html += '</div></div>';
+        return html;
+    }).join(',');
 
     var resources = _.map(result.resources, function (data) {
         if (data.format) {
@@ -193,6 +203,7 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div id=collapse' + feature_id + ' class="accordion-body collapse">';
         html += '<div class="resource-content">' + vanillaOptions + '</div>';
         html += '<div class="resource-content">' + wmsLayerOption + '</div>';
+        html += '<div class="resource-content">' + datasetDetailsOption + '</div>';
         html += '<div class="resource-content">' + resources + '</div>';
         //html += '<div class="resource-content">' + resources + '<div class="btn-mini btn-info btn">Bounding Box</div></div>';
         html += '</div></div></div></li>';
@@ -262,21 +273,33 @@ ngds.Map.addWmsLayer = function (event) {
     var thisElement = $('#' + event.getAttribute('id')),
         thisId = thisElement[0].id,
         thisValue = event.getAttribute('value');
-    ngds.ckanlib.get_wms_urls(thisId, function (wmsMapping) {
-        _.each(wmsMapping, function (wms) {
-            var params = {
-                'layers': wms['layer'],
-                'format': wms['format'],
-                'transparent': true,
-                'version': '1.1.1'
-                },
-                bbox = [[wms.bbox[1], wms.bbox[0]],[wms.bbox[3], wms.bbox[2]]],
-                wmsLayer = L.tileLayer.wms(wms['service_url'], params);
-            layersControl.addOverlay(wmsLayer, thisValue);
-            ngds.Map.map.addLayer(wmsLayer);
-            ngds.Map.map.fitBounds(bbox);
+    if (thisElement.hasClass('wms-absent')) {
+        ngds.ckanlib.get_wms_urls(thisId, function (wmsMapping) {
+            _.each(wmsMapping, function (wms) {
+                var params = {
+                    'layers': wms['layer'],
+                    'format': wms['format'],
+                    'transparent': true,
+                    'version': '1.1.1'
+                    },
+                    bbox = [[wms.bbox[1], wms.bbox[0]],[wms.bbox[3], wms.bbox[2]]],
+                    wmsLayer = L.tileLayer.wms(wms['service_url'], params);
+                ngds.Map.layers.wmsLayersGroup[thisId] = wmsLayer;
+                var thisWms = ngds.Map.layers.wmsLayersGroup[thisId];
+                layersControl.addOverlay(thisWms, thisValue);
+                ngds.Map.map.addLayer(thisWms);
+                ngds.Map.map.fitBounds(bbox);
+            })
         })
-    })
+        thisElement.removeClass('wms-absent').addClass('wms-present');
+        thisElement.text('Hide Web Map Service');
+    } else if (thisElement.hasClass('wms-present')) {
+        var thisWms = ngds.Map.layers.wmsLayersGroup[thisId];
+        ngds.Map.map.removeLayer(thisWms);
+        layersControl.removeLayer(thisWms);
+        thisElement.removeClass('wms-present').addClass('wms-absent');
+        thisElement.text('Show Web Map Service');
+    }
 };
 
 ngds.Map.addBbox = function (event) {
