@@ -16,7 +16,7 @@ ngds.Map = {
                 'org/licenses/by-sa/2.0/">CC-BY-SA</a>',
             detectRetina: true
         }),
-        searchResultsGroup: {"Search Results": L.layerGroup()}
+        searchResultsGroup: {"Search Results": L.layerGroup(), "Data Extents": L.layerGroup()}
     },
     controls: {
         loading: L.Control.loading({separate: true, position: 'topleft'}),
@@ -106,7 +106,7 @@ ngds.Map.returnSearchResult = function (result) {
         if (data.geoData) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<a id="bbox-handle" value="' + result.geoString + '" href="javascript:void(0)" onclick="ngds.Map.addBbox(this)">Show Area on Map</a>';
+            html += '<a id=bbox-handle' + data.pkg_id + ' class="extent-absent" value="' + result.geoString + '" href="javascript:void(0)" onclick="ngds.Map.addBbox(this)">Show Area on Map</a>';
             html += '</div></div>';
             return html;
         }
@@ -254,29 +254,24 @@ ngds.Map.addWmsLayer = function (thisId) {
 };
 
 ngds.Map.addBbox = function (event) {
-    var theseValues = event.getAttribute('value').split(','),
-        theseCoords = [];
-    _.each(theseValues, function (value) {
-        var coord = parseFloat(value);
-        theseCoords.push(coord);
-    })
-    var theseBounds = [[theseCoords[0], theseCoords[1]], [theseCoords[2], theseCoords[3]]],
-        boundingBox = L.rectangle(theseBounds, {color: 'blue', weight: 1});
-    ngds.Map.layers.searchResultsGroup["Search Results"].addLayer(boundingBox).addTo(ngds.Map.map);
-};
-
-/*
-    var coords = JSON.parse(value),
-        geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
-            'ne_lat': coords.coordinates[0][2][1], 'ne_lon': coords.coordinates[0][2][0]},
-        theseBounds = [[geoData.sw_lat, geoData.sw_lon], [geoData.ne_lat, geoData.ne_lon]],
-        boundingBoxes = L.rectangle(theseBounds, {
-            color: '#0014ff',
-            weight: 1
+    var thisId = $('#' + event.getAttribute('id'));
+    if (thisId.hasClass('extent-absent')) {
+        var theseValues = event.getAttribute('value').split(','),
+            theseCoords = [];
+        _.each(theseValues, function (value) {
+            var coord = parseFloat(value);
+            theseCoords.push(coord);
         });
-    ngds.Map.layers.searchResultsGroup.addLayer(boundingBoxes).addTo(ngds.Map.map);
-*/
-
+        var theseBounds = [[theseCoords[0], theseCoords[1]], [theseCoords[2], theseCoords[3]]],
+            boundingBox = L.rectangle(theseBounds, {color: 'blue', weight: 1});
+            searchGroup = ngds.Map.layers.searchResultsGroup;
+        searchGroup['Data Extents'].addLayer(boundingBox).addTo(ngds.Map.map);
+        thisId.removeClass('extent-absent').addClass('extent-present');
+    } else if (thisId.hasClass('extent-present')) {
+        searchGroup['Data Extents'].removeLayer('e');
+        thisId.removeClass('extent-present').addClass('extent-absent');
+    }
+};
 
 ngds.Map.toggleContentMenu = function () {
     if ($('#content-legend-menu').hasClass('shown')) {
