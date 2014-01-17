@@ -103,7 +103,8 @@ def _ngds_update_additions(schema):
         "layer": [optional],
         "ordering_procedure": [optional],
         "content_model_uri": [optional],
-        "content_model_version": [optional]
+        "content_model_version": [optional],
+        "content_model_layer": [optional]
     }
 
     schema['resources'] = dict(schema['resources'].items() + ngds_resource_additions.items())

@@ -17,6 +17,7 @@ import urllib2, simplejson
 import logging
 import ckan.logic as logic
 import ckan.plugins as p
+import usginmodels
 
 from ckan.plugins import toolkit
 
@@ -104,9 +105,11 @@ def contentmodel_list_short(context, data_dict):
             v= {}
             v['uri']= version['uri']
             v['version']= version['version']
+            v['layers'] = version['layers_info']
             versions.append(v)
         m['versions']= versions
         m['uri']= model['uri']
+        m['label'] = model['label']
         modelsshort.append(m)   
 
     # print modelsshort
@@ -136,6 +139,7 @@ def contentmodel_get(context, data_dict):
         ))
     
     # schema is a list with a single entry
+    schema_label = schema[0]['label']
     schema_versions= schema[0]['versions']
     
     version= [ rec for rec in schema_versions if rec['version'] == cm_version]
@@ -145,7 +149,7 @@ def contentmodel_get(context, data_dict):
         ))
         
     # version is again a list with a single entry
-    return version[0]
+    return {'label': schema_label, 'version': version[0]}
 
 @logic.side_effect_free
 def contentmodel_checkFile(context, data_dict):
@@ -166,10 +170,9 @@ def contentmodel_checkFile(context, data_dict):
     :returns: A status object (either success, or failed).
     :rtype: dictionary
     '''
-    cm_uri     = _get_or_bust(data_dict, 'cm_uri')
-    cm_version = _get_or_bust(data_dict, 'cm_version')
+
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
-    
+
     log.debug("input URL: " + cm_resource_url)
     modified_resource_url = cm_resource_url.replace("%3A", ":")
     truncated_url = modified_resource_url.split("/storage/f/")[1]
@@ -188,70 +191,38 @@ def contentmodel_checkFile(context, data_dict):
     user_schema = contentmodel_get(context, data_dict)
     # print user_schema
     fieldModelList = []
-    field_info_list = user_schema['field_info']
-    for field_info in field_info_list:
+    field_info_list = user_schema['version']['layers_info']
+    this_layer = _get_or_bust(data_dict, 'cm_layer')
+    this_version_uri = _get_or_bust(data_dict, 'cm_version_url')
+
+    for field_info in field_info_list[this_layer]:
         if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
             log.debug("found a undefined field: %s" % str(field_info))
             continue
-        else: 
+        else:
             fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
 
     log.debug(fieldModelList)
     log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
 
-    dataHeaderList = []
-    dataListList = []
     if len(validation_msg) == 0:
         try:
             csv_filename = csv_filename_withfile.split("file://")[1]
-            log.debug("csv_filename: %s" % csv_filename)
-            csv_reader = csv.reader(open(csv_filename, "rbU"))
-            header = csv_reader.next()
-            dataHeaderList = [x.strip() for x in header]
-            
-            for row in csv_reader:
-                new_row = [x.strip() for x in row]
-                dataListList.append(new_row)
-        except csv.Error as e:
-            msg = toolkit._("csv.Error file %s, line %d: %s") % (csv_filename, csv_reader.line_num, e)
-            validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
-        except IOError as e:
-            msg = toolkit._("IOError file %s, %s") % (csv_filename, e)
-            validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
-    log.debug("load %d headers" % (len(dataHeaderList)))
-    log.debug("load %d row records" % (len(dataListList)))
-    log.debug("about to finish CSV reading")
+            this_csv = open(csv_filename, 'rbU')
+            this_text = csv.DictReader(this_csv)
 
-    if len(validation_msg) == 0:
-        if ckanext.ngds.contentmodel.model.contentmodels.checkfile_checkheader == True:
-            validate_header_messages = validate_header(fieldModelList, dataHeaderList, dataListList)
-            if len(validate_header_messages) > 0:
-                validation_msg.extend(validate_header_messages)
+            valid, errors, dataCorrected, long_fields, srs = usginmodels.validate_file(
+                this_text,
+                this_version_uri,
+                this_layer
+            )
 
-        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
-            if ckanext.ngds.contentmodel.model.contentmodels.checkfile_checkoptionalfalse == True:
-                validate_missing_message = validate_detectMissingColumn(fieldModelList, dataHeaderList)
-                if len(validate_missing_message) > 0:
-                    validation_msg.extend(validate_missing_message)
-            
-        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
-            if ckanext.ngds.contentmodel.model.contentmodels.checkfile_checkoptionalfalse == True:
-                validation_existence_messages = validate_existence(fieldModelList, dataHeaderList, dataListList)
-                if len(validation_existence_messages) > 0:
-                    validation_msg.extend(validation_existence_messages)
-        
-        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
-            validation_numericType_messages = validate_numericType(fieldModelList, dataHeaderList, dataListList)
-            if len(validation_numericType_messages) > 0:
-                validation_msg.extend(validation_numericType_messages)
-
-        if len(validation_msg) < ckanext.ngds.contentmodel.model.contentmodels.checkfile_maxerror:
-            validation_dateType_messages = validate_dateType(fieldModelList, dataHeaderList, dataListList)
-            if len(validation_dateType_messages) > 0:
-                validation_msg.extend(validation_dateType_messages)
-        
-        #log.debug("validation detailed error message", len(validation_msg))
-        # print validation_msg
+            if valid:
+                pass
+            else:
+                validation_msg.append({'valid': False})
+        except:
+            validation_msg.append({'valid': False})
 
     log.debug('validation last step')
     # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})

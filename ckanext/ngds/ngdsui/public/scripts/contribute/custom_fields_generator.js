@@ -3,6 +3,8 @@ $(document).ready(function () {
         ngds.util.state['prev_resource_type'] = $("[name=resource_format]:checked").val();
         ngds.util.state['versions'] = {};
         ngds.util.state['versions_dom'] = {};
+        ngds.util.state['layers'] = {};
+        ngds.util.state['layers_dom'] = {};
         if ($("[name=content_model_version]").length > 0 && $("[name=content_model_version]").parent().parent().attr("class").indexOf("error") !== -1) {
             $("[name=content_model_version]").prop("selectedIndex", -1);
             // Disobedient select box.
@@ -211,6 +213,9 @@ $(document).ready(function () {
 //                                $("[name=content_model_version]").prop("selectedIndex", -1);
                             }
                             $("#field-content-model-version").select2();
+                            if ($("[name=content_model_version]").val()) {
+                                loadContentModelLayers($("[name=content_model_version]").val());
+                            }
                         }
 
                     });
@@ -226,6 +231,53 @@ $(document).ready(function () {
 
             };
 
+            function loadContentModelLayers(content_model_uri) {
+                $("#field-content-model-layer").select2("destroy");
+                var val = content_model_uri;
+                var optionConstructor = function (this_data) {
+                    var option = {
+                        'tag': 'option',
+                        'attributes': {
+                            'value': this_data['layer'],
+                            'text': this_data['layer']
+                        }
+                    };
+                    return ngds.util.dom_element_constructor(option);
+                };
+                if (typeof ngds.util.state['layers'][val] === 'undefined') {
+                    $.ajax({
+                        'url': '/api/action/get_content_model_layers_for_uri',
+                        'data': JSON.stringify({'cm_uri': val}),
+                        'type': 'POST',
+                        'success': function (response) {
+                            var versions = response.result;
+                            ngds.util.state['layers'][val] = versions;
+                            var layersDom = ngds.util.state['layers_dom'][val] = [];
+                            $("[name=content_model_layer]").empty();
+
+                            var selector = $('#field-content-model-version').val().split(/[\s\/]+/).pop();
+
+                            for (var i = 0; i < versions['versions'][selector].length; i++) {
+                                var this_data = {'layer': versions['versions'][selector][i]};
+                                $("[name=content_model_layer]").append(optionConstructor(this_data));
+                                layersDom.push(optionConstructor(this_data));
+                            }
+
+                            if (ngds.memorizer.remind("structured", "content_model_version") !== "") {
+                                $("#field-content-model-layer option").filter("[value=" + ngds.memorizer.remind("structured", "content_model_version")["id"] + "]").prop("selected", true);
+                            }
+                            $("#field-content-model-layer").select2();
+                        }
+                    });
+                } else {
+                    var layersDom = ngds.util.state['layers_dom'][val];
+                    $("[name=content_model_layer]").empty();
+                    for (var i = 0; i < layersDom.length; i++) {
+                        $("[name=content_model_layer]").append(layersDom[i]);
+                    }
+                }
+            };
+
             $("[name=content_model_uri]").on('change', function (ev) {
                 var val = ev.val;
                 console.log(val);
@@ -235,8 +287,18 @@ $(document).ready(function () {
                     $("[name=content_model_version]").select2();
                     return;
                 }
-
                 load_content_model_versions(val);
+            });
+
+            $("[name=content_model_version]").on('change', function (e) {
+                var val = e.val;
+                if (val === 'None' || val === 'none') {
+                    $("[name=content_model_layer]").select2("destroy");
+                    $("[name=content_model_layer]").empty();
+                    $("[name=content_model_layer]").select2();
+                    return;
+                }
+                loadContentModelLayers(val);
             });
 
             ngds.restore_additional_fields(resource_type);
@@ -244,6 +306,7 @@ $(document).ready(function () {
             if ($("[name=content_model_uri]").length > 0 && $("[name=content_model_uri]").val() !== "None" && $("[name=content_model_uri]").val() !== "none") {
                 load_content_model_versions($("[name=content_model_uri]").val());
             }
+
         });
         $("[name=content_model_version]").select2();
 
@@ -335,7 +398,6 @@ $(document).ready(function () {
 
     ngds.load_content_model_widget($("[name=resource_format]:checked").val());
 });
-
 
 ngds.initialize_content_model_widget = function (callback) {
 
@@ -470,6 +532,38 @@ var structured_form_raw = {
                                 'name': 'content_model_version',
                                 'placeholder': 'Ex: 1.1',
 //                                'data-module': "autocomplete"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            'tag': 'div',
+            'attributes': {
+                'class': 'control-group control-full'
+            },
+            'children': [
+                {
+                    'tag': 'label',
+                    'attributes': {
+                        'class': 'control-label',
+                        'for': 'field-content-model-layer',
+                        'text': 'Content Model Layer'
+                    }
+                },
+                {
+                    'tag': 'div',
+                    'attributes': {
+                        'class': 'controls'
+                    },
+                    'children': [
+                        {
+                            'tag': 'select',
+                            'attributes': {
+                                'id': 'field-content-model-layer',
+                                'type': 'text',
+                                'name': 'content_model_layer'
                             }
                         }
                     ]
