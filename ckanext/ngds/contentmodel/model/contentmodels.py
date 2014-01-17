@@ -141,6 +141,3 @@ def db_setup():
         from ckanext.ngds.base.commands.ngds_tables import create_tables
         create_tables([contentmodel_record], log)
         create_tables([contentmodel_version_record], log)
-    
-    
-    

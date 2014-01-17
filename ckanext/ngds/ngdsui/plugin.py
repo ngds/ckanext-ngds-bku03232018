@@ -86,45 +86,47 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             # get_action('group_create')(context, data_dict)
 
     def contentmodel_configure(self, config):
-        if "usgin_url" in config:
-            contentmodels.usgin_url = config["usgin_url"]
+        True_list = ["true", "1", "t", "y", "yes", "yeah", "yup", "certainly"]
+
+        if 'usgin_url' in config:
+            contentmodels.usgin_url = config['usgin_url']
         else:
-            contentmodels.usgin_url = "http://schemas.usgin.org/contentmodels.json"
-            # Access the URL and fill the cache
-        print "Caching Content Models from USGIN: " + contentmodels.usgin_url
+            try:
+                contentmodels.usgin_url = 'http://schemas.usgin.org/contentmodels.json'
+            except:
+                print 'Could not access ' + contentmodels.usgin_url
+                pass
         contentmodel_action.contentmodel_refreshCache(None, None)
 
-        True_List = ["true", "1", "t", "y", "yes", "yeah", "yup", "certainly"]
-
-        if "checkfile_maxerror" in config:
+        if 'checkfile_maxerror' in config:
             try:
-                checkfile_maxerror = config["checkfile_maxerror"]
+                checkfile_maxerror = config['checkfile_maxerror']
                 contentmodels.checkfile_maxerror = int(checkfile_maxerror)
             except:
-                print "DON'T UNDERSTAND the 'checkfile_maxerror' in the development.ini, it is not an Integer"
-        print "checkfile_maxerror", contentmodels.checkfile_maxerror
+                print '"checkfile_maxerror" variable in config file is not an integer'
+                pass
 
-        if "checkfile_checkheader" in config:
+        if 'checkfile_checkheader' in config:
             try:
-                checkfile_checkheader = config["checkfile_checkheader"]
-                if checkfile_checkheader in True_List:
+                checkfile_checkheader = config['checkfile_checkheader']
+                if checkfile_checkheader in True_list:
                     contentmodels.checkfile_checkheader = True
                 else:
                     contentmodels.checkfile_checkheader = False
             except:
-                print "DON'T UNDERSTAND the 'checkfile_checkheader' in the development.ini, it is not a boolean string"
-        print "checkfile_checkheader", contentmodels.checkfile_checkheader
+                print '"checkfile_checkheader" variable in config file is not a boolean string'
+                pass
 
-        if "checkfile_checkoptionalfalse" in config:
+        if 'checkfile_checkoptionalfalse' in config:
             try:
-                checkfile_checkoptionalfalse = config["checkfile_checkoptionalfalse"]
-                if checkfile_checkoptionalfalse in True_List:
+                checkfile_checkoptionalfalse = config['checkfile_checkoptionalfalse']
+                if checkfile_checkoptionalfalse in True_list:
                     contentmodels.checkfile_checkoptionalfalse = True
                 else:
                     contentmodels.checkfile_checkoptionalfalse = False
             except:
-                print "DON'T UNDERSTAND the 'checkfile_checkoptionalfalse' in the development.ini, it is not a boolean string"
-        print "checkfile_checkoptionalfalse", contentmodels.checkfile_checkoptionalfalse
+                print '"checkfile_checkoptionalfalse" variable in config file is not a boolean string'
+                pass
 
     implements(IConfigurable, inherit=True)
 
@@ -224,6 +226,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'contentmodel_checkBulkFile': contentmodel_action.contentmodel_checkBulkFile,
             'get_content_models_for_ui': helpers.get_content_models_for_ui_action,
             'get_content_model_version_for_uri': helpers.get_content_model_version_for_uri_action,
+            'get_content_model_layers_for_uri': helpers.get_content_model_layers_for_uri_action
 
             #'create_resource_document_index': lib_action.create_resource_document_index
             # 'validate_resource': validate_action.validate_resource,
