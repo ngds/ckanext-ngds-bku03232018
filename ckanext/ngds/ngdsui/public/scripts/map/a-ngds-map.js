@@ -116,23 +116,22 @@ ngds.Map.returnSearchResult = function (result) {
     var wmsLayerOption = _.map(result.resources, function (data) {
         var layerName = function (data) {
             if ('layer_name' in data && data.layer_name.length > 0 && typeof data.layer_name === 'string') {
-                result.resources['smartLayer'] = data.layer_name;
                 return data.layer_name;
+            } else if ('layer' in data && data.layer.length > 0 && typeof data.layer === 'string') {
+                return data.layer;
             } else if (data.name) {
-                var unHyphen = data.name.replace(/\s*-\s*/g, ' '),
-                    capitalize = unHyphen.replace(/\b./g, function (m) {return m.toUpperCase()});
-                result.resources['smartLayer'] = capitalize;
-                return capitalize;
+                var unHyphen = data.name.replace(/\s*-\s*/g, ' ');
+                return unHyphen.replace(/\b./g, function (m) {return m.toUpperCase()});
             } else {
-                result.resources['smartLayer'] = 'Undefined Layer';
                 return 'Undefined Layer';
             }
         };
+        data['smartLayer'] = layerName(data);
 
         if (data.protocol === 'OGC:WMS') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<a id="' + result.pkg_id + '" class="toggle-layer-wms wms-absent" value="' + layerName(data) + '" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this)">Show Web Map Service</a>'
+            html += '<a id="' + result.pkg_id + '" class="toggle-layer-wms wms-absent" value="' + data.smartLayer + '" href="javascript:void(0)" onclick="ngds.Map.addWmsLayer(this)">Show Web Map Service</a>'
             html += '</div></div>';
             return html;
         }
@@ -176,12 +175,14 @@ ngds.Map.returnSearchResult = function (result) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.smartRequest + '">Web Map Service Capabilities</a>';
+            html += '<div class="data-layer-name">typeName: ' + data.smartLayer + '</div>';
             html += '</div></div>';
             return html;
         } else if (data.protocol === 'OGC:WFS') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.smartRequest + '">Web Feature Service Capabilities</a>';
+            html += '<br><div class="data-layer-name">typeName: ' + data.smartLayer + '</div>';
             html += '</div></div>';
             return html;
         }
@@ -197,6 +198,18 @@ ngds.Map.returnSearchResult = function (result) {
         }
     };
 
+    var determineResources = function (data) {
+        if (data.length > 0) {
+            return data;
+        } else {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div id="no-results" class="accordion-heading">';
+            html += '<div class="data-no-results">This package doesn\'t have any resources</div>';
+            html += '</div></div>';
+            return html;
+        }
+    }
+
     var feature_id = result.geojson.properties.feature_id,
         packageDescription = getPackageDescription(result.notes),
         html = '<li class="map-search-result result-' + feature_id + '" >';
@@ -211,14 +224,15 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div class="resource-content">' + vanillaOptions + '</div>';
         html += '<div class="resource-content">' + wmsLayerOption + '</div>';
         html += '<div class="resource-content">' + datasetDetailsOption + '</div>';
-        html += '<div class="resource-content">Available Resources' + resources + '</div>';
+        html += '<div class="resource-content">Available Resources' + determineResources(resources) + '</div>';
         html += '</div></div></div></li>';
     $('#query-results').append(html);
 
-    var defaultStyle = {radius: 8, fillColor: '#ff00ff', color: '#ff00ff',
+    var defaultStyle = {radius: 8, fillColor: '#ff5500', color: '#b23b00',
             weight: 2, opacity: 1, fillOpacity: 0.5},
-         highlightStyle = {radius: 8, fillColor: 'blue', color: 'blue',
-            weight: 2, opacity: 1, fillOpacity: 0.5};
+         highlightStyle = {radius: 8, fillColor: '#00aaff', color: '#0076b2',
+            weight: 2, opacity: 1, fillOpacity: 1};
+
     var circles = L.geoJson(result.geojson, {pointToLayer: function (f,ll) {
         return L.circleMarker(ll, defaultStyle)
         },
@@ -230,17 +244,25 @@ ngds.Map.returnSearchResult = function (result) {
             layer.bindPopup(thisPopup);
             layer.on('click', function() {
                 var toggleId = $('#collapse' + feature_id),
-                    collapseId = $('.feature-id-' + feature_id);
+                    collapseId = $('.feature-id-' + feature_id),
+                    firstResult = $('#query-results li').first();
+
+                if (firstResult.hasClass('map-active')) { firstResult.removeClass('map-active') }
+
                 $('#query-results').prepend(searchResult);
                 $('#query-results').animate({scrollTop:0}, 'fast');
+
                 if (collapseId.hasClass('collapsed')) {
                     toggleId.addClass('in');
                     collapseId.removeClass('collapsed');
+                    searchResult.addClass('map-active');
                 } else if (toggleId.hasClass('in')) {
                     toggleId.removeClass('in');
                     collapseId.addClass('collapsed');
+                    searchResult.addClass('map-active');
                 } else {
                     toggleId.addClass('in');
+                    searchResult.addClass('map-active');
                 }
             }),
             layer.on('mouseover', function () {
@@ -358,9 +380,5 @@ ngds.Map.map.addControl(ngds.Map.controls.loading);
 
 $('.leaflet-draw-toolbar-top').removeClass('leaflet-draw-toolbar');
 $('.leaflet-draw-draw-rectangle').addClass('glyphicon icon-pencil');
-
-$('.bbox-handle').click(function (e) {
-    console.log(e.val());
-});
 
 }).call(this);
