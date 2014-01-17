@@ -184,7 +184,7 @@ ngds.ckanlib = {
             return;
         }
         ngds.publish("data-loading", {});
-        var url = '/api/action/package_search';
+        var url = '/api/action/get_better_package_info';
         var type = 'POST';
 
         var data = { 'sort': '' };

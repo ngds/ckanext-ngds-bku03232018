@@ -972,4 +972,20 @@ def get_role_for_username(username):
     print "role_list: ", role_list
     return role_list
 
-
+def make_better_json(context, data_dict):
+    search = logic.get_action('package_search')(context, data_dict)
+    def make_package(search):
+        better_packages = []
+        for result in search['results']:
+            package = {'id': result['id'],
+                       'author': result['author'],
+                       'title': result['title'],
+                       'name': result['name'],
+                       'resources': result['resources'],
+                       'notes': result['notes'],
+                       'bbox': [[this_val['value'] for this_val in result['extras'] if
+                                 'type' and 'coordinates' in this_val['value']]]}
+            better_packages.append(package)
+        return better_packages
+    these_packages = make_package(search)
+    return these_packages

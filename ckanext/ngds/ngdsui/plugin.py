@@ -226,6 +226,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'contentmodel_checkBulkFile': contentmodel_action.contentmodel_checkBulkFile,
             'get_content_models_for_ui': helpers.get_content_models_for_ui_action,
             'get_content_model_version_for_uri': helpers.get_content_model_version_for_uri_action,
+            'get_better_package_info': helpers.make_better_json,
             'get_content_model_layers_for_uri': helpers.get_content_model_layers_for_uri_action
 
             #'create_resource_document_index': lib_action.create_resource_document_index
@@ -412,7 +413,6 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
     implements(IFacets, inherit=True)
 
     def dataset_facets(self, facets_dict, package_type):
-        #print "IFACETS is called.......>>>>>>>>>>>>>>>>"
 
         if package_type == 'harvest':
             return OrderedDict([('frequency', 'Frequency'), ('source_type', 'Type')])
@@ -425,7 +425,6 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
         return facets_dict
 
     def organization_facets(self, facets_dict, organization_type, package_type):
-        #print "IFACETS is called.......>>>>>>>>>>>>>>>>"
 
         if package_type == 'harvest':
             return OrderedDict([('frequency', 'Frequency'), ('source_type', 'Type')])
