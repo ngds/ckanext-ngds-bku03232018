@@ -81,7 +81,7 @@ class NgdsHarvester(CSWHarvester):
         extras.append(other_id)
 
         # The data type
-        data_type = {"key": "data_type", "value": ngds_values['data_type']}
+        data_type = {"key": "dataset_category", "value": ngds_values['data_type']}
         extras.append(data_type)
 
         # Pub date
