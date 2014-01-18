@@ -54,7 +54,6 @@ def get_responsible_party_name(id):
     Get the name of a responsible party for an id.
     """
     print "get_responsible_party_name  "
-    print id
     #print inspect.stack()
     # frm = inspect.stack()[0]
     # mod = inspect.getmodule(frm[0])
@@ -329,7 +328,6 @@ def get_ngdsfacets():
         :returns: Faceted results dict found from the results.
         :rtype: Dict
     """
-
     facet_config = g.facet_json_data
 
     facets = []
