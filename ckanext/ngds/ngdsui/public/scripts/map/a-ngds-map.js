@@ -198,6 +198,7 @@ format: PDF, application/vnd.ms-excel, application/vnd.openxmlformats-officedocu
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.url + '">Download CSV Resource</a>';
             html += '</div></div>';
+            return html;
         } else if (data.format === 'PDF') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
@@ -209,16 +210,19 @@ format: PDF, application/vnd.ms-excel, application/vnd.openxmlformats-officedocu
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.url + '">Download Zipfile Resource</a>';
             html += '</div></div>';
+            return html;
         } else if (data.format.indexOf('ms-excel') !== -1) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.url + '">Download Microsoft Excel Resource</a>';
             html += '</div></div>';
+            return html;
         } else if (data.format.indexOf('openxml') !== -1) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.url + '">Download Open XML Resource</a>';
             html += '</div></div>';
+            return html;
         }
     }).join('');
 
