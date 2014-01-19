@@ -26,29 +26,6 @@ ngds.Map = {
             draw:{polyline: false, circle: false, marker: false, polygon: false},
             edit: {featureGroup: drawings, remove: false, edit: false}
         }),
-        search: L.Control.extend({options: {position: 'topleft'}, onAdd: function () {
-            var container = L.DomUtil.create('div', 'ngds-custom-control search-control');
-            L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation)
-                .on(container, 'dblclick', L.DomEvent.stopPropagation)
-                .on(container, 'mousedown', L.DomEvent.stopPropagation)
-                .addListener(container, 'click', function () {
-                    var layers = ngds.Map.layers.searchResultsGroup["Search Results"];
-                    if ($(container).hasClass('off')) {
-                        $(container).removeClass('off');
-                        $(container).addClass('on');
-                        ngds.Map.map.addLayer(layers);
-                    } else if ($(container).hasClass('on')) {
-                        $(container).removeClass('on');
-                        $(container).addClass('off');
-                        ngds.Map.map.removeLayer(layers);
-                    } else {
-                        $(container).addClass('off');
-                        ngds.Map.map.removeLayer(layers);
-                    }
-                });
-            $(container).append('<a class="glyphicon icon-search" href="#" title="Toggle search results"></a>');
-            return container;
-        }}),
         reset: L.Control.extend({options: {position: 'topleft'}, onAdd: function (){
             var container = L.DomUtil.create('div', 'ngds-custom-control reset-control');
             L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation)
@@ -57,7 +34,7 @@ ngds.Map = {
                 .addListener(container, 'click', function () {
                     ngds.Map.map.setView([39.977, -97.46], 4);
                 });
-            $(container).append('<a class="glyphicon icon-home" href="#" title="Reset extent"></a>')
+            $(container).append('<a class="glyphicon icon-globe" href="#" title="Reset extent"></a>')
             return container;
         }})
     }
@@ -87,6 +64,9 @@ ngds.Map.makeSearch = function (parameters) {
         extras = parameters['extras'];
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
+
+
+
         _.each(response.result, function (rec) {
             var randomNumber = Math.floor(Math.random()*1000000000000000000000),
                 coords = JSON.parse(rec.bbox[0]),
@@ -174,11 +154,7 @@ ngds.Map.returnSearchResult = function (result) {
             }
             data['smartRequest'] = getThisRequest(data);
         }
-/*
 
-format: PDF, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
-        HTML, ZIP
- */
         if (data.protocol === 'OGC:WMS' || data.format === 'wms') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
@@ -346,6 +322,27 @@ ngds.Map.map.on('draw:created', function (e) {
     ngds.Map.map.fitBounds(layer.getBounds());
 });
 
+ngds.Map.doPagination = function (rows, count) {
+    if (count > 0 && rows < count) {
+        function pageRange (i) {return i ? pageRange (i-1).concat(i) : []};
+        var totalPages = Math.ceil(count/rows),
+            pageNumbers = pageRange(totalPages),
+            usePages = [pageNumbers[0], pageNumbers[1], pageNumbers[2], pageNumbers[3],
+                pageNumbers[4], '...', pageNumbers[pageNumbers.length-1]];
+
+        var thesePages = _.map(usePages, function (i) {
+            var html = '<li><a href="#" value="' + i + '" onClick="javascript:ngds.Map.topLevelSearch()">' + i + '</a></li>';
+            return html;
+        }).join(',');
+
+        var html = '<div class="search-result-pages">';
+            html += '<div class="pagination pagination-small pagination-centered">';
+            html += '<ul>' + thesePages + '</ul>';
+            html += '</div></div>';
+        return html;
+    }
+};
+
 ngds.Map.addWmsLayer = function (event) {
     var thisElement = $('#' + event.getAttribute('id')),
         thisId = thisElement[0].id,
@@ -423,7 +420,6 @@ var overlayPane = ngds.Map.layers.searchResultsGroup,
 drawings.addTo(ngds.Map.map);
 ngds.Map.layers.baseLayer.addTo(ngds.Map.map);
 ngds.Map.map.addControl(ngds.Map.controls.doodle);
-ngds.Map.map.addControl(new ngds.Map.controls.search);
 ngds.Map.map.addControl(new ngds.Map.controls.reset);
 layersControl.addTo(ngds.Map.map);
 ngds.Map.map.addControl(ngds.Map.controls.loading);
