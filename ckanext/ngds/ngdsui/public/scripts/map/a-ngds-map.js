@@ -204,7 +204,7 @@ format: PDF, application/vnd.ms-excel, application/vnd.openxmlformats-officedocu
             html += '<a class="data-ogc" href="' + data.url + '">Download PDF Resource</a>';
             html += '</div></div>';
             return html;
-        } else if (data.format === 'ZIP')) {
+        } else if (data.format === 'ZIP') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.url + '">Download Zipfile Resource</a>';
