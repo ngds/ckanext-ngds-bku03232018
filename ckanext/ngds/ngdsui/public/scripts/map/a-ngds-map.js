@@ -179,18 +179,22 @@ ngds.Map.returnSearchResult = function (result) {
 format: PDF, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
         HTML, ZIP
  */
-        if (data.protocol === 'OGC:WMS') {
+        if (data.protocol === 'OGC:WMS' || data.format === 'wms') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.smartRequest + '">Web Map Service Capabilities</a>';
-            html += '<div class="data-layer-name">typeName: ' + data.smartLayer + '</div>';
             html += '</div></div>';
             return html;
-        } else if (data.protocol === 'OGC:WFS') {
+        } else if (data.protocol === 'OGC:WFS' || data.format === 'wfs') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.smartRequest + '">Web Feature Service Capabilities</a>';
-            html += '<br><div class="data-layer-name">typeName: ' + data.smartLayer + '</div>';
+            html += '</div></div>';
+            return html;
+        } else if (data.protocol === 'OGC:WCS' || data.format === 'wcs') {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" href="' + data.url + '">Web Coverage Service Capabilities</a>';
             html += '</div></div>';
             return html;
         } else if (data.format === 'CSV') {
@@ -221,6 +225,12 @@ format: PDF, application/vnd.ms-excel, application/vnd.openxmlformats-officedocu
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.url + '">Download Open XML Resource</a>';
+            html += '</div></div>';
+            return html;
+        } else if (!(data.format) && data.url) {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" href="' + data.url + '">External Resource Website</a>';
             html += '</div></div>';
             return html;
         }
