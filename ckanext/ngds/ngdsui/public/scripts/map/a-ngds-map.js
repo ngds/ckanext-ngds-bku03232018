@@ -174,6 +174,11 @@ ngds.Map.returnSearchResult = function (result) {
             }
             data['smartRequest'] = getThisRequest(data);
         }
+/*
+
+format: PDF, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+        HTML, ZIP
+ */
         if (data.protocol === 'OGC:WMS') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
@@ -188,6 +193,27 @@ ngds.Map.returnSearchResult = function (result) {
             html += '<br><div class="data-layer-name">typeName: ' + data.smartLayer + '</div>';
             html += '</div></div>';
             return html;
+        } else if (data.format === 'CSV') {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" href="' + data.url + '">Download CSV Resource</a>';
+            html += '</div></div>';
+        } else if (data.format === 'PDF') {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" href="' + data.url + '">Download PDF Resource</a>';
+            html += '</div></div>';
+            return html;
+        } else if (data.format.indexOf('ms-excel') !== -1) {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" href="' + data.url + '">Download Microsoft Excel Resource</a>';
+            html += '</div></div>';
+        } else if (data.format.indexOf('openxml')) {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" href="' + data.url + '">Download Open XML Resource</a>';
+            html += '</div></div>';
         }
     }).join('');
 
@@ -290,6 +316,7 @@ ngds.Map.returnSearchResult = function (result) {
     );
 
     ngds.Map.layers.searchResultsGroup["Search Results"].addLayer(circles).addTo(ngds.Map.map);
+
 };
 
 ngds.Map.map.on('draw:created', function (e) {
