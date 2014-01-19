@@ -124,7 +124,7 @@ ngds.Map.returnSearchResult = function (result) {
         var link = '/dataset/' + data.name;
         html = '<div class="accordion-group" id="accordion-search-result">';
         html += '<div class="accordion-heading">';
-        html += '<a class="data-details-link" href="' + link + '">Go To Dataset Details Page</a>';
+        html += '<a class="data-details-link" target="_blank" href="' + link + '">Go To Dataset Details Page</a>';
         html += '</div></div>';
         return html;
     }).join(',');
@@ -158,19 +158,19 @@ ngds.Map.returnSearchResult = function (result) {
         if (data.protocol === 'OGC:WMS' || data.format === 'wms') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<a class="data-ogc" href="' + data.smartRequest + '">Web Map Service Capabilities</a>';
+            html += '<a class="data-ogc" target="_blank" href="' + data.smartRequest + '">Web Map Service Capabilities</a>';
             html += '</div></div>';
             return html;
         } else if (data.protocol === 'OGC:WFS' || data.format === 'wfs') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<a class="data-ogc" href="' + data.smartRequest + '">Web Feature Service Capabilities</a>';
+            html += '<a class="data-ogc" target="_blank" href="' + data.smartRequest + '">Web Feature Service Capabilities</a>';
             html += '</div></div>';
             return html;
         } else if (data.protocol === 'OGC:WCS' || data.format === 'wcs') {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<a class="data-ogc" href="' + data.url + '">Web Coverage Service Capabilities</a>';
+            html += '<a class="data-ogc" target="_blank" href="' + data.url + '">Web Coverage Service Capabilities</a>';
             html += '</div></div>';
             return html;
         } else if (data.format === 'CSV') {
@@ -206,7 +206,7 @@ ngds.Map.returnSearchResult = function (result) {
         } else if (!(data.format) && data.url) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
-            html += '<a class="data-ogc" href="' + data.url + '">External Resource Website</a>';
+            html += '<a class="data-ogc" target="_blank" href="' + data.url + '">External Website</a>';
             html += '</div></div>';
             return html;
         }
