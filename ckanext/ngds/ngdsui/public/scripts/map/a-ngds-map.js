@@ -63,15 +63,17 @@ ngds.Map = {
     }
 };
 
-ngds.Map.topLevelSearch = function (bbox) {
+ngds.Map.topLevelSearch = function (bbox, page) {
+    page = typeof page !== 'undefined' ? page : 1;
     var theseLayers = ngds.Map.layers.searchResultsGroup["Search Results"];
     if (theseLayers.getLayers().length > 1) {theseLayers.clearLayers();}
-    $('#query-results').empty();
+    $('#query-results #search-results').empty();
     var extras = bbox || {'ext:bbox': "-180,-90,180,90"},
         searchQuery = $('#map-search-query').val();
     ngds.Map.makeSearch({
         'q': searchQuery,
-        'extras': extras
+        'extras': extras,
+        'page': page
     })
     $('#content-legend-menu').addClass('shown');
 };
@@ -79,7 +81,8 @@ ngds.Map.topLevelSearch = function (bbox) {
 ngds.Map.makeSearch = function (parameters) {
     var action = ngds.ckanlib.package_search,
         rows = 100,
-        start = 0,
+        page = parameters['page'],
+        start = (page - 1)*rows,
         query = parameters['q'],
         extras = parameters['extras'];
 
@@ -226,7 +229,7 @@ ngds.Map.returnSearchResult = function (result) {
         html += '<div class="resource-content">' + datasetDetailsOption + '</div>';
         html += '<div class="resource-content">Available Resources' + determineResources(resources) + '</div>';
         html += '</div></div></div></li>';
-    $('#query-results').append(html);
+    $('#query-results #search-results').append(html);
 
     var defaultStyle = {radius: 8, fillColor: '#ff5500', color: '#b23b00',
             weight: 2, opacity: 1, fillOpacity: 0.5},
@@ -245,12 +248,12 @@ ngds.Map.returnSearchResult = function (result) {
             layer.on('click', function() {
                 var toggleId = $('#collapse' + feature_id),
                     collapseId = $('.feature-id-' + feature_id),
-                    firstResult = $('#query-results li').first();
+                    firstResult = $('#query-results #search-results li').first();
 
                 if (firstResult.hasClass('map-active')) { firstResult.removeClass('map-active') }
 
-                $('#query-results').prepend(searchResult);
-                $('#query-results').animate({scrollTop:0}, 'fast');
+                $('#query-results #search-results').prepend(searchResult);
+                $('#query-results #search-results').animate({scrollTop:0}, 'fast');
 
                 if (collapseId.hasClass('collapsed')) {
                     toggleId.addClass('in');
@@ -341,10 +344,11 @@ ngds.Map.addBbox = function (event) {
             theseCoords.push(coord);
         });
         var theseBounds = [[theseCoords[0], theseCoords[1]], [theseCoords[2], theseCoords[3]]],
-            boundingBox = L.rectangle(theseBounds, {color: 'blue', weight: 1});
+            boundingBox = L.rectangle(theseBounds, {color: 'red', opacity: 1, fillOpacity: 0.2, weight: 1});
             bboxGroup = ngds.Map.layers.dataExtentsGroup;
         bboxGroup['Data Extents'][thisUID] = boundingBox;
-        bboxGroup['Data Extents'][thisUID].addTo(ngds.Map.map);
+        bboxGroup['Data Extents'][thisUID].addTo(ngds.Map.map).bringToBack();
+        ngds.Map.map.fitBounds(bboxGroup['Data Extents'][thisUID], {maxZoom: 6, padding: [200, 200]});
         thisId.removeClass('extent-absent').addClass('extent-present');
         thisId.text('Hide Area on Map');
     } else if (thisId.hasClass('extent-present')) {
