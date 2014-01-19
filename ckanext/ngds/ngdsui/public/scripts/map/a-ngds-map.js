@@ -78,7 +78,7 @@ ngds.Map.topLevelSearch = function (bbox) {
 
 ngds.Map.makeSearch = function (parameters) {
     var action = ngds.ckanlib.package_search,
-        rows = 10000000,
+        rows = 100,
         start = 0,
         query = parameters['q'],
         extras = parameters['extras'];
