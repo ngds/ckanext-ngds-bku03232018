@@ -209,7 +209,7 @@ format: PDF, application/vnd.ms-excel, application/vnd.openxmlformats-officedocu
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.url + '">Download Microsoft Excel Resource</a>';
             html += '</div></div>';
-        } else if (data.format.indexOf('openxml')) {
+        } else if (data.format.indexOf('openxml') !== -1) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" href="' + data.url + '">Download Open XML Resource</a>';
