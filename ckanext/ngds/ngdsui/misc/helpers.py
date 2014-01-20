@@ -986,4 +986,4 @@ def make_better_json(context, data_dict):
             better_packages.append(package)
         return better_packages
     these_packages = make_package(search)
-    return these_packages
+    return {'count': search['count'], 'packages': these_packages}

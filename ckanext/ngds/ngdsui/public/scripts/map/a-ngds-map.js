@@ -65,9 +65,7 @@ ngds.Map.makeSearch = function (parameters) {
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
 
-
-
-        _.each(response.result, function (rec) {
+        _.each(response.result.packages, function (rec) {
             var randomNumber = Math.floor(Math.random()*1000000000000000000000),
                 coords = JSON.parse(rec.bbox[0]),
                 geoData = {'sw_lat': coords.coordinates[0][0][1], 'sw_lon': coords.coordinates[0][0][0],
@@ -80,7 +78,15 @@ ngds.Map.makeSearch = function (parameters) {
                 reqData = {'title': rec.title, 'name': rec.name, 'notes': rec.notes, 'pkg_id': rec.id,
                     'resources': rec.resources, 'geoData': geoData, 'geojson': geojson, 'geoString': geoString};
             ngds.Map.returnSearchResult(reqData);
-        })
+        });
+        var count = response['result']['count'],
+            nextPage = page + 1;
+        if (count > 0 && rows < count) {
+            var html = '<div class="load-more-results">';
+                html += '<a href="javascript:void(0)" value="' + nextPage + ' onclick=ngds.Map.doPagination(this)">Load Results' + nextPage + '-' + (nextPage+rows) + '</a>';
+                html += '</div>';
+            $('#query-results #search-results').append(html);
+        }
     })
 };
 
