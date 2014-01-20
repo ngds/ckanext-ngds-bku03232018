@@ -37,28 +37,26 @@ ngds.Map = {
             $(container).append('<a class="glyphicon icon-globe" href="#" title="Reset extent"></a>')
             return container;
         }})
-    }
+    },
+    searchParameters: {'q': '', 'extras': 'undefined', 'page': 'undefined'}
 };
 
-ngds.Map.topLevelSearch = function (bbox, page) {
-    page = typeof page !== 'undefined' ? page : 1;
+ngds.Map.topLevelSearch = function (parameters) {
+    if (parameters['page'] === 'undefined') {parameters['page'] = 1};
     var theseLayers = ngds.Map.layers.searchResultsGroup["Search Results"];
     if (theseLayers.getLayers().length > 1) {theseLayers.clearLayers();}
     $('#query-results #search-results').empty();
-    var extras = bbox || {'ext:bbox': "-180,-90,180,90"},
+    var extras = parameters['extras']['ext_bbox'] || {'ext:bbox': "-180,-90,180,90"},
         searchQuery = $('#map-search-query').val();
-    ngds.Map.makeSearch({
-        'q': searchQuery,
-        'extras': extras,
-        'page': page
-    })
+    parameters['q'] = searchQuery;
+    ngds.Map.makeSearch(parameters);
     $('#content-legend-menu').addClass('shown');
 };
 
 ngds.Map.makeSearch = function (parameters) {
     var action = ngds.ckanlib.package_search,
-        rows = 100,
-        page = parameters['page'],
+        rows = 2,
+        page = parseInt(parameters['page']),
         start = (page - 1)*rows,
         query = parameters['q'],
         extras = parameters['extras'];
@@ -80,10 +78,10 @@ ngds.Map.makeSearch = function (parameters) {
             ngds.Map.returnSearchResult(reqData);
         });
         var count = response['result']['count'],
-            nextPage = page + 1;
+            nextPage = (page + 1);
         if (count > 0 && rows < count) {
-            var html = '<div class="load-more-results">';
-                html += '<a href="javascript:void(0)" value="' + nextPage + ' onclick=ngds.Map.doPagination(this)">Load Results' + nextPage + '-' + (nextPage+rows) + '</a>';
+            var html = '<div id="load-more-results-" class="load-more-results">';
+                html += '<a href="javascript:void(0)" value="' + nextPage + '" onclick="ngds.Map.doPagination(this)">Load Results ' + nextPage + ' - ' + (nextPage+rows) + '</a>';
                 html += '</div>';
             $('#query-results #search-results').append(html);
         }
@@ -324,29 +322,17 @@ ngds.Map.map.on('draw:created', function (e) {
     var layer = e.layer,
         theseBounds = layer.getBounds().toBBoxString(),
         ext_bbox = {'ext_bbox': theseBounds};
-    ngds.Map.topLevelSearch(ext_bbox);
+    ngds.Map.searchParameters['extras'] = ext_bbox;
+    ngds.Map.topLevelSearch(ngds.Map.searchParameters);
     ngds.Map.map.fitBounds(layer.getBounds());
 });
 
-ngds.Map.doPagination = function (rows, count) {
-    if (count > 0 && rows < count) {
-        function pageRange (i) {return i ? pageRange (i-1).concat(i) : []};
-        var totalPages = Math.ceil(count/rows),
-            pageNumbers = pageRange(totalPages),
-            usePages = [pageNumbers[0], pageNumbers[1], pageNumbers[2], pageNumbers[3],
-                pageNumbers[4], '...', pageNumbers[pageNumbers.length-1]];
+ngds.Map.doPagination = function (event) {
+    var nextPage = event.getAttribute('value'),
+        parameters = ngds.Map.searchParameters;
 
-        var thesePages = _.map(usePages, function (i) {
-            var html = '<li><a href="#" value="' + i + '" onClick="javascript:ngds.Map.topLevelSearch()">' + i + '</a></li>';
-            return html;
-        }).join(',');
-
-        var html = '<div class="search-result-pages">';
-            html += '<div class="pagination pagination-small pagination-centered">';
-            html += '<ul>' + thesePages + '</ul>';
-            html += '</div></div>';
-        return html;
-    }
+        parameters['page'] = nextPage;
+        ngds.Map.makeSearch(parameters);
 };
 
 ngds.Map.addWmsLayer = function (event) {
