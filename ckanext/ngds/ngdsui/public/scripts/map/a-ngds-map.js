@@ -64,12 +64,9 @@ ngds.Map.makeSearch = function (parameters) {
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         var count = response['result']['count'],
-            nextPage = (page + 1)
-        if (count > 0) {
-            var html = '<div class="top-showing-results">Results 0 - ' + response.result.packages.length + '</div>';
-            $('#query-results .query-hit-count').empty();
-            $('#query-results .query-hit-count').append(html);
-        } else {
+            nextPage = (page + 1),
+            nextRows = (nextPage*rows)
+        if (count === 0) {
             var html = '<div class="top-showing-results">No Search Results</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
@@ -93,7 +90,7 @@ ngds.Map.makeSearch = function (parameters) {
         if (count > 0 && rows < count && response.result.packages.length > 0) {
             console.log(count);
             var html = '<div id="load-results-' + nextPage + '" class="load-more-results">';
-                html += '<a href="javascript:void(0)" value="' + nextPage + '-' + rows + '" onclick="ngds.Map.doPagination(this)">Load Results ' + nextPage + ' - ' + (nextPage+rows) + '</a>';
+                html += '<a href="javascript:void(0)" value="' + nextPage + '-' + nextRows + '-' + rows + '" onclick="ngds.Map.doPagination(this)">Load Results ' + (rows*(nextPage-1)) + ' - ' + (nextRows) + '</a>';
                 html += '</div>';
             $('#query-results #search-results').append(html);
         } else {
@@ -345,10 +342,11 @@ ngds.Map.map.on('draw:created', function (e) {
 ngds.Map.doPagination = function (event) {
     var thisValue = event.getAttribute('value'),
         nextPage = parseInt(thisValue.split('-')[0]),
-        rows = parseInt(thisValue.split('-')[1]),
+        nextRows = parseInt(thisValue.split('-')[1]),
+        baseRows = parseInt(thisValue.split('-')[2]),
         parameters = ngds.Map.searchParameters,
         parentID = $("#load-results-" + nextPage),
-        html = '<div class="showing-results">Results ' + nextPage + ' - ' + (nextPage+rows) + '</div>';
+        html = '<div class="showing-results">Results ' + (baseRows*(nextPage-1)) + ' - ' + nextRows + '</div>';
 
         parameters['page'] = nextPage;
         ngds.Map.makeSearch(parameters);
