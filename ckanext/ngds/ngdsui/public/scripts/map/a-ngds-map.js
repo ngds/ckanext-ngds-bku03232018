@@ -42,12 +42,13 @@ ngds.Map = {
 };
 
 ngds.Map.topLevelSearch = function (parameters) {
+    if (!(parameters)) {parameters = ngds.Map.searchParameters};
     if (parameters['page'] === 'undefined') {parameters['page'] = 1};
+    if (parameters['extras'] === 'undefined') {parameters['extras'] = {'ext:bbox': "-180,-90,180,90"}};
     var theseLayers = ngds.Map.layers.searchResultsGroup["Search Results"];
     if (theseLayers.getLayers().length > 1) {theseLayers.clearLayers();}
     $('#query-results #search-results').empty();
-    var extras = parameters['extras']['ext_bbox'] || {'ext:bbox': "-180,-90,180,90"},
-        searchQuery = $('#map-search-query').val();
+    var searchQuery = $('#map-search-query').val();
     parameters['q'] = searchQuery;
     ngds.Map.makeSearch(parameters);
     $('#content-legend-menu').addClass('shown');
@@ -55,13 +56,24 @@ ngds.Map.topLevelSearch = function (parameters) {
 
 ngds.Map.makeSearch = function (parameters) {
     var action = ngds.ckanlib.package_search,
-        rows = 2,
+        rows = 50,
         page = parseInt(parameters['page']),
         start = (page - 1)*rows,
         query = parameters['q'],
         extras = parameters['extras'];
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
+        var count = response['result']['count'],
+            nextPage = (page + 1)
+        if (count > 0) {
+            var html = '<div class="top-showing-results">Results 0 - ' + response.result.packages.length + '</div>';
+            $('#query-results .query-hit-count').empty();
+            $('#query-results .query-hit-count').append(html);
+        } else {
+            var html = '<div class="top-showing-results">No Search Results</div>';
+            $('#query-results .query-hit-count').empty();
+            $('#query-results .query-hit-count').append(html);
+        }
 
         _.each(response.result.packages, function (rec) {
             var randomNumber = Math.floor(Math.random()*1000000000000000000000),
@@ -77,12 +89,15 @@ ngds.Map.makeSearch = function (parameters) {
                     'resources': rec.resources, 'geoData': geoData, 'geojson': geojson, 'geoString': geoString};
             ngds.Map.returnSearchResult(reqData);
         });
-        var count = response['result']['count'],
-            nextPage = (page + 1);
-        if (count > 0 && rows < count) {
-            var html = '<div id="load-more-results-" class="load-more-results">';
-                html += '<a href="javascript:void(0)" value="' + nextPage + '" onclick="ngds.Map.doPagination(this)">Load Results ' + nextPage + ' - ' + (nextPage+rows) + '</a>';
+
+        if (count > 0 && rows < count && response.result.packages.length > 0) {
+            console.log(count);
+            var html = '<div id="load-results-' + nextPage + '" class="load-more-results">';
+                html += '<a href="javascript:void(0)" value="' + nextPage + '-' + rows + '" onclick="ngds.Map.doPagination(this)">Load Results ' + nextPage + ' - ' + (nextPage+rows) + '</a>';
                 html += '</div>';
+            $('#query-results #search-results').append(html);
+        } else {
+            var html = '<div class="top-showing-results">No More Search Results</div>'
             $('#query-results #search-results').append(html);
         }
     })
@@ -328,11 +343,16 @@ ngds.Map.map.on('draw:created', function (e) {
 });
 
 ngds.Map.doPagination = function (event) {
-    var nextPage = event.getAttribute('value'),
-        parameters = ngds.Map.searchParameters;
+    var thisValue = event.getAttribute('value'),
+        nextPage = parseInt(thisValue.split('-')[0]),
+        rows = parseInt(thisValue.split('-')[1]),
+        parameters = ngds.Map.searchParameters,
+        parentID = $("#load-results-" + nextPage),
+        html = '<div class="showing-results">Results ' + nextPage + ' - ' + (nextPage+rows) + '</div>';
 
         parameters['page'] = nextPage;
         ngds.Map.makeSearch(parameters);
+        parentID.empty().append(html);
 };
 
 ngds.Map.addWmsLayer = function (event) {
