@@ -341,7 +341,7 @@
         "type": "dynamic_keywords",
         "metadatafield": "res_content_model"
     },
-  
+
     {
         "facet": "Public/ Private",
         "type": "title",
