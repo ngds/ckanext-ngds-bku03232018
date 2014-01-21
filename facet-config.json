@@ -340,24 +340,6 @@
         "facet": "Content Model",
         "type": "dynamic_keywords",
         "metadatafield": "res_content_model"
-    },
-  
-    {
-        "facet": "Public/ Private",
-        "type": "title",
-        "metadatafield": "private",
-        "subfacet": [
-            {
-                "display_name":"Public",
-                "facet": "false",
-                "type": "keyword"
-            },
-            {
-                "display_name":"Private",
-                "facet": "true",
-                "type": "keyword"
-            }
-        ]
     }    
 ]
 
