@@ -470,8 +470,9 @@ def jsonify(input):
 def get_usersearches():
     user = model.User.by_name(c.user.decode('utf8'))
     query = model.UserSearch.search(user.id)
-    print 'QUERY'
-    print query
+
+    log.info('QUERY')
+    log.info(query)
 
     return query.all()
 
