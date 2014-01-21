@@ -78,7 +78,37 @@ A list of variables we need in this page.
                             <a class="btn-primary" id="filter-pub-date" href="#"><i class="icon-hand-right"></i></a>
                             <!-- <input type="button" id="filter-pub-date" value=""><i class="icon-check-sign"></i></input> -->
                         </div>
+                        {% if c.user %}
+                        <div id="save-block">
+                            <div id="dialog-form" title="Save Search">
+                                <label for="search_name">{{_('Name')}}</label>
+                                <input type="text" id="search_name" class="text ui-widget-content ui-corner-all"/>
+                            </div>
+                            <div id="save-list">
+                                <div>
+                                    <i class="icon-save btn-primary" id="save_search" title="Save Search"></i>
+                                </div>
+                                <div>
+                                    {% set user_searches=h.get_usersearches() %}
+                                    <i id="saved_searches_list_button" class="icon-th-list btn-primary"
+                                       title="Saved List"></i>
+                                    {% if user_searches %}
+                                    <ul id="saved-list">
+                                        {% for usersearch in user_searches %}
+                                        <li><a href="{{usersearch.url}}" title="{{usersearch.url}}">{{usersearch.search_name}}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                    <ul id="saved-list">
+                                        <li id="none">No Saved Searches</li>
+                                    </ul>
+                                    {% endif %}
+                                </div>
 
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="search-results">
