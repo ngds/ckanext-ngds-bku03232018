@@ -44,7 +44,7 @@ ngds.Map = {
 ngds.Map.topLevelSearch = function (parameters) {
     if (!(parameters)) {parameters = ngds.Map.searchParameters};
     if (parameters['page'] === 'undefined') {parameters['page'] = 1};
-    if (parameters['extras'] === 'undefined') {parameters['extras'] = {'ext:bbox': "-180,-90,180,90"}};
+    if (parameters['extras'] === 'undefined') {parameters['extras'] = {'ext_bbox': "-180,-90,180,90"}};
     var theseLayers = ngds.Map.layers.searchResultsGroup["Search Results"];
     if (theseLayers.getLayers().length > 1) {theseLayers.clearLayers();}
     $('#query-results #search-results').empty();
@@ -60,7 +60,9 @@ ngds.Map.makeSearch = function (parameters) {
         page = parseInt(parameters['page']),
         start = (page - 1)*rows,
         query = parameters['q'],
-        extras = parameters['extras'];
+        extras = parameters['extras'],
+        fields = ['tags', 'data_type', 'res_protocol', 'res_format', 'res_resource_format', 'Source', 'author_string', 'status', 'res_content_model', 'private'],
+        fq = '+dataset_type:dataset';
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         var count = response['result']['count'],
@@ -88,7 +90,6 @@ ngds.Map.makeSearch = function (parameters) {
         });
 
         if (count > 0 && rows < count && response.result.packages.length > 0) {
-            console.log(count);
             var html = '<div id="load-results-' + nextPage + '" class="load-more-results">';
                 html += '<a href="javascript:void(0)" value="' + nextPage + '-' + nextRows + '-' + rows + '" onclick="ngds.Map.doPagination(this)">Load Results ' + (rows*(nextPage-1)) + ' - ' + (nextRows) + '</a>';
                 html += '</div>';
