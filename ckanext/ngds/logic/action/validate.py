@@ -199,7 +199,7 @@ def validate_resources(key, data, errors, context):
         resource_index = key[1]
         resource = dict((t[2], data[t]) for t in data.keys() if t[0] == 'resources' and t[1] == resource_index)
     else:
-        resource = dict((t[1], data[t]) for t in data.keys())
+        resource = dict((t[0], data[t]) for t in data.keys())
 
     # A way to make sure I always have the right key, regardless of the idiosyncracies of what might get sent in
     def real_key(field_name):
