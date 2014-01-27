@@ -214,3 +214,9 @@ class HomeController(NGDSBaseController):
         This function is responsible for rendering the Contact page via the template defined at templates/info/master/contact_master.html
         """
         return render('info/master/contact_master.html')
+
+    def render_submit_data(self):
+        return render('info/master/publish_data_master.html')
+
+    def render_curate_data_contributions(self):
+        return render('info/master/contribute_master.html')

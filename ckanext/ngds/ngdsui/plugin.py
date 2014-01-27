@@ -200,6 +200,8 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
         map.connect("contributors_list", "/ngds/terms_of_use", controller=home_controller, action="render_terms_of_use")
         map.connect("contributors_list", "/ngds/contact", controller=home_controller, action="render_contact")
         map.connect("rate", "/ngds/rate/{pkg_id}/{rating_value}", controller=home_controller, action="rate")
+        map.connect("publish_data", "/ngds/publish_data", controller=home_controller, action="render_submit_data")
+        map.connect("contribute_data", "/ngds/contribute_data", controller=home_controller, action="render_curate_data_contributions")
         return map
 
     implements(IConfigurer, inherit=True)
