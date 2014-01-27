@@ -195,21 +195,6 @@ A list of variables we need in this page.
 
 
 </div>
-<script type="text/javascript">
-    var searchValue = $('#library-search-bar .search').val();
-    if (searchValue.indexOf('res_format:*') != -1) {
-        var displayValue = searchValue.replace('res_format:*', '');
-        $('#library-search-bar .search').val(displayValue);
-    }
-
-    function submitForm() {
-        var searchValue = $('#library-search-bar .search').val(),
-            newSearch = searchValue + ' res_format:*';
-        $('#library-search-bar .search').val(newSearch);
-    }
-
-</script>
-
 
 {% if h.is_development() %}
 <script type="text/javascript" src="/scripts/library/library.js"></script>
