@@ -13,156 +13,169 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ #}
 
-<h2>
-    Use Data
-</h2>
-
-<p>The National Geothermal Data System is a network of information providers and consumers connected by agreeing on conventions for data registration, discovery and interchange. Thus there are a wide variety of options for utilizing information from the system; we anticipate that if the system is successful there will be an ecosystem of <a href="/ngds/resources">user applications</a> that utilize data from the system in a wide variety of ways. See the 'Use apps' page for details on using various off the shelf software with NGDS services.</p>
-
-<img alt="" src="/images/help/utah-2.jpg" style="float: left; margin-right: 15px; width: 600px;" />
-<p>A typical workflow for a user application in the system would present the user with a choice of activities, such as find data, make a map, plot data in a graph, or the application might be specifically designed to support only one of these activities in which case there is no choice to be made. The first step in an actual user process would be to acquire data appropriate to the chosen activity. Applications might be preconfigured with specific datasets, provide a browse tree type search to let users pick datasets from a pre-populated list, or the user might fill in a form that runs a search against the NGDS catalog. Metadata for the various resources must be easily accessible in a user-friendly form to enable the user to choose between similar datasets. After the user selects resources that will be used, that application will utilize information in the metadata and NGDS data access protocols to obtain the desired datasets and the user will work on their project.</p>
-
-
-
-<p>The NGDS Design and Build project (based at Boise State University) has developed this <a href="/ngds/map">Map</a> and <a href="/dataset">Library</a> search interface; however, if you’re so inclined, you too can <a href="/ngds/develop">develop</a> an application to search the NGDS such as <a href="http://search.geothermaldatasystem.org/">this search portal</a>.</p>
-
-<p>A <a href="http://lab.usgin.org/applications/doc/csw-client-application" target="_blank">catalog search client extension for ArcMap</a> provides an example of a plug in approach to adding NGDS search and data access to an existing widely used desktop GIS Application (ESRI ArcMap). The add-in provides a button that can be added to standard ArcMap tool bars. The button opens a search window enabling simple bounding box location and free text search of the NGDS catalog. The client uses the OGC CSW interface to send search requests, and parses returned metadata to identify resources that are distributed using the OGC Web Map Service. The user can select one of these resources and add it to their ArcMap project as a new layer. The code base for this application is on GitHub at <a href="https://github.com/usgin/arcmap-cswclient" target="_blank">usgin/arcmap-cswclient</a>.</p>
-
-<p>NGDS map services can be used with a variety of existing web map applications that allow connection to OGC Web Map services. Some examples include the <a href="http://viewer.nationalmap.gov/viewer/" target="_blank">USGS National Map Viewer</a>, <a href="http://www.arcgis.com/home/" target="_blank">ArcGIS Online</a>, or NREL’s <a href="http://maps.nrel.gov/gt_prospector" target="_blank">Geothermal Prospector</a>. Web applications, such as these, can be built on a variety of platforms, including the OpenLayers framework, to access and display NGDS data.</p>
-
-<p>The <a href="http://data.geothermaldatasystem.org/" target="_blank">Data-</a>Explorer is another example web application that will access data delivered through OGC Web Feature services and download subsets of the data as a table that can be cut and pasted into common spreadsheet software. The code base for this application is on GitHub at <a href="https://github.com/usgin/wfs-search" target="_blank">usgin/wfs-search</a>.</p>
-
-<p>Finally, a number of applications can use NGDS data, some of these are listed at the <a href="/ngds/resources">Resources</a> tab.</p>
-
-<br/>
-<section id="publish-data">
-    <h2>Publish Data</h2>
-
-    <p><strong>Publishing data to the National Geothermal Data System</strong></p>
-
-    <p>This section is specific for NGDS project participants or entities that would like to become nodes in the network. In this discussion, the term resource will be used in a broad sense to include all the data items of interest that might be registered for use in the NGDS. <em>A </em><a href="http://usgin.org/content/glossary#resource" target="_blank">resource</a> becomes part of the NGDS system when it is locatable using an NGDS catalog search, and accessible according to procedures described in the metadata record obtained from the NGDS catalog. That’s all there is to it. The first step to make any resource part of the system is thus to create a metadata record describing the resource and how it can be obtained. For guidance on metadata preparation, see <a href="http://usgin.org/glossary/metadata">Metadata</a>.</p>
-
-    <p>Although core or other kinds of physical samples, and hard copies of documents can be registered as NGDS resources, this discussion is focused on information resources that can be accessed electronically. Access to a resource via the web may be file-based, via web application, or service-based. Resources may provide different levels of interoperability (see <a href="http://en.wikipedia.org/wiki/Conceptual_interoperability" target="_blank">http://en.wikipedia.org/wiki/-Conceptual_interoperability</a>) based on whether their information content is unstructured, structured, or structured according to an <a href="http://schemas.usgin.org/home/">NGDS content model</a> and interchange format.</p>
-
-    <p>&nbsp;</p>
-
-    <table align="center" border="0" cellpadding="5" cellspacing="2">
-        <thead>
-            <tr>
-                <th scope="col" style="width:30%; text-align: center; vertical-align: middle; ">
-                <h3>File-based approaches</h3>
-                </th>
-                <th scope="col" style="width:30%; text-align: center; vertical-align: middle; ">
-                <h3>Web applications</h3>
-                </th>
-                <th scope="col" style="width:30%; text-align: center; vertical-align: middle; ">
-                <h3>Service-based approaches</h3>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="width:30%; text-align: left; vertical-align: top; ">
-                <p>A representation of the resource may be retrieved on the WWW as a single digital package (a file!). The internal content of the package may be standardized to varying degrees corresponding to various levels of interoperability</p>
-
-                <p>At the simplest level, a file-based representation of the resource in whatever format it currently exists is made available at some permanent web location (identified by a URL). The contained information can be accessed by users who have software that can recognize and open files in the format it is delivered. They can utilize the information if they can understand the encoding, language, and data structure, but the system provides no support for this understanding, and little or no automation is possible.</p>
-
-                <p>Additional interoperability can be achieved if the information is loaded in a structured format such that the information can be processed using computer software, and made available as a file. Typical example file formats are various spreadsheet file types (e.g. Excel), dBase files, and Microsoft Access databases. To be useful, the metadata must fully describe the data structure, e.g. the tables and fields in each table are defined. With this information, the content of the file can be accessed with computer software.</p>
-
-                <p>A higher degree of interoperability is enable if the information in the file is presented using a documented, community data structure. In this case the metadata can point to the data model specification that is used, and software that is aware of that data structure can process the information content of the file with little or no user interaction. In the NGDS, this would correspond to loading data into a file-based table structure defined by one of the interchange content models.</p>
-                </td>
-                <td style="width:30%; text-align: left; vertical-align: top; ">
-                <p>Information resources can be made available to users via web-browser based applications that allow them to browse, view, process, analyze, or download in various ways. Such approaches can provide useful functionality, but do not lend to interoperability or resource reuse, because the application functionality is typically tightly coupled to a particular data source. In such a case, application function cannot easily be applied to other data sources, and the data cannot be accessed directly by other applications. Download functions commonly include some filtering and selection of data subset capabilities, but these operations required direct human interaction. The acquired files may be structured or unstructured (see above).</p>
-
-                <p>The intention of the NGDS that structured data be provided through web services, and that NGDS applications use NGDS service interfaces to acquire data that they operate on. In this fashion the work of the data compiler, data hosting, and application development agents in the system can be decoupled.</p>
-
-                <p>Example web applications:</p>
-
-                <p><a href="http://gisweb.unr.edu/geothermal/" target="_blank">Nevada Bureau of Mines and Geology Geothermal Web Application</a></p>
-
-                <p><a href="http://maps.nrel.gov/gt_prospector" target="_blank">Geothermal Prospector</a></p>
-
-                <p><a href="http://www.earthchemportal.org/" target="_blank">EarthChem</a></p>
-
-                <p><a href="http://www.geosamples.org/catalogsearch" target="_blank">System for Earth Sample Registration</a></p>
-                </td>
-                <td style="width:30%; text-align: left; vertical-align: top; ">
-                <p>In pursuit of an open data/linked data approach to making data available to the end users, the objective of the NGDS is to make all structured data available through web services using well documented community specifications for service protocols and data interchange formats. This sort of data delivery requires more sophisticated client and server software stacks, and more rigid quality control of the content. Because of the additional up front cost, widely available and useful data will need to be prioritized for web service delivery. Web services may be deployed using custom data schema corresponding to existing database holdings, but the goal is to facilitate use by data consumers by delivering data of a particular type in a consistent schema.</p>
-
-                <p>The NGDS is currently using simple feature data interchange/exchange schema for service-based delivery--these are 'flat' file formats that can be represented as simple spreadsheets or text tables with no information loss. These are developed as content models independent of a particular implementation, currently using Excel workbooks to document the content fields in the model (see <a href="/content-models/data-interchange-content-models">Content Models</a>).</p>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-    <p style="text-align: center;">
-    <img alt="" src="/images/help/thermalspring-2.jpg"
-         style="padding-left: 10px; padding-top: 5px; padding-bottom: 10px; width: 1000px;" />
-    </p>
-    <p><strong>Data access tiers</strong></p>
-
-    <p>In discussions of NGDS resource publication, it is useful to think in terms of 3 tiers:</p>
-
-    <p><strong>Tier 1.</strong> Information in text, images, or recorded sound. This is unstructured data, and can be very useful to people, but is not amenable to automated computer processing and analysis of the contained information (other than what is possible using text analytics software).</p>
-
-    <p><strong>Tier 2.</strong> Structured data not in an NGDS content model. The structured data must be encoded in a file format that can be determined by inspection or based on file name or metadata. WFS and WMS services may be deployed using such data, but users will have to determine how to extract useful information on a case by case basis. Once the data structure has been determined, some computer processing is possible.</p>
-
-    <p><strong>Tier 3.</strong> Structured data in an NGDS content model. May be in a file-based table with field names matching those in the content model, or in an XML document that validates against the XML schema for that model (and version of the model). Tier 3 interoperability is done by using one of the community agreed upon interchange formats available <a href="http://schemas.usgin.org/">here</a>.</p>
-
-
-    <p><strong>Publishing Data through the US DOE Geothermal Data Repository</strong></p>
-
-    <p>The US DOE GDR is hosted on the Open Energy Information (OpenEI) Platform and designed to receive all US DOE Geothermal Technologies Office grant recipient data. All grant recipients are required to submit their data as it is generated or no later than 90 days after the quarter in which the data is generated. For more information on submitting data to the DOE GDR, please download the <a href="http://geothermaldata.org/sites/geothermaldata.org/files/document/ngds-factsheet-REV1-12-10-12.pdf">DOE GDR brochure</a>, visit the <a href="/help">NGDS information</a> page, or visit the <a href="https://gdr.openei.org/" target="_blank">DOE GDR</a> directly.</p>
-</section>
-<br />
-<h2>Background on Data</h2>
-
-<p><strong>Data Interchange Content Models</strong></p>
-
-<p>Each feature or observation type delivered using a community data interchange format has an associated content model that defines the information contained in interchange documents for that feature or observation. The content model in its simplest form is a statement that some particular entity (feature or observation) will have some list of properties. For example a content model for a record describing a book might include: title, author, publisher, publication date, publication place, number of pages, and an ISBN number (a URI).</p>
-
-
-<p>To document these content models, the NGDS is currently using spreadsheet workbooks. Each workbook includes a description of the entity type, a list of the elements (fields, attributes) in a data instance for that entity presented both as a table and a list, and lists of vocabulary terms meant as a start or example for the kinds of vocabularies that will be required in the long run for semantic interoperability. Use of the terms in these example vocabularies will facilitate migration to formal vocabularies later.</p>
-
-
-<p>A list of currently available models is available at: <a href="http://schemas.usgin.org">http://schemas.usgin.org</a>.</p>
-
-
-<p>In order to actually use the content models, they must be implemented using an encoding scheme that is computer processable. NGDS is using eXtensible Markup Language (XML) to implement the content models, but other schemes may be adopted as the system matures and technology evolves. The important thing is that the information is encoded consistently in a structured, well documented format. This enables computer programs to parse the interchange documents and extract desired information, and as newer encodings are adopted, conversion between formats can be automated using software.</p>
-
-<p>If data to be served are not accounted for by an existing content model, network participants are invited to propose new models. A document with guidelines for construction of a template workbook in available <a href="http://repository.usgin.org/uri_gin/usgin/dlio/340" target="_blank">here</a>. Proposed new content models are submitted for review and adoption for use in the NGDS and broader <a href="http://usgin.org/" target="_blank">USGIN</a> community.</p>
-
-
-<p><strong>Data Item Categories</strong></p>
-
-<p>The term ‘Data item’ used here to denote a kind of information object; in other contexts these might be called entities, objects, classes, or buckets. Each item corresponds to a feature or observation type that specifies a collection of properties. The purpose of this classification is to analyze the information of interest into types that will use the same data schema, delivery mechanisms, and metadata schema. Initial data types were identified and draft content models developed by surveying project partners at the beginning of the project. The approach was bottom up, based on the kinds of information the state geological surveys reported in their holdings. A summary of this initial survey is available <a href="http://repository.usgin.org/uri_gin/usgin/dlio/171" target="_blank">here</a>.</p>
-
-
-<p>The Data Items are grouped into higher-level information categories. These are:</p>
+<h1>Data Models, Exchange Methods, and Metadata</h1>
 
 <ul>
-	<li><u>Observation</u> – an information resource representing the event of observing or measuring and recording properties of some feature (Open Geospatial Consortium, <a href="http://www.opengeospatial.org/standards/om" target="_blank">Observations and Measurements (O&amp;M)</a>). <a href="http://en.wikipedia.org/wiki/Observations_and_Measurements" target="_blank">Observations</a> represent the basic data that are the foundation for the other information categories. The content model includes: a result, which is the measured or observed value; a feature of interest, which is the feature the observer wishes to characterize; a procedure, which includes information on who made the observation and how it was made. A sampling feature may be specified to record what part of the feature of interest was the actual target of the observation. The observation model allows modeling composite observations, which may represent the aggregation and interpretation of one or more input observations. At least initially we will be using a flattened, simplified version of the full O&amp;M schema that can be served using OGC simple features.</li>
-	<li><u>Feature</u> – an information resource representing some identifiable thing of interest in the world. A feature is described by a collection of attributes that are typically each the result of one or more observations. Features present a more aggregated or interpretive view of the world than observations (although a feature can be modeled as the result of an observation). Features will be delivered via OGC Web Feature Services (Open Geospatial Consortium, Web Feature Service, <a href="http://www.opengeospatial.org/standards/wfs" target="_blank">http://www.opengeospatial.org/standards/wfs</a>) or other similar services. Typically, features have a geographic location.</li>
-	<li><u>Document</u> – A packaged body of intellectual work; has an author, title, some status with respect to review/authority/quality. ‘USGS peer reviewed’ would be a 'status property'. Documents may have varying levels of authority, e.g., ‘gray’ literature, unpublished documents, peer-review in scientific publication, community vetted, etc. A document may have a variety of physical manifestations (pdf file, hard-bound book, tiff scan, word processor document...), and versions may exist as the document is traced through some publication process. They may be map, vector graphics, or text. Media containing recorded sound and moving images are included as document types.</li>
-	<li><u>Coverage</u> – A dataset that reports the values of some continuously varying property over some spatial or temporal extent. Examples include well logs that report the values of resistivity, density, or some other property along the well bore, gravity maps that report measured (perhaps by extrapolation) values of gravity over some geographic region. A coverage may be the result of one or more observations. A coverage may also be associated with an individual feature, such as a coverage showing the thickness distribution of a geologic unit or the average temperature at some depth in a Geothermal system</li>
+	<li><a href="#metadata">Metadata</a></li>
+	<li><a href="#access">Data Access Options</a></li>
+	<li><a href="#interoperability">Data Interoperability</a></li>
+	<li><a href="#create">Creating Interoperable Data</a></li>
+	<li><a href="#models">Content Models</a></li>
+	<li><a href="#develop">Develop Applications</a></li>
 </ul>
 
+<h2><strong><a id="metadata" name="metadata"></a>Metadata</strong></h2>
 
-<p><strong>Key Data Terms</strong></p>
+<p><em>All NGDS data records are organized and accessed using metadata. Metadata describes NGDS resources to support finding resources, evaluating them for a user&#39;s intended purpose, and obtaining the data. Each metadata record describes a resource that is considered an individual product with an author, editor or compiler, created with some particular purpose. The metadata record may describe a variety of &#39;distributions&#39; or procedures for accessing the resource, such filling out an order form, clicking on a link, or linking to a web service with an appropriate client. </em></p>
 
-<p><em>Metadata</em> should be created and submitted to an NGDS catalog for any resource that is meant to be accessible individually.</p>
+<p>After hosting data using their own computing resources, NGDS data contributors submit one or more metadata records describing their data to an NGDS node. Metadata from NGDS nodes is harvested by the NGDS portal, which provides a single entry point to search the entire NGDS catalog (the catalog contains metadata describing information resources distributed across the various nodes in the network). Metadata records provide information necessary to obtain data through various distributions (file formats, web service protocols), allowing you to select the most appropriate way to access the software you are using. Metadata records in this catalog can be used to locate and access the data resources they describe.</p>
 
+<p>Metadata records published by NGDS nodes are harvested by the central portal, which provides a web site for searching across all NGDS content, enabling users to discover NGDS data resources and learn how to access them. For more information about metadata, see the USGIN <a href="http://usgin.org/content/usgin-metadata-tutorial" target="_blank">Metadata Tutorial</a>.</p>
 
-<p>The required metadata content is explained in <a href="http://lab.usgin.org/profiles/doc/metadata-content-recommendations" target="_blank">USGIN metadata recommendations</a>. These requirements proscribe the content of the metadata, but not the delivery format. ISO19139 xml is the preferred encoding based on its expanding adoption in the community. <a href="http://repository.usgin.org/uri_gin/usgin/dlio/499" target="_blank">USGIN guidelines for implementing the content recommendations in ISO19139 XML</a> are available, as well as a detailed <a href="http://repository.usgin.org/uri_gin/usgin/dlio/337" target="_blank">USGIN profile</a> for interoperable metadata using ISO19139.</p>
+<p>Once the desired NGDS data resource is located using metadata that appears in the NGDS catalog, a user has several options for accessing that resource. Access options depend on the structure of the data resource. Typically, highly structured resources offer broader options for access and automated analysis.</p>
 
+<h2><a id="access" name="access"></a>Data Access Options</h2>
 
-<p>FGDC xml is widely used and if participants already have workflow in place using this format and can provide the requested metadata content, this can be harvested using an FGDC to ISO transformation. FGDC XML should be tested to validate against the official XML schema at <a href="http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd" target="_blank">http://www.fgdc.gov/schemas/metadata/fgdc-std-001-1998.xsd</a>. Please confer with the <a href="/ngds/contact">NGDS developer team</a> about metadata formatting to facilitate import of metadata into the NGDS catalog</p>
+<p>NGDS is uses the World Wide Web as a platform for accessing and exchanging data. Typical web-based data exchange methods are as follows:</p>
 
+<ul>
+	<li><strong>File-based approaches</strong>: Data is accessed in discrete digital packages called <em>files</em>. A file is located at specific URL (Web location). The content of a file can be structured to enable machine processing, but the file is only accessible as a unit.</li>
+	<li><strong>Web application-based approaches</strong>: Data is made available to users via Web-browser-based software. These applications typically provide a human user with functions to explore data with various kinds of visualizations, and in some cases to select particular data and download in files. These applications are typically tightly coupled to specific data sources.</li>
+	<li><strong>Service-based approaches</strong>: Data is available through <em>web services,</em> which provide interfaces for machine-to-machine interaction for finding, selecting and accessing data. Web services require more sophisticated client and server software stacks and rigid quality control, but allow a greater level of automation in the data access and utilization process, fully taking advantage of interoperable interchange protocols and formats.</li>
+</ul>
 
-<p><em>Individual documents</em> require one metadata record per document. Some document types may consist of a bundle of files, e.g. ESRI shape file. In general these should be bundled into a single file like a zip archive or UNIX tar file. The metadata must include the URL at which the document can be accessed. These documents might be scans of well logs, scanned reports or publications, or data in a spreadsheet, such as an Excel file.</p>
+<h3>What are Web Services?</h3>
 
+<p>A web service is a way to communicate data over the internet. Using web services allows NGDS data to be used in a variety of free-and-open-source applications, making it more freely available and easier to use.</p>
 
-<p><em>Datasets</em> (data products) are typically considered as individual works (see <a href="http://en.wikipedia.org/wiki/Functional_Requirements_for_Bibliographic_Records" target="_blank">FRBR</a>), unified by the compilation activity that brings information together into a single data structure, editing and verifying content as necessary. This approach is based on our interest in facilitating data access by users, and the observation that such a user is first interested in a particular kind of data; upon finding a fit-for-purpose dataset, they will next want to know how to get the data. From this perspective a dataset work (data product, resource) will have a single metadata record that may include specification of multiple distributions of the resource. For instance a borehole temperature dataset may be available with all the records in an Excel spreadsheet, or visualized through a web map service, or individual observations may be accessed through a web feature service (see for example <a href="http://repository.stategeothermaldata.org/repository/resource/168566464e3d5f8f3cde3b9fc0049f45/" target="_blank">Montana Hot Springs</a>).</p>
+<p>NGDS purports to use web services with well-documented community specifications for service protocols and data interchange formats. Though web services require more sophisticated client and server software stacks and rigid quality control, web services have a number of advantages that meet the requirements of NGDS:</p>
 
+<ul>
+	<li>Web services are web-accessible</li>
+	<li>Data available as a web service can be consumed by web applications</li>
+	<li>Web services are read-only and preserve data ownership</li>
+	<li>A number of web service protocols are free-and-open-source, meaning that web services using these protocols can be hosted and accessed without proprietary software</li>
+</ul>
 
-<p>At a more granular level, individual records (features, objects) in a dataset may include source information, documenting details of observation or measurement procedure and other information specific to a particular data type. This might include information such as location, data and time of observations, and the source of the data. These feature-level metadata are delivered with the data, and only summarized in the work-level dataset metadata that are published to the NGDS-compliant catalog. This granularity issue can be difficult because of differing perspectives on what is data or metadata, differing granularity of documentation available, and different use-case priorities.</p>
+<p>Most NGDS web services provide functions to get data or metadata. The NGDS Node-in-a-Box (NIAB) software stack supports the creation and publication of Open Geospatial Consortium (OGC) compliant web services from data assembled in Excel spreadsheets.</p>
+
+<p>Web Service Protocols in use with NGDS</p>
+
+<ul>
+	<li><strong>WMS</strong>: OGC Web Map Service (WMS). Provides raster images of georeferenced features for display in map views.</li>
+	<li><strong>WFS</strong>: OGC Web Feature Service (WFS). Provides structured data for georeferenced features including descriptive attributes.</li>
+	<li><strong>ESRI Map Service</strong>: Provides georeferenced rasters and features described by attributes. Requires ESRI ArcGIS server software.</li>
+	<li><strong>CSW Applications</strong>: OGC Catalog Service for the Web (CSW). Helps applications access metadata records used to locate NGDS information resources.</li>
+	<li><strong>OPeNDAP</strong>: Provides raster datasets as numeric array data.</li>
+</ul>
+
+<p>As implemented in NGDS, these services provide the user read-only access to data published through the services. Transactional implementations allowing users to change content of the services are possible, but these are outside the scope of current NGDS specifications.</p>
+
+<h2><a id="interoperability" name="interoperability"></a>Data Interoperability</h2>
+
+<p>NGDS facilitates access to data conforming to the three aforementioned exchange methods through publication using interoperable protocols and formats. This enables greater automation of information exchange, processing, and analysis, allowing human users to focus on understanding and learning from the data.</p>
+
+<p>Data is categorized in one of three <em>interoperability</em> <em>tiers</em>; the higher the tier, the greater the level of interoperability. These tiers roughly conform to whether data can be accessed through a web service or must be downloaded or viewed as a file.</p>
+
+<h3>Tier 1: Unstructured data (text, images, or sound)</h3>
+
+<p>The simplest and most common access to resources is provided by simple Web links that result in a file download. Information contained in files can be accessed by users who have software that can recognize and open these files. This is the standard model for files accessible on the web, supported by HTTP servers and desktop web browser software.</p>
+
+<p>Unstructured data requires user interpretation before it can be used for analysis. Users can utilize the information if they can understand the encoding and language, but the system provides no support for this understanding, and little or no automation is possible. Audio files must be transcribed; text files must be parsed and mined for data that is then broken down and structured in ways that can be processed by computers; images must be scanned, interpreted, and often georeferenced. Preparing Tier 1 data for analysis can be a painstaking and time-consuming process.</p>
+
+<h3>Tier 2: Structured data that does not conform to an NGDS schema</h3>
+
+<p>Tier 2 interoperability indicates that information content is structured (consistently organized) in a spreadsheet or database file such that it is amenable to computer processing; that said, Tier 2 data does not use a shared, documented interchange format. Data in this tier must be transformed by the data consumer on a case-by-case basis for integration with other datasets, requiring them to study each new data source to figure out how to extract the information they need. Obtaining data in a structured format is a step towards interoperability because once the format is understood, computer programs can be instructed to extract the desired information.</p>
+
+<h3>Tier 3: Structured data that conforms to an NGDS schema</h3>
+
+<p>Tier 3 data is structured data that conforms to an <a href="http://schemas.usgin.org/models/" target="_blank">NGDS information exchange</a>. Data that is published according to the exchange specification (content model, interchange format, service protocol) is interoperable with any other data published using that exchange. This is referred to as Tier 3 interoperability.</p>
+
+<h2><a id="create" name="create"></a>Creating Interoperable Data</h2>
+
+<p>Tier 3 data structured using a content model is among the most highly interoperable data found on the web. Tier 3 data can be accessed and analyzed automatically through a number of web services. NGDS uses content models based on USGIN-adopted standards and protocols to structure data to the Tier 3 format.</p>
+
+<h3>USGIN: Powering NGDS</h3>
+
+<p>The goal of USGIN is to facilitate the development of interoperable geoscience data-sharing networks that improve public access to geoscience information and aid scientific queries. For more information visit the <a href="http://usgin.org/" target="_blank">USGIN website</a>.</p>
+
+<p>USGIN proposes:</p>
+
+<ul>
+	<li>Protocols and standards.</li>
+	<li>Profiles for the utilization of USGIN protocols and standards.</li>
+	<li>Development tools to build distributed data-sharing networks using open-source software and existing World Wide Web infrastructure.</li>
+</ul>
+
+<h3>USGIN Architecture</h3>
+
+<p>To promote interoperability, USGIN adopts existing standards, protocols, and formats whenever possible. These include:</p>
+
+<ul>
+	<li>Standards for metadata: ISO 19115, ISO 19119, and ISO 19139</li>
+	<li>Protocols for data exchange:
+	<ul>
+		<li>Open Geospatial Consortium (OGC), Web Map Service (WMS), Web Feature Service (WFS), and Catalog Service for the Web (CSW)</li>
+		<li>ESRI Map Service</li>
+		<li>OPeNDAP</li>
+	</ul>
+	</li>
+	<li>GeoSciML-Portrayal schemas for geologic map data.</li>
+</ul>
+
+<p>NGDS is based on protocols and standards adopted by USGIN. All NGDS content models are structured according to USGIN standards.</p>
+
+<h2><a id="models" name="models"></a>Content Models for NGDS Data</h2>
+
+<p>Within the context of NGDS, data is a collection of statements representing the understanding of something, typically the result of observations or measurements. Data describing a rock might include statements asserting its density, mineral content, magnetic susceptibility, thermal conductivity, chemical composition, etc.</p>
+
+<p>NGDS information exchanges are based on content models that define the kinds of things of interest to system users and the properties associated with each of these. The content model defines a collection of properties used to describe a particular entity. For example, the properties used to describe a well will be quantitatively and qualitatively different from those used to describe a river or shear displacement structure.</p>
+
+<p>A list of content models currently in use by NGDS are available at <a href="http://schemas.usgin.org/home/" target="_blank">http://schemas.usgin.org</a>.</p>
+
+<p>For more information, see the <a href="http://usgin.org/content/ngds-content-model-tutorial" target="_blank">Content Model Tutorial</a> on the USGIN website.</p>
+
+<h3>Building an NGDS Content Model</h3>
+
+<p>Many data types provided by NGDS do not have existing standard interchange formats. For these NGDS defines information exchanges. NGDS information exchanges consist of the following:</p>
+
+<ul>
+	<li>A <strong>content model</strong>: Specifies the information to be exchanged about a given data type. For example, the <strong>Active Fault </strong>content model specifies the data fields and vocabulary terms necessary to describe quaternary faults.</li>
+	<li>An <strong>interchange format</strong>: The method by which information is encoded in files for transfer using the World Wide Web. For example, <em>XML</em> provides syntax that can be used to encode information in <em>XML documents</em> for exchange. Interchange formats are structured by <em>schemas</em>.</li>
+	<li>A <strong>service protocol</strong>: Defines the specific web service protocol used to request and receive information using the World Wide Web. Examples of service protocols include <em>web map service (WMS)</em> and <em>web feature service (WFS)</em>.</li>
+</ul>
+
+<p>Currently, NGDS is using GML simple-feature XML schemas to encode NGDS content models for information exchanges using the OGC Web Feature Service (WFS) protocol.</p>
+
+<p>NGDS data contributors can make their data interoperable by utilizing an existing information exchange for applicable data types, or participating in the development of new information exchanges for data types that are not in the current inventory.</p>
+
+<h2><strong><a id="develop" name="develop"></a></strong>Develop with NGDS</h2>
+
+<p>Built on the U.S. Geoscience Information Network, the National Geothermal Data System allows for the development of applications by third parties.</p>
+
+<p>NGDS map services can be used with a variety of existing web map applications that allow connection to OGC Web Map services. Some examples include the <a href="http://viewer.nationalmap.gov/viewer/" target="_blank">USGS National Map Viewer</a>, <a href="http://www.arcgis.com/home/" target="_blank">ArcGIS Online</a>, or NREL&rsquo;s <a href="http://maps.nrel.gov/gt_prospector" target="_blank">Geothermal Prospector</a>. Web applications, such as these, can be built on a variety of platforms, including the OpenLayers framework, to access and display NGDS data. The NGDS Data Explorer is an example of a custom-built web application. Code for the NGDS is stored on the USGIN <a href="https://github.com/usgin">GitHub repository</a> and through the developer&rsquo;s forum at the <a href="http://lab.usgin.org/usgin-community-homepage" target="_blank">USGIN Lab</a>.</p>
+
+<p>If the system is successful, NGDS hopes to see an ecosystem of <a href="ngds/resources">user applications</a> that utilize data from the system to add value to NGDS datasets. Users who are so inclined can <a href="ngds/develop">develop</a> an application to search the NGDS.</p>
+
+<p><strong>Creating Applications for use with NGDS</strong></p>
+
+<p>Open-source applications are being created daily for viewing and exploring data provided by Web Services. This is due to the vast amount of data accessible by Web Services, particularly when services are <a href="http://www.opengeospatial.org/standards/" target="_blank" title="OGC-Compliant">OGC-Compliant</a>, making for a system of interoperable data.</p>
+
+<p>To join a community of developers and to see how applications are being developed and used to implement NGDS, visit the Tools, Community and Group pages of the <a href="https://github.com/usgin" target="_blank">GitHub</a> or <a href="http://lab.usgin.org/" target="_blank" title="USGIN Lab">USGIN Lab</a>:</p>
+
+<ul>
+	<li><a href="http://lab.usgin.org/tools" target="_blank" title="USGIN Lab tools">USGIN Lab tools</a></li>
+	<li><a href="http://lab.usgin.org/usgin-community-homepage" target="_blank" title="USGIN Lab Community Homepage">USGIN Lab Community Homepage</a></li>
+	<li><a href="http://lab.usgin.org/og" target="_blank" title="USGIN Lab OG">USGIN Lab OG</a></li>
+</ul>
+
+<p><strong>Apps Developed for NGDS</strong></p>
+
+<p>Due to the NGDS open standards and protocols developers are able to customize applications for accessing and displaying NGDS data. The following applications where developed specifically for the NGDS:</p>
+
+<ul>
+	<li><a href="http://lab.usgin.org/applications/doc/3rd-version-csw-client-application" target="_blank">ArcMap Catalog Search Plug-in</a>&mdash;this application allows you to access the NGDS catalog services to locate WMS services that can be added as layers in an ArcMap (v10) project directly from ArcMap.</li>
+	<li><a href="http://search.geothermaldatasystem.org/" target="_blank">Catalog Search and Map Interface</a>&mdash;this application allows you to search, preview, and download NGDS data.</li>
+	<li><a href="http://data.geothermaldatasystem.org/" target="_blank">NGDS Data Explorer</a>&mdash;this application allows you to search, preview, and extract data from WFS in a tabular form.</li>
+</ul>
+

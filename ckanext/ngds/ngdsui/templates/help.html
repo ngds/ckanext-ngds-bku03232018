@@ -1,238 +1,91 @@
 {% extends 'page_ngds.html' %}
 
 {% block content %}
+
+<h2>Help</h2>
+
 <section class="help-main">
 
     <section class="help-content">
+		
+	<p>Here you will find additional information that can help you successfully use the following site features to access data through the National Geothermal Data System (NGDS):</p>
 
-        <h3>General</h3>
 
-        <p>The National Geothermal Data System (NGDS) is a distributed data system providing access to information
-            resources related to geothermal energy from a network of data providers. Data are contributed by academic
-            researchers, private industry, and state and federal agencies. Built on a scalable and open platform through
-            the U.S. Geoscience Information Network (USGIN), NGDS respects data provenance while promoting shared
-            resources. Since NGDS is built using a set of open protocols and standards, relying on the Open Geospatial
-            Consortium (OGC) and International Organization for Standardization (ISO), members of the community may
-            access the data in a variety of proprietary and open-source applications and software. In addition,
-            developers can add functionality to the system by creating new applications based on the open protocols and
-            standards of the NGDS.</p>
+	<ul>
+	<li><a href="#search">Search feature</a></li>
+	<li><a href="#map">Map interface</a></li>
+	<li><a href="#library">Library</a></li>
+	</ul>
 
-        <p>The NGDS, supported by the U.S. Department of Energy’s Geothermal Technology Program, is intended to provide
-            access to all types of geothermal data to enable geothermal analysis and widespread public use in an effort
-            to reduce the risk of geothermal energy development.</p>
-			
-		<p>This website, the NGDS Node-in-a-Box, is a CKAN extension designed to facilitate user access to NGDS data resources by providing a search interface for the NGDS metadata catalog. In addition, the NGDS Node-in-a-Box provides users with utilities that can be used to create and manage metadata records within the NGDS metadata catalog.</p>
+<a id="search" name="search"><h3>Search Feature</h3>
 
-        <p>Download a two-page handout on the NGDS created by the Department of Energy’s Geothermal Technologies
-            Program.</p>
-    </section>
+<p>This site&rsquo;s search feature provides access to a catalog of available geothermal resource data by indexing a database of metadata about those resources.&nbsp;</p>
 
-    <section id="organization/public" class="help-content">
-
-        <h3>Searching</h3>
-
-        <p>The NGDS Node-in-a-Box provides access to a metadata catalog that allows users to search for NGDS data resources based on <em>metadata</em>.</p>
-		<p>Metadata is used to describe and organize data resources; the NGDS metadata catalog allows the user to query and access metadata records. Each metadata record in the NGDS metadata catalog describes an NGDS data resource in ways that help users locate and access that resource. To find NGDS data resources, users search the NGDS metadata catalog for the metadata records that describe these resources.</p>
+<p>Metadata is basically &ldquo;data about the data&rdquo; &ndash; it is keywords and terms that the data contributors have used to describe each data resource.&nbsp; When you type a search word or phrase into the search box, the NGDS compares it to the metadata records and returns the most appropriate records.&nbsp; Information on how to access a given data resource is contained in the metadata records returned in the search results.</p>
+        
     </section>
 
     <section id="ngds/map" class="help-content">
 
-        <h3>Map</h3>
-		<p style="text-align: center;"><img src="/images/help/screen-map_controls.PNG" style="float: inherit;" width="75%"></img></p>
-        <p>The map is used to search the NGDS metadata catalog; search results are displayed in list form in the search interface on the left side of the map; and as colored rectangles on the map representing the physical extent of the features described by each dataset. Map controls are as follows:</p>
-		<ul>
-		<li><strong>Search by Keyword</strong> (<img src="/images/help/screen-map_controls-search.PNG"></img>): Search the metadata catalog by keyword(s); enter search terms and press the <strong>Enter</strong> key or click the <strong>magnifying glass</strong> button; the results will appear in list form beneath the search field as well as on the map</li>
-		<li><strong>Draw a Rectangle</strong> (<img src="/images/help/screen-map_controls-search_by_area.PNG"></img>): Use this tool to search for results within a given area by drawing a rectangle on the map. Having drawn a rectangle, click the <strong>magnifying glass</strong> button; any dataset describing features within the rectangle that has just been drawn will appear as search results</li>
-		<li><strong>Clear Rectangle</strong> (<img src="/images/help/screen-map_controls-stop_searching_by_area.PNG"></img>): Use this tool to stop drawing a rectangle or remove a rectangle that has been drawn with the <strong>Draw a Rectangle tool</strong></li>
-		<li><strong>Clear Results</strong> (<img src="/images/help/screen-map_controls-remove_layer.PNG"></img>): Click this button to remove all search results from the map</li>
-		<li><strong>Show/Hide Results</strong> (<img src="/images/help/screen-map_controls-center_layer.PNG"></img>): Click this button to toggle the visibility of search results</li>
-		<li><strong>Center Results</strong> (<img src="/images/help/screen-map_controls-center_layer.PNG"></img>): Click this button beneath a given search result to center those results on the map</li>
-		<li><strong>Zoom In</strong> (<img src="/images/help/screen-map_controls-zoom_in.PNG"></img>): Click this button to zoom in on the map</li>
-		<li><strong>Zoom Out</strong> (<img src="/images/help/screen-map_controls-zoom_out.PNG"></img>): Click this button to zoom out</li>
-		<li><strong>Full Screen</strong> (<img src="/images/help/screen-map_controls-fullscreen.PNG"></img>): Click this button to view the view the metadata catalog search in fullscreen mode; note that leaving fullscreen mode will clear any search results</li>
-		<li><strong>Basemap</strong> (<img src="/images/help/screen-map_controls-basemap.PNG"></img>): Mouse over this button to reveal a dropdown list of different <em>basemaps</em>. Basemaps are maps that are used as a background for the NGDS metadata catalog search map. Click the desired basemap in the basemap menu to change the basemap for the catalog search map. Basemaps can be changed at any time</li>
-		</ul>
-    </section>
+        <a id="map" name="map"><h3>Map Interface</h3>
+		
+		<p>The <a href="ngds/map">map interface</a> is typically used when you want to see a geographic distribution of data sites that may be of interest to you.</p> 
+		<p>You can use the map to search the NGDS either by typing a keyword into the search box or by using your mouse to draw a “bounding box.”  A bounding box delineates geographic parameters on the map and the system retrieves the records that fall within those parameters. </p>
+		<p>Search results are displayed in list form and as colored circles on the map. </p>
+		<p>Map controls are as follows:</p>
 
+		<ul>
+		<li><strong>Search by Keyword</strong> (<img src="/images/help/screen-map_controls-search.PNG"></img>): Enter search terms and press the <strong>Enter</strong> key; the results will appear in list form beneath the search field as well as on the map.</li>
+		<li><strong>Zoom In</strong> (<img src="/images/help/screen-map_controls-zoom_in.PNG"></img>): Zooms in on the map.</li>
+		<li><strong>Zoom Out</strong> (<img src="/images/help/screen-map_controls-zoom_out.PNG"></img>): Zooms out.</li>
+		<li><strong>Draw a Rectangle (or "Bounding Box")</strong> (<img src="/images/help/screen-map_controls-search_by_area.PNG"></img>): Use this tool to search for results within a given area by drawing a rectangle on the map.  Any record describing features within the bounding box you drew will appear as search results.</li>
+		<li><strong>Zoom to Extent</strong> (<img src="/images/help/screen-map_controls-zoom_to_extent.PNG"></img>): Zoom to the original extent of the map.</li>
+		<li><strong>Active Layer Menu</strong> (<img src="/images/help/screen-map_controls-active_layer_menu.PNG"></img>): Mouseover for a toggle-able list of active layers in the map. This menu is populated as users choose to add available WMS resources to the map from their search queries.</li>
+		<li><strong>Search Results Menu</strong> (<img src="/images/help/screen-map_controls-search_results_menu.PNG"></img>): Toggle a menu of search results. This widget has some automatic capabilities; if a user makes a query by bounding box or keyword, the search results menu will automatically toggle itself.</li>    
+		</ul>
+		
+    </section>
+	
     <section id="dataset" class="help-content">
 
-        <h3>Library</h3>
-		<p style="text-align: center;"><img src="/images/help/catalog.PNG" style="float: inherit;" width="66%"></img></p>
-        <p>The <strong>Library</strong> page acts as a keyword search interface of the NGDS metadata catalog. Here, users can search through NGDS metadata records by keyword and filter the results based on criteria that expand as more metadata records are added to the catalog. Search results can be filtered by multiple criteria simultaneously.</p>
-		
-		<p>To filter a search, click the filter criteria on the left side of the screen to expand them; click the check box by each desired filter. Filter criteria are as follows:</p>
-		<ul>
-		<li><strong>Category</strong>: Filter results by category and subcategory. For example, one category is drilling technology, which includes a variety of subcategories related to drilling, such as the presence or absence of casing diagrams. Clicking the checkbox associated with any these subcategories will exclude any datasets that do not include the indicated  information.</li>
-		<li><strong>Format</strong>: Filter results by dataset format; formats include data types and online resources, such as web services. Clicking the checkbox associated with any of these formats will exclude any datasets that do not match the indicated format(s).</li>
-		<li><strong>Source & Author</strong>: Filter results by source and-or author. Clicking the checkbox associated with a specific source or author will exclude any datasets not submitted by the indicated source(s) or author(</li>
-		<li><strong>Status</strong>: Filter results by the status of the dataset within the context of the NGDS project. Dataset status tends to reflect the state of completion of the dataset; for example, typical NGDS datasets will be either completed, ongoing, or deprecated. Clicking the checkbox associated within a given state will exclude any datasets that fall outside the selected state.</li>
-		<li><strong>Content Model</strong>: Filter results by the content model to which the dataset conforms. Each NGDS dataset conforms to a specific content model. Clicking the checkbox beside a specific content model will exclude any datasets that do not conform to the indicated content model(s).</li>
-		<li><strong>Public/Private</strong>: Filter results by the visibility of the dataset. When published, users can designate whether or not a given dataset is publicly accessible of listed privately. Clicking the appropriate checkbox will exclude datasets on the basis of whether or not they are public or private.</li>
+        <a id="library" name="library"><h3>Library</h3>
+
+<p>The <a href="dataset?_tags_limit=0">Library interface</a> allows you to use keywords and phrases to search the data records. Once you have results, you can narrow them to find the records you are looking for by choosing a set of criteria by which to filter your results.</p>
+
+<p><strong>Narrowing Your Search Results</strong></p>
+
+<ol>
+	<li>Type a keyword or phrase into the search box to receive an initial set of results.</li>
+	<li>Choose one or more of the filter topics from the left side of the screen:<br>
+	<img src="/images/help/screen-map_narrow_search.PNG"></img>
+	
+	</li>
+	<li>Within each topic, check the box by the criteria you wish to use as your filter(s):<br>
+	<img src="/images/help/screen-map_narrow_search_filter.PNG">
+	<br>Selecting a check box will automatically update your search results to show only data that match the criteria you have selected. Note that you can use multiple criteria simultaneously to filter your results.</li>
+	<li>To remove a filter, select the name of the filter at the top of the screen:<br>
+	<img src="/images/help/screen-map_remove_search_filter.PNG">
+	</li>
+</ol>
+<p>You can filter your search results using the following topics:</p>
+
+<ul>
+	<li><strong>Category</strong>: Filter results by category and subcategory. For example, the category &ldquo;drilling technology&rdquo; includes a variety of subcategories related to drilling, such as the presence or absence of casing diagrams.</li>
+	<li><strong>Format</strong>: Filter results by format of the documents or datasets. Formats include data types and online resources, such as Web services.</li>
+	<li><strong>Source &amp; Author</strong>: Filter results by data source and/or author.</li>
+	<li><strong>Status</strong>: Filter results by the status of the data within the context of the NGDS project. Data status tends to reflect the state of completion of that data. For example, typical NGDS documents or datasets will be either completed, ongoing, or deprecated.</li>
+	<li><strong>Content Model</strong>: Filter results by the content model to which the data conforms. All Tier 3 NGDS data conforms to a specific content model, which reflect properties of a given data set. A search for a specific content model would return results of data structured to conform to that content model.</li>
+	<li><strong>Public/Private</strong>: Filter results by the visibility of the data. When published, data contributors can designate whether or not a given document or dataset is publicly accessible or private. A setting of &ldquo;private&rdquo; renders the dataset invisible in public searches.</li>
+</ul>
+
+       
     </section>
 
     <section id="ngds/resources" class="help-content">
 
         <h3>Resources</h3>
-
-        <p>A list of resources for NGDS users. These include:</p>
-		<ul>
-		<li>Apps Developed for NGDS
-		<ul>
-		<li><a href="http://lab.usgin.org/applications/doc/3rd-version-csw-client-application" target="_blank">ArcMap Catalog Search Plug-in</a></li>
-		<li><a href="http://data.geothermaldatasystem.org/" target="_blank">NGDS Data Explorer</a></li>
-		</ul>
-		</li>
-		<li>Compatible Desktop GIS Applications
-		<ul><li><a href="http://www.esri.com/software/arcgis/explorer/index.html" target="_blank" title="ArcGIS Explorer">ArcGIS Explorer</a></li>
-		<li><a href="http://www.arcgis.com/home/" target="_blank" title="ArcGIS Online">ArcGIS Online</a></li>
-		<li><a href="http://www.cadcorp.com/products_geographical_information_systems/map_browser.htm" target="_blank" title="Cadcorp Map Browser">Cadcorp Map Browser</a></li>
-		<li><a href="http://dapple.geosoft.com/about.asp" target="_blank" title="Dapple">Dapple</a></li>
-		<li><a href="http://i-gis.dk/Home/tabid/40/language/en-GB/Default.aspx" target="_blank" title="GeoScene 3D">GeoScene 3D</a></li>
-		<li><a href="http://www.google.com/earth/index.html" target="_blank" title="Google Earth">Google Earth</a><u> </u></li>
-		<li><a href="http://www.gvsig.org/web/" target="_blank" title="gvSIG">gvSIG</a><u> </u></li>
-		<li><a href="http://www.mapbender.org/" target="_blank" title="Mapbender">Mapbender</a></li>
-		<li><a href="http://maps.nrel.gov/gt_prospector" target="_blank" title="NREL Geothemal Interface">NREL Geothemal Prospector</a></li>
-		<li><a href="http://openlayers.org/" target="_blank" title="OpenLayers">OpenLayers</a></li>
-		<li><a href="http://www.ossim.org/osgPlanet.html" target="_blank" title="osgPlanet">osgPlanet</a></li>
-		<li><a href="http://glmapclient.sourceforge.net/" target="_blank" title="SimpleMapClient">SimpleMapClient</a></li>
-		<li><a href="http://udig.refractions.net/" target="_blank" title="uDig">uDig</a></li></ul>
-		</li>
-		<li>Geothermal Applications
-		<ul><li><a href="http://maps.nrel.gov/gt_prospector" target="_blank">The Geothermal Prospector</a></li></ul>
-		</li>
-		<li>Visualization Applications
-		<ul>
-		<li><a href="http://en.openei.org/wiki/Exploration_Cost_and_Time_Metric" target="_blank">The Exploration Cost and Time Metric tool</a></li></ul>
-		</li>
-		
-    </section>
-
-    <section id="harvest" class="help-content">
-
-        <h3>Contribute</h3>
-		<p style="text-align: center;"><img src="/images/help/contribute.PNG" style="float: inherit;" width="66%"></img></p>
-        <p>The <strong>Contribute</strong> page allows users to contribute to NGDS by creating and managing metadata records describing NGDS data resources. To contribute, <strong>sign up</strong> for an account and click <strong>Contribute</strong>; if they are not logged in, users will be prompted to do so upon clicking <strong>Contribute</strong>.</p>
-		
-		<p>Clicking <strong>Contribute</strong> leads to the <strong>Contribute</strong> page; here, users are presented with two options:</p>
-		<ul>
-		<li><strong>Individual Upload</strong>: Users create a <em>collection</em> and then add one or more metadata records to this collection; each metadata record describes a data resource. During the metadata record creation process, the user can bind the metadata record to the data resource it describes in one of two ways:<ul>
-		<li>By providing a hyperlink to the data resource described by a given metadata record</li>
-		<li>By uploading the data resource described by a given metadata record</li></ul></li>
-		<li><strong>Bulk Upload</strong>: Users upload large numbers of datasets simultaneously in a single zip file; metadata records are generated automatically.</li></ul>
-		<p>To proceed, click either <strong>Individual Upload</strong> or <strong>Bulk Upload</strong>; these options are described below. 
-		
-		<h4>Individual Uploads</h4>
-		<p>Performing an individual upload is a three-step process:</p>
-		<ul>
-		<li><strong>Create a Collection</strong>: Create a collection that will contain one or more metadata record(s)</li>
-		<li><strong>Add Data</strong>: Add one or more metadata record(s) to the collection; each metadata record describes a data resource, which will be either specified or uploaded in this step</li>
-		<li><strong>Collection Metadata</strong>: Provide metadata that applies to all metadata records in the collection</li>
-		</ul>
-		<p>These steps are described further in the following sections</p>
-		<h4>Individual Upload Step 1: Create a Collection</h4>
-		<p style="text-align: center;"><img src="/images/help/contribute-individual-1.PNG" style="float: inherit;" width="66%"></img></p>
-		<p>Clicking <strong>Individual Upload</strong> on the <strong>Contribute</strong> page leads to the <strong>Create a Collection</strong> form; as the name implies, populating this form will create a collection for metadata records, which is the first step of the <strong>Individual Upload</strong> process. The fields on this form are as follows:</p>
-		<ul>
-		<li><strong>Title</strong>: Collection title</li>
-		<li><strong>URL</strong>: The URL at which this collection will be found. This URL is automatically generated when the <strong>Title</strong> field is populated, but it can be modified manually</li>
-		<li><strong>Description</strong>: A description of the collection and the metadata records stored in it</li>
-		<li><strong>Tags</strong>: Keywords that can be used to search for this collection and any metadata records stored in it</li>
-		<li><strong>License</strong>: The license under which any dataset(s) described by any metadata record(s) within this collection are published; among other things, the license determines the manner in which the dataset described by the metadata in this collection can be reused. Information on supported licenses can be found at the following locations:
-		<ul>
-		<li><a href="http://creativecommons.org/" target="_blank" >Creative Commons</a></li>
-		<li><a href="http://www.gnu.org/licenses/fdl.html" target="_blank">GNU Free Documentation License</a></li>
-		<li><a href="http://opendatacommons.org/" target="_blank">Open Data Commons</a></li>
-		<li><a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/" target="_blank">UK Open Government License</a></li>
-		</ul>
-		</li>
-		<p>When finished, click <strong>Next: Add Data</strong>.</p>
-		<h4>Individual Upload Step 2: Add Data</h4>
-		<p style="text-align: center;"><img src="/images/help/contribute-individual-2.PNG" style="float: inherit;" width="66%"></img></p>
-		<p>Clicking <strong>Next: Add Data</strong> on the <strong>Create Collection</strong> form leads to the <strong>Add Data</strong> form. Populating this form creates a metadata record describing a specified data resource; this metadata record is added to the collection created in Step 1. Fields found on this form regardless of the type of resource described by this metadata record are as follows:</p>
-		<ul>
-		<li><strong>Resource</strong>: The URL by which the data resource described by this metadata record can be accessed; if a data resource is instead uploaded to the NGDS Node-in-a-Box Repository, this field will be automatically populated</li>
-		<li><strong>Name</strong>: The name of the data resource described by this metadata record as it will appear in the metadata catalog</li>
-		<li><strong>Description</strong>: A brief description of the data resource described by this metadata record</li>
-		</ul>
-		<p>Data resource types are as follows:</p>
-		<ul>
-		<li><strong>Structured Resource</strong>: Data that has been mapped to an interchange format such as an <a href="http://schemas.usgin.org/" target="_blank">NGDS data exchange content model</a>; if the data in the dataset described by this metadata record has been mapped to an NGDS data exchange content model, specify the content model to which the data has been mapped. Fields specific to this resource type are as follows:</p>
-		<ul>
-		<li><strong>Content Model</strong>: The NGDS content model to which the data resource described by this metadata record conforms</li>
-		<li><strong>Content Model Version</strong>: The NGDS content model version to which the data resource described by this metadata record conforms</li>
-		<li><strong>Distributor</strong>: The individual, agency, company, or organization responsible for distributing the data resource described by this metadata record</li>
-		<li><strong>File Format</strong>: The file format of the data resource described by this metadata record</li>
-		</ul>
-		</li>
-		<li><strong>Unstructured Resource</strong>: Data such as plain text, a scanned image, or a sound file that cannot be processed or analyzed by machines without user input. Fields specific to this resource type are as follows:
-		<ul>
-		<li><strong>Distributor</strong>: The individual, agency, company, or organization responsible for distributing the dataset described by this metadata record</li>
-		<li><strong>Format</strong>: The file format of the data resource described by this metadata record</li>
-		</ul>
-		</li>
-		<li><strong>Offline Resource</strong>: A data resource that is only available in print format. Fields specific to this resource type are as follows:
-		<ul>
-		<li><strong>Ordering Procedure</strong>: The manner in which the data resource described by this metadata record can be procured</li>
-		</ul>
-		</li>
-		<li><strong>Data Service</strong>: Data that is available as a <em>web service</em>; specify the type of web service. Fields specific to this resource type are as follows:
-		<ul>
-		<li><strong>Distributor</strong>: The individual, agency, company, or organization responsible for distributing the data resource described by this metadata record</li>
-		<li><strong>Protocol</strong>: The specific web service protocol used by the web service specified as the data resource described by this metadata record; examples include:
-		<ul>
-		<li><strong>WMS</strong>: Open Geospatial Consortium (OGC) web map service (WMS); typically used to provide raster images of georeferenced features</li>
-		<li><strong>WFS</strong>: Open Geospatial Consortium (OGC) web feature service (WFS); typically used to provide georeferenced features described by attributes</li>
-		<li><strong>ESRI Map Service</strong>: Protocol used by web services generated through ESRI ArcGIS software; provides both georeferenced rasters and georeferenced features described by attributes</li>
-		<li><strong>CSW</strong>: Open Geospatial Consortium (OGC) catalog service for the web (CSW); typically used to store and exchange metadata records; these metadata records are often used to locate other web services</li>
-		<li><strong>OPeNDAP</strong>: Web service protocol typically used to provide georeferenced raster datasets</li>
-		</ul>
-		</li>
-		<li><strong>Layer</strong>: The label for a given data service when it is viewed as a layer in a GIS application</li>
-		</li>
-		</ul>
-		</ul>
-		<p>When the appropriate fields have been populated:</p>
-		<ul>
-		<li>Click <strong>Save & add another</strong> to add another metadata record to the collection; this will repeat the steps described in Step 2</li>
-		<li>Click <strong>Next: Additional Info</strong> to finalize process by adding collection metadata</li>
-		</ul>
-		<h4>Individual Upload Step 3: Collection Metadata</h4>
-		<p style="text-align: center;"><img src="/images/help/contribute-individual-3.PNG" style="float: inherit;" width="66%"></img></p>
-		<p>Clicking <strong>Next: Additional Info</strong> leads to the <strong>Collection Metadata</strong> form. Here, provide metadata that applies to the collection created in Step 1 and the metadata records within it created in Step 2.</p>
-		<p>The <strong>Collection Metadata</strong> form includes the following fields:</p>
-		<ul>
-		<li><strong>Visibility</strong>: Determines whether or not this collection and the metadata record(s) within it are visible to the public</li>
-		<li><strong>Authors</strong>: The authors of the data resource(s) described by metadata record(s) in the collection</li>
-		<li><strong>Maintainer</strong>: The individual, agency, company, or organization responsible for the data resource(s) described by metadata record(s) in the collection</li>
-		<li><strong>Spatial Location</strong>: A rough approximation of the features in the data resource(s) described by metadata record(s) in the collection</li>
-		<li><strong>Category</strong>: A description of the type of data resource(s) described by metadata record(s) in the collection</li>
-		<li><strong>URI</strong>: A <em>uniform resource identifier</em> for the collection; see the <a href="http://usgin.org/content/usgin-uri-tutorial" target="_blank">USGIN URI Tutorial</a> for more information</li>
-		<li><strong>Quality</strong>: A rough assessment of the quality of the data resource(s) described by metadata record(s) in the collection</li>
-		<li><strong>Lineage</strong>: The provenance of data resource(s) described by metadata record(s) in the collection</li>
-		<li><strong>Status</strong>: The workflow status of data resource(s) described by metadata record(s) in the collection</li>
-		<li><strong>Publication Date</strong>: The date on which data resource(s) described by metadata record(s) in the collection were published</li>
-		<li><strong>Language</strong>: The language in which the data resource(s) described by metadata record(s) in the collection are written</li>
-		<li><strong>Dataset Extent</strong>: The physical extent of features in the data resource(s) described by metadata record(s) in the collection; click the <strong>Draw a rectangle button</strong> (<img src="/images/help/screen-map_controls-search_by_area.PNG"></img>) to draw a box indicating the dataset extent</li>
-		</ul>
-		<p>When done, click <strong>Finish</strong>. Doing so will finalize this collection and all metadata records within it; these records will be added to the catalog.</p>
-		<h4>Bulk Uploads</h4>
-		<p style="text-align: center;"><img src="/images/help/bulk_upload.PNG" style="float: inherit;" width="66%"></img></p>
-		<p>Clicking <strong>Bulk Upload</strong> leads to the <strong>Bulk Upload</strong> form. Here, users have the opportunity to upload a .ZIP file containing numerous data resources; the Bulk Upload feature will automatically generate metadata records for each data resource in the ZIP file</p>
-		<p>To proceed, click the <strong>Choose File</strong> button on the second row; in the window that appears, locate the desired .ZIP file and click <strong>Open</strong>. In the <strong>Bulk Upload</strong> form, click <strong>Submit</strong>.
-    </section>
-
-    <section id="datasetDetails" class="help-content">
-
-        <h3>Data Set Details</h3>
-
-        <p>This is placeholder content.</p>
-    </section>
-
-    <section id="resourceDetails" class="help-content">
-
-        <h3>Resource Details</h3>
-
-        <p>This is placeholder content.</p>
+	<p>A number of resources are available to NGDS users in the form of applications developed for NGDS and applications compatible with NGDS data. A full list of these are available on the <a href="ngds/resources">Resources page</a>.</p>
+        
     </section>
 
 </section>
