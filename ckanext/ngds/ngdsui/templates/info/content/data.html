@@ -13,10 +13,12 @@ https://github.com/ngds/ckanext-ngds/README.txt
 
 ___NGDS_HEADER_END___ #}
 
-
+<section class="help-main">
 <h1>Data Models, Exchange Methods, and Metadata</h1>
 <hr>
+
 <section class="help-content">
+
 <ul>
 	<li><a href="#metadata">Metadata</a></li>
 	<li><a href="#access">Data Access Options</a></li>
@@ -26,7 +28,7 @@ ___NGDS_HEADER_END___ #}
 	<li><a href="#develop">Develop Applications</a></li>
 </ul>
 
-<h2><strong><a id="metadata" name="metadata"></a>Metadata</strong></h2>
+<h2><a id="metadata" name="metadata"></a>Metadata</h2>
 
 <p><em>All NGDS data records are organized and accessed using metadata. Metadata describes NGDS resources to support finding resources, evaluating them for a user&#39;s intended purpose, and obtaining the data. Each metadata record describes a resource that is considered an individual product with an author, editor or compiler, created with some particular purpose. The metadata record may describe a variety of &#39;distributions&#39; or procedures for accessing the resource, such filling out an order form, clicking on a link, or linking to a web service with an appropriate client. </em></p>
 
@@ -46,7 +48,7 @@ ___NGDS_HEADER_END___ #}
 	<li><strong>Service-based approaches</strong>: Data is available through <em>web services,</em> which provide interfaces for machine-to-machine interaction for finding, selecting and accessing data. Web services require more sophisticated client and server software stacks and rigid quality control, but allow a greater level of automation in the data access and utilization process, fully taking advantage of interoperable interchange protocols and formats.</li>
 </ul>
 
-<h3>What are Web Services?</h3>
+<h4>What are Web Services?</h4>
 
 <p>A web service is a way to communicate data over the internet. Using web services allows NGDS data to be used in a variety of free-and-open-source applications, making it more freely available and easier to use.</p>
 
@@ -79,17 +81,17 @@ ___NGDS_HEADER_END___ #}
 
 <p>Data is categorized in one of three <em>interoperability</em> <em>tiers</em>; the higher the tier, the greater the level of interoperability. These tiers roughly conform to whether data can be accessed through a web service or must be downloaded or viewed as a file.</p>
 
-<h3>Tier 1: Unstructured data (text, images, or sound)</h3>
+<h4>Tier 1: Unstructured data (text, images, or sound)</h4>
 
 <p>The simplest and most common access to resources is provided by simple Web links that result in a file download. Information contained in files can be accessed by users who have software that can recognize and open these files. This is the standard model for files accessible on the web, supported by HTTP servers and desktop web browser software.</p>
 
 <p>Unstructured data requires user interpretation before it can be used for analysis. Users can utilize the information if they can understand the encoding and language, but the system provides no support for this understanding, and little or no automation is possible. Audio files must be transcribed; text files must be parsed and mined for data that is then broken down and structured in ways that can be processed by computers; images must be scanned, interpreted, and often georeferenced. Preparing Tier 1 data for analysis can be a painstaking and time-consuming process.</p>
 
-<h3>Tier 2: Structured data that does not conform to an NGDS schema</h3>
+<h4>Tier 2: Structured data that does not conform to an NGDS schema</h4>
 
 <p>Tier 2 interoperability indicates that information content is structured (consistently organized) in a spreadsheet or database file such that it is amenable to computer processing; that said, Tier 2 data does not use a shared, documented interchange format. Data in this tier must be transformed by the data consumer on a case-by-case basis for integration with other datasets, requiring them to study each new data source to figure out how to extract the information they need. Obtaining data in a structured format is a step towards interoperability because once the format is understood, computer programs can be instructed to extract the desired information.</p>
 
-<h3>Tier 3: Structured data that conforms to an NGDS schema</h3>
+<h4>Tier 3: Structured data that conforms to an NGDS schema</h4>
 
 <p>Tier 3 data is structured data that conforms to an <a href="http://schemas.usgin.org/models/" target="_blank">NGDS information exchange</a>. Data that is published according to the exchange specification (content model, interchange format, service protocol) is interoperable with any other data published using that exchange. This is referred to as Tier 3 interoperability.</p>
 
@@ -97,7 +99,7 @@ ___NGDS_HEADER_END___ #}
 
 <p>Tier 3 data structured using a content model is among the most highly interoperable data found on the web. Tier 3 data can be accessed and analyzed automatically through a number of web services. NGDS uses content models based on USGIN-adopted standards and protocols to structure data to the Tier 3 format.</p>
 
-<h3>USGIN: Powering NGDS</h3>
+<h4>USGIN: Powering NGDS</h4>
 
 <p>The goal of USGIN is to facilitate the development of interoperable geoscience data-sharing networks that improve public access to geoscience information and aid scientific queries. For more information visit the <a href="http://usgin.org/" target="_blank">USGIN website</a>.</p>
 
@@ -109,7 +111,7 @@ ___NGDS_HEADER_END___ #}
 	<li>Development tools to build distributed data-sharing networks using open-source software and existing World Wide Web infrastructure.</li>
 </ul>
 
-<a id="standards" name="standards"></a><h3>USGIN Architecture</h3>
+<a id="standards" name="standards"></a><h4>USGIN Architecture</h4>
 
 <p>To promote interoperability, USGIN adopts existing standards, protocols, and formats whenever possible. These include:</p>
 
@@ -137,7 +139,7 @@ ___NGDS_HEADER_END___ #}
 
 <p>For more information, see the <a href="http://usgin.org/content/ngds-content-model-tutorial" target="_blank">Content Model Tutorial</a> on the USGIN website.</p>
 
-<h3>Building an NGDS Content Model</h3>
+<h4>Building an NGDS Content Model</h4>
 
 <p>Many data types provided by NGDS do not have existing standard interchange formats. For these NGDS defines information exchanges. NGDS information exchanges consist of the following:</p>
 
@@ -159,7 +161,7 @@ ___NGDS_HEADER_END___ #}
 
 <p>If the system is successful, NGDS hopes to see an ecosystem of <a href="ngds/resources">user applications</a> that utilize data from the system to add value to NGDS datasets. Users who are so inclined can <a href="ngds/develop">develop</a> an application to search the NGDS.</p>
 
-<p><strong>Creating Applications for use with NGDS</strong></p>
+<h4>Creating Applications for use with NGDS</h4>
 
 <p>Open-source applications are being created daily for viewing and exploring data provided by Web Services. This is due to the vast amount of data accessible by Web Services, particularly when services are <a href="http://www.opengeospatial.org/standards/" target="_blank" title="OGC-Compliant">OGC-Compliant</a>, making for a system of interoperable data.</p>
 
@@ -171,7 +173,7 @@ ___NGDS_HEADER_END___ #}
 	<li><a href="http://lab.usgin.org/og" target="_blank" title="USGIN Lab OG">USGIN Lab OG</a></li>
 </ul>
 
-<p><strong>Apps Developed for NGDS</strong></p>
+<h4>Apps Developed for NGDS</h4>
 
 <p>Due to the NGDS open standards and protocols developers are able to customize applications for accessing and displaying NGDS data. The following applications where developed specifically for the NGDS:</p>
 
@@ -180,4 +182,5 @@ ___NGDS_HEADER_END___ #}
 	<li><a href="http://search.geothermaldatasystem.org/" target="_blank">Catalog Search and Map Interface</a>&mdash;this application allows you to search, preview, and download NGDS data.</li>
 	<li><a href="http://data.geothermaldatasystem.org/" target="_blank">NGDS Data Explorer</a>&mdash;this application allows you to search, preview, and extract data from WFS in a tabular form.</li>
 </ul>
+</section>
 </section>
