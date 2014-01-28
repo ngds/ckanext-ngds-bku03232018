@@ -81,7 +81,7 @@ class HomeController(NGDSBaseController):
         """
         This function is responsible for rendering the Library Search page.
         """
-        return render('library/library.html')
+        return redirect(h.url_for(controller='package', action='search', _tags_limit=0))
 
     def render_resources(self):
 
