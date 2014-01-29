@@ -86,7 +86,6 @@ A list of variables we need in this page.
                             </div>
                             <div id="save-list">
                                 <div>
-                                    <!-- <input type="button"  id="save_search" value="+ Save search"/> -->
                                     <i class="icon-save btn-primary" id="save_search" title="Save Search"></i>
                                 </div>
                                 <div>
@@ -94,8 +93,6 @@ A list of variables we need in this page.
                                     <i id="saved_searches_list_button" class="icon-th-list btn-primary"
                                        title="Saved List"></i>
                                     {% if user_searches %}
-                                    <!-- <button type="button" class="btn" id="saved_searches_list_button">V</button> -->
-
                                     <ul id="saved-list">
                                         {% for usersearch in user_searches %}
                                         <li><a href="{{usersearch.url}}" title="{{usersearch.url}}">{{usersearch.search_name}}</a>
@@ -112,7 +109,6 @@ A list of variables we need in this page.
                             </div>
                         </div>
                         {% endif %}
-
                     </div>
 
                     <div class="search-results">

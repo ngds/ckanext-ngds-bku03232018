@@ -4,24 +4,24 @@
         "type": "title",
         "metadatafield": "tags",
         "subfacet": [
-			{
+                        {
                 "facet": "Direct Use",
                 "type": "keyword"
-			},
-			{
+                        },
+                        {
                 "facet": "Economics/Financing",
                 "type": "keyword"
-			},
-			{
+                        },
+                        {
                 "facet": "Heat Flow/Temperature Gradient",
                 "type": "keyword"
-			},
-			{
-				"display_name": "Seismicity",
+                        },
+                        {
+                                "display_name": "Seismicity",
                 "facet": "Seismicity",
                 "type": "keyword"
-			},
-			{
+                        },
+                        {
                 "facet": "Drilling Technology",
                 "type": "title",
                 "subfacet": [
@@ -42,10 +42,10 @@
                         "facet": "Tools",
                         "type": "keyword"
                     }
-                ]				
-			},
+                ]
+                        },
 
-			{
+                        {
                 "facet": "Geochemistry",
                 "type": "title",
                 "subfacet": [
@@ -66,205 +66,205 @@
                         "facet": "Soil Surveys",
                         "type": "keyword"
                     },
-					{
-						"facet": "Water Analyses",
-						"type": "title",
-						"subfacet": [
-							{
-								"facet": "Springs",
-								"type": "keyword"
-							},
-							{
-								"facet": "Wells",
-								"type": "keyword"
-							}
-						]				
-					},
+                                        {
+                                                "facet": "Water Analyses",
+                                                "type": "title",
+                                                "subfacet": [
+                                                        {
+                                                                "facet": "Springs",
+                                                                "type": "keyword"
+                                                        },
+                                                        {
+                                                                "facet": "Wells",
+                                                                "type": "keyword"
+                                                        }
+                                                ]
+                                        },
                     {
                         "facet": "Rock Analyses",
                         "type": "keyword"
-                    }					
-                ]				
-			},
-			{
+                    }
+                ]
+                        },
+                        {
                 "facet": "Geology",
                 "type": "title",
                 "subfacet": [
 
                     {
-						"display_name": "Age Dating",
+                                                "display_name": "Age Dating",
                         "facet": "Age Dating",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Geologic maps",
+                                                "display_name": "Geologic maps",
                         "facet": "Geologic maps",
                         "type": "keyword"
                     },
                     {
                         "display_name": "Faults",
-						"facet": "Faults",
+                                                "facet": "Faults",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Stress Measurements",
+                                                "display_name": "Stress Measurements",
                         "facet": "Stress Measurements",
                         "type": "keyword"
                     }
-                ]				
-			},			
+                ]
+                        },
             {
                 "facet": "Geothermal System Types",
                 "type": "title",
                 "subfacet": [
-					{
-						"facet": "Conventional/Convective Geothermal",
-						"type": "title",
-						"subfacet": [
-							{
-								"display_name": "Liquid-dominated",
-								"facet": "Liquid-dominated",
-								"type": "keyword"
-							},
-							{
-								"display_name": "Vapor-dominated",
-								"facet": "Vapor-dominated",
-								"type": "keyword"
-							}
-						]
-					},
+                                        {
+                                                "facet": "Conventional/Convective Geothermal",
+                                                "type": "title",
+                                                "subfacet": [
+                                                        {
+                                                                "display_name": "Liquid-dominated",
+                                                                "facet": "Liquid-dominated",
+                                                                "type": "keyword"
+                                                        },
+                                                        {
+                                                                "display_name": "Vapor-dominated",
+                                                                "facet": "Vapor-dominated",
+                                                                "type": "keyword"
+                                                        }
+                                                ]
+                                        },
                     {
-						"display_name": "Coproduced Fluids",
+                                                "display_name": "Coproduced Fluids",
                         "facet": "Coproduced Fluids",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Enhanced Geothermal Systems (EGS)",
+                                                "display_name": "Enhanced Geothermal Systems (EGS)",
                         "facet": "Enhanced Geothermal Systems (EGS)",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Geopressured systems",
+                                                "display_name": "Geopressured systems",
                         "facet": "Geopressured systems",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Sedimentary basins",
+                                                "display_name": "Sedimentary basins",
                         "facet": "Sedimentary basins",
                         "type": "keyword"
                     }
                 ]
             },
-			{
+                        {
                 "facet": "Geophysics",
                 "type": "title",
                 "subfacet": [
 
                     {
-						"display_name": "Electrical surveys",
+                                                "display_name": "Electrical surveys",
                         "facet": "Electrical surveys",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Gravity surveys",
+                                                "display_name": "Gravity surveys",
                         "facet": "Gravity surveys",
                         "type": "keyword"
                     },
                     {
                         "display_name": "Magnetic surveys",
-						"facet": "Magnetic surveys",
+                                                "facet": "Magnetic surveys",
                         "type": "keyword"
                     },
                     {
                         "display_name": "Remote sensing",
-						"facet": "Remote sensing",
+                                                "facet": "Remote sensing",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Seismic surveys",
+                                                "display_name": "Seismic surveys",
                         "facet": "Seismic surveys",
                         "type": "keyword"
                     }
-                ]				
-			},
-			{
+                ]
+                        },
+                        {
                 "facet": "Reservoir Engineering",
                 "type": "title",
                 "subfacet": [
 
                     {
-						"display_name": "Numberical simulations",
+                                                "display_name": "Numberical simulations",
                         "facet": "Numberical simulations",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Resource assessment",
+                                                "display_name": "Resource assessment",
                         "facet": "Resource assessment",
                         "type": "keyword"
                     },
                     {
                         "display_name": "Discharge tests/Well testing",
-						"facet": "Discharge tests/Well testing",
+                                                "facet": "Discharge tests/Well testing",
                         "type": "keyword"
                     },
                     {
                         "display_name": "Power plants",
-						"facet": "Power plants",
+                                                "facet": "Power plants",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Well field operations",
+                                                "display_name": "Well field operations",
                         "facet": "Well field operations",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Field pressure/temperature monitoring data",
+                                                "display_name": "Field pressure/temperature monitoring data",
                         "facet": "Field pressure/temperature monitoring data",
                         "type": "keyword"
-                    }					
-                ]				
-			},
-			{
-				"display_name": "Tracers",
+                    }
+                ]
+                        },
+                        {
+                                "display_name": "Tracers",
                 "type": "title",
                 "subfacet": [
                     {
-						"display_name": "Natural",
+                                                "display_name": "Natural",
                         "facet": "Natural",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Artificial",
+                                                "display_name": "Artificial",
                         "facet": "Artificial",
                         "type": "keyword"
                     }
-				]
-			},				
-			{
-				"display_name": "Well Logs",
+                                ]
+                        },
+                        {
+                                "display_name": "Well Logs",
                 "type": "title",
                 "subfacet": [
                     {
-						"display_name": "Geophysical",
+                                                "display_name": "Geophysical",
                         "facet": "Geophysical",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Lithologic",
+                                                "display_name": "Lithologic",
                         "facet": "Lithologic",
                         "type": "keyword"
                     },
                     {
-						"display_name": "Temperature",
+                                                "display_name": "Temperature",
                         "facet": "Temperature",
                         "type": "keyword"
-                    }					
-				]
-			},
+                    }
+                                ]
+                        },
 
             {
                 "facet": "Other User Tags",
-                "type": "dynamic_keywords"              
+                "type": "dynamic_keywords"
             }
         ]
     },
@@ -358,11 +358,5 @@
                 "type": "keyword"
             }
         ]
-    }    
+    }
 ]
-
-
-
-
-
-
