@@ -37,7 +37,7 @@ A list of variables we need in this page.
                 <span class=" search-giant">
                   <input type="text" class="search" name="q" value="{{ c.q }}" autocomplete="off"
                          placeholder="Search...">
-                  <button type="submit" value="Search">{{_('Submit')}}</button>
+                  <button type="submit" value="Search" onclick="submitForm()">{{_('Submit')}}</button>
                 </span>
                 </fieldset>
 
@@ -195,7 +195,6 @@ A list of variables we need in this page.
 
 
 </div>
-
 
 {% if h.is_development() %}
 <script type="text/javascript" src="/scripts/library/library.js"></script>

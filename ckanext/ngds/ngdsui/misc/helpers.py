@@ -739,10 +739,10 @@ def get_filtered_items(request_params):
     return the filtered items(inconsistency in CKAN group/organization view). Request params are checked for filter
     criteria and added to the filter.
     """
+
     fields_grouped = {}
     for (param, value) in request_params.items():
-        if param not in ['q', 'page', 'sort'] \
-            and len(value) and not param.startswith('_') and not param.startswith('ext_'):
+        if param not in ['q', 'page', 'sort'] and len(value) and not param.startswith('_') and not param.startswith('ext_'):
             if param not in c.fields_grouped:
                 fields_grouped[param] = [value]
             else:
