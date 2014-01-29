@@ -18,30 +18,44 @@ ___NGDS_HEADER_END___ #}
         <div class="footer-links-feedback-caption-container">
             <div id="footer-links-section">
                 <div>
-                    <p>{{ _('About NGDS') }}</p>
+                    <p>{{ _('Who We Are') }}</p>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_about' %}">{{
+                        _('About the NGDS') }}</a></span>
                     <span><a class="footer-link"
                              href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_partners' %}">{{
-                        _('Partners') }}</a></span>
-                    <span><a class="footer-link"
-                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_data' %}">{{
-                        _('Data') }}</a></span>
-                </div>
-                <div>
-                    <p>Help</p>
+                        _('Our partners') }}</a></span>
                     <span><a class="footer-link"
                              href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_new_to_ngds' %}">{{
-                        _('New to NGDS?') }}</a></span>
-                    <span><a class="footer-link"
-                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_faq' %}">{{
-                        _('FAQ\'s') }}</a></span>
+                        _('Getting started') }}</a></span>
                 </div>
                 <div>
-                    <p>I want to ...</p>
+                    <p>Find & Use Data</p>
                     <span><a class="footer-link"
-                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_data' %}#publish-data">{{ _('Contribute data to NGDS') }}</a></span>
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_map' %}">{{
+                        _('Map') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_library' %}">{{
+                        _('Library') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_resources' %}">{{
+                        _('Resources') }}</a></span>
+                    <span><a class="footer-link" href="/help.html#{{h.get_cur_page_help()}}">{{_('Help') }}</a></span>
+                </div>
+                <div>
+                    <p>For Contributors & Web Developers</p>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_submit_data' %}">{{
+                        _('Learn how to submit data to the NGDS') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_curate_data_contributions' %}">{{
+                        _('Curate your data contributions') }}</a></span>
+                    <span><a class="footer-link"
+                             href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_data' %}">{{
+                        _('NGDS data models, exchange methods, and metadata') }}</a></span>
                     <span><a class="footer-link"
                              href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_developers' %}">{{
-                        _('Develop an NGDS app') }}</a></span>
+                        _('Developing custom NGDS applications') }}</a></span>
                 </div>
 
             </div>

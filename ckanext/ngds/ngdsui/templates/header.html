@@ -64,17 +64,6 @@ pass in the tab that is being rendered and the active_tab variable that we get f
                 _('Logout') }}</a></li>
         </ul>
     </div>
-    {% else %}
-    <!-- <div class="login-popup" id="login-popup">
-        <p>Your email address:</p>
-        <form name="login-form" method ="post" action="{{ h.get_login_url() }}">
-            <input type="text" id="username" name="login"/>
-            <p class="float-left">Your password:</p><a class="float-right fit-to-login-div not-implemented">Forgot?</a>
-            <input type="password" id="password" name="password"/><br/>
-            <input type="checkbox" name="remember" value="50000"/><span>Remember me</span>
-            <input type="submit" value="Login"/>
-        </form>
-    </div>		 -->
     {% endif %}
 </header-ngds>
 <div id="main-nav"> <!-- This is a container div for the second-level menu. -->
@@ -116,7 +105,7 @@ pass in the tab that is being rendered and the active_tab variable that we get f
             </span>
         </a>
 
-        {% if g.central %}
+        {% if g.central and not c.user %}
         <!-- this is central, the contribute tab will only be shown to user having 'Admin' role -->
             {% for role in h.get_role_for_username(c.user or c.author) if role == "admin" %}
             <a href="/harvest">
@@ -124,8 +113,21 @@ pass in the tab that is being rendered and the active_tab variable that we get f
                 <span class="active main-nav-span last borders">
                 {% else %} <span class="main-nav-span last borders">
                 {% endif %}
-                    <span class="main-menu-item">{{ _('CONTRIBUTE') }}</span>
-                    <span class="main-menu-text">{{ _('Harvesting nodes & synchronizing nodes') }}</span>
+                    <span class="main-menu-item">{{ _('CONTENT') }}</span>
+                    <span class="main-menu-text">{{ _('View Harvested Sources') }}</span>
+                </span>
+            </a>
+            {% endfor %}
+        {% elif g.central and c.user %}
+        <!-- this is central, the contribute tab will only be shown to user having 'Admin' role -->
+            {% for role in h.get_role_for_username(c.user or c.author) if role == "admin" %}
+            <a href="/harvest">
+                {% if active_tab == "contribute" %}
+                <span class="active main-nav-span last borders">
+                {% else %} <span class="main-nav-span last borders">
+                {% endif %}
+                    <span class="main-menu-item">{{ _('CONTENT') }}</span>
+                    <span class="main-menu-text">{{ _('Manage Harvested Sources') }}</span>
                 </span>
             </a>
             {% endfor %}
