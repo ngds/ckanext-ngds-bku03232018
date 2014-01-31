@@ -114,20 +114,26 @@ class GeoserverPlugin(p.SingletonPlugin):
     # Start WFS preview plugin
 
     p.implements(p.IConfigurer, inherit=True)
+    p.implements(p.IResourcePreview, inherit=True)
 
     # Add new resource containing libraries, scripts, etc. to the global config
     def update_config(self, config):
+        p.toolkit.add_public_directory(config, 'geo-recline/theme/public')
         p.toolkit.add_template_directory(config, 'geo-recline/theme/templates')
         p.toolkit.add_resource('geo-recline/theme/public', 'geo-reclinepreview')
 
-    p.implements(IResourcePreview)
+#    p.implements(IResourcePreview)
 
     # If the resource protocol is a WFS, then we can preview it
     def can_preview(self, data_dict):
-        if data_dict.get("resource", {}).get("protocol", {}) == "OGC:WFS":
-            return True
-        elif data_dict.get("resource", {}).get("protocol", {}) == "OGC:WMS":
-            return True
+        resource = data_dict['resource']
+        format_lower = resource['format'].lower()
+
+        ogc_formats = ['wms', 'wfs', 'ogc:wfs', 'ogc:wms']
+        if format_lower in ogc_formats:
+            return {'can_preview': True}
+        else:
+            return {'can_preview': False}
 
     # Get the GML service for our resource and parse it into a JSON object
     # that is compatible with recline.  Bind that JSON object to the
