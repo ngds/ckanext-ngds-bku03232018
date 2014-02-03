@@ -129,8 +129,12 @@ class GeoserverPlugin(p.SingletonPlugin):
         resource = data_dict['resource']
         format_lower = resource['format'].lower()
 
+        if not 'protocol' in resource:
+            resource['protocol'] = ''
+        protocol_lower = resource['protocol'].lower()
+
         ogc_formats = ['wms', 'wfs', 'ogc:wfs', 'ogc:wms']
-        if format_lower in ogc_formats:
+        if format_lower or protocol_lower in ogc_formats:
             return {'can_preview': True}
         else:
             return {'can_preview': False}
@@ -140,10 +144,11 @@ class GeoserverPlugin(p.SingletonPlugin):
     # CKAN resource in order to pass it client-side.
     def setup_template_variables(self, context, data_dict):
         try:
-            resource = data_dict.get("resource", {})
-            if resource.get("protocol", {}) == "OGC:WMS":
-                resourceURL = resource.get("url", {})
-                armchair = ogc.HandleWMS(resourceURL)
+            resource = data_dict['resource']
+            protocol_lower = resource['protocol'].lower()
+            resource_url = resource['url']
+            if protocol_lower in ['wms', 'ogc:wms']:
+                armchair = ogc.HandleWMS(resource_url)
                 ottoman = armchair.get_layer_info(resource)
                 p.toolkit.c.resource["layer"] = ottoman["layer"]
                 p.toolkit.c.resource["bbox"] = ottoman["bbox"]
@@ -151,25 +156,25 @@ class GeoserverPlugin(p.SingletonPlugin):
                 p.toolkit.c.resource["format"] = ottoman["format"]
                 p.toolkit.c.resource["service_url"] = ottoman["service_url"]
                 p.toolkit.c.resource["error"] = False
-            elif resource.get("protocol", {}) == "OGC:WFS":
-                resourceURL = resource.get("url", {})
-                armchair = ogc.HandleWFS(resourceURL)
-                reclineJSON = armchair.make_recline_json(data_dict)
-                p.toolkit.c.resource["reclineJSON"] = reclineJSON
+            elif protocol_lower in ['wfs', 'ogc:wfs']:
+                armchair = ogc.HandleWFS(resource_url)
+                recline_json = armchair.make_recline_json(data_dict)
+                p.toolkit.c.resource["reclineJSON"] = recline_json
                 p.toolkit.c.resource["error"] = False
         except:
             p.toolkit.c.resource["error"] = True
 
     # Render the jinja2 template which builds the recline preview
     def preview_template(self, context, data_dict):
-        error_log = data_dict.get("resource", {}).get("error", {})
+        error_log = data_dict['resource']['error']
         try:
-            protocol = data_dict.get("resource", {}).get("protocol", {})
-            if error_log is False and protocol == "OGC:WFS":
+            protocol_lower = data_dict['resource']['protocol'].lower()
+            if error_log is False and protocol_lower in ['wfs', 'ogc:wfs']:
                 return "wfs_preview_template.html"
-            elif error_log is False and protocol == "OGC:WMS":
+            elif error_log is False and protocol_lower in ['wms', 'ogc:wms']:
                 return "wms_preview_template.html"
+            else:
+                error_log = True
+                return "preview_error.html"
         except error_log is True:
-            return "preview_error.html"
-        else:
             return "preview_error.html"

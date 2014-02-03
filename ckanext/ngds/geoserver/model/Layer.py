@@ -168,7 +168,6 @@ class Layer(object):
             'protocol': 'OGC:WMS',
             'layer':"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
             'resource_format': 'data-service',
-            'format': ''
         }
         if self.file_resource.get("content_model_version") and self.file_resource.get("content_model_uri"):
             data_dict.update({
@@ -186,7 +185,6 @@ class Layer(object):
             "protocol": "OGC:WFS",
             "layer":"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
             'resource_format': 'data-service',
-            'format': ''
         })
         self.wfs_resource = toolkit.get_action('resource_create')(context, data_dict)
 
