@@ -148,6 +148,7 @@ class GeoserverPlugin(p.SingletonPlugin):
             protocol_lower = resource['protocol'].lower()
             resource_url = resource['url']
             if protocol_lower in ['wms', 'ogc:wms']:
+                resource['protocol'] = 'ogc:wms'
                 armchair = ogc.HandleWMS(resource_url)
                 ottoman = armchair.get_layer_info(resource)
                 p.toolkit.c.resource["layer"] = ottoman["layer"]
@@ -157,6 +158,7 @@ class GeoserverPlugin(p.SingletonPlugin):
                 p.toolkit.c.resource["service_url"] = ottoman["service_url"]
                 p.toolkit.c.resource["error"] = False
             elif protocol_lower in ['wfs', 'ogc:wfs']:
+                resource['protocol'] = 'ogc:wfs'
                 armchair = ogc.HandleWFS(resource_url)
                 recline_json = armchair.make_recline_json(data_dict)
                 p.toolkit.c.resource["reclineJSON"] = recline_json

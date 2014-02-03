@@ -61,18 +61,21 @@ this.ckan.module('reclinepreview', function (jQuery, _) {
 
       var errorMsg, dataset;
 
-      if (resourceData.protocol === "OGC:WFS") {
+      if (resourceData.protocol === "ogc:wfs") {
           resourceData.backend = 'memory';
           dataset = new recline.Model.Dataset({records:resourceData.reclineJSON});
           dataset.fetch().done(function(dataset){self.initializeDataExplorer(dataset)});
-      } else if (resourceData.protocol === "OGC:WMS") {
+      } else if (resourceData.protocol === "ogc:wms") {
         function initMap() {
             map = new L.Map('map');
 
-            var baseUrl='http://{s}.maptile.maps.svc.ovi.com/maptiler/v2/maptile/newest/terrain.day/{z}/{x}/{y}/256/png8';
-            var osmAttrib='Map data © OpenStreetMap contributors';
-            var osm = new L.TileLayer(baseUrl, {minZoom: 1, maxZoom: 12, attribution: osmAttrib});
-            var serviceUrl = resourceData.service_url.split('?')[0];
+            var baseUrl='http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg',
+                osmAttrib='Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; ' +
+                '<a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.' +
+                'org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+                osm = new L.TileLayer(baseUrl, {subdomains: '1234', minZoom: 1, maxZoom: 12,
+                    attribution: osmAttrib, detectRetina: true}),
+                serviceUrl = resourceData.service_url.split('?')[0];
             
             var wms = new L.TileLayer.WMS(serviceUrl, {
                 layers: resourceData.layer,
