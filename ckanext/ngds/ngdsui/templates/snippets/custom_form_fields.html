@@ -154,8 +154,13 @@ File:
         <div class="controls">
             <select id="field-language" name="extras__9__value" style="width:100%;">
                 {% for language_item in h.get_languages_for_ui() %}
-                <option value="{{language_item['code']}}"
-                {{ is_selected(language_item['code'],'dataset_lang',extras)}}>{{language_item['name']}}</option>
+                    {% if language_item['name'] == 'English' %}
+                        <option selected value="{{language_item['code']}}"
+                        {{ is_selected(language_item['code'],'dataset_lang',extras)}}>{{language_item['name']}}</option>
+                    {% else %}
+                        <option value="{{language_item['code']}}"
+                        {{ is_selected(language_item['code'],'dataset_lang',extras)}}>{{language_item['name']}}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
             {% if language_error %}
