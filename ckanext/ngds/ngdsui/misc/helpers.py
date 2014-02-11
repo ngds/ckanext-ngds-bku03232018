@@ -986,3 +986,7 @@ def make_better_json(context, data_dict):
         return better_packages
     these_packages = make_package(search)
     return {'count': search['count'], 'packages': these_packages}
+
+def check_datastore_resource(resources):
+    resource = resources
+    pass

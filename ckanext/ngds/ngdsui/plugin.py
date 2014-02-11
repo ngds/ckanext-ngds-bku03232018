@@ -301,7 +301,8 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_cur_page_help': helpers.get_cur_page_help,
             'get_content_model_dict': helpers.get_content_model_dict,
             'metadata_fields_to_display_for_cm': helpers.metadata_fields_to_display_for_cm,
-            'get_role_for_username': helpers.get_role_for_username
+            'get_role_for_username': helpers.get_role_for_username,
+            'check_datastore': helpers.check_datastore_resource
         }
 
     implements(IPackageController, inherit=True)
