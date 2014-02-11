@@ -31,11 +31,15 @@ class Geoserver(Catalog):
 
         # Look for user information in the geoserver url
         userInfo = re.search("://(?P<auth>(?P<user>.+?):(?P<pass>.+?)@)?.+", url)
-        user = userInfo.group("user") or "admin"
-        pwd = userInfo.group("pass") or "geoserver"
+        user = userInfo.group("user")# or "admin"
+        pwd = userInfo.group("pass")# or "geoserver"
 
         # Remove it from the connection URL if it was there
         url = url.replace(userInfo.group("auth") or "", "")
+        if url:
+            url = url.replace('geoserver://', 'http://')
+        else:
+            pass
 
         # Make the connection
         return cls(url, username=user, password=pwd)
