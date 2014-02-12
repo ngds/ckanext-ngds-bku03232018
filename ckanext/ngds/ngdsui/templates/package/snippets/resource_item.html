@@ -86,16 +86,31 @@ ___NGDS_HEADER_END___ #}
     <div id="error-details" class="collapse">
       <h4>Your CSV file is unable to be processed</h4>
       <section>
-        <h5>Here's what happened:</h5>
-      </section>
-      <section>
         <h5>Here's what this means:</h5>
+          <ul>
+            <li>
+              You won't be able to access, download, preview, publish or interact with this dataset in any other way.
+            </li>
+          </ul>
       </section>
       <section>
         <h5>Here's why this might have happened:</h5>
+          <ul>
+            <li>
+              Malformation: This software expects CSV files to have proper form.  Things like trailing commas, trailing spaces and illegal characters can result in a malformed file error.  Malformed files do not get indexed into the system.
+            </li>
+            <li>
+              File Size:  CSV files larger than 50 MB cannot be processed and will not be indexed into the system.
+            </li>
+          </ul>
       </section>
       <section>
         <h5>Here's what you can do about it:</h5>
+          <ul>
+            <li>
+              Go the dataset edit page and remove this CSV resource from your package.  Upload it again when it has been fixed.
+            </li>
+          </ul>
       </section>
     </div>
   </div>
