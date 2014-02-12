@@ -987,9 +987,11 @@ def make_better_json(context, data_dict):
     these_packages = make_package(search)
     return {'count': search['count'], 'packages': these_packages}
 
-def check_datastore_resource(resources):
-    ids = [resource['id'] for resource in resources]
+def check_datastore_resource(resource_id):
     datastore_actions = datastore.DatastorePlugin().get_actions()
-    for id in ids:
-        data_dict = {'resource_id': id}
-        is_datastored = datastore_actions.get('datastore_search')({}, data_dict)
+    data_dict = {'resource_id': resource_id}
+    try:
+        datastore_actions.get('datastore_search')({}, data_dict)
+        return True
+    except:
+        return False

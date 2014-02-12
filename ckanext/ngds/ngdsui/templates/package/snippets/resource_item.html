@@ -16,7 +16,7 @@ ___NGDS_HEADER_END___ #}
 {% set url = h.url_for(controller='package', action='resource_read', id=pkg.name, resource_id=res.id) %}
 <li class="resource-item">
   {% if pkg.resources %}
-    {{ h.check_datastore(pkg.resources) }}
+    {{ h.check_datastore(res.id) }}
   {% endif %}
   {% block resource_item_title %}
   <a class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
