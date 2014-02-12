@@ -156,10 +156,6 @@ $(document).ready(function () {
             if (typeof $("#field-content-model")[0] !== 'undefined') {
                 ckan.module.initializeElement($("#field-content-model")[0]);
             }
-//            if (typeof $("#field-content-model-version")[0] !== 'undefined') {
-//
-//                ckan.module.initializeElement($("#field-content-model-version")[0]);
-//            }
 
             if (typeof $("[name=content_model_uri]").val() !== 'undefined' && $("[name=content_model_uri]").val() !== "None") {
                 var val = $("[name=content_model_uri]").val();
@@ -226,7 +222,6 @@ $(document).ready(function () {
                     for (var i = 0; i < versions_dom.length; i++) {
                         $("[name=content_model_version]").append(versions_dom[i]);
                     }
-//                    $("[name=content_model_version]").prop("selectedIndex", -1);
                 }
 
             };
@@ -421,7 +416,7 @@ ngds.initialize_content_model_widget = function (callback) {
 
                 var content_models = ngds.util.state['content_models'];
                 var content_models_dom = ngds.util.state['content_models_dom'] = [];
-                var none = option_constructor({"uri": "None", "title": "none"});
+                var none = option_constructor({"uri": "None", "title": "None"});
 
                 $("[name=content_model_uri]").append(none);
                 content_models_dom.push(none);
