@@ -149,6 +149,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
                     conditions={"method": ["GET"]})
 
         contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
+        map.redirect('/ngds/contribute', '/ngds/contribute/dataset/new')
         map.connect("contribute", "/ngds/contribute", controller=contribute_controller, action="index")
         map.connect("create_or_update_resource", "/ngds/contribute/create_or_update_resource",
                     controller=contribute_controller, action="create_or_update_resource",
