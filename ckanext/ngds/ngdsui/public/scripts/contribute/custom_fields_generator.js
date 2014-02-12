@@ -169,9 +169,6 @@ $(document).ready(function () {
             }
 
             function load_content_model_versions(content_model_uri) {
-//                if (ngds.memorizer.remind('structured', 'content_model_version') === "") {
-//                    return;
-//                }
                 $("#field-content-model-version").select2("destroy");
                 var val = content_model_uri;
                 var option_constructor = function (version) {
@@ -185,7 +182,11 @@ $(document).ready(function () {
                     return ngds.util.dom_element_constructor(option);
                 };
 
-                if (typeof ngds.util.state['versions'][val] === 'undefined') {
+                if (content_model_uri === 'None' || content_model_uri === 'none') {
+                    $("[name=content_model_version]").empty();
+                    $("[name=content_model_version]").append(option_constructor({"uri": "None", "version": "None"}));
+                    $("#field-content-model-version").select2();
+                } else if (typeof ngds.util.state['versions'][val] === 'undefined') {
                     $.ajax({
                         'url': '/api/action/get_content_model_version_for_uri',
                         'data': JSON.stringify({
@@ -205,9 +206,6 @@ $(document).ready(function () {
                             if (ngds.memorizer.remind("structured", "content_model_version") !== "") {
                                 $("#field-content-model-version option").filter("[value=" + ngds.memorizer.remind("structured", "content_model_version")['id'] + "]").prop("selected", true);
                             }
-                            else {
-//                                $("[name=content_model_version]").prop("selectedIndex", -1);
-                            }
                             $("#field-content-model-version").select2();
                             if ($("[name=content_model_version]").val()) {
                                 loadContentModelLayers($("[name=content_model_version]").val());
@@ -215,8 +213,7 @@ $(document).ready(function () {
                         }
 
                     });
-                }
-                else {
+                } else {
                     var versions_dom = ngds.util.state['versions_dom'][val];
                     $("[name=content_model_version]").empty();
                     for (var i = 0; i < versions_dom.length; i++) {
@@ -239,7 +236,11 @@ $(document).ready(function () {
                     };
                     return ngds.util.dom_element_constructor(option);
                 };
-                if (typeof ngds.util.state['layers'][val] === 'undefined') {
+                if (content_model_uri === 'None' || content_model_uri === 'none') {
+                    $("[name=content_model_layer]").empty();
+                    $("[name=content_model_layer]").append(option_constructor({"layer": "None", "layer": "None"}));
+                    $("#field-content-model-layer").select2();
+                } else if (typeof ngds.util.state['layers'][val] === 'undefined') {
                     $.ajax({
                         'url': '/api/action/get_content_model_layers_for_uri',
                         'data': JSON.stringify({'cm_uri': val}),
@@ -275,35 +276,29 @@ $(document).ready(function () {
 
             $("[name=content_model_uri]").on('change', function (ev) {
                 var val = ev.val;
-                console.log(val);
-                if (val === "None" || val==="none") {
-                    $("[name=content_model_version]").select2("destroy");
-                    $("[name=content_model_version]").empty();
-                    $("[name=content_model_version]").select2();
-                    return;
-                }
+                $("[name=content_model_version]").select2("destroy");
+                $("[name=content_model_version]").empty();
+                $("[name=content_model_version]").select2();
                 load_content_model_versions(val);
             });
 
             $("[name=content_model_version]").on('change', function (e) {
                 var val = e.val;
-                if (val === 'None' || val === 'none') {
-                    $("[name=content_model_layer]").select2("destroy");
-                    $("[name=content_model_layer]").empty();
-                    $("[name=content_model_layer]").select2();
-                    return;
-                }
+                $("[name=content_model_layer]").select2("destroy");
+                $("[name=content_model_layer]").empty();
+                $("[name=content_model_layer]").select2();
                 loadContentModelLayers(val);
             });
 
             ngds.restore_additional_fields(resource_type);
 
-            if ($("[name=content_model_uri]").length > 0 && $("[name=content_model_uri]").val() !== "None" && $("[name=content_model_uri]").val() !== "none") {
+            if ($("[name=content_model_uri]").length > 0) {
                 load_content_model_versions($("[name=content_model_uri]").val());
             }
 
         });
         $("[name=content_model_version]").select2();
+        $("[name=content_model_layer]").select2();
 
         if (resource_type===undefined) {
             $(".resource-upload-field").css("display", "none");
