@@ -74,7 +74,13 @@ ___NGDS_HEADER_END___ #}
 
 {% elif pkg.resources and not h.check_datastore(res.id) %}
 <li class="malformed-resource-item">
-  {{ self.resource_item_title() }}
-    <a class="heading" href="{{ url }}" title="{{ res.name or res.description }}"></a>
+  {% block malformed_resource_item_title %}
+  <div class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
+    <span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>
+    <div class="error-heading">
+      <div class="error-heading-text">ERROR PROCESSING FILE: {{ h.resource_display_name(res) | truncate(50) }}</div>
+    </div>
+  </div>
+  {% endblock %}
 </li>
 {% endif %}

@@ -153,32 +153,25 @@ section.additional-info table a {
   left: 10px;
 }
 
-.malformed-resource-item .description {
-  font-size: 12px;
-  margin-bottom: 0;
-  min-height: 12px;
-}
-
-.malformed-resource-item .btn-group {
-  position: absolute;
-  top: 14px;
-  right: 10px;
+.malformed-resource-item .error-heading {
+  position: relative;
+  min-height: 60px;
+  .error-heading-text {
+    height: 50%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
 }
 
 .malformed-resource-item {
   position: static;
-  padding-bottom: 1px;
+  padding-bottom: 10px;
   .heading {
     position: relative;
   }
   .format-label {
     left: -48px;
-  }
-  .btn-group {
-    position: relative;
-    float: right;
-    top: -35px;
-    right: 0;
   }
 }
 
