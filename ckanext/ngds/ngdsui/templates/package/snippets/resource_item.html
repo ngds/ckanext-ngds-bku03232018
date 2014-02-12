@@ -14,16 +14,14 @@ https://github.com/ngds/ckanext-ngds/README.txt
 ___NGDS_HEADER_END___ #}
 
 {% set url = h.url_for(controller='package', action='resource_read', id=pkg.name, resource_id=res.id) %}
+
+{% if pkg.resources and h.check_datastore(res.id) %}
 <li class="resource-item">
-  {% if pkg.resources %}
-    {{ h.check_datastore(res.id) }}
-  {% endif %}
   {% block resource_item_title %}
   <a class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
     {{ h.resource_display_name(res) | truncate(50) }}<span class="format-label" property="dc:format" data-format="{{ res.format.lower() or 'data' }}">{{ res.format }}</span>
     {{ h.popular('views', res.tracking_summary.total, min=10) }}
   </a>
-
   {% endblock %}
   <p class="description">
     {% if res.description %}
@@ -32,11 +30,9 @@ ___NGDS_HEADER_END___ #}
       <span class="empty">{{ _('No description for this resource') }}</span>
     {% endif %}
   </p>
-
   <div class="metrics">
       {% if res.content_model_uri and res.content_model_version %}
-       {{h.get_content_model_dict(res.content_model_uri).title}}
-      ,
+       {{h.get_content_model_dict(res.content_model_uri).title}},
       {% for mf in h.metadata_fields_to_display_for_cm(res.content_model_uri, res.content_model_version) %}
         &nbsp;{{mf|replace('_',' ')|title}} : {{res[mf]}}&nbsp;
       {% endfor %}
@@ -47,13 +43,10 @@ ___NGDS_HEADER_END___ #}
       {% endif %}
   </div>
 
-
   {% block resource_item_explore %}
   <div class="btn-group">
-
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
     <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
-
     {% if h.check_access('package_create') and not g.central %}
     {% if h.is_plugin_enabled('geoserver') %}
       {% if h.is_ogc_publishable(res.id) %}
@@ -68,20 +61,16 @@ ___NGDS_HEADER_END___ #}
     <ul class="dropdown-menu">
       {% block resource_item_explore_links %}
       <li>
-        <a href="{{ url }}">
-          <i class="icon-bar-chart"></i>
-          {{ _('Preview') }}
-        </a>
+        <a href="{{ url }}"><i class="icon-bar-chart"></i>{{ _('Preview') }}</a>
       </li>
       <li>
-        <a href="{{ res.url }}" class="resource-url-analytics" target="_blank">
-          <i class="icon-download"></i>
-          {{ _('Download') }}
-        </a>
+        <a href="{{ res.url }}" class="resource-url-analytics" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
       </li>
       {% endblock %}
     </ul>
   </div>
   {% endblock %}
-
 </li>
+{% elif pkg.resources and not h.check_datastore(res.id) %}
+
+{% endif %}
