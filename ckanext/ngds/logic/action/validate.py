@@ -92,7 +92,7 @@ def _ngds_update_additions(schema):
     `resource_format` field. Therefore, we can only add validation to that one field, and then the
     `validate_resources` function needs to make sure that other fields are in fact valid.
 
-    However you have to add your addditional fields to the schema, otherwise they end up as "extras" attached to the
+    However you have to add your additional fields to the schema, otherwise they end up as "extras" attached to the
     resource.
     """
 
@@ -104,7 +104,8 @@ def _ngds_update_additions(schema):
         "ordering_procedure": [optional],
         "content_model_uri": [optional],
         "content_model_version": [optional],
-        "content_model_layer": [optional]
+        "content_model_layer": [optional],
+        "is_datastored": [optional]
     }
 
     schema['resources'] = dict(schema['resources'].items() + ngds_resource_additions.items())

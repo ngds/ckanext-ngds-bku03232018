@@ -38,7 +38,7 @@ import ckan.plugins as p
 import json
 import ckanext.ngds.logic.file_processors.ProcessorRegistry as PR
 import ckanext.ngds.logic.file_processors.ContentModelConstants as CMC
-
+import ckanext.datastore.plugin as datastore
 from ckan.plugins import toolkit
 
 try:
@@ -988,5 +988,8 @@ def make_better_json(context, data_dict):
     return {'count': search['count'], 'packages': these_packages}
 
 def check_datastore_resource(resources):
-    resource = resources
-    pass
+    ids = [resource['id'] for resource in resources]
+    datastore_actions = datastore.DatastorePlugin().get_actions()
+    for id in ids:
+        data_dict = {'resource_id': id}
+        is_datastored = datastore_actions.get('datastore_search')({}, data_dict)

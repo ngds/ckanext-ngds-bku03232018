@@ -8,9 +8,6 @@
   {% if pkg %}
     {% set dataset = pkg.title or pkg.name %}
     {% if pkg.organization %}
-      {% if pkg.resources %}
-        {{ h.check_datastore(pkg.resources) }}
-      {% endif %}
       {% set organization = pkg.organization.title or pkg.organization.name %}
       <li>{% link_for _('Organizations'), controller='organization', action='index' %}</li>
       <li>{% link_for organization|truncate(30), controller='organization', action='read', id=pkg.organization.name %}
