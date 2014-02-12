@@ -71,6 +71,10 @@ ___NGDS_HEADER_END___ #}
   </div>
   {% endblock %}
 </li>
-{% elif pkg.resources and not h.check_datastore(res.id) %}
 
+{% elif pkg.resources and not h.check_datastore(res.id) %}
+<li class="malformed-resource-item">
+  {{ self.resource_item_title() }}
+    <a class="heading" href="{{ url }}" title="{{ res.name or res.description }}"></a>
+</li>
 {% endif %}
