@@ -186,6 +186,9 @@ $(document).ready(function () {
                     $("[name=content_model_version]").empty();
                     $("[name=content_model_version]").append(option_constructor({"uri": "None", "version": "None"}));
                     $("#field-content-model-version").select2();
+                    if ($("[name=content_model_version]").val()) {
+                        loadContentModelLayers($("[name=content_model_version]").val());
+                    }
                 } else if (typeof ngds.util.state['versions'][val] === 'undefined') {
                     $.ajax({
                         'url': '/api/action/get_content_model_version_for_uri',
@@ -238,7 +241,7 @@ $(document).ready(function () {
                 };
                 if (content_model_uri === 'None' || content_model_uri === 'none') {
                     $("[name=content_model_layer]").empty();
-                    $("[name=content_model_layer]").append(option_constructor({"layer": "None", "layer": "None"}));
+                    $("[name=content_model_layer]").append(optionConstructor({"layer": "None", "layer": "None"}));
                     $("#field-content-model-layer").select2();
                 } else if (typeof ngds.util.state['layers'][val] === 'undefined') {
                     $.ajax({
