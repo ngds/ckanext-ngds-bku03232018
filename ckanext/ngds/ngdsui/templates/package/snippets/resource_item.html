@@ -80,6 +80,24 @@ ___NGDS_HEADER_END___ #}
     <div class="error-heading">
       <div class="error-heading-text">ERROR PROCESSING FILE: {{ h.resource_display_name(res) | truncate(50) }}</div>
     </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#error-details">Details</button>
+    </div>
+    <div id="error-details" class="collapse">
+      <h4>Your CSV file is unable to be processed</h4>
+      <section>
+        <h5>Here's what happened:</h5>
+      </section>
+      <section>
+        <h5>Here's what this means:</h5>
+      </section>
+      <section>
+        <h5>Here's why this might have happened:</h5>
+      </section>
+      <section>
+        <h5>Here's what you can do about it:</h5>
+      </section>
+    </div>
   </div>
   {% endblock %}
 </li>
