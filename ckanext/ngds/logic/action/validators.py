@@ -197,3 +197,8 @@ def check_uploaded_file(resource, errors, error_key):
 
     if not validation_results['valid']:
         errors[error_key] = list(set(errors.get(error_key, [])) & set(validation_results['messages']))
+
+def is_non_geographic(key, data, errors, context):
+    value = data[key]
+    if value.lower() != "true":
+        errors[key].append(_("Invalid Non-Geographic Value"))

@@ -12,6 +12,10 @@
 
     $("#spatial-non-geographic").click(function() {
         if ($(this).is(":checked")) {
+            $('#field-extras-11-value').val("True");
+            $("#map-collapse").collapse('hide');
+        } else {
+            $('#field-extras-11-value').removeAttr("value");
             $("#map-collapse").collapse('hide');
         }
     });
