@@ -1,9 +1,21 @@
 (function () {
-/*
-    if ($("#bbox-map").length < 1) {
-        return;
-    }
-*/
+
+    $("input:checkbox").click(function() {
+        if ($(this).is(":checked")) {
+            var group = "input:checkbox[name='" + $(this).attr("name") + "']";
+            $(group).prop("checked", false);
+            $(this).prop("checked", true);
+        } else {
+            $(this).prop("checked", false);
+        }
+    });
+
+    $("#spatial-non-geographic").click(function() {
+        if ($(this).is(":checked")) {
+            $("#map-collapse").collapse('hide');
+        }
+    });
+
     var base = new L.TileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
         subdomains: '1234',
         attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; ' +
