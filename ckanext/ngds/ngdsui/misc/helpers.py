@@ -754,9 +754,12 @@ def get_content_models():
 
 
 def get_content_model_dict(uri):
-    cmlist = logic.get_action('contentmodel_list_short')()
-    cm = filter(lambda x: x['uri'] == uri, cmlist)
-    return cm[0]
+    if uri.lower() == 'none':
+        pass
+    else:
+        cmlist = logic.get_action('contentmodel_list_short')()
+        cm = filter(lambda x: x['uri'] == uri, cmlist)
+        return cm[0]
 
 
 def get_content_models_for_ui():
