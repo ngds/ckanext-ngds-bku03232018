@@ -172,11 +172,20 @@ File:
     </div>
     <div class="additional-metadata-map-container">
         <div class="input-group">
-            <div class="sp-label"><label>{{_('Dataset Extent')}}</label></div>
-            <div id="bbox-map"></div>
+            <div class="control-label"><label>{{_('Dataset Extent')}}</label></div>
+            <div class="controls">
+                <label class="checkbox inline">
+                    <input type="checkbox" name="geo-check" id="spatial-geographic" value="geographic" data-toggle="collapse" data-target="#map-collapse" checked>Geographic
+                </label>
+                <label class="checkbox inline">
+                    <input type="checkbox" name="geo-check" id="spatial-non-geographic" value="non-geographic">Non-Geographic
+                </label>
+            </div>
+            <div id="map-collapse" class="collapse in">
+                <div id="bbox-map"></div>
+            </div>
         </div>
     </div>
-
 
     {% if get_value('spatial',extras) %}
     {% set saved_spatial = true %}
@@ -184,3 +193,5 @@ File:
     <input type="hidden" id="field-extras-10-key" name="extras__10__key" value="spatial"/>
     <input type="hidden" id="field-extras-10-value" name="extras__10__value" {% if saved_spatial %}data-restore-spatial
     data-key="spatial" data-dom-key="field-extras-10-value" data-pkg-id="{{pkg_id}}"{% endif %} />
+    <input type="hidden" id="field-extras-11-key" name="extras__11__key" value="non-geographic"/>
+    <input type="hidden" id="field-extras-11-value" name="extras__11__value"/>

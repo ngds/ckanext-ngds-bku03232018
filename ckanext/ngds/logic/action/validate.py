@@ -161,7 +161,8 @@ def validate_extras(key, data, errors, context):
         "dataset_uri": [optional],
         "quality": [optional],
         "lineage": [optional],
-        "spatial": [optional, ngds_rules.is_valid_json, ngds_rules.is_valid_rectangle]
+        "spatial": [optional, ngds_rules.is_valid_json, ngds_rules.is_valid_rectangle],
+        "non-geographic": [optional, ngds_rules.is_non_geographic]
     }
 
     # Make sure that required fields are all present
