@@ -5,3 +5,4 @@ gdal
 flask
 owslib==0.8.2
 configobj
+usginmodels==1.0.0
