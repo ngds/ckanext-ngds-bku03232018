@@ -15,7 +15,7 @@ ___NGDS_HEADER_END___ #}
 
 {% set url = h.url_for(controller='package', action='resource_read', id=pkg.name, resource_id=res.id) %}
 
-{% if pkg.resources and h.check_datastore(res.id) %}
+{% if pkg.resources and not res.format.lower() == 'csv' or res.format.lower() == 'csv' and h.check_datastore(res.id) %}
 <li class="resource-item">
   {% block resource_item_title %}
   <a class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
@@ -72,7 +72,7 @@ ___NGDS_HEADER_END___ #}
   {% endblock %}
 </li>
 
-{% elif pkg.resources and not h.check_datastore(res.id) %}
+{% elif pkg.resources and res.format.lower() == 'csv' and not h.check_datastore(res.id) %}
 <li class="malformed-resource-item">
   {% block malformed_resource_item_title %}
   <div class="heading" href="{{ url }}" title="{{ res.name or res.description }}">
@@ -84,7 +84,7 @@ ___NGDS_HEADER_END___ #}
       <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#error-details">Details</button>
     </div>
     <div id="error-details" class="collapse">
-      <h4>Your CSV file is unable to be processed</h4>
+      <h5>Your CSV file is unable to be processed</h5>
       <section>
         <h5>Here's what this means:</h5>
           <ul>
