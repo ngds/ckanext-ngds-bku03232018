@@ -232,6 +232,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_better_package_info': helpers.make_better_json,
             'get_content_model_layers_for_uri': helpers.get_content_model_layers_for_uri_action
 
+
             #'create_resource_document_index': lib_action.create_resource_document_index
             # 'validate_resource': validate_action.validate_resource,
             # 'validate_dataset_metadata':validate_action.validate_dataset_metadata
@@ -302,7 +303,8 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_cur_page_help': helpers.get_cur_page_help,
             'get_content_model_dict': helpers.get_content_model_dict,
             'metadata_fields_to_display_for_cm': helpers.metadata_fields_to_display_for_cm,
-            'get_role_for_username': helpers.get_role_for_username
+            'get_role_for_username': helpers.get_role_for_username,
+            'check_datastore': helpers.check_datastore_resource
         }
 
     implements(IPackageController, inherit=True)
