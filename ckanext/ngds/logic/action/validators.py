@@ -93,6 +93,7 @@ def is_valid_rectangle(key, data, errors, context):
         if value['type'] != 'Polygon': valid = False
         if len(value['coordinates'][0]) != 5: valid = False
         if value['coordinates'][0][0] != value['coordinates'][0][4]: valid = False
+        data.update({'non-geographic': 'False'})
     except:
         valid = False
 
@@ -200,5 +201,7 @@ def check_uploaded_file(resource, errors, error_key):
 
 def is_non_geographic(key, data, errors, context):
     value = data[key]
-    if value.lower() != "true":
+    if value.lower() == "true" or "false":
+        data.update({'spatial': 'None'})
+    else:
         errors[key].append(_("Invalid Non-Geographic Value"))
