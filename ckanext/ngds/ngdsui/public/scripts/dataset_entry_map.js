@@ -1,7 +1,9 @@
-$(document).ready(function () {
+(function () {
+/*
     if ($("#bbox-map").length < 1) {
         return;
     }
+*/
     var base = new L.TileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
         subdomains: '1234',
         attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; ' +
@@ -29,4 +31,4 @@ $(document).ready(function () {
         var geojson = JSON.stringify(layer.toGeoJSON().geometry);
         $('#field-extras-10-value').val(geojson);
     });
-});
+}).call(this);
