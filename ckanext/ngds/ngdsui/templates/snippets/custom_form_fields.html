@@ -172,7 +172,15 @@ File:
     </div>
     <div class="additional-metadata-map-container">
         <div class="input-group">
-            <div class="sp-label"><label>{{_('Dataset Extent')}}</label></div>
+            <div class="control-label"><label>{{_('Dataset Extent')}}</label></div>
+            <div class="controls">
+                <label class="checkbox inline">
+                    <input type="checkbox" id="spatial-geographic" value="geographic">Geographic
+                </label>
+                <label class="checkbox inline">
+                    <input type="checkbox" id="spatial-non-geographic" value="non-geographic">Non-Geographic
+                </label>
+            </div>
             <div id="bbox-map"></div>
         </div>
     </div>

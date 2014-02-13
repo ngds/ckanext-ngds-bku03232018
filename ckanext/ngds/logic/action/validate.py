@@ -153,15 +153,15 @@ def validate_extras(key, data, errors, context):
             "completed", "ongoing", "deprecated"
         ])],
         "publication_date": [required, ngds_rules.is_valid_date],
-        "dataset_lang": [required]
+        "dataset_lang": [required],
+        "spatial": [required, ngds_rules.is_valid_json, ngds_rules.is_valid_rectangle]
     }
 
     optional_criteria = {
         "spatial_word": [optional],
         "dataset_uri": [optional],
         "quality": [optional],
-        "lineage": [optional],
-        "spatial": [optional, ngds_rules.is_valid_json, ngds_rules.is_valid_rectangle]
+        "lineage": [optional]
     }
 
     # Make sure that required fields are all present
