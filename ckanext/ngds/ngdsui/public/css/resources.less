@@ -128,12 +128,124 @@ section.additional-info table a {
   }
 }
 
+
+
+.malformed-resource-item {
+  position: relative;
+  padding: 10px 10px 10px 60px;
+  margin-bottom: 0px;
+  min-height: 60px;
+  background-color: #f8f0f0;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #c68986;
+  .border-radius(3px);
+  &:hover {
+  }
+}
+
+.malformed-resource-item .heading {
+  color: #b55457;;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.malformed-resource-item .format-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.malformed-resource-item .btn-group {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+}
+
+.malformed-resource-item .error-heading {
+  position: relative;
+  min-height: 60px;
+  .error-heading-text {
+    height: 50%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
+}
+
+.malformed-resource-item {
+  position: static;
+  padding-bottom: 10px;
+  .heading {
+    position: relative;
+  }
+  .format-label {
+    left: -48px;
+  }
+}
+
+.malformed-resource-item #error-details {
+  font-weight: normal;
+}
+
+.resource-list.reordering {
+  .malformed-resource-item {
+    border: 1px solid @moduleHeadingBorderColor;
+    margin-bottom: 10px;
+    cursor: move;
+    .handle {
+      display: block;
+      position: absolute;
+      color: @moduleHeadingActionTextColor;
+      left: -31px;
+      top: 50%;
+      margin-top: -15px;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border: 1px solid @moduleHeadingBorderColor;
+      border-width: 1px 0 1px 1px;
+      background-color: @moduleBackgroundColor;
+      .border-radius(20px 0 0 20px);
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    &:hover .handle {
+      background-color: @layoutBackgroundColor;
+    }
+    &.ui-sortable-helper {
+      background-color: @layoutBackgroundColor;
+      border: 1px solid @layoutLinkColor;
+      .handle {
+        background-color: @layoutBackgroundColor;
+        border-color: @layoutLinkColor;
+        color: @navLinkColor;
+      }
+    }
+  }
+}
+.malformed-resource-item .handle {
+  display: none;
+}
+
+
 section.module-content {
   h1 {
     font-size: 25px;
   }
 
   li.resource-item {
+    div.btn-group {
+      a.btn {
+        &:first-child {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  li.malformed-resource-item {
     div.btn-group {
       a.btn {
         &:first-child {

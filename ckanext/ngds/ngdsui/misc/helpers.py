@@ -38,7 +38,7 @@ import ckan.plugins as p
 import json
 import ckanext.ngds.logic.file_processors.ProcessorRegistry as PR
 import ckanext.ngds.logic.file_processors.ContentModelConstants as CMC
-
+import ckanext.datastore.plugin as datastore
 from ckan.plugins import toolkit
 
 try:
@@ -754,9 +754,12 @@ def get_content_models():
 
 
 def get_content_model_dict(uri):
-    cmlist = logic.get_action('contentmodel_list_short')()
-    cm = filter(lambda x: x['uri'] == uri, cmlist)
-    return cm[0]
+    if uri.lower() == 'none':
+        pass
+    else:
+        cmlist = logic.get_action('contentmodel_list_short')()
+        cm = filter(lambda x: x['uri'] == uri, cmlist)
+        return cm[0]
 
 
 def get_content_models_for_ui():
@@ -986,3 +989,12 @@ def make_better_json(context, data_dict):
         return better_packages
     these_packages = make_package(search)
     return {'count': search['count'], 'packages': these_packages}
+
+def check_datastore_resource(resource_id):
+    datastore_actions = datastore.DatastorePlugin().get_actions()
+    data_dict = {'resource_id': resource_id}
+    try:
+        datastore_actions.get('datastore_search')({}, data_dict)
+        return True
+    except:
+        return False

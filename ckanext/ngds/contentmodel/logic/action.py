@@ -171,14 +171,13 @@ def contentmodel_checkFile(context, data_dict):
     :rtype: dictionary
     '''
 
-    cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
 
+    cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
     log.debug("input URL: " + cm_resource_url)
     modified_resource_url = cm_resource_url.replace("%3A", ":")
     truncated_url = modified_resource_url.split("/storage/f/")[1]
     log.debug("real  URL: " + truncated_url)
     csv_filename_withfile = get_url_for_file(truncated_url)
-    
     validation_msg = []
     
     if csv_filename_withfile is None:
@@ -186,43 +185,49 @@ def contentmodel_checkFile(context, data_dict):
         validation_msg.append({'row':0, 'col':0, 'errorTYpe': 'systemError', 'message':msg})
     else:
         log.info("filename full path: %s " % csv_filename_withfile)
-    
-    log.debug("about to start schema reading")
-    user_schema = contentmodel_get(context, data_dict)
-    # print user_schema
-    fieldModelList = []
-    field_info_list = user_schema['version']['layers_info']
+
     this_layer = _get_or_bust(data_dict, 'cm_layer')
+    this_uri = _get_or_bust(data_dict, 'cm_uri')
     this_version_uri = _get_or_bust(data_dict, 'cm_version_url')
 
-    for field_info in field_info_list[this_layer]:
-        if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
-            log.debug("found a undefined field: %s" % str(field_info))
-            continue
-        else:
-            fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
+    if this_layer.lower() and this_uri.lower() and this_version_uri.lower() == 'none':
+        log.debug("tier 2 data model/version/layer are none")
+        return {"valid": True, "messages": "Okay"}
+    else:
+        log.debug("about to start schema reading")
+        user_schema = contentmodel_get(context, data_dict)
+        # print user_schema
+        fieldModelList = []
+        field_info_list = user_schema['version']['layers_info']
 
-    log.debug(fieldModelList)
-    log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
-
-    if len(validation_msg) == 0:
-        try:
-            csv_filename = csv_filename_withfile.split("file://")[1]
-            this_csv = open(csv_filename, 'rbU')
-            this_text = csv.DictReader(this_csv)
-
-            valid, errors, dataCorrected, long_fields, srs = usginmodels.validate_file(
-                this_text,
-                this_version_uri,
-                this_layer
-            )
-
-            if valid:
-                pass
+        for field_info in field_info_list[this_layer]:
+            if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
+                log.debug("found a undefined field: %s" % str(field_info))
+                continue
             else:
+                fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
+
+        log.debug(fieldModelList)
+        log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
+
+        if len(validation_msg) == 0:
+            try:
+                csv_filename = csv_filename_withfile.split("file://")[1]
+                this_csv = open(csv_filename, 'rbU')
+                this_text = csv.DictReader(this_csv)
+
+                valid, errors, dataCorrected, long_fields, srs = usginmodels.validate_file(
+                    this_text,
+                    this_version_uri,
+                    this_layer
+                )
+
+                if valid:
+                    pass
+                else:
+                    validation_msg.append({'valid': False})
+            except:
                 validation_msg.append({'valid': False})
-        except:
-            validation_msg.append({'valid': False})
 
     log.debug('validation last step')
     # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})

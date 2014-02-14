@@ -343,7 +343,7 @@
     },
 
     {
-        "facet": "Public/ Private",
+        "facet": "Public/Private",
         "type": "title",
         "metadatafield": "private",
         "subfacet": [

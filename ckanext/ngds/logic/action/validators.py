@@ -93,6 +93,7 @@ def is_valid_rectangle(key, data, errors, context):
         if value['type'] != 'Polygon': valid = False
         if len(value['coordinates'][0]) != 5: valid = False
         if value['coordinates'][0][0] != value['coordinates'][0][4]: valid = False
+        data.update({'non-geographic': 'False'})
     except:
         valid = False
 
@@ -157,25 +158,30 @@ def is_valid_model_uri(key, data, errors, context):
     """
     Checks that a uri is valid
     """
-    models = models_list({}, {})
-    uris = [cm['uri'] for cm in models]
     uri = data[key]
-    if uri not in uris:
-        errors[key].append(_('Invalid Content Model URI'))
+    if uri.lower() == 'none':
+        pass
+    else:
+        models = models_list({}, {})
+        uris = [cm['uri'] for cm in models]
+        if uri not in uris:
+            errors[key].append(_('Invalid Content Model URI'))
 
 
 def is_valid_model_version(key, data, errors, context):
     """
     Checks that a version is valid.
     """
-
-    models = dict((cm['uri'], cm) for cm in models_list({}, {}))
-    uri = data.get('content_model_uri', '')
     version = data[key]
-    version_number = version.split('/')[-1]
-    this_model = models.get(uri, {})
-    if version_number not in [v['version'] for v in this_model.get('versions', [])]:
-        errors[key].append(_('Invalid Content Model Version'))
+    if version.lower() == 'none':
+        pass
+    else:
+        models = dict((cm['uri'], cm) for cm in models_list({}, {}))
+        uri = data.get('content_model_uri', '')
+        version_number = version.split('/')[-1]
+        this_model = models.get(uri, {})
+        if version_number not in [v['version'] for v in this_model.get('versions', [])]:
+            errors[key].append(_('Invalid Content Model Version'))
 
 def check_uploaded_file(resource, errors, error_key):
     """
@@ -192,3 +198,10 @@ def check_uploaded_file(resource, errors, error_key):
 
     if not validation_results['valid']:
         errors[error_key] = list(set(errors.get(error_key, [])) & set(validation_results['messages']))
+
+def is_non_geographic(key, data, errors, context):
+    value = data[key]
+    if value.lower() == "true" or "false":
+        data.update({'spatial': 'None'})
+    else:
+        errors[key].append(_("Invalid Non-Geographic Value"))

@@ -68,8 +68,13 @@ ngds.Map.makeSearch = function (parameters) {
         var count = response['result']['count'],
             nextPage = (page + 1),
             nextRows = (nextPage*rows)
+
         if (count === 0) {
             var html = '<div class="top-showing-results">No Search Results</div>';
+            $('#query-results .query-hit-count').empty();
+            $('#query-results .query-hit-count').append(html);
+        } else {
+            var html = '<div class="top-showing-results">Results 0 - 50 of ' + count + '</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         }
