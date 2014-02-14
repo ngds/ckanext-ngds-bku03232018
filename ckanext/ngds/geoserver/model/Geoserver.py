@@ -36,6 +36,10 @@ class Geoserver(Catalog):
 
         # Remove it from the connection URL if it was there
         url = url.replace(userInfo.group("auth") or "", "")
+        if url:
+            url = url.replace('geoserver://', 'http://')
+        else:
+            pass
 
         # Make the connection
         return cls(url, username=user, password=pwd)

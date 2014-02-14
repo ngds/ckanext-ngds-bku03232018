@@ -63,7 +63,7 @@ params_to_set = [
 node_params = [
     ("ngds.deployment", "node"),
     ("ngds.full_text_indexing", "true"),
-    ("geoserver.rest_url", "http://localhost:8080/geoserver/rest","This is Geoserver rest URL"),
+    ("geoserver.rest_url", "geoserver://user_name:password@localhost:8080/geoserver/rest","This is Geoserver rest URL"),
     ("geoserver.workspace_name", "ngds","Geoserver Workspace Name"),
     ("geoserver.workspace_uri", "http://localhost:5000/ngds","Geoserver Workspace URI"),
     ("ngds.bulk_upload_dir", "/home/ngds/work/bulkupload/"),
