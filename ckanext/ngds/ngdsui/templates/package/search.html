@@ -90,8 +90,10 @@ A list of variables we need in this page.
                                 </div>
                                 <div class="dropdown">
                                     {% set user_searches=h.get_usersearches() %}
-                                    <a id="saved_searches_list_button" class="icon-th-list btn-primary dropdown-toggle"
-                                       role="button" data-toggle="dropdown" href="#" title="Saved List"></a>
+                                    <a id="saved_searches_list_button" class="dropdown-toggle"
+                                       role="button" data-toggle="dropdown" href="#" title="Saved List">
+                                        <b class="icon-th-list"></b>
+                                    </a>
                                     {% if user_searches %}
                                     <ul id="saved-list" class="dropdown-menu" role="menu" aria-labelledby="saved_searches_list_button">
                                         {% for usersearch in user_searches %}
@@ -100,7 +102,7 @@ A list of variables we need in this page.
                                         {% endfor %}
                                     </ul>
                                     {% else %}
-                                    <ul id="saved-list">
+                                    <ul id="saved-list" class="dropdown-menu" role="menu" aria-labelledby="saved_searches_list_button">
                                         <li id="none">No Saved Searches</li>
                                     </ul>
                                     {% endif %}
@@ -203,7 +205,7 @@ A list of variables we need in this page.
 {% if h.is_development() %}
 <script type="text/javascript" src="/scripts/library/library.js"></script>
 {% else %}
-<script type="text/javascript" src="/scripts/library/library.min.js"></script>
+<script type="text/javascript" src="/scripts/library/library.js"></script>
 {% endif %}
 
 {% endblock %}
