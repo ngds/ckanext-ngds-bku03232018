@@ -220,18 +220,6 @@ function run_or_die() {
 # instructions at http://docs.ckan.org/en/ckan-2.0/install-from-source.html
 #
 function install_ckan() {
-    # Step 1: Install the required packages
-    #run_or_die apt-get -y upgrade
-    run_or_die apt-get --assume-yes --quiet install python-dev
-    run_or_die apt-get --assume-yes --quiet install postgresql-9.1-postgis
-    run_or_die apt-get --assume-yes --quiet install libpq-dev
-    run_or_die apt-get --assume-yes --quiet install python-pip
-    run_or_die apt-get --assume-yes --quiet install python-virtualenv
-    run_or_die apt-get --assume-yes --quiet install git-core
-    
-    # We now install SOLR in a later step on tomcat. 
-    # run_or_die apt-get --assume-yes --quiet install solr-jetty
-
     # The following steps are taken directly from the CKAN 2.0.1 installation
     # instructions.
     #
