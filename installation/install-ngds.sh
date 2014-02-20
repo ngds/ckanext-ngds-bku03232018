@@ -968,6 +968,49 @@ EOF
 sudo chmod 755 $NGDS_SCRIPTS/ngds-celeryd.conf
 cp $NGDS_SCRIPTS/ngds-celeryd.conf /etc/init/
 service ngds-celeryd start
+
+# Upstart job for ckan harvester gather queue
+cat > $NGDS_SCRIPTS/ckan-central-gather.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec $PYENV_DIR/bin/paster --plugin=ckanext-harvest harvester gather_consumer --config=$CKAN_ETC/default/production.ini >> /var/log/ckan-central-gather.log 2>&1
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-central-gather.conf
+cp $NGDS_SCRIPTS/ckan-central-gather.conf /etc/init/
+service ckan-central-gather start
+
+# Upstart job for ckan harvester fetch queue
+cat > $NGDS_SCRIPTS/ckan-central-fetch.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec $PYENV_DIR/bin/paster --plugin=ckanext-harvest harvester fetch_consumer --config=$CKAN_ETC/default/production.ini >> /var/log/ckan-central-fetch.log 2>&1
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-central-fetch.conf
+cp $NGDS_SCRIPTS/ckan-central-fetch.conf /etc/init/
+service ckan-central-fetch start
+
+# Upstart job for tomcat
+cat > $NGDS_SCRIPTS/ckan-tomcat.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+script
+    export JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms512m -Xmx2048m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=512m -XX:+DisableExplicitGC"
+    chdir /opt/ngds/tomcat/bin/
+    exec ./catalina.sh run >> /var/log/ckan-tomcat.log 2>&1
+end script
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-tomcat.conf
+cp $NGDS_SCRIPTS/ckan-tomcat.conf /etc/init/
+service ckan-tomcat start
 }
 
 # -------------------------------------------------------------------------------------------------
