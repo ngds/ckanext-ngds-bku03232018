@@ -494,6 +494,31 @@ function install_ngds() {
 }
 
 
+# -------------------------------------------------------------------------------------------------
+# install_gdal
+#
+# We require the installation of a newer version of GDAL than what is installed by default for ubuntu 12.04LTS
+# We therefore have to add an additional repository to apt-get.
+# This part is tricky and can fail especially when working through a proxy.
+# TODO:
+# Long term solution: Download the GDAL source code and compile from scratch. Compile takes long but does
+# not require special packages to be present.
+function install_gdal() {
+    . $PYENV_DIR/bin/activate
+    run_or_die sudo apt-get --assume-yes --quiet install python-software-properties
+    run_or_die sudo apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable
+    run_or_die sudo apt-get update
+    run_or_die sudo apt-get -y --force-yes install libgdal-dev gdal-bin
+
+    run_or_die $PYENV_DIR/bin/pip install --no-install GDAL
+
+    pushd $PYENV_DIR/build/GDAL > /dev/null
+    $PYENV_DIR/bin/python  setup.py build_ext --include-dirs=/usr/include/gdal/
+
+    run_or_die $PYENV_DIR/bin/pip install --no-download GDAL
+    popd > /dev/null
+}
+
 
 # -------------------------------------------------------------------------------------------------
 # configure_ngds
