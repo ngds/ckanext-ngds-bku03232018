@@ -240,7 +240,9 @@ def contentmodel_checkFile(context, data_dict):
                     pass
                 else:
                     validation_msg.append({'valid': False})
-            except:
+            except IOError:
+                log.debug('IOERROR')
+                log.debug(IOError)
                 validation_msg.append({'valid': False})
 
     log.debug('validation last step')
