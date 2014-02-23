@@ -214,6 +214,9 @@ def contentmodel_checkFile(context, data_dict):
         log.debug(fieldModelList)
         log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
 
+        log.debug('about to start USGIN Validation')
+        log.debug('VALIDATION MSG')
+        log.debug(validation_msg)
         if len(validation_msg) == 0:
             try:
                 csv_filename = csv_filename_withfile.split("file://")[1]
@@ -238,7 +241,8 @@ def contentmodel_checkFile(context, data_dict):
                 validation_msg.append({'valid': False})
 
     log.debug('validation last step')
-    log.debug('validation_msg: ' + validation_msg)
+    log.debug('VALIDATION MSG')
+    log.debug(validation_msg)
     # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
         log.debug('length validation message == 0')
