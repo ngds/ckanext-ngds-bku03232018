@@ -222,9 +222,11 @@ def contentmodel_checkFile(context, data_dict):
                 csv_filename = csv_filename_withfile.split("file://")[1]
                 log.debug('csv_filename: ' + csv_filename)
                 this_csv = open(csv_filename, 'rbU')
-                log.debug('this_csv: ' + this_csv)
+                log.debug('this_csv')
+                log.debug(this_csv)
                 this_text = csv.DictReader(this_csv)
-                log.debug('this_text: ' + this_text)
+                log.debug('this_text')
+                log.debug(this_csv)
 
                 valid, errors, dataCorrected, long_fields, srs = usginmodels.validate_file(
                     this_text,
