@@ -235,9 +235,6 @@ def contentmodel_checkFile(context, data_dict):
                 )
 
                 log.debug('USGIN VALIDATION')
-                log.debug('valid: ' + valid)
-                log.debug('errors: ' + errors)
-
                 if valid:
                     pass
                 else:
