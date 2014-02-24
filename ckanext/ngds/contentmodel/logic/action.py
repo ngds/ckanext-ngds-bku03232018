@@ -173,12 +173,9 @@ def contentmodel_checkFile(context, data_dict):
 
 
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
-    log.debug("input URL: " + cm_resource_url)
     modified_resource_url = cm_resource_url.replace("%3A", ":")
     truncated_url = modified_resource_url.split("/storage/f/")[1]
-    log.debug("real  URL: " + truncated_url)
     csv_filename_withfile = get_url_for_file(truncated_url)
-    log.debug("csv_filename_withfile: " + csv_filename_withfile)
     validation_msg = []
     
     if csv_filename_withfile is None:
@@ -188,11 +185,8 @@ def contentmodel_checkFile(context, data_dict):
         log.info("filename full path: %s " % csv_filename_withfile)
 
     this_layer = _get_or_bust(data_dict, 'cm_layer')
-    log.debug("this layer: " + this_layer)
     this_uri = _get_or_bust(data_dict, 'cm_uri')
-    log.debug("this_uri: " + this_uri)
     this_version_uri = _get_or_bust(data_dict, 'cm_version_url')
-    log.debug("this_version_uri: " + this_version_uri)
 
     if this_layer.lower() and this_uri.lower() and this_version_uri.lower() == 'none':
         log.debug("tier 2 data model/version/layer are none")
@@ -214,45 +208,29 @@ def contentmodel_checkFile(context, data_dict):
         log.debug(fieldModelList)
         log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
 
-        log.debug('about to start USGIN Validation')
-        log.debug('VALIDATION MSG')
-        log.debug(validation_msg)
         if len(validation_msg) == 0:
             try:
                 csv_filename = csv_filename_withfile.split("file://")[1]
-                log.debug('csv_filename: ' + csv_filename)
                 this_csv = open(csv_filename, 'rbU')
-                log.debug('this_csv')
-                log.debug(this_csv)
-                this_text = csv.DictReader(this_csv)
-                log.debug('this_text')
-                log.debug(this_csv)
 
                 valid, errors, dataCorrected, long_fields, srs = usginmodels.validate_file(
-                    this_text,
+                    this_csv,
                     this_version_uri,
                     this_layer
                 )
 
-                log.debug('USGIN VALIDATION')
                 if valid:
                     pass
                 else:
                     validation_msg.append({'valid': False})
-            except IOError:
-                log.debug('IOERROR')
-                log.debug(IOError)
+            except:
                 validation_msg.append({'valid': False})
 
-    log.debug('validation last step')
-    log.debug('VALIDATION MSG')
     log.debug(validation_msg)
     # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
-        log.debug('length validation message == 0')
         return {"valid": True, "messages": "Okay"}
     else:
-        log.debug('length validation message != 0')
         return {"valid": False, "messages": validation_msg}
 
 @logic.side_effect_free
