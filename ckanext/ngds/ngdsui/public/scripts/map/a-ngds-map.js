@@ -60,9 +60,7 @@ ngds.Map.makeSearch = function (parameters) {
         page = parseInt(parameters['page']),
         start = (page - 1)*rows,
         query = parameters['q'] + '+res_url:*+',
-        extras = parameters['extras'],
-        fields = ['tags', 'data_type', 'res_protocol', 'res_format', 'res_resource_format', 'Source', 'author_string', 'status', 'res_content_model', 'private'],
-        fq = '+dataset_type:dataset';
+        extras = parameters['extras'];
 
     action({'q': query, 'rows': rows, 'start': start, 'extras': extras}, function (response) {
         var count = response['result']['count'],
@@ -73,8 +71,12 @@ ngds.Map.makeSearch = function (parameters) {
             var html = '<div class="top-showing-results">No Search Results</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
-        } else {
+        } else if (count != 0 && page === 1) {
             var html = '<div class="top-showing-results">Results 0 - 50 of ' + count + '</div>';
+            $('#query-results .query-hit-count').empty();
+            $('#query-results .query-hit-count').append(html);
+        } else {
+            var html = '<div class="top-showing-results"> '+ count + ' Total Results</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         }

@@ -173,10 +173,8 @@ def contentmodel_checkFile(context, data_dict):
 
 
     cm_resource_url = _get_or_bust(data_dict, 'cm_resource_url')
-    log.debug("input URL: " + cm_resource_url)
     modified_resource_url = cm_resource_url.replace("%3A", ":")
     truncated_url = modified_resource_url.split("/storage/f/")[1]
-    log.debug("real  URL: " + truncated_url)
     csv_filename_withfile = get_url_for_file(truncated_url)
     validation_msg = []
     
@@ -214,10 +212,9 @@ def contentmodel_checkFile(context, data_dict):
             try:
                 csv_filename = csv_filename_withfile.split("file://")[1]
                 this_csv = open(csv_filename, 'rbU')
-                this_text = csv.DictReader(this_csv)
 
                 valid, errors, dataCorrected, long_fields, srs = usginmodels.validate_file(
-                    this_text,
+                    this_csv,
                     this_version_uri,
                     this_layer
                 )
@@ -229,7 +226,7 @@ def contentmodel_checkFile(context, data_dict):
             except:
                 validation_msg.append({'valid': False})
 
-    log.debug('validation last step')
+    log.debug(validation_msg)
     # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
         return {"valid": True, "messages": "Okay"}
