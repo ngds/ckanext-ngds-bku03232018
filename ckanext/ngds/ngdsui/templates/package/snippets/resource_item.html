@@ -46,7 +46,11 @@ ___NGDS_HEADER_END___ #}
   {% block resource_item_explore_central %}
   <div class="btn-group">
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
-    <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
+    {% if res.protocol and res.protocol.lower().startswith('ogc') %}
+      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('GetCapabilities') }}</a>
+    {% else %}
+      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
+    {% endif %}
     {% if h.check_access('package_create') and not g.central %}
     {% if h.is_plugin_enabled('geoserver') %}
       {% if h.is_ogc_publishable(res.id) %}
@@ -103,7 +107,11 @@ ___NGDS_HEADER_END___ #}
   {% block resource_item_explore %}
   <div class="btn-group">
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
-    <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
+    {% if res.protocol and res.protocol.lower().startswith('ogc') %}
+      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('GetCapabilities') }}</a>
+    {% else %}
+      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
+    {% endif %}
     {% if h.check_access('package_create') and not g.central %}
     {% if h.is_plugin_enabled('geoserver') %}
       {% if h.is_ogc_publishable(res.id) %}
@@ -115,16 +123,6 @@ ___NGDS_HEADER_END___ #}
       {% endif %}
     {% endif %}
     {% endif %}
-    <ul class="dropdown-menu">
-      {% block resource_item_explore_links %}
-      <li>
-        <a href="{{ url }}"><i class="icon-bar-chart"></i>{{ _('Preview') }}</a>
-      </li>
-      <li>
-        <a href="{{ res.url }}" class="resource-url-analytics" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
-      </li>
-      {% endblock %}
-    </ul>
   </div>
   {% endblock %}
 </li>
