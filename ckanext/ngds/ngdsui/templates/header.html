@@ -28,9 +28,7 @@ pass in the tab that is being rendered and the active_tab variable that we get f
     </div>
 
     <nav class="span12 row-fluid">
-        {% snippet "snippets/language_selector.html" %}
         <ul>
-
             <li>
                 <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{
                     _('Home') }}</a></li>

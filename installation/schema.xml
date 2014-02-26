@@ -66,6 +66,19 @@
             <filter class="solr.LowerCaseFilterFactory"/>
         </analyzer>
     </fieldType>
+
+    <!-- Indexes field in all lowercase  -->
+    <fieldType name="textlower" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
 </types>
 
 
@@ -92,7 +105,7 @@
     <field name="license_id" type="string" indexed="true" stored="true" />
     <field name="ratings_count" type="int" indexed="true" stored="false" />
     <field name="ratings_average" type="float" indexed="true" stored="false" />
-    <field name="tags" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="tags" type="textlower" indexed="true" stored="true" multiValued="true"/>
     <field name="groups" type="string" indexed="true" stored="true" multiValued="true"/>
 
     <field name="capacity" type="string" indexed="true" stored="true" multiValued="false"/>
