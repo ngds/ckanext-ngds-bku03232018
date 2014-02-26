@@ -1,13 +1,30 @@
 __author__ = 'adrian'
 
-from owslib.wms import WebMapService
-from owslib.wfs import WebFeatureService
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
+from ckan.plugins import toolkit
 
-class EnforceUSGIN():
+class EnforceUSGIN(object):
 
-    def __init__(self):
+    def __init__(self, data_dict):
         self.geoserver = Geoserver.from_ckan_config()
+        self.resource_id = data_dict.get("resource_id")
+        self.file_resource = toolkit.get_action("resource_show")(None, {"id": self.resource_id})
+
+    def check_tier_three(self):
+        res = self.file_resource
+        try:
+            return {
+                "tier_3": True,
+                "content_model": {
+                    "uri": res.content_model_uri,
+                    "version_uri": res.content_model_version,
+                    "layer": res.content_model_layer
+                }
+            }
+        except:
+            return {
+                "tier_3": False
+            }
 
     def get_all_stores(self):
         store_objects = self.geoserver.get_stores()
@@ -34,4 +51,5 @@ class EnforceUSGIN():
         except:
             return ['ERROR: EITHER WORKSPACE OR RESOURCES NOT FOUND']
 
-a = EnforceUSGIN()
+    def check_for_existing_resource(self, resource_id, workspace='NGDS'):
+        return
