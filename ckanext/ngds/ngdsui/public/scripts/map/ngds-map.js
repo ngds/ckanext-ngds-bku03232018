@@ -41,10 +41,6 @@ ngds.Map = {
     searchParameters: {'q': '', 'extras': 'undefined', 'page': 'undefined'}
 };
 
-
-var markers = new L.MarkerClusterGroup();
-
-
 ngds.Map.topLevelSearch = function (parameters) {
     if (!(parameters)) {parameters = ngds.Map.searchParameters};
     if (parameters['page'] === 'undefined') {parameters['page'] = 1};
@@ -283,9 +279,6 @@ ngds.Map.returnSearchResult = function (result) {
          highlightStyle = {radius: 8, fillColor: '#00aaff', color: '#0076b2',
             weight: 2, opacity: 1, fillOpacity: 1};
 
-    console.log(result.geojson);
-
-/*
     var circles = L.geoJson(result.geojson, {pointToLayer: function (f,ll) {
         return L.circleMarker(ll, defaultStyle)
         },
@@ -340,7 +333,6 @@ ngds.Map.returnSearchResult = function (result) {
     );
 
     ngds.Map.layers.searchResultsGroup["Search Results"].addLayer(circles).addTo(ngds.Map.map);
-*/
 
 };
 
