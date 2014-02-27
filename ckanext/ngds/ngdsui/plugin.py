@@ -227,6 +227,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'contentmodel_get': contentmodel_action.contentmodel_get,
             'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
             'contentmodel_checkBulkFile': contentmodel_action.contentmodel_checkBulkFile,
+            'geoserver_publish_usgin_layer': contentmodel_action.publish_usgin_layer,
             'get_content_models_for_ui': helpers.get_content_models_for_ui_action,
             'get_content_model_version_for_uri': helpers.get_content_model_version_for_uri_action,
             'get_better_package_info': helpers.make_better_json,

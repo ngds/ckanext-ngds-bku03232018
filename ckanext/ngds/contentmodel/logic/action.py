@@ -366,3 +366,7 @@ def get_contentmodel_name(cm_schema):
     cm_name = re.sub('[%s]' % ''.join(chars), '_', model_name)
 
     return cm_name
+
+def publish_usgin_layer(context, data_dict):
+    data = data_dict
+    return
