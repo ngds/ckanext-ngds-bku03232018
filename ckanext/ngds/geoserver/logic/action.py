@@ -51,7 +51,10 @@ def publish(context, data_dict):
     """
 
     from ckanext.ngds.contentmodel.model.usgin_ogc import EnforceUSGIN
-    EnforceUSGIN()
+
+    ### REMOVE BEFORE MERGING INTO MASTER ###
+    EnforceUSGIN(data_dict)
+    #########################################
 
     # Gather inputs
     resource_id = data_dict.get("resource_id", None)

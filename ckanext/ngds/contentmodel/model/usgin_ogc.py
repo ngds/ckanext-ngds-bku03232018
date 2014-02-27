@@ -1,6 +1,7 @@
 __author__ = 'adrian'
 
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
+from ckanext.ngds.geoserver.model.Layer import Layer
 from ckan.plugins import toolkit
 
 class EnforceUSGIN(object):
@@ -9,6 +10,7 @@ class EnforceUSGIN(object):
         self.geoserver = Geoserver.from_ckan_config()
         self.resource_id = data_dict.get("resource_id")
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": self.resource_id})
+        self.blargh = 'something'
 
     def check_tier_three(self):
         res = self.file_resource
@@ -49,7 +51,21 @@ class EnforceUSGIN(object):
                     workspace_resources.append(resource)
             return workspace_resources
         except:
-            return ['ERROR: EITHER WORKSPACE OR RESOURCES NOT FOUND']
+            return ["ERROR: EITHER WORKSPACE OR RESOURCES NOT FOUND"]
 
-    def check_for_existing_resource(self, resource_id, workspace='NGDS'):
-        return
+    def create_usgin_workspace(self, data_dict):
+        data = self.check_tier_three()
+        if data["tier_3"]:
+            uri = data["content_model"]["uri"]
+            version_uri = data["content_model"]["version_uri"]
+            name = uri.split("/")[-1].lower()
+            usgin_workspace = self.geoserver.get_workspace(name)
+            if usgin_workspace is None:
+                usgin_workspace = self.geoserver.create_workspace(name, version_uri)
+            return usgin_workspace
+        else:
+            return ["ERROR: DATA IS NOT TIER 3"]
+
+    def create_usgin_layer(self, data_dict):
+        data = self.check_tier_three()
+        if data["tier_3"]:
