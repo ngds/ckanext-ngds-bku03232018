@@ -50,10 +50,10 @@ def publish(context, data_dict):
     If the layer creation is successful then returns "Success" msg, otherwise raises an Exception.
     """
 
-    from ckanext.ngds.contentmodel.model.usgin_ogc import EnforceUSGIN
+#    from ckanext.ngds.contentmodel.model.usgin_ogc import EnforceUSGIN
 
     ### REMOVE BEFORE MERGING INTO MASTER ###
-    EnforceUSGIN(data_dict)
+#    EnforceUSGIN(data_dict)
     #########################################
 
     # Gather inputs

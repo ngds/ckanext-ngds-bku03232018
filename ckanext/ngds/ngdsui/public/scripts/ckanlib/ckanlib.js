@@ -278,8 +278,15 @@ ngds.ckanlib = {
         })
     },
     'publish_to_geoserver': function (params) {
+        function actionUrl (params) {
+            if (params['content_model_layer']) {
+                return '/api/action/geoserver_publish_usgin_layer';
+            } else {
+                return '/api/action/geoserver_publish_layer';
+            }
+        };
         $.ajax({
-            'url': '/api/action/geoserver_publish_layer',
+            'url': actionUrl(params),
             'type': 'POST',
             'data': JSON.stringify({
                 gs_lyr_name: params['layer_name'],

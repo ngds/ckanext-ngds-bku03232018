@@ -1,8 +1,9 @@
 $(document).ready(function () {
     $("button[data-ogc-publish]").click(function (ev) {
-        var resource_id = $(this).attr("data-ogc-resource");
-        var collection_id = $(this).attr("data-ogc-collection");
-        ngds.publisher.publish(resource_id, collection_id);
+        var resource_id = $(this).attr("data-ogc-resource"),
+            collection_id = $(this).attr("data-ogc-collection"),
+            content_model_layer = $(this).attr("data-ogc-layer");
+        ngds.publisher.publish(resource_id, collection_id, content_model_layer);
     });
 
     $("button[data-ogc-unpublish]").click(function (ev) {
@@ -12,8 +13,7 @@ $(document).ready(function () {
     });
 
     ngds.publisher = {
-        'publish': function (resource_id, collection_id) {
-            console.log("Publishing " + resource_id + " " + collection_id);
+        'publish': function (resource_id, collection_id, content_model_layer) {
             var template = [
                 '<div class="modal">',
                 '<div class="modal-header">',
@@ -83,6 +83,7 @@ $(document).ready(function () {
                         'layer_name': $("[name=geoserver_layer_name]").val(),
                         'resource_id': resource_id,
                         'package_id': collection_id,
+                        'content_model_layer': content_model_layer,
                         'col_geo': "geometry",
                         'col_lat': $("[name=lat]").val(),
                         'col_lng': $("[name=lng]").val(),
