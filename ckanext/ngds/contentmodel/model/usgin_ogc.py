@@ -1,12 +1,12 @@
 __author__ = 'adrian'
 
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
-from ckanext.ngds.geoserver.model.Layer import Layer
+import ckanext.ngds.geoserver.logic.action as action
 from ckan.plugins import toolkit
 
 class EnforceUSGIN(object):
 
-    def __init__(self, data_dict):
+    def __init__(self, context, data_dict):
         self.geoserver = Geoserver.from_ckan_config()
         self.resource_id = data_dict.get("resource_id")
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": self.resource_id})
@@ -66,6 +66,11 @@ class EnforceUSGIN(object):
         else:
             return ["ERROR: DATA IS NOT TIER 3"]
 
-    def create_usgin_layer(self, data_dict):
+    def create_usgin_layer(self, context, data_dict):
         data = self.check_tier_three()
         if data["tier_3"]:
+            data_dict["layer_name"] = data["content_model"]["layer"]
+            data_dict["gs_layer_name"] = data["content_model"]["layer"]
+            action.publish(context, data_dict)
+        else:
+            return ["ERROR: DATA IS NOT TIER 3"]
