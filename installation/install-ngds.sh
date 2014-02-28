@@ -376,7 +376,7 @@ function install_ckan() {
     # Note to developers: The current method of tracking CKAN is to bind NGDS           
     # to a specific versioned GitHub URL of CKAN (as opposed to forking it.)            
     # See https://github.com/ngds/ckanext-ngds/issues/107  
-    run_or_die $PYENV_DIR/bin/pip install -e 'git+https://github.com/okfn/ckan.git@ckan-2.0.1#egg=ckan'
+    run_or_die $PYENV_DIR/bin/pip install -e 'git+https://github.com/okfn/ckan.git@ckan-2.0.4#egg=ckan'
     #
     # Step 2c
     # TODO
@@ -577,15 +577,13 @@ function install_postgis() {
 function install_ckanext_harvest() {
     run_or_die apt-get --assume-yes --quiet install rabbitmq-server
 
-    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-harvest.git@release-v2.0#egg=ckanext-harvest
+    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-harvest.git@stable#egg=ckanext-harvest
 
     run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckanext-harvest/pip-requirements.txt
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -a -k ckan.plugins -v "harvest ckan_harvester"
  
     run_or_die $PYENV_DIR/bin/paster --plugin=ckanext-harvest harvester initdb -c $CKAN_ETC/default/development.ini
-    #pasterr "--plugin=ckan sysadmin add harvest"    
-    #TODO: Check whether user 'harvest' needs to be created. if so find how to pass the password as part of paster command.
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -594,7 +592,7 @@ function install_ckanext_harvest() {
 # Installs the spatial extension.
 function install_ckanext_spatial() {
 
-    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-spatial.git#egg=ckanext-spatial
+    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-spatial.git@stable#egg=ckanext-spatial
 
     run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckanext-spatial/pip-requirements.txt
 
