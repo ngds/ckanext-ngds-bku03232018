@@ -3,6 +3,7 @@ __author__ = 'adrian'
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
 import ckanext.ngds.geoserver.logic.action as action
 from ckan.plugins import toolkit
+import usginmodels
 
 class EnforceUSGIN(object):
 
@@ -10,7 +11,7 @@ class EnforceUSGIN(object):
         self.geoserver = Geoserver.from_ckan_config()
         self.resource_id = data_dict.get("resource_id")
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": self.resource_id})
-        self.blargh = 'something'
+        self.context = context
 
     def check_tier_three(self):
         res = self.file_resource
@@ -18,9 +19,9 @@ class EnforceUSGIN(object):
             return {
                 "tier_3": True,
                 "content_model": {
-                    "uri": res.content_model_uri,
-                    "version_uri": res.content_model_version,
-                    "layer": res.content_model_layer
+                    "uri": res["content_model_uri"],
+                    "version_uri": res["content_model_version"],
+                    "layer": res["content_model_layer"]
                 }
             }
         except:
@@ -66,11 +67,11 @@ class EnforceUSGIN(object):
         else:
             return ["ERROR: DATA IS NOT TIER 3"]
 
-    def create_usgin_layer(self, context, data_dict):
+    def create_usgin_layer(self, data_dict):
         data = self.check_tier_three()
         if data["tier_3"]:
             data_dict["layer_name"] = data["content_model"]["layer"]
             data_dict["gs_layer_name"] = data["content_model"]["layer"]
-            action.publish(context, data_dict)
+            action.publish(self.context, data_dict)
         else:
             return ["ERROR: DATA IS NOT TIER 3"]

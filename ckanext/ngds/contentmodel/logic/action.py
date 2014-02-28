@@ -23,6 +23,7 @@ from ckan.plugins import toolkit
 
 import csv
 import ckanext.ngds.contentmodel.model.contentmodels
+import ckanext.ngds.contentmodel.model.usgin_ogc as usgin_ogc
 
 from ContentModel_Utilities import *
 
@@ -367,6 +368,8 @@ def get_contentmodel_name(cm_schema):
 
     return cm_name
 
+@logic.side_effect_free
 def publish_usgin_layer(context, data_dict):
-    data = data_dict
+    usgin = usgin_ogc.EnforceUSGIN(context, data_dict)
+    model_info = usgin.check_tier_three()
     return
