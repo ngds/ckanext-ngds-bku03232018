@@ -24,21 +24,23 @@ import json
 class Layer(object):
 
     @classmethod
-    def publish(cls, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
-        l = cls(package_id, resource_id, layer_name, username, geoserver, lat_field, lng_field)
+    def publish(cls, package_id, resource_id, layer_name, username, store=None, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
+        l = cls(package_id, resource_id, layer_name, username, store, geoserver, lat_field, lng_field)
         if l.create():
             return l
         else:
             return None
 
-    def __init__(self, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
+    def __init__(self, package_id, resource_id, layer_name, username, store=None, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
         self.geoserver = geoserver
-        self.store = geoserver.default_datastore()
+        self.store = store
         self.name = layer_name
         self.username = username
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
         self.package_id = package_id
         self.resource_id = resource_id
+        if self.store is None:
+            self.store = geoserver.default_datastore()
 
         # Spatialize it
         url = self.file_resource["url"]

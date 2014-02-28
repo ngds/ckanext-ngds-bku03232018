@@ -7,28 +7,34 @@ import usginmodels
 
 class EnforceUSGIN(object):
 
-    def __init__(self, context, data_dict):
+    def __init__(self, context, data_dict, model_config=None):
         self.geoserver = Geoserver.from_ckan_config()
         self.resource_id = data_dict.get("resource_id")
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": self.resource_id})
         self.context = context
         self.data_dict = data_dict
 
-    def check_tier_three(self):
-        res = self.file_resource
-        try:
-            return {
-                "tier_3": True,
-                "content_model": {
+        if self.model_config is None:
+            res = self.file_resource
+            try:
+                self.model_config = {
                     "uri": res["content_model_uri"],
                     "version_uri": res["content_model_version"],
-                    "layer": res["content_model_layer"]
+                    "model_layer": res["content_model_layer"],
+
                 }
-            }
-        except:
-            return {
-                "tier_3": False
-            }
+                version_uri = self.model_config["version_uri"]
+                layers = usginmodels.get_version(version_uri).layers
+                name = usginmodels.get_service_name(version_uri)
+                if name == "Invalid":
+                    return "ERROR: Invalid content model version"
+                else:
+                    self.model_config["service_name"] = name
+                    self.model_config["layers"] = layers
+                return self.model_config
+            except Exception:
+                return Exception
+
 
     def get_all_stores(self):
         store_objects = self.geoserver.get_stores()
@@ -53,32 +59,27 @@ class EnforceUSGIN(object):
                     workspace_resources.append(resource)
             return workspace_resources
         except:
-            return ["ERROR: Either workspace or resources not found"]
+            return "ERROR: Either workspace or resources not found"
 
     def create_usgin_workspace(self):
-        data = self.check_tier_three()
-        if data["tier_3"]:
-            version_uri = data["content_model"]["version_uri"]
-            layers = usginmodels.get_version(version_uri).layers
-            name = usginmodels.get_service_name(version_uri)
-            if name == "Invalid":
-                return "ERROR: Invalid content model version"
-            usgin_workspace = self.geoserver.get_workspace(name)
-            if usgin_workspace is None:
-                usgin_workspace = self.geoserver.create_workspace(name, version_uri)
-            elif usgin_workspace and len(layers) == 1:
-                usgin_workspace = "ERROR: Workspace already exists in geoserver"
-            else:
-                return usgin_workspace
-            return usgin_workspace
+        this_name = self.model_config["service_name"]
+        this_version = self.model_config["version_uri"]
+        these_layers = self.model_config["layers"]
+        usgin_workspace = self.geoserver.get_workspace(this_name)
+        if usgin_workspace is None:
+            usgin_workspace = self.geoserver.create_workspace(this_name, this_version)
+        elif usgin_workspace and len(these_layers) == 1:
+            usgin_workspace = "ERROR: Workspace already exists in Geoserver"
         else:
-            return "ERROR: Data is not tier three"
+            return usgin_workspace
+        return usgin_workspace
 
     def create_usgin_layer(self):
-        data = self.check_tier_three()
-        if data["tier_3"]:
-            self.data_dict["layer_name"] = data["content_model"]["layer"]
-            self.data_dict["gs_lyr_name"] = data["content_model"]["layer"]
-            action.publish(self.context, self.data_dict)
-        else:
-            return "ERROR: Data is not tier three"
+        this_store = "datastore"
+        this_name = self.model_config["service_name"]
+        this_version = self.model_config["version_uri"]
+        this_geoserver = self.geoserver.get_datastore(this_name, this_version, this_store)
+        self.data_dict["layer_name"] = self.model_config["model_layer"]
+        self.data_dict["gs_lyr_name"] = self.model_config["model_layer"]
+        self.data_dict["geoserver_instance"] = this_geoserver
+        action.publish(self.context, self.data_dict)
