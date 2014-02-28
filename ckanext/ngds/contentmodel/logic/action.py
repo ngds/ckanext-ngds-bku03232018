@@ -371,5 +371,5 @@ def get_contentmodel_name(cm_schema):
 @logic.side_effect_free
 def publish_usgin_layer(context, data_dict):
     usgin = usgin_ogc.EnforceUSGIN(context, data_dict)
-    model_info = usgin.check_tier_three()
+    workspace = usgin.create_usgin_workspace()
     return

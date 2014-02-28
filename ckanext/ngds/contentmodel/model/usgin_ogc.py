@@ -52,20 +52,28 @@ class EnforceUSGIN(object):
                     workspace_resources.append(resource)
             return workspace_resources
         except:
-            return ["ERROR: EITHER WORKSPACE OR RESOURCES NOT FOUND"]
+            return ["ERROR: Either workspace or resources not found"]
 
-    def create_usgin_workspace(self, data_dict):
+    def create_usgin_workspace(self):
         data = self.check_tier_three()
         if data["tier_3"]:
-            uri = data["content_model"]["uri"]
             version_uri = data["content_model"]["version_uri"]
-            name = uri.split("/")[-1].lower()
+            layers = usginmodels.get_version(version_uri).layers
+            name = usginmodels.get_service_name(version_uri)
+            if name == "Invalid":
+                return "ERROR: Invalid content model version"
             usgin_workspace = self.geoserver.get_workspace(name)
             if usgin_workspace is None:
                 usgin_workspace = self.geoserver.create_workspace(name, version_uri)
+            elif usgin_workspace and len(layers) == 1:
+                usgin_workspace = "ERROR: Workspace already exists in geoserver"
+            elif usgin_workspace and len(layers) > 1:
+                usgin_workspace = "MultilayerContentModel"
+            else:
+                usgin_workspace = "EmptyWorkspace"
             return usgin_workspace
         else:
-            return ["ERROR: DATA IS NOT TIER 3"]
+            return "ERROR: Data is not tier three"
 
     def create_usgin_layer(self, data_dict):
         data = self.check_tier_three()
@@ -74,4 +82,4 @@ class EnforceUSGIN(object):
             data_dict["gs_layer_name"] = data["content_model"]["layer"]
             action.publish(self.context, data_dict)
         else:
-            return ["ERROR: DATA IS NOT TIER 3"]
+            return "ERROR: Data is not tier three"
