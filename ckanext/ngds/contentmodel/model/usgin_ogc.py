@@ -12,6 +12,7 @@ class EnforceUSGIN(object):
         self.resource_id = data_dict.get("resource_id")
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": self.resource_id})
         self.context = context
+        self.data_dict = data_dict
 
     def check_tier_three(self):
         res = self.file_resource
@@ -67,19 +68,17 @@ class EnforceUSGIN(object):
                 usgin_workspace = self.geoserver.create_workspace(name, version_uri)
             elif usgin_workspace and len(layers) == 1:
                 usgin_workspace = "ERROR: Workspace already exists in geoserver"
-            elif usgin_workspace and len(layers) > 1:
-                usgin_workspace = "MultilayerContentModel"
             else:
-                usgin_workspace = "EmptyWorkspace"
+                return usgin_workspace
             return usgin_workspace
         else:
             return "ERROR: Data is not tier three"
 
-    def create_usgin_layer(self, data_dict):
+    def create_usgin_layer(self):
         data = self.check_tier_three()
         if data["tier_3"]:
-            data_dict["layer_name"] = data["content_model"]["layer"]
-            data_dict["gs_layer_name"] = data["content_model"]["layer"]
-            action.publish(self.context, data_dict)
+            self.data_dict["layer_name"] = data["content_model"]["layer"]
+            self.data_dict["gs_lyr_name"] = data["content_model"]["layer"]
+            action.publish(self.context, self.data_dict)
         else:
             return "ERROR: Data is not tier three"

@@ -372,4 +372,5 @@ def get_contentmodel_name(cm_schema):
 def publish_usgin_layer(context, data_dict):
     usgin = usgin_ogc.EnforceUSGIN(context, data_dict)
     workspace = usgin.create_usgin_workspace()
+    layer = usgin.create_usgin_layer()
     return
