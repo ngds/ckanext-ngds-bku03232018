@@ -58,6 +58,7 @@ def publish(context, data_dict):
     lat_field = data_dict.get("col_latitude", None)
     lng_field = data_dict.get("col_longitude", None)
     geoserver_layer_name = data_dict.get("gs_lyr_name", None)
+    datastore = data_dict.get("geoserver_datastore", None)
 
     # Check that you have everything you need
     if None in [resource_id, layer_name, username, package_id]:
@@ -66,11 +67,12 @@ def publish(context, data_dict):
     # Publish a layer
     def pub():
         if geoserver_layer_name is not None:
-            l = Layer.publish(package_id, resource_id, geoserver_layer_name, username, lat_field=lat_field,
+            l = Layer.publish(package_id, resource_id, geoserver_layer_name, username, datastore, lat_field=lat_field,
                               lng_field=lng_field)
             return l
         else:
-            l = Layer.publish(package_id, resource_id, layer_name, username, lat_field=lat_field, lng_field=lng_field)
+            l = Layer.publish(package_id, resource_id, layer_name, username, datastore, lat_field=lat_field,
+                              lng_field=lng_field)
             return l
 
     try:

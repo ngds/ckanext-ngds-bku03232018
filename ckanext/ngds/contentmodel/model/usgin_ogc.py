@@ -4,6 +4,7 @@ from ckanext.ngds.geoserver.model.Geoserver import Geoserver
 import ckanext.ngds.geoserver.logic.action as action
 from ckan.plugins import toolkit
 import usginmodels
+from ckanext.ngds.env import h, _
 
 class EnforceUSGIN(object):
 
@@ -13,6 +14,7 @@ class EnforceUSGIN(object):
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": self.resource_id})
         self.context = context
         self.data_dict = data_dict
+        self.model_config = model_config
 
         if self.model_config is None:
             res = self.file_resource
@@ -31,9 +33,9 @@ class EnforceUSGIN(object):
                 else:
                     self.model_config["service_name"] = name
                     self.model_config["layers"] = layers
-                return self.model_config
-            except Exception:
-                return Exception
+            except:
+                h.flash_error(
+                    _("Sorry.  This content model is not supported."))
 
 
     def get_all_stores(self):
@@ -78,8 +80,8 @@ class EnforceUSGIN(object):
         this_store = "datastore"
         this_name = self.model_config["service_name"]
         this_version = self.model_config["version_uri"]
-        this_geoserver = self.geoserver.get_datastore(this_name, this_version, this_store)
+        this_datastore = self.geoserver.get_datastore(this_name, this_store)
         self.data_dict["layer_name"] = self.model_config["model_layer"]
         self.data_dict["gs_lyr_name"] = self.model_config["model_layer"]
-        self.data_dict["geoserver_instance"] = this_geoserver
+        self.data_dict["geoserver_datastore"] = this_datastore
         action.publish(self.context, self.data_dict)

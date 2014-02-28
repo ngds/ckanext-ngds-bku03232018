@@ -94,17 +94,11 @@ class Geoserver(Catalog):
         # Return it
         return ds
 
-    def get_workspace(self, name, uri):
-        workspace = self.get_workspace(name)
-        if workspace is None:
-            workspace = self.create_workspace(name, uri)
-        return workspace
-
-    def get_datastore(self, name, uri,  store_name=None):
+    def get_datastore(self, name, store_name=None):
         datastore_url = ckan_config.get('ckan.datastore.write_url','postgresql://ckanuser:pass@localhost/datastore')
         pattern = "://(?P<user>.+?):(?P<pass>.+?)@(?P<host>.+?)/(?P<database>.+)$"
         details = re.search(pattern, datastore_url)
-        workspace = self.get_workspace(name, uri)
+        workspace = self.get_workspace(name)
         if store_name is None:
             store_name = details.group("database")
         try:
