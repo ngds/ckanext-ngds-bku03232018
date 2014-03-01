@@ -88,7 +88,6 @@ $(document).ready(function () {
                         'layer_name': $("[name=geoserver_layer_name]").val(),
                         'resource_id': resource_id,
                         'package_id': collection_id,
-                        'content_model_layer': content_model_layer,
                         'col_geo': "geometry",
                         'col_lat': $("[name=lat]").val(),
                         'col_lng': $("[name=lng]").val(),
