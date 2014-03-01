@@ -66,12 +66,14 @@ class EnforceUSGIN(object):
     def create_usgin_workspace(self):
         this_name = self.model_config["service_name"]
         this_version = self.model_config["version_uri"]
+        this_layer = self.model_config["model_layer"]
         these_layers = self.model_config["layers"]
         usgin_workspace = self.geoserver.get_workspace(this_name)
+        usgin_layer = self.geoserver.get_resource(this_layer)
         if usgin_workspace is None:
             usgin_workspace = self.geoserver.create_workspace(this_name, this_version)
-        elif usgin_workspace and len(these_layers) == 1:
-            usgin_workspace = "ERROR: Workspace already exists in Geoserver"
+        elif usgin_workspace and usgin_layer:
+            usgin_workspace = "ERROR"
         else:
             return usgin_workspace
         return usgin_workspace
@@ -85,3 +87,10 @@ class EnforceUSGIN(object):
         self.data_dict["gs_lyr_name"] = self.model_config["model_layer"]
         self.data_dict["geoserver_datastore"] = this_datastore
         action.publish(self.context, self.data_dict)
+
+    def publish_ogc(self):
+        workspace = self.create_usgin_workspace()
+        if workspace == "ERROR":
+            h.flash_error(_("OGC services already exist for content model"))
+        else:
+            self.create_usgin_layer()
