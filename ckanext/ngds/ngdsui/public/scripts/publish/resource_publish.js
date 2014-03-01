@@ -3,7 +3,11 @@ $(document).ready(function () {
         var resource_id = $(this).attr("data-ogc-resource"),
             collection_id = $(this).attr("data-ogc-collection"),
             content_model_layer = $(this).attr("data-ogc-layer");
-        ngds.publisher.publish(resource_id, collection_id, content_model_layer);
+            if (content_model_layer) {
+                ngds.publisher.publish_usgin(resource_id, collection_id, content_model_layer);
+            } else {
+                ngds.publisher.publish_other(resource_id, collection_id);
+            }
     });
 
     $("button[data-ogc-unpublish]").click(function (ev) {
@@ -13,7 +17,7 @@ $(document).ready(function () {
     });
 
     ngds.publisher = {
-        'publish': function (resource_id, collection_id, content_model_layer) {
+        'publish_other': function (resource_id, collection_id) {
             var template = [
                 '<div class="modal">',
                 '<div class="modal-header">',
@@ -80,6 +84,7 @@ $(document).ready(function () {
                     modal.modal('hide');
                     ckan.notify("Please wait while this resource is published ...... ", "", "info");
                     ngds.ckanlib.publish_to_geoserver({
+                        'action': '/api/action/geoserver_publish_layer',
                         'layer_name': $("[name=geoserver_layer_name]").val(),
                         'resource_id': resource_id,
                         'package_id': collection_id,
@@ -104,9 +109,30 @@ $(document).ready(function () {
                 modal.modal('hide');
             });
         },
+        'publish_usgin': function (resource_id, collection_id, content_model_layer) {
+            ckan.notify("Publishing tier 3 structured OGC services...", "", "info");
+            ngds.ckanlib.publish_to_geoserver({
+                'action': '/api/action/geoserver_publish_usgin_layer',
+                'layer_name': content_model_layer,
+                'resource_id': resource_id,
+                'package_id': collection_id,
+                'content_model_layer': content_model_layer,
+                'col_geo': "geometry",
+                'col_lat': "LatDegree",
+                'col_lng': "LongDegree",
+                'callback': function (resp_obj) {
+                    if (resp_obj['status'] === 'failure') {
+                        ckan.notify("Failed to publish OGC services", "", "error")
+                    } else {
+                        ckan.notify("Successfully published OGC services", "", "success");
+                        window.location.reload();
+                    }
+                }
+            });
+        },
         'unpublish': function (resource_id, layer_name) {
             console.log("Unpublishing " + resource_id + " " + layer_name);
-            ckan.notify("Please wait while this resource is published ...... ", "", "info");
+            ckan.notify("Removing OGC services for this dataset", "", "info");
             ngds.ckanlib.unpublish_layer({
                 'layer_name': layer_name,
                 'resource_id': resource_id,
