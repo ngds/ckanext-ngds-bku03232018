@@ -168,7 +168,7 @@ class Layer(object):
             'parent_resource': self.file_resource['id'],
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             'protocol': 'OGC:WMS',
-            'layer':"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
+            'layer':"%s:%s" % (self.store.workspace.name, self.name),
             'resource_format': 'data-service',
             'format': ''
         }
@@ -186,7 +186,7 @@ class Layer(object):
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             "description": "WFS for %s" % self.file_resource["name"],
             "protocol": "OGC:WFS",
-            "layer":"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
+            "layer":"%s:%s" % (self.store.workspace.name, self.name),
             'resource_format': 'data-service',
             'format': ''
         })
