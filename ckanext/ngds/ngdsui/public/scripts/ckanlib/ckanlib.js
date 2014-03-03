@@ -279,7 +279,7 @@ ngds.ckanlib = {
     },
     'publish_to_geoserver': function (params) {
         $.ajax({
-            'url': '/api/action/geoserver_publish_layer',
+            'url': params['action'],
             'type': 'POST',
             'data': JSON.stringify({
                 gs_lyr_name: params['layer_name'],

@@ -51,17 +51,6 @@ ___NGDS_HEADER_END___ #}
     {% else %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
     {% endif %}
-    {% if h.check_access('package_create') and not g.central %}
-    {% if h.is_plugin_enabled('geoserver') %}
-      {% if h.is_ogc_publishable(res.id) %}
-        {% if h.is_spatialized(res)==True %}
-         <button class="btn btn-primary unspatialize" style="margin-left:10px;" data-ogc-unpublish data-ogc-resource="{{res.id}}" data-ogc-layer="{{res.layer_name}}" value="{{ res.id }},{{ res.layer_name }}">{{ _('Unpublish as OGC') }}</button>
-        {% else %}
-           <button class="btn btn-primary spatialize" style="margin-left:10px;" data-ogc-publish data-ogc-resource="{{res.id}}" data-ogc-collection="{{pkg.id}}" value="{{ res.id }},{{ pkg.id }}">{{ _('Publish as OGC') }}</button>
-        {% endif %}
-      {% endif %}
-    {% endif %}
-    {% endif %}
     <ul class="dropdown-menu">
       {% block resource_item_explore_links_central %}
       <li>
@@ -116,12 +105,17 @@ ___NGDS_HEADER_END___ #}
     {% if h.is_plugin_enabled('geoserver') %}
       {% if h.is_ogc_publishable(res.id) %}
         {% if h.is_spatialized(res)==True %}
-         <button class="btn btn-primary unspatialize" style="margin-left:10px;" data-ogc-unpublish data-ogc-resource="{{res.id}}" data-ogc-layer="{{res.layer_name}}" value="{{ res.id }},{{ res.layer_name }}">{{ _('Unpublish as OGC') }}</button>
+         <button class="btn btn-primary unspatialize" style="margin-left:10px;" data-ogc-unpublish data-ogc-resource="{{res.id}}" data-ogc-layer="{{res.layer_name}}" value="{{ res.id }},{{ res.layer_name }}">{{ _('Unpublish OGC') }}</button>
         {% else %}
-           <button class="btn btn-primary spatialize" style="margin-left:10px;" data-ogc-publish data-ogc-resource="{{res.id}}" data-ogc-collection="{{pkg.id}}" value="{{ res.id }},{{ pkg.id }}">{{ _('Publish as OGC') }}</button>
+          {% if res.content_model_uri and res.content_model_version and res.content_model_layer %}
+            <button class="btn btn-primary spatialize" style="margin-left:10px;" data-ogc-publish data-ogc-resource="{{res.id}}" data-ogc-collection="{{pkg.id}}" data-ogc-layer="{{res.content_model_layer}}" value="{{ res.id }},{{ pkg.id }}">{{ _('Publish OGC') }}</button>
+          {% else %}
+            <button class="btn btn-primary spatialize" style="margin-left:10px;" data-ogc-publish data-ogc-resource="{{res.id}}" data-ogc-collection="{{pkg.id}}" value="{{ res.id }},{{ pkg.id }}">{{ _('Publish OGC') }}</button>
+          {% endif %}
         {% endif %}
       {% endif %}
     {% endif %}
+
     {% endif %}
   </div>
   {% endblock %}

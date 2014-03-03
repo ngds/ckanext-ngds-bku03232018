@@ -16,8 +16,6 @@ ___NGDS_HEADER_END___ '''
 from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
 from osgeo import ogr
-from ckan.plugins import toolkit
-
 
 class HandleWMS():
 

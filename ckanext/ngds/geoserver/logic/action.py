@@ -58,6 +58,7 @@ def publish(context, data_dict):
     lat_field = data_dict.get("col_latitude", None)
     lng_field = data_dict.get("col_longitude", None)
     geoserver_layer_name = data_dict.get("gs_lyr_name", None)
+    datastore = data_dict.get("geoserver_datastore", None)
 
     # Check that you have everything you need
     if None in [resource_id, layer_name, username, package_id]:
@@ -66,11 +67,12 @@ def publish(context, data_dict):
     # Publish a layer
     def pub():
         if geoserver_layer_name is not None:
-            l = Layer.publish(package_id, resource_id, geoserver_layer_name, username, lat_field=lat_field,
+            l = Layer.publish(package_id, resource_id, geoserver_layer_name, username, datastore, lat_field=lat_field,
                               lng_field=lng_field)
             return l
         else:
-            l = Layer.publish(package_id, resource_id, layer_name, username, lat_field=lat_field, lng_field=lng_field)
+            l = Layer.publish(package_id, resource_id, layer_name, username, datastore, lat_field=lat_field,
+                              lng_field=lng_field)
             return l
 
     try:
@@ -158,48 +160,3 @@ def map_search_wms(context, data_dict):
         return this_data
     except:
         return [{'ERROR':'SERVER_ERROR'}]
-
-
-'''
-def get_wms_for_pkg(context, data_dict):
-    """
-    This method takes in a data_dict that contains a key called pkg_id whose value is the id of a ckan package
-    and constructs WMS URLs from WMS resources contained in the package and returns the URLs to the caller.
-    """
-    pkg_id = data_dict.get("pkg_id")
-    pkg = toolkit.get_action("package_show")(None, {'id': pkg_id})
-
-    def is_wms_resource(resource):
-        if 'protocol' in resource and resource.get('protocol').lower() == 'ogc:wms':
-            return True
-        return False
-
-    wms_resources = filter(is_wms_resource, pkg.get('resources'))
-
-    def construct_wms_url(resource):
-        url = resource.get('url').split('?')[0]
-        layer_name = ''
-        try:
-            wms = WebMapService(url, '1.1.1')
-            layers = list(wms.contents)
-            first_layer = layers[0]
-
-            if 'layer_name' in resource:
-                if resource.get('layer_name').lower() in layers:
-                    layer_name = resource.get('layer_name').lower()
-
-            if layer_name == '':
-                layer_name = first_layer
-
-        except Exception:
-            pass
-
-        return {
-            'layer': layer_name,
-            'url': url
-        }
-
-
-    wms_urls = map(construct_wms_url, wms_resources)
-    return wms_urls
-'''
