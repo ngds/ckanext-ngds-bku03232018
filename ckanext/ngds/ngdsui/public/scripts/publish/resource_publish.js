@@ -123,7 +123,6 @@ $(document).ready(function () {
                     if (resp_obj['status'] === 'failure') {
                         ckan.notify("Failed to publish OGC services", "", "error")
                     } else {
-                        ckan.notify("Successfully published OGC services", "", "success");
                         window.location.reload();
                     }
                 }
@@ -140,7 +139,6 @@ $(document).ready(function () {
                         ckan.notify("Sorry. The action requested could not be successfully completed.", "", "error");
                     }
                     else {
-                        ckan.notify("This resource has now been unpublished", "", "success");
                         window.location.reload();
                     }
                 }
