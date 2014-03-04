@@ -64,10 +64,11 @@ class EnforceUSGIN(object):
             return "ERROR: Either workspace or resources not found"
 
     def create_usgin_workspace(self):
+        print "MODEL_CONFIG"
+        print self.model_config
         this_name = self.model_config["service_name"]
         this_version = self.model_config["version_uri"]
         this_layer = self.model_config["model_layer"]
-        these_layers = self.model_config["layers"]
         usgin_workspace = self.geoserver.get_workspace(this_name)
         usgin_layer = self.geoserver.get_resource(this_layer)
         if usgin_workspace is None:
@@ -81,7 +82,6 @@ class EnforceUSGIN(object):
     def create_usgin_layer(self):
         this_store = "datastore"
         this_name = self.model_config["service_name"]
-        this_version = self.model_config["version_uri"]
         this_datastore = self.geoserver.get_datastore(this_name, this_store)
         self.data_dict["layer_name"] = self.model_config["model_layer"]
         self.data_dict["gs_lyr_name"] = self.model_config["model_layer"]
