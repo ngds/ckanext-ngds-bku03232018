@@ -193,21 +193,7 @@ def contentmodel_checkFile(context, data_dict):
         log.debug("tier 2 data model/version/layer are none")
         return {"valid": True, "messages": "Okay"}
     else:
-        log.debug("about to start schema reading")
-        user_schema = contentmodel_get(context, data_dict)
-        # print user_schema
-        fieldModelList = []
-        field_info_list = user_schema['version']['layers_info']
-
-        for field_info in field_info_list[this_layer]:
-            if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
-                log.debug("found a undefined field: %s" % str(field_info))
-                continue
-            else:
-                fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
-
-        log.debug(fieldModelList)
-        log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
+        log.debug("Starting USGIN content model validation")
 
         if len(validation_msg) == 0:
             try:
@@ -220,18 +206,18 @@ def contentmodel_checkFile(context, data_dict):
                     this_layer
                 )
 
-                if valid:
-                    pass
-                else:
+                if errors and not valid:
                     validation_msg.append({'valid': False})
             except:
                 validation_msg.append({'valid': False})
 
-    log.debug(validation_msg)
-    # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
+        data_dict["usgin_valid"] = True
+        data_dict["usgin_errors"] = None
         return {"valid": True, "messages": "Okay"}
     else:
+        data_dict["usgin_valid"] = False
+        data_dict["usgin_errors"] = validation_msg
         return {"valid": False, "messages": validation_msg}
 
 @logic.side_effect_free
