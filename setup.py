@@ -44,8 +44,11 @@ setup(
             ('**.html', 'ckan', None),
         ]
     },		
-	entry_points=\
+	entry_points=
 	"""
+	[ckan.celery_task]
+	tasks = ckanext.ngds.contentmodel.celery_import:task_imports
+
 	[paste.paster_command]
     # Install NGDS additional tables
 	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
