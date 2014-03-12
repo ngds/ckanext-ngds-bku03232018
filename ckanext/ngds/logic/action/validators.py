@@ -195,10 +195,10 @@ def check_uploaded_file(resource, errors, error_key):
         "cm_resource_url": resource["url"],
         "cm_layer": resource["content_model_layer"]
     })
-    """
+
     if not validation_results['valid']:
         errors[error_key] = list(set(errors.get(error_key, [])) & set(validation_results['messages']))
-    """
+
 def is_non_geographic(key, data, errors, context):
     value = data[key]
     if value.lower() == "true" or "false":
