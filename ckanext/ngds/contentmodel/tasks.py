@@ -2,13 +2,11 @@ __author__ = 'adrian'
 
 import ckan.logic as logic
 import usginmodels
-from ContentModel_Utilities import *
 from ckan.lib.celery_app import celery
 
 @celery.task(name="contentmodel.usgin_validate")
 def usgin_validate(data):
 
-    log = logging.getLogger(__name__)
     _get_or_bust = logic.get_or_bust
 
     cm_resource_url = _get_or_bust(data, 'cm_resource_url')

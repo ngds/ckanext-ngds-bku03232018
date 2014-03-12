@@ -25,7 +25,8 @@ import csv
 import ckanext.ngds.contentmodel.model.contentmodels
 import ckanext.ngds.contentmodel.model.usgin_ogc as usgin_ogc
 
-from ContentModel_Utilities import *
+import uuid
+from ckan.lib.celery_app import celery
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -152,8 +153,11 @@ def contentmodel_get(context, data_dict):
     # version is again a list with a single entry
     return {'label': schema_label, 'version': version[0]}
 
+
 @logic.side_effect_free
 def contentmodel_checkFile(context, data_dict):
+    celery.send_task("contentmodel.usgin_validate", args=[data_dict], task_id=str(uuid.uuid4()))
+    """
     '''Check whether the given csv file follows the specified content model.
     
     This action returns detailed description of inconsistent cells.
@@ -219,6 +223,7 @@ def contentmodel_checkFile(context, data_dict):
         data_dict["usgin_valid"] = False
         data_dict["usgin_errors"] = validation_msg
         return {"valid": False, "messages": validation_msg}
+    """
 
 @logic.side_effect_free
 def contentmodel_checkBulkFile(context,cm_dict):
