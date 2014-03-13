@@ -25,9 +25,6 @@ import csv
 import ckanext.ngds.contentmodel.model.contentmodels
 import ckanext.ngds.contentmodel.model.usgin_ogc as usgin_ogc
 
-import uuid
-from ckan.lib.celery_app import celery
-
 import ckan.controllers.storage as storage
 from pylons import config
 
@@ -169,7 +166,6 @@ def contentmodel_get(context, data_dict):
 
 @logic.side_effect_free
 def contentmodel_checkFile(context, data_dict):
-#    celery.send_task("contentmodel.usgin_validate", args=[data_dict], task_id=str(uuid.uuid4()))
 
     '''Check whether the given csv file follows the specified content model.
     
@@ -231,11 +227,11 @@ def contentmodel_checkFile(context, data_dict):
     if len(validation_msg) == 0:
         data_dict["usgin_valid"] = True
         data_dict["usgin_errors"] = None
-        return {"valid": True, "messages": "Okay"}
+        return {"valid": True, "messages": "Okay", "usgin_errors": None}
     else:
         data_dict["usgin_valid"] = False
         data_dict["usgin_errors"] = validation_msg
-        return {"valid": False, "messages": validation_msg}
+        return {"valid": False, "messages": validation_msg, "usgin_errors": validation_msg}
 
 @logic.side_effect_free
 def contentmodel_checkBulkFile(context,cm_dict):
