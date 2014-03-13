@@ -995,6 +995,19 @@ sudo chmod 755 $NGDS_SCRIPTS/ckan-central-fetch.conf
 cp $NGDS_SCRIPTS/ckan-central-fetch.conf /etc/init/
 service ckan-central-fetch start
 
+# Upstart job for ckan harvester fetch queue
+cat > $NGDS_SCRIPTS/ckan-central-run-harvest.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec $PYENV_DIR/bin/paster --plugin=ckanext-harvest harvester run --config=$CKAN_ETC/default/production.ini >> /var/log/ckan-central-run-harvest.log 2>&1
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-central-run-harvest.conf
+cp $NGDS_SCRIPTS/ckan-central-run-harvest.conf /etc/init/
+service ckan-central-run-harvest start
+
 # Upstart job for tomcat
 cat > $NGDS_SCRIPTS/ckan-tomcat.conf <<EOF
 #!/bin/bash
