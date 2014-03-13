@@ -28,10 +28,23 @@ import ckanext.ngds.contentmodel.model.usgin_ogc as usgin_ogc
 import uuid
 from ckan.lib.celery_app import celery
 
+import ckan.controllers.storage as storage
+from pylons import config
+
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
 CONTENTMODELS = None
+
+def get_url_for_file(label):
+    resourcename_fullpath = None
+    try:
+        ofs = storage.get_ofs()
+        BUCKET = config.get('ckan.storage.bucket', 'default')
+        resourcename_fullpath = ofs.get_url(BUCKET, label)
+    except:
+        pass
+    return resourcename_fullpath
 
 @logic.side_effect_free
 def contentmodel_refreshCache(context, data_dict):
