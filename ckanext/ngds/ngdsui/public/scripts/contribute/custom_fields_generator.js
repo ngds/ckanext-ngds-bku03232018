@@ -148,7 +148,23 @@ $(document).ready(function () {
             ngds.util.state['prev_resource_type'] = resource_type;
             ngds.resource_type_change(resource_type);
         }
-
+        var resource_type = $("#" + $(ev.currentTarget).attr("for")).val();
+        if (resource_type === 'structured') {
+            $(".validate-message").remove();
+            var html = '<div class="validate-message">';
+                html += '<div class="message" style="padding-top:20px;text-align:center;font-size:15px;">';
+                html += '<a href="http://schemas.usgin.org/validate/cm" target="_blank">';
+                html += 'Use this service to make sure your structured data conforms to USGIN specifications'
+                html += '</div></a></div>';
+            $(ev.currentTarget).parent().after(html);
+        } else if (resource_type === 'data-service') {
+            $(".validate-message").remove();
+            var html = '<div class="validate-message">';
+                html += '<div class="message" style="padding-top:20px;text-align:center;font-size:15px;">';
+                html += '<a href="http://schemas.usgin.org/validate/wfs" target="_blank">';
+                html += 'Use this service to make sure your structured data conforms to USGIN specifications'
+                html += '</div></a></div>';
+            $(ev.currentTarget).parent().after(html);        }
     });
 
     ngds.load_content_model_widget = function (resource_type) {

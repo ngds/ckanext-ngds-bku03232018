@@ -160,9 +160,19 @@ class Layer(object):
 
         context = {"user": self.username}
 
+        def capabilities_url(service_url, workspace, layer, service, version):
+            try:
+                specifications = "/%s/ows?service=%s&version=%s&request=GetCapabilities&layers=%s:%s" % \
+                        (workspace, service, version, workspace, layer)
+                return service_url.replace("/rest", specifications)
+            except:
+                service = service.lower()
+                specifications = "/" + service + "?request=GetCapabilities"
+                return service_url.replace("/rest", specifications)
+
         # WMS Resource Creation
         data_dict = {
-            'url': self.geoserver.service_url.replace("/rest", "/wms?request=GetCapabilities"),
+            'url': capabilities_url(self.geoserver.service_url, self.store.workspace.name, self.name, 'WMS', '1.1.1'),
             'package_id': self.package_id,
             'description': 'WMS for %s' % self.file_resource['name'],
             'parent_resource': self.file_resource['id'],
@@ -182,7 +192,7 @@ class Layer(object):
         # WFS Resource Creation
         data_dict.update({
             "package_id": self.package_id,
-            "url": self.geoserver.service_url.replace("/rest", "/wfs?request=GetCapabilities"),
+            "url": capabilities_url(self.geoserver.service_url, self.store.workspace.name, self.name, 'WFS', '1.1.0'),
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             "description": "WFS for %s" % self.file_resource["name"],
             "protocol": "OGC:WFS",

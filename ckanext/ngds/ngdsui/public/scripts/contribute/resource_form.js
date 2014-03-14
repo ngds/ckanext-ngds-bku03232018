@@ -194,3 +194,8 @@ if (typeof continuation !== 'undefined') {
         $("[name=" + continuation['field'] + "]").vall(continuation['value']);
     }
 }
+
+$('[name="resource_format"]').on('click', function (ev) {
+    var id = ev.currentTarget.id;
+    console.log(id);
+});

@@ -44,7 +44,7 @@ setup(
             ('**.html', 'ckan', None),
         ]
     },		
-	entry_points=\
+	entry_points=
 	"""
 	[paste.paster_command]
     # Install NGDS additional tables

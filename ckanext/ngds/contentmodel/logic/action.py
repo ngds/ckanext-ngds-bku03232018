@@ -25,12 +25,23 @@ import csv
 import ckanext.ngds.contentmodel.model.contentmodels
 import ckanext.ngds.contentmodel.model.usgin_ogc as usgin_ogc
 
-from ContentModel_Utilities import *
+import ckan.controllers.storage as storage
+from pylons import config
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
 
 CONTENTMODELS = None
+
+def get_url_for_file(label):
+    resourcename_fullpath = None
+    try:
+        ofs = storage.get_ofs()
+        BUCKET = config.get('ckan.storage.bucket', 'default')
+        resourcename_fullpath = ofs.get_url(BUCKET, label)
+    except:
+        pass
+    return resourcename_fullpath
 
 @logic.side_effect_free
 def contentmodel_refreshCache(context, data_dict):
@@ -152,8 +163,10 @@ def contentmodel_get(context, data_dict):
     # version is again a list with a single entry
     return {'label': schema_label, 'version': version[0]}
 
+
 @logic.side_effect_free
 def contentmodel_checkFile(context, data_dict):
+
     '''Check whether the given csv file follows the specified content model.
     
     This action returns detailed description of inconsistent cells.
@@ -193,21 +206,7 @@ def contentmodel_checkFile(context, data_dict):
         log.debug("tier 2 data model/version/layer are none")
         return {"valid": True, "messages": "Okay"}
     else:
-        log.debug("about to start schema reading")
-        user_schema = contentmodel_get(context, data_dict)
-        # print user_schema
-        fieldModelList = []
-        field_info_list = user_schema['version']['layers_info']
-
-        for field_info in field_info_list[this_layer]:
-            if ((field_info['name'] is None) and ((len(field_info['type'])==0) or (field_info['type'].isspace()))):
-                log.debug("found a undefined field: %s" % str(field_info))
-                continue
-            else:
-                fieldModelList.append(ContentModel_FieldInfoCell(field_info['optional'], field_info['type'], field_info['name'], field_info['description']))
-
-        log.debug(fieldModelList)
-        log.debug("finish schema reading, find %s field information" % str(len(fieldModelList)))
+        log.debug("Starting USGIN content model validation")
 
         if len(validation_msg) == 0:
             try:
@@ -220,19 +219,19 @@ def contentmodel_checkFile(context, data_dict):
                     this_layer
                 )
 
-                if valid:
-                    pass
-                else:
+                if errors and not valid:
                     validation_msg.append({'valid': False})
             except:
                 validation_msg.append({'valid': False})
 
-    log.debug(validation_msg)
-    # print 'JSON:', json.dumps({"valid": "false", "messages": validation_msg})
     if len(validation_msg) == 0:
-        return {"valid": True, "messages": "Okay"}
+        data_dict["usgin_valid"] = True
+        data_dict["usgin_errors"] = None
+        return {"valid": True, "messages": "Okay", "usgin_errors": None}
     else:
-        return {"valid": False, "messages": validation_msg}
+        data_dict["usgin_valid"] = False
+        data_dict["usgin_errors"] = validation_msg
+        return {"valid": False, "messages": validation_msg, "usgin_errors": validation_msg}
 
 @logic.side_effect_free
 def contentmodel_checkBulkFile(context,cm_dict):
