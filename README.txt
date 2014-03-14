@@ -38,6 +38,7 @@ This material is copyright (c) 2012-2013 Siemens Corporation and Arizona
 Geological Survey. It is open and licensed under the GNU Affero General Public
 License  v3.0 (SPDX identifier: AGPL-3.0) whose full text may be found at:
 
+the LICENSE.md file in this reposiotry, 
 http://www.fsf.org/licensing/licenses/agpl-3.0.html
 or 
 http://spdx.org/licenses/AGPL-3.0

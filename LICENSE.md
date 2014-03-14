@@ -1,4 +1,6 @@
 [why the GNU AFFERO v3?](http://www.gnu.org/licenses/why-affero-gpl.html)
+
+[Quick guide to GNU Affero v3](http://www.gnu.org/licenses/quick-guide-gplv3.html)
                     
                     
                     GNU AFFERO GENERAL PUBLIC LICENSE
