@@ -161,9 +161,14 @@ class Layer(object):
         context = {"user": self.username}
 
         def capabilities_url(service_url, workspace, layer, service, version):
-            specifications = "/%s/ows?service=%s&version=%s&request=GetCapabilities&layers=%s:%s" % \
-                    (workspace, service, version, workspace, layer)
-            return service_url.replace("/rest", specifications)
+            try:
+                specifications = "/%s/ows?service=%s&version=%s&request=GetCapabilities&layers=%s:%s" % \
+                        (workspace, service, version, workspace, layer)
+                return service_url.replace("/rest", specifications)
+            except:
+                service = service.lower()
+                specifications = "/" + service + "?request=GetCapabilities"
+                return service_url.replace("/rest", specifications)
 
         # WMS Resource Creation
         data_dict = {
