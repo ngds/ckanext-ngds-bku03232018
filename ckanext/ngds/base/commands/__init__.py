@@ -3,7 +3,7 @@
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
-File: <filename>
+File: commands/__init__.py
 
 Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
 
