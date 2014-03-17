@@ -1030,7 +1030,6 @@ service ckan-tomcat start
 # Create 'public' organization
 
 function create_public_organization() {
-    sudo apt-get install curl
     curl -b /tmp/cookies.txt -c /tmp/cookies.txt --data "login=admin&password=admin" http://localhost/en/login_generic
     curl -b /tmp/cookies.txt -c /tmp/cookies.txt --data "title=public&name=public&description=&image_url=&save" http://localhost/organization/new
     rm /tmp/cookies.txt
@@ -1060,12 +1059,13 @@ function check_release() {
 function install_java() {
     sudo apt-get update
     sudo apt-get upgrade
-    sudo apt-get -y purg openjdk*
+    sudo apt-get -y purge openjdk*
     sudo apt-get -y install software-properties-common python-software-properties git git-core
     sudo add-apt-repository -y ppa:webupd8team/java
     sudo apt-get -y update
+    sudo apt-get install curl
     sudo apt-get -y install oracle-java6-installer
-    chdir /usr/lib/jvm/java-6-oracle
+    cd /usr/lib/jvm/java-6-oracle
     sudo curl -O http://download.java.net/media/jai/builds/release/1_1_3-lib-linux-amd64-jdk.bin
     sudo chmod u+x jai-1_1_3-lib-linux-amd64-jdk.bin
     sudo ./jai-1_1_3-lib-linux-amd64-jdk.bin
