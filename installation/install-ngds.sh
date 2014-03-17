@@ -1027,6 +1027,51 @@ service ckan-tomcat start
 }
 
 # -------------------------------------------------------------------------------------------------
+# Create 'public' organization
+
+function create_public_organization() {
+    sudo apt-get install curl
+    curl -b /tmp/cookies.txt -c /tmp/cookies.txt --data "login=admin&password=admin" http://localhost/en/login_generic
+    curl -b /tmp/cookies.txt -c /tmp/cookies.txt --data "title=public&name=public&description=&image_url=&save" http://localhost/organization/new
+    rm /tmp/cookies.txt
+}
+
+# -------------------------------------------------------------------------------------------------
+# Fix permissions in /opt/ngds
+
+function set_permissions() {
+    sudo chown -R $MYUSERID.$MYUSERID /opt/ngds
+}
+
+# -------------------------------------------------------------------------------------------------
+# Check and warn on invalid Ubuntu release
+
+function check_release() {
+    . /etc/lsb-release
+    if [ $DISTRIB_RELEASE != "12.04" ] || [ $DISTRIB_RELEASE != "12.10" ]
+        then
+            echo "This system is not running Ubuntu 12.04 or Ubuntu 12.10.  This installation may work, but it is untested."
+    fi
+}
+
+# -------------------------------------------------------------------------------------------------
+# Install Java
+
+function install_java() {
+    sudo apt-get update
+    sudo apt-get upgrade
+    sudo apt-get -y purg openjdk*
+    sudo apt-get -y install software-properties-common python-software-properties git git-core
+    sudo add-apt-repository -y ppa:webupd8team/java
+    sudo apt-get -y update
+    sudo apt-get -y install oracle-java6-installer
+    chdir /usr/lib/jvm/java-6-oracle
+    sudo curl -O http://download.java.net/media/jai/builds/release/1_1_3-lib-linux-amd64-jdk.bin
+    sudo chmod u+x jai-1_1_3-lib-linux-amd64-jdk.bin
+    sudo ./jai-1_1_3-lib-linux-amd64-jdk.bin
+}
+
+# -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------
 #
 # Part V: Run the script
@@ -1046,6 +1091,12 @@ service ckan-tomcat start
 # For developers: You may outcomment steps while debugging the installer.
 # 
 function run() {
+
+    check_release
+
+    sudo apt-get -y upgrade
+
+    install_java
 
     install_prereqs
 
@@ -1076,6 +1127,10 @@ function run() {
     setup_geoserver
     
     create_ngds_scripts
+
+    set_permissions
+
+    create_public_organization
 }
 
 
