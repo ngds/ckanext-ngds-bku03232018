@@ -1066,7 +1066,7 @@ function install_java() {
     sudo apt-get install curl
     sudo apt-get -y install oracle-java6-installer
     cd /usr/lib/jvm/java-6-oracle
-    sudo curl -O http://download.java.net/media/jai/builds/release/1_1_3-lib-linux-amd64-jdk.bin
+    sudo curl -O http://download.java.net/media/jai/builds/release/jai-1_1_3-lib-linux-amd64-jdk.bin
     sudo chmod u+x jai-1_1_3-lib-linux-amd64-jdk.bin
     sudo ./jai-1_1_3-lib-linux-amd64-jdk.bin
 }
