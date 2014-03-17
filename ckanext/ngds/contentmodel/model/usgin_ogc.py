@@ -29,7 +29,7 @@ class EnforceUSGIN(object):
                 layers = usginmodels.get_version(version_uri).layers
                 name = usginmodels.get_service_name(version_uri)
                 if name == "Invalid":
-                    return "ERROR: Invalid content model version"
+                    return "Invalid content model version"
                 else:
                     self.model_config["service_name"] = name
                     self.model_config["layers"] = layers
