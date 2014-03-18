@@ -64,7 +64,7 @@ function configure_properties() {
     ## The following properties can be left as it is for trying out this script.
     
     #CKAN Site URL
-    site_url='http://sample.ckan.org'
+    site_url='http://127.0.0.1'
 
     #Application Deployment setup(central|node).
     deployment_type="node"
