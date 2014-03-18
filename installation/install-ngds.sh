@@ -550,6 +550,14 @@ function install_postgis() {
 
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f $TEMPDIR/grants_on_template_postgis.sql
 
+    run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
+    run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
+
+    echo "ALTER TABLE spatial_ref_sys OWNER TO $pg_id_datastore;" > $TEMPDIR/grants_on_template_postgis.sql
+    echo "ALTER TABLE geometry_columns OWNER TO $pg_id_datastore;" >> $TEMPDIR/grants_on_template_postgis.sql
+
+    run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f $TEMPDIR/grants_on_template_postgis.sql
+
     # Download libxml and setup.
     # run_or_die apt-get --assume-yes --quiet install make
     run_or_die wget --no-verbose ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz --output-document $TEMPDIR/libxml.tar.gz
@@ -1043,6 +1051,10 @@ function create_public_organization() {
 
 function set_permissions() {
     sudo chown -R $MYUSERID.$MYUSERID /opt/ngds
+
+    # Need to make sure Apache user has write permissions to filestore
+    sudo chmod ug+rw /opt/ngds/lib/ckan/default
+    sudo chown -R www-data.www-data /opt/ngds/lib/ckan/default
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1068,10 +1080,6 @@ function install_java() {
     sudo apt-get -y update
     sudo apt-get install curl
     sudo apt-get -y install oracle-java6-installer
-#    cd /usr/lib/jvm/java-6-oracle
-#    sudo curl -O http://download.java.net/media/jai/builds/release/jai-1_1_3-lib-linux-amd64-jdk.bin
-#    sudo chmod u+x jai-1_1_3-lib-linux-amd64-jdk.bin
-#    . ./jai-1_1_3-lib-linux-amd64-jdk.bin
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1194,10 +1202,6 @@ run 2>&1 | tee ${LOGFILE}
 #run_or_die rm -rf $TEMPDIR
 
 echo "Installation of NGDS is complete." | tee -a $LOGFILE
-echo "To start the system ..."
-echo " - start tomcat: cd $CATALINA_HOME/bin ; ./catalina.sh run"
-echo " - browse to: http://localhost"
-echo " "
 echo "For more information about operating NGDS see the Operations Manual at:"
 echo "https://github.com/ngds/dev-info/wiki/NGDS-v1.0-Operations-Guide"
 
