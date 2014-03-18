@@ -553,8 +553,8 @@ function install_postgis() {
     run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
     run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
 
-    echo "ALTER TABLE spatial_ref_sys OWNER TO $pg_id_datastore;" > $TEMPDIR/grants_on_template_postgis.sql
-    echo "ALTER TABLE geometry_columns OWNER TO $pg_id_datastore;" >> $TEMPDIR/grants_on_template_postgis.sql
+    echo "ALTER TABLE spatial_ref_sys OWNER TO $pg_id_for_ckan;" > $TEMPDIR/grants_on_template_postgis.sql
+    echo "ALTER TABLE geometry_columns OWNER TO $pg_id_for_ckan;" >> $TEMPDIR/grants_on_template_postgis.sql
 
     run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f $TEMPDIR/grants_on_template_postgis.sql
 
