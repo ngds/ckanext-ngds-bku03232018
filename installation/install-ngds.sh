@@ -1141,11 +1141,11 @@ function run() {
 
     set_permissions
 
-    create_public_organization
-
     run_or_die a2dissite default
 
     run_or_die service apache2 reload
+
+    create_public_organization
 }
 
 
