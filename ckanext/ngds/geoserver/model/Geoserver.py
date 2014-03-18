@@ -93,3 +93,25 @@ class Geoserver(Catalog):
 
         # Return it
         return ds
+
+    def get_datastore(self, name, store_name=None):
+        datastore_url = ckan_config.get('ckan.datastore.write_url','postgresql://ckanuser:pass@localhost/datastore')
+        pattern = "://(?P<user>.+?):(?P<pass>.+?)@(?P<host>.+?)/(?P<database>.+)$"
+        details = re.search(pattern, datastore_url)
+        workspace = self.get_workspace(name)
+        if store_name is None:
+            store_name = details.group("database")
+        try:
+            ds = self.get_store(store_name, workspace)
+        except Exception as ex:
+            ds = self.create_datastore(store_name, workspace)
+            ds.connection_parameters.update(
+                host=details.group("host"),
+                port="5432",
+                database=details.group("database"),
+                user=details.group("user"),
+                passwd=details.group("pass"),
+                dbtype="postgis"
+            )
+            self.save(ds)
+        return ds

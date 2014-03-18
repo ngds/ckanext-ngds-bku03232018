@@ -57,7 +57,7 @@ params_to_set = [
     ("extra_public_paths", "/home/ngds/extrapublic/"),
     ("solr_url", "http://localhost:8983/solr"),
     ("ckan.i18n_directory", args.root),
-    ("search.facets.limits", "5000")
+    ("search.facets.limit", "30000")
 ]
 
 node_params = [

@@ -24,21 +24,23 @@ import json
 class Layer(object):
 
     @classmethod
-    def publish(cls, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
-        l = cls(package_id, resource_id, layer_name, username, geoserver, lat_field, lng_field)
+    def publish(cls, package_id, resource_id, layer_name, username, store=None, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
+        l = cls(package_id, resource_id, layer_name, username, store, geoserver, lat_field, lng_field)
         if l.create():
             return l
         else:
             return None
 
-    def __init__(self, package_id, resource_id, layer_name, username, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
+    def __init__(self, package_id, resource_id, layer_name, username, store=None, geoserver=Geoserver.from_ckan_config(), lat_field=None, lng_field=None):
         self.geoserver = geoserver
-        self.store = geoserver.default_datastore()
+        self.store = store
         self.name = layer_name
         self.username = username
         self.file_resource = toolkit.get_action("resource_show")(None, {"id": resource_id})
         self.package_id = package_id
         self.resource_id = resource_id
+        if self.store is None:
+            self.store = geoserver.default_datastore()
 
         # Spatialize it
         url = self.file_resource["url"]
@@ -158,15 +160,26 @@ class Layer(object):
 
         context = {"user": self.username}
 
+        def capabilities_url(service_url, workspace, layer, service, version):
+            try:
+                specifications = "/%s/ows?service=%s&version=%s&request=GetCapabilities&layers=%s:%s" % \
+                        (workspace, service, version, workspace, layer)
+                return service_url.replace("/rest", specifications)
+            except:
+                service = service.lower()
+                specifications = "/" + service + "?request=GetCapabilities"
+                return service_url.replace("/rest", specifications)
+
         # WMS Resource Creation
         data_dict = {
-            'url': self.geoserver.service_url.replace("/rest", "/wms?request=GetCapabilities"),
+            'simple_url': self.geoserver.service_url.replace("/rest", "/wms?request=GetCapabilities"),
+            'url': capabilities_url(self.geoserver.service_url, self.store.workspace.name, self.name, 'WMS', '1.1.1'),
             'package_id': self.package_id,
             'description': 'WMS for %s' % self.file_resource['name'],
             'parent_resource': self.file_resource['id'],
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             'protocol': 'OGC:WMS',
-            'layer':"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
+            'layer':"%s:%s" % (self.store.workspace.name, self.name),
             'resource_format': 'data-service',
             'format': ''
         }
@@ -179,12 +192,13 @@ class Layer(object):
 
         # WFS Resource Creation
         data_dict.update({
+            'simple_url': self.geoserver.service_url.replace("/rest", "/wfs?request=GetCapabilities"),
             "package_id": self.package_id,
-            "url": self.geoserver.service_url.replace("/rest", "/wfs?request=GetCapabilities"),
+            "url": capabilities_url(self.geoserver.service_url, self.store.workspace.name, self.name, 'WFS', '1.1.0'),
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             "description": "WFS for %s" % self.file_resource["name"],
             "protocol": "OGC:WFS",
-            "layer":"%s:%s" % (config.get("geoserver.workspace_name", "NGDS"), self.name),
+            "layer":"%s:%s" % (self.store.workspace.name, self.name),
             'resource_format': 'data-service',
             'format': ''
         })
