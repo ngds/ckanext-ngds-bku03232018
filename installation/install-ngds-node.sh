@@ -49,8 +49,11 @@ MYUSERID=ngds
 # edit this script to file for the installation.
 #
 function configure_properties() {
+
+    #Path where this instance will be installed
+
     #Path where application and data are installed.
-    APPS=/opt/ngds
+    APPS=/opt/ngds/node
 
     #Tomcat Installation Path
     #CATALINA_HOME=/usr/share/tomcat
@@ -64,23 +67,23 @@ function configure_properties() {
     ## The following properties can be left as it is for trying out this script.
     
     #CKAN Site URL
-    site_url='http://127.0.0.1'
+    site_url='http://sample.ckan.org'
 
     #Application Deployment setup(central|node).
     deployment_type="node"
 
     # CKAN DB username
-    pg_id_for_ckan=ckan_default
+    pg_id_for_ckan=node_ckan_default
     # CKAN DB password
     pg_pw_for_ckan=pass
     #CKAN DB name
-    pg_db_for_ckan=ckan_default
+    pg_db_for_ckan=node_ckan_default
     #Datastore DB Username
-    pg_id_datastore=datastore_default
+    pg_id_datastore=_node_datastore_default
     #Datastore DB pass
     pg_pw_datastore=pass
     #Datastore Database Name
-    pg_db_for_datastore=datastore_default
+    pg_db_for_datastore=node_datastore_default
 
     #Application defult admin user for setup.
     ADMIN_NAME=admin
@@ -107,9 +110,6 @@ function configure_properties() {
 function setup_env() {
 
     configure_properties
-
-    # Export Java path
-    export JAVA_HOME="/usr/lib/jvm/java-6-oracle"
 
     # Absolute path to this script
     SCRIPT=$(readlink -f "$0")
@@ -159,134 +159,6 @@ function setup_env() {
     sudo mkdir -p $SOLR_LIB $GEOSERVER_CATALINA_BASE $NGDS_SCRIPTS $GEOSERVER_LIB
     sudo chown -R $MYUSERID:$MYUSERID $SOLR_LIB $NGDS_SCRIPTS $GEOSERVER_LIB
     sudo chown -R $MYUSERID:$MYUSERID $GEOSERVER_CATALINA_BASE
-}
-
-
-# -------------------------------------------------------------------------------------------------
-# install_prereqs
-#
-# Install tools needed for this script to proceed (as opposed to
-# tools specific to any given component that is being installed.)
-# Note: We expect that a JDK is already installed and a JAVA_HOME
-#       environment variable is set.
-#       We recommend to use the Hotspot JDK and not OpenJDK.
-#
-function install_prereqs(){
-    run_or_die sudo apt-get --assume-yes --quiet update
-    run_or_die apt-get --assume-yes --quiet install build-essential
-    run_or_die apt-get --assume-yes --quiet install unzip
-}
-
-# -------------------------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------------------------
-#
-# Part II: Helper Functions
-# +++++++++++++++++++++++++
-#
-# This part contains helper functions to execute downloads, check completenes, etc.
-#
-
-
-# @cjk: To be deleted.
-# -------------------------------------------------------------------------------------------------
-#function check_downloads() {
-#  for pkg in \
-#      jetty-distribution-9.0.5.v20130815.tar.gz \
-#      solr-4.4.0.tgz ;do
-#    if [ ! -f $DOWLOADS/$pkg ] ;then
-#      #mkdir -p $DOWLOADS
-#      #scp -p ${DOWNLOAD}/${pkg} $DOWLOADS
-#      echo "Please download $pkg distribution for the installation to proceed."
-#      exit 0
-#    fi
-#  done
-#}
-
-
-# -------------------------------------------------------------------------------------------------
-# print_help
-#
-function print_help () {
-    cat <<EOHELP
-Use $this_script to install NGDS and components upon which it depends.  Note
-that this script requires administrative privileges to install various 
-components.
-
-[sudo] $this_script -f <configuration file>
-
-where <configuration file> is a file containing configuration details. For
-details about the parameters contained in this file see the '-g' option
-below.
-
-Alternately, $this_script can be invoked with the following flags:
-
--h Displays this help
-
--g Emits a sample configuration file with explanations of the parameters
-   You can customize this file for your particular installation.
-EOHELP
-}
-
-# -------------------------------------------------------------------------------------------------
-# print_config_file
-#
-# This function is called when the script is started with the parameter -g
-# It prints the configuration variables set for this installer.
-#
-# Otherwise the function is not used anywhere else.
-#
-function print_config_file () {
-
-configure_properties
-    cat <<EOCONFIG
-# NGDS Installation Configuration File
-#
-# <License details>
-#
-# <Link to NGDS web site and details>
-# 
-# Use this file to set the parameters for installing the NGDS web application.
-
-#
-# Deployment type
-# 
-# The web application can be deployed in one of two ways: As a repository
-# node, or as an aggregating catalog. The default and typical deployment type
-# is the repository node. When deployed this way (by setting deployment_type
-# to repository_node) the web application allows the user to upload and share
-# their data with the world. When deployed as an aggregating catalog the web
-# application harvests the metadata (but not to the data) of registered
-# repository nodes and serves as a search engine that spans those nodes(node|central).
-deployment_type=$deployment_type
-
-# CKAN requires login credentials for the PostgreSQL database
-pg_id_for_ckan=$pg_id_for_ckan
-pg_pw_for_ckan=$pg_pw_for_ckan
-pg_db_for_ckan=$pg_db_for_ckan
-pg_id_datastore=$pg_id_datastore
-pg_pw_datastore=$pg_pw_datastore
-pg_db_for_datastore=$pg_db_for_datastore
-
-# Application installation path. All application binary,liba and onfig options 
-# will go under this directory
-APPS=$APPS
-
-# Tomcat Installation Path
-CATALINA_HOME=$CATALINA_HOME
-    
-#CKAN Site URL
-site_url=$site_url
-
-#Application defult admin user for setup.
-ADMIN_NAME=$ADMIN_NAME
-ADMIN_PWD=$ADMIN_PWD
-ADMIN_EMAIL=$ADMIN_EMAIL
-
-#Server Name details for HTTP server to register with.
-SERVER_NAME=$SERVER_NAME
-SERVER_NAME_ALIAS=$SERVER_NAME_ALIAS
-
-EOCONFIG
 }
 
 
@@ -348,18 +220,6 @@ function run_or_die() {
 # instructions at http://docs.ckan.org/en/ckan-2.0/install-from-source.html
 #
 function install_ckan() {
-    # Step 1: Install the required packages
-    #run_or_die apt-get -y upgrade
-    run_or_die apt-get --assume-yes --quiet install python-dev
-    run_or_die apt-get --assume-yes --quiet install postgresql-9.1-postgis
-    run_or_die apt-get --assume-yes --quiet install libpq-dev
-    run_or_die apt-get --assume-yes --quiet install python-pip
-    run_or_die apt-get --assume-yes --quiet install python-virtualenv
-    run_or_die apt-get --assume-yes --quiet install git-core
-    
-    # We now install SOLR in a later step on tomcat. 
-    # run_or_die apt-get --assume-yes --quiet install solr-jetty
-
     # The following steps are taken directly from the CKAN 2.0.1 installation
     # instructions.
     #
@@ -379,7 +239,7 @@ function install_ckan() {
     # Note to developers: The current method of tracking CKAN is to bind NGDS           
     # to a specific versioned GitHub URL of CKAN (as opposed to forking it.)            
     # See https://github.com/ngds/ckanext-ngds/issues/107  
-    run_or_die $PYENV_DIR/bin/pip install -e 'git+https://github.com/okfn/ckan.git@ckan-2.0.4#egg=ckan'
+    run_or_die $PYENV_DIR/bin/pip install -e 'git+https://github.com/okfn/ckan.git@ckan-2.0.1#egg=ckan'
     #
     # Step 2c
     # TODO
@@ -485,7 +345,7 @@ function install_datastore() {
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -k ckan.site_url -v $site_url
 
     #Add the datastore plugin to the config file.
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -a -k ckan.plugins -v datastore 
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -a -k ckan.plugins -v datastore
 
     #Create users and databases
     echo "CREATE ROLE $pg_id_datastore ENCRYPTED PASSWORD '$pg_pw_datastore' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;" > $TEMPDIR/default_datastore_user.sql
@@ -493,8 +353,8 @@ function install_datastore() {
     run_or_die sudo -u postgres createdb -O $pg_id_for_ckan $pg_db_for_datastore -E utf-8
 
     #Update URLs
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -k ckan.datastore.write_url -v "postgresql://$pg_id_for_ckan:$pg_pw_for_ckan@localhost/$pg_db_for_datastore"    
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -k ckan.datastore.read_url -v "postgresql://$pg_id_datastore:$pg_pw_datastore@localhost/$pg_db_for_datastore"    
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -k ckan.datastore.write_url -v "postgresql://$pg_id_for_ckan:$pg_pw_for_ckan@localhost/$pg_db_for_datastore"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -k ckan.datastore.read_url -v "postgresql://$pg_id_datastore:$pg_pw_datastore@localhost/$pg_db_for_datastore"
 
     #Set Permissions
     pushd $APPS_SRC/ckan > /dev/null
@@ -545,18 +405,10 @@ function install_postgis() {
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
     run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
 
-    echo "ALTER TABLE spatial_ref_sys OWNER TO $pg_id_for_ckan;" > $TEMPDIR/grants_on_template_postgis.sql    
-    echo "ALTER TABLE geometry_columns OWNER TO $pg_id_for_ckan;" >> $TEMPDIR/grants_on_template_postgis.sql    
-
-    run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f $TEMPDIR/grants_on_template_postgis.sql
-
-    run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
-    run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
-
     echo "ALTER TABLE spatial_ref_sys OWNER TO $pg_id_for_ckan;" > $TEMPDIR/grants_on_template_postgis.sql
     echo "ALTER TABLE geometry_columns OWNER TO $pg_id_for_ckan;" >> $TEMPDIR/grants_on_template_postgis.sql
 
-    run_or_die sudo -u postgres psql -d $pg_db_for_datastore -f $TEMPDIR/grants_on_template_postgis.sql
+    run_or_die sudo -u postgres psql -d $pg_db_for_ckan -f $TEMPDIR/grants_on_template_postgis.sql
 
     # Download libxml and setup.
     # run_or_die apt-get --assume-yes --quiet install make
@@ -588,13 +440,15 @@ function install_postgis() {
 function install_ckanext_harvest() {
     run_or_die apt-get --assume-yes --quiet install rabbitmq-server
 
-    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-harvest.git@stable#egg=ckanext-harvest
+    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-harvest.git@release-v2.0#egg=ckanext-harvest
 
     run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckanext-harvest/pip-requirements.txt
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $CKAN_ETC/default/development.ini -a -k ckan.plugins -v "harvest ckan_harvester"
- 
+
     run_or_die $PYENV_DIR/bin/paster --plugin=ckanext-harvest harvester initdb -c $CKAN_ETC/default/development.ini
+    #pasterr "--plugin=ckan sysadmin add harvest"
+    #TODO: Check whether user 'harvest' needs to be created. if so find how to pass the password as part of paster command.
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -603,7 +457,7 @@ function install_ckanext_harvest() {
 # Installs the spatial extension.
 function install_ckanext_spatial() {
 
-    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-spatial.git@stable#egg=ckanext-spatial
+    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/okfn/ckanext-spatial.git#egg=ckanext-spatial
 
     run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckanext-spatial/pip-requirements.txt
 
@@ -632,13 +486,12 @@ function install_ngds() {
 
     run_or_die $PYENV_DIR/bin/pip install -e git+https://$GIT_UNAME:$GIT_PWD@github.com/ngds/ckanext-ngds.git#egg=ckanext-ngds
 
-    run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckanext-ngds/pip-requirements.txt    
+    run_or_die $PYENV_DIR/bin/pip install -r $APPS_SRC/ckanext-ngds/pip-requirements.txt
 
-    configure_ngds   
+    configure_ngds
 
     run_or_die sudo mv $CKAN_ETC/default/development.ini $CKAN_ETC/default/development.ini.bak
 }
-
 
 
 # -------------------------------------------------------------------------------------------------
@@ -648,7 +501,7 @@ function install_ngds() {
 # We therefore have to add an additional repository to apt-get.
 # This part is tricky and can fail especially when working through a proxy.
 # TODO:
-# Long term solution: Download the GDAL source code and compile from scratch. Compile takes long but does 
+# Long term solution: Download the GDAL source code and compile from scratch. Compile takes long but does
 # not require special packages to be present.
 function install_gdal() {
     . $PYENV_DIR/bin/activate
@@ -665,6 +518,7 @@ function install_gdal() {
     run_or_die $PYENV_DIR/bin/pip install --no-download GDAL
     popd > /dev/null
 }
+
 
 # -------------------------------------------------------------------------------------------------
 # configure_ngds
@@ -766,331 +620,6 @@ function configure_ngds() {
 #  - SOLR
 
 
-# -------------------------------------------------------------------------------------------------
-# deploy_in_webserver
-#
-# This function creates the production environment for CKAN. For details check this page:
-# http://docs.ckan.org/en/ckan-2.0.1/deployment.html
-#
-function deploy_in_webserver() {
-    
-    #run_or_die cp $CKAN_ETC/default/central.ini $CKAN_ETC/default/production.ini
-    run_or_die cp $deployment_file $CKAN_ETC/default/production.ini
-
-    run_or_die apt-get --assume-yes --quiet install apache2 libapache2-mod-wsgi
-
-    #run_or_die apt-get --assume-yes --quiet install postfix
-
-    WSGI_SCRIPT=$CKAN_ETC/default/apache.wsgi
-
-    create_wsgi_script > $WSGI_SCRIPT
-
-    create_apache_config > /etc/apache2/sites-available/ckan_default
-
-    run_or_die a2ensite ckan_default
-    run_or_die service apache2 reload
-}
-
-# -------------------------------------------------------------------------------------------------
-# create_wsgi_script
-#
-# Helper function to create the wsgi script for the installation via apache2 and the wsgi mod.
-function create_wsgi_script() {
-    
-#WSGI_SCRIPT=$CKAN_ETC/default/apache.wsgi
-
-cat <<EOF
-import os
-activate_this = os.path.join('$PYENV_DIR/bin/activate_this.py')
-execfile(activate_this, dict(__file__=activate_this))
-
-from paste.deploy import loadapp
-config_filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'production.ini')
-from paste.script.util.logging_config import fileConfig
-fileConfig(config_filepath)
-application = loadapp('config:%s' % config_filepath)
-EOF
-}
-
-# -------------------------------------------------------------------------------------------------
-# create_apache_config
-#
-# Helper function that creates the apache configuration to serve CKAN via apache2.
-function create_apache_config() {
-    
-#APACHE_CONFIG_FILE=/etc/apache2/sites-available/ckan_default
-
-cat <<EOF
-<VirtualHost 0.0.0.0:80>
-    ServerName $SERVER_NAME
-    ServerAlias $SERVER_NAME_ALIAS
-    WSGIScriptAlias / $WSGI_SCRIPT
-
-    # Pass authorization info on (needed for rest api).
-    WSGIPassAuthorization On
-
-    #TODO The following line should be removed.
-    #WSGIRestrictStdout Off
-
-    # Deploy as a daemon (avoids conflicts between CKAN instances).
-    WSGIDaemonProcess ckan_default display-name=ckan_default processes=2 threads=15
-
-    WSGIProcessGroup ckan_default
-
-    ErrorLog /var/log/apache2/ckan_default.error.log
-    CustomLog /var/log/apache2/ckan_default.custom.log combined
-</VirtualHost>
-EOF
-}
-
-# -------------------------------------------------------------------------------------------------
-# get_tomcat
-#
-# Helper function that downloads tomcat and installs it.
-function get_tomcat() {
-    run_or_die wget --no-verbose http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.tar.gz --directory-prefix $TEMPDIR
-    pushd $TEMPDIR > /dev/null
-    #pushd /home/ngds/install/download/
-    tar -zxf apache-tomcat-7.0.42.tar.gz
-    mv apache-tomcat-7.0.42/ $CATALINA_HOME/
-    popd > /dev/null
-}
-
-# -------------------------------------------------------------------------------------------------
-# get_solr
-#
-# Helper function that downloads SOLR, and unzips it. It also creates the SOLR home 
-# directory (/opt/ngds/solr) and copies the contents of the example directory into 
-# the SOLR home directory.
-function get_solr() {
-    run_or_die wget --no-verbose http://archive.apache.org/dist/lucene/solr/4.6.0/solr-4.6.0.tgz --directory-prefix $TEMPDIR
-    pushd $TEMPDIR > /dev/null
-    tar -zxf solr-4.6.0.tgz
-    #mkdir -p $SOLR_LIB/example/
-    pushd solr-4.6.0/example > /dev/null
-    mkdir -p $SOLR_HOME
-    cp -r solr/* $SOLR_HOME #$SOLR_LIB/example/
-    mv $SOLR_HOME/solr.xml $SOLR_HOME/solr.xml.bak
-    cp lib/ext/*.jar $CATALINA_HOME/lib/
-    popd > /dev/null
-    popd > /dev/null
-
-    cp $TEMPDIR/solr-4.6.0/dist/solr-4.6.0.war $SOLR_HOME/solr.war 
-}
-
-# -------------------------------------------------------------------------------------------------
-# get_solr
-#
-# This function deploys SOLR in tomcat
-#  - download SOLr with previous helper function
-#  - deploy SOLR in tomcat:
-#     * create and put solr.xml into $CATALINA_HOME/conf/Catalina/localhost/
-function setup_solr() {
-    #Download Solr and extract its contents
-    get_solr
-
-    mkdir -p $CATALINA_HOME/conf/Catalina/localhost
-    cat > $CATALINA_HOME/conf/Catalina/localhost/solr.xml <<ENDSOLRXML
-<?xml version="1.0" encoding="utf-8"?>
-
-<Context docBase="$SOLR_HOME/solr.war" debug="0" crossContext="true">
-  <Environment name="solr/home" type="java.lang.String" value="$SOLR_HOME" override="true"/>
-</Context>
-ENDSOLRXML
-
-    # backup original schema.xml
-    mv $SOLR_HOME/collection1/conf/schema.xml $SOLR_HOME/collection1/conf/schema.xml.bak
-
-    #TODO: wget the installation/schema.xml from git directly to avoid having
-    # to install ckanext-ngds first.
-    cp $APPS/bin/default/src/ckanext-ngds/installation/schema.xml $SOLR_HOME/collection1/conf/schema.xml
-}
-
-# -------------------------------------------------------------------------------------------------
-# setup_geoserver
-#
-# This function downloads and unzips geoserver. It then takes the war file and places it 
-# into tomcat's webapps folder.
-function setup_geoserver() {
-    run_or_die wget --no-verbose http://sourceforge.net/projects/geoserver/files/GeoServer/2.4.0/geoserver-2.4.0-war.zip --directory-prefix=$TEMPDIR
-    pushd $TEMPDIR > /dev/null
-    run_or_die unzip geoserver-2.4.0-war.zip -d geoserver
-    pushd geoserver > /dev/null
-
-    mv geoserver.war $CATALINA_HOME/webapps
-
-    popd > /dev/null
-    popd > /dev/null
-
-    #run_or_die create_geoserver_script
-}
-
-# -------------------------------------------------------------------------------------------------
-# create_geoserver_script
-#
-# This is dead code: We leave it in until the JAVA_OPTS and CATALINA_OPTS have been copied
-#  into an appropriate place.
-function create_geoserver_script() {
-
-JAVA_HOME=/usr/lib/jvm/java-6-openjdk # your java
-JRE_HOME=/usr/lib/jvm/java-6-openjdk/jre # your jre
-
-cat > $NGDS_SCRIPTS/geoserver.sh <<EOF
-#!/bin/bash
-
-export JAVA_HOME=$JAVA_HOME
-export JRE_HOME=$JRE_HOME
-export CATALINA_HOME=$CATALINA_HOME
-export CATALINA_BASE=$GEOSERVER_CATALINA_BASE
-export GEOSERVER_DATA_DIR=$GEOSERVER_LIB/data
-#export GEOSERVER_LOG_LOCATION=$GEOSERVER_LIB/data/logs/geoserver.log
-
-export CATALINA_OPTS=" -server -Xms256m -Xmx512m "
-export CATALINA_OPTS=" \$CATALINA_OPTS -DGEOSERVER_DATA_DIR=\$GEOSERVER_DATA_DIR "
-#export CATALINA_OPTS=" \$CATALINA_OPTS -DGEOSERVER_LOG_LOCATION=\$GEOSERVER_LOG_LOCATION" 
-
-PATH=\$PATH:\$JAVA_HOME:\$JRE_HOME:\$CATALINA_HOME/bin:\$GEOSERVER_DATA_DIR
-export PATH    
-
-$CATALINA_HOME/bin/catalina.sh "\$@"
-EOF
-sudo chmod 755 $NGDS_SCRIPTS/geoserver.sh
-$NGDS_SCRIPTS/geoserver.sh start
-}
-
-
-# -------------------------------------------------------------------------------------------------
-# create_ngds__scripts
-#
-# this function creates the configuration to start celeryd via upstart.
-# It creates a service called ngds-celeryd
-function create_ngds_scripts() {
-
-cat > $NGDS_SCRIPTS/ngds-celeryd.conf <<EOF
-#!/bin/bash
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-exec $PYENV_DIR/bin/paster --plugin=ckan celeryd -c $CKAN_ETC/default/production.ini >>/var/log/apache2/ngds-celery.log 2>&1
-EOF
-
-sudo chmod 755 $NGDS_SCRIPTS/ngds-celeryd.conf
-cp $NGDS_SCRIPTS/ngds-celeryd.conf /etc/init/
-service ngds-celeryd start
-
-# Upstart job for ckan harvester gather queue
-cat > $NGDS_SCRIPTS/ckan-central-gather.conf <<EOF
-#!/bin/bash
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-exec $PYENV_DIR/bin/paster --plugin=ckanext-harvest harvester gather_consumer --config=$CKAN_ETC/default/production.ini >> /var/log/ckan-central-gather.log 2>&1
-EOF
-
-sudo chmod 755 $NGDS_SCRIPTS/ckan-central-gather.conf
-cp $NGDS_SCRIPTS/ckan-central-gather.conf /etc/init/
-service ckan-central-gather start
-
-# Upstart job for ckan harvester fetch queue
-cat > $NGDS_SCRIPTS/ckan-central-fetch.conf <<EOF
-#!/bin/bash
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-exec $PYENV_DIR/bin/paster --plugin=ckanext-harvest harvester fetch_consumer --config=$CKAN_ETC/default/production.ini >> /var/log/ckan-central-fetch.log 2>&1
-EOF
-
-sudo chmod 755 $NGDS_SCRIPTS/ckan-central-fetch.conf
-cp $NGDS_SCRIPTS/ckan-central-fetch.conf /etc/init/
-service ckan-central-fetch start
-
-# Upstart job for ckan harvester fetch queue
-cat > $NGDS_SCRIPTS/ckan-central-run-harvest.conf <<EOF
-#!/bin/bash
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-exec $PYENV_DIR/bin/paster --plugin=ckanext-harvest harvester run --config=$CKAN_ETC/default/production.ini >> /var/log/ckan-central-run-harvest.log 2>&1
-EOF
-
-sudo chmod 755 $NGDS_SCRIPTS/ckan-central-run-harvest.conf
-cp $NGDS_SCRIPTS/ckan-central-run-harvest.conf /etc/init/
-service ckan-central-run-harvest start
-
-# Upstart job for tomcat
-cat > $NGDS_SCRIPTS/ckan-tomcat.conf <<EOF
-#!/bin/bash
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-script
-    export JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms512m -Xmx2048m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=512m -XX:+DisableExplicitGC"
-    chdir /opt/ngds/tomcat/bin/
-    exec ./catalina.sh run >> /var/log/ckan-tomcat.log 2>&1
-end script
-EOF
-
-sudo chmod 755 $NGDS_SCRIPTS/ckan-tomcat.conf
-cp $NGDS_SCRIPTS/ckan-tomcat.conf /etc/init/
-service ckan-tomcat start
-}
-
-# -------------------------------------------------------------------------------------------------
-# Create 'public' organization
-
-function create_public_organization() {
-    curl -b /tmp/cookies.txt -c /tmp/cookies.txt --data "login=admin&password=admin" http://localhost/en/login_generic
-    curl -b /tmp/cookies.txt -c /tmp/cookies.txt --data "title=public&name=public&description=&image_url=&save" http://localhost/organization/new
-    rm /tmp/cookies.txt
-}
-
-# -------------------------------------------------------------------------------------------------
-# Fix permissions in /opt/ngds
-
-function set_permissions() {
-    sudo chown -R $MYUSERID.$MYUSERID /opt/ngds
-
-    # Need to make sure Apache user has write permissions to filestore
-    sudo chmod ug+rw /opt/ngds/lib/ckan/default
-    sudo chown -R www-data.www-data /opt/ngds/lib/ckan/default
-}
-
-# -------------------------------------------------------------------------------------------------
-# Check and warn on invalid Ubuntu release
-
-function check_release() {
-    . /etc/lsb-release
-    if [ $DISTRIB_RELEASE != "12.04" ] || [ $DISTRIB_RELEASE != "12.10" ]
-        then
-            echo "This system is not running Ubuntu 12.04 or Ubuntu 12.10.  This installation may work, but it is untested."
-    fi
-}
-
-# -------------------------------------------------------------------------------------------------
-# Install Java
-
-function install_java() {
-    sudo apt-get update
-    sudo apt-get upgrade
-    sudo apt-get -y purge openjdk*
-    sudo apt-get -y install software-properties-common python-software-properties git git-core
-    sudo add-apt-repository -y ppa:webupd8team/java
-    sudo apt-get -y update
-    sudo apt-get install curl
-    sudo apt-get -y install oracle-java6-installer
-}
-
-# -------------------------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------------------------
-#
-# Part V: Run the script
-# ++++++++++++++++++++++
-#
-# This part calls the individual installer functions in the correct order.
-# It also provides a helper to process command line options
-
-
-
 
 # -------------------------------------------------------------------------------------------------
 # run
@@ -1100,14 +629,6 @@ function install_java() {
 # For developers: You may outcomment steps while debugging the installer.
 # 
 function run() {
-
-    check_release
-
-    sudo apt-get -y upgrade
-
-    install_java
-
-    install_prereqs
 
     setup_env
 
@@ -1126,24 +647,6 @@ function run() {
     install_ckanext_importlib    
 
     install_ngds
-
-    deploy_in_webserver
-
-    get_tomcat
-    
-    setup_solr
-
-    setup_geoserver
-    
-    create_ngds_scripts
-
-    set_permissions
-
-    run_or_die a2dissite default
-
-    run_or_die service apache2 reload
-
-    create_public_organization
 }
 
 
@@ -1204,6 +707,10 @@ run 2>&1 | tee ${LOGFILE}
 #run_or_die rm -rf $TEMPDIR
 
 echo "Installation of NGDS is complete." | tee -a $LOGFILE
+echo "To start the system ..."
+echo " - start tomcat: cd $CATALINA_HOME/bin ; ./catalina.sh run"
+echo " - browse to: http://localhost"
+echo " "
 echo "For more information about operating NGDS see the Operations Manual at:"
 echo "https://github.com/ngds/dev-info/wiki/NGDS-v1.0-Operations-Guide"
 

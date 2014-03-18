@@ -28,7 +28,7 @@ class Datastored(object):
     resource_id = None
     lat_col = None
     lng_col = None
-    geo_col = 'geometry'
+    geo_col = 'Shape'
     connection_url = None
 
     def __init__(self, resource_id, lat_field, lng_field):

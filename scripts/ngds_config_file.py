@@ -63,7 +63,7 @@ params_to_set = [
 node_params = [
     ("ngds.deployment", "node"),
     ("ngds.full_text_indexing", "true"),
-    ("geoserver.rest_url", "geoserver://user_name:password@localhost:8080/geoserver/rest","This is Geoserver rest URL"),
+    ("geoserver.rest_url", "geoserver://admin:geoserver@localhost:8080/geoserver/rest","This is Geoserver rest URL"),
     ("geoserver.workspace_name", "ngds","Geoserver Workspace Name"),
     ("geoserver.workspace_uri", "http://localhost:5000/ngds","Geoserver Workspace URI"),
     ("ngds.bulk_upload_dir", "/home/ngds/work/bulkupload/"),
@@ -81,7 +81,7 @@ central_params = [
     ("ckan.site_logo", "/assets/logo.png")
 ]
 
-central_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query harvest spatial_harvest_metadata_api csw_harvester csw metadata geoserver ngdsui'
+central_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query harvest spatial_harvest_metadata_api csw_harvester csw metadata ngds_harvester geoserver ngdsui'
 
 if not os.path.exists(args.filename):
     print "Could not find config file: %s" % args.filename
