@@ -790,7 +790,7 @@ function deploy_in_webserver() {
     create_apache_config > /etc/apache2/sites-available/ckan_default
 
     run_or_die a2ensite ckan_default
-    run_or_die service apache2 reload      
+    run_or_die service apache2 reload
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1142,6 +1142,10 @@ function run() {
     set_permissions
 
     create_public_organization
+
+    run_or_die a2dissite default
+
+    run_or_die service apache2 reload
 }
 
 
