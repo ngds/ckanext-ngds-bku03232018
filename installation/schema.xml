@@ -78,9 +78,7 @@
             <filter class="solr.LowerCaseFilterFactory"/>
         </analyzer>
     </fieldType>
-
 </types>
-
 
 <fields>
     <field name="index_id" type="string" indexed="true" stored="true" required="true" />
@@ -97,9 +95,9 @@
     <field name="ckan_url" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="download_url" type="string" indexed="true" stored="true" omitNorms="true" />
     <field name="notes" type="text" indexed="true" stored="true"/>
-    <field name="author" type="textgen" indexed="true" stored="true" />
+    <field name="author" type="textgen" indexed="true" stored="true" multiValued="true"/>
     <field name="author_email" type="textgen" indexed="true" stored="true" />
-    <field name="maintainer" type="textgen" indexed="true" stored="true" />
+    <field name="maintainer" type="textgen" indexed="true" stored="true" multiValued="true"/>
     <field name="maintainer_email" type="textgen" indexed="true" stored="true" />
     <field name="license" type="string" indexed="true" stored="true" />
     <field name="license_id" type="string" indexed="true" stored="true" />
@@ -141,9 +139,11 @@
          (rather than text type).  This allows us to sort on the titleString -->
     <field name="title_string" type="string" indexed="true" stored="false" />
 
+    <field name="metadata_source" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="data_dict" type="string" indexed="false" stored="true" />
-
-    <field name="author_string" type="string" indexed="true" stored="true" />
+    <field name="data_type" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="author_string" type="string" indexed="true" stored="true" multiValued="true"/>
+    <field name="maintainer_string" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="res_distributor" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="res_protocol" type="string" indexed="true" stored="true" multiValued="true"/>
     <field name="res_layer" type="string" indexed="true" stored="true" multiValued="true"/>
@@ -187,6 +187,7 @@
 <copyField source="groups" dest="text"/>
 <copyField source="res_description" dest="text"/>
 <copyField source="maintainer" dest="text"/>
+<copyField source="maintainer" dest="maintainer_string"/>
 <copyField source="author" dest="text"/>
 <copyField source="author" dest="author_string"/>
 
