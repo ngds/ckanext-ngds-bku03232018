@@ -55,26 +55,14 @@ class NgdsHarvester(CSWHarvester):
 
         def party2person(party):
             """For converting an ISOResponsibleParty to an NGDS contact"""
-            if party.get('position-name', '') != '':
-                name = party.get('position-name')
+            if party.get('individual-name', '') != '':
+                name = party.get('individual-name', '')
             else:
                 name = party.get('organisation-name', '')
             return {
                 "name": name,
                 "email": party.get('contact-info', {}).get('email', '')
             }
-
-        # Maintainer
-        if ngds_values['maintainer']['position-name'] != '':
-            maintainer_name = ngds_values['maintainer']['position-name']
-        else:
-            maintainer_name = ngds_values['maintainer']['organisation-name']
-
-        maintainer = {
-            "key": "maintainer",
-            "value": json.dumps(party2person(ngds_values.get('maintainer', {})))
-        }
-        extras.append(maintainer)
 
         # Any otherID
         other_id = {"key": "other_id", "value": json.dumps([ngds_values['other_id']])}
@@ -88,9 +76,16 @@ class NgdsHarvester(CSWHarvester):
         publication_date = {"key": "publication_date", "value": ngds_values['publication_date']}
         extras.append(publication_date)
 
+        # Maintainers
+        maintainers = {
+            "key": "maintainers",
+            "value": json.dumps([party2person(party) for party in ngds_values.get('maintainers', [])])
+        }
+        extras.append(maintainers)
+
         # Authors
         authors = {
-            "key": "author",
+            "key": "authors",
             "value": json.dumps([party2person(party) for party in ngds_values.get('authors', [])])
         }
         extras.append(authors)

@@ -27,11 +27,11 @@ class NgdsXmlMapping(ISODocument):
     elements = [
         # Maintainer
         ISOResponsibleParty(
-            name="maintainer",
+            name="maintainers",
             search_paths=[
                 "gmd:contact/gmd:CI_ResponsibleParty"
             ],
-            multiplicity="1"
+            multiplicity="*"
         ),
         # Other ID
         ISOElement(

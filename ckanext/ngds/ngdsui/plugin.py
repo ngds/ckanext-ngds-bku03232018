@@ -356,6 +356,35 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             if is_full_text_enabled == 'true' and document_index_list:
                 helpers.create_package_resource_document_index(pkg_dict.get('id'), document_index_list)
 
+        # Authors
+        if pkg_dict.get('extras_authors'):
+            authors_list = []
+            for author in json.loads(pkg_dict.get('extras_authors')):
+                authors_list.append(author['name'])
+            pkg_dict['author'] = authors_list
+
+        # Maintainers
+        if pkg_dict.get('extras_maintainers'):
+            maintainers_list = []
+            for maintainer in json.loads(pkg_dict.get('extras_maintainers')):
+                maintainers_list.append(maintainer['name'])
+                pkg_dict['maintainer'] = maintainers_list
+        # If not harvested UI only allows one maintainer
+        elif pkg_dict.get('extras_maintainer'):
+            pkg_dict['maintainer'] = json.loads(pkg_dict.get('extras_maintainer'))['name']
+
+        # Data Type & Content Model
+        if pkg_dict.get('tags'):
+            data_types_list = []
+            content_model_list = []
+            for tag in pkg_dict.get('tags'):
+                if str(tag).startswith('usginres:'):
+                    data_types_list.append(str(tag).rsplit(":",1)[1])
+                if str(tag).startswith('usgincm:'):
+                    content_model_list.append(str(tag).rsplit(":",1)[1])
+            pkg_dict['data_type'] = data_types_list
+            pkg_dict['res_content_model'] = content_model_list
+
         return pkg_dict
 
 

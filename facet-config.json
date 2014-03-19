@@ -302,39 +302,9 @@
         ]
     },
     {
-        "facet": "Source & Author",
-        "type": "title",
-        "subfacet": [
-            {
-                "facet": "Source",
-                "type": "dynamic_keywords",
-                "metadatafield": "Source"
-            },
-            {
-                "facet": "Author",
-                "type": "dynamic_keywords",
-                "metadatafield": "author_string"
-            }
-        ]
-    },
-    {
-        "facet": "Status",
-        "type": "title",
-        "metadatafield": "status",
-        "subfacet": [
-            {
-                "facet": "Completed",
-                "type": "keyword"
-            },
-            {
-                "facet": "Ongoing",
-                "type": "keyword"
-            },
-            {
-                "facet": "Deprecated",
-                "type": "keyword"
-            }
-        ]
+        "facet": "Author",
+        "type": "dynamic_keywords",
+        "metadatafield": "author_string"
     },
     {
         "facet": "Content Model",
@@ -358,5 +328,10 @@
                 "type": "keyword"
             }
         ]
+    },
+    {
+        "facet": "Metadata Contact",
+        "type": "dynamic_keywords",
+        "metadatafield": "maintainer_string"
     }
 ]
