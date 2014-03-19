@@ -378,10 +378,16 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             data_types_list = []
             content_model_list = []
             for tag in pkg_dict.get('tags'):
-                if str(tag).startswith('usginres:'):
-                    data_types_list.append(str(tag).rsplit(":",1)[1])
-                if str(tag).startswith('usgincm:'):
-                    content_model_list.append(str(tag).rsplit(":",1)[1])
+                try:
+                    if str(tag).startswith('usginres:'):
+                        data_types_list.append(str(tag).rsplit(":",1)[1])
+                except:
+                    pass
+                try:
+                    if str(tag).startswith('usgincm:'):
+                        content_model_list.append(str(tag).rsplit(":",1)[1])
+                except:
+                    pass
             pkg_dict['data_type'] = data_types_list
             pkg_dict['res_content_model'] = content_model_list
 
