@@ -219,7 +219,7 @@ def contentmodel_checkFile(context, data_dict):
                     this_layer
                 )
 
-                if errors and not valid:
+                if errors:
                     validation_msg.append({'valid': False})
             except:
                 validation_msg.append({'valid': False})
