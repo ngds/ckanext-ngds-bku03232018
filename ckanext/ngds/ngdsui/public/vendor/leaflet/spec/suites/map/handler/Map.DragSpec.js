@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe("Map.Drag", function () {
 	describe("#addHook", function () {
 		it("calls the map with dragging enabled", function () {

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*!
  * jQuery UI Effects Fade 1.10.3
  * http://jqueryui.com

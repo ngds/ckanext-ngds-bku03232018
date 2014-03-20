@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 //     Underscore.js 1.4.4
 //     http://underscorejs.org
 //     (c) 2009-2011 Jeremy Ashkenas, DocumentCloud Inc.

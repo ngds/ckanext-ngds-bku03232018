@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 // load testswarm agent
 (function() {
 	var url = window.location.search;

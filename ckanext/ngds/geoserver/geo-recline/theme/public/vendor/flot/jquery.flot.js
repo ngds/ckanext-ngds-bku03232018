@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*! Javascript plotting library for jQuery, version 0.8 alpha.
  *
  * Released under the MIT license by IOLA, December 2007.

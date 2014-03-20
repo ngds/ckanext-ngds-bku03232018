@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 test( "$.widget.extend()", function() {
 	expect( 27 );
 

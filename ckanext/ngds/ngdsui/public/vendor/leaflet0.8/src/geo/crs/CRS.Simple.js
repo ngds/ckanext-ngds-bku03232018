@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * A simple CRS that can be used for flat non-Earth maps like panoramas or game maps.
  */

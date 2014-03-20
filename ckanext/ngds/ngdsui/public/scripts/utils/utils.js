@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 ngds.util = { };
 
 ngds.util.dom_element_constructor = function (payload) {

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Map.Tap is used to enable mobile hacks like quick taps and long hold.
  */

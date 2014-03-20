@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 $("[name=title]").on('input',function(ev){
 	var title = $("[name=title]").val();
 	title = title.trim(); // Remove leading and trailing spaces.

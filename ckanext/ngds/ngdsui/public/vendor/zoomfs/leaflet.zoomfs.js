@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Control.ZoomFS - default Leaflet.Zoom control with an added fullscreen button
  * built to work with Leaflet version 0.4

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 ngds.SearchResult = function(raw_result) {
 	(function() {
 		if(raw_result===null || typeof raw_result==='undefined') {

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 if (!Array.prototype.map) {
 	Array.prototype.map = function (fun /*, thisp */) {
 		"use strict";

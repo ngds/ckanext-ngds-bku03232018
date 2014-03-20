@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 TestHelpers.tabs = {
 	disabled: function( tabs, state ) {
 		var expected, actual,

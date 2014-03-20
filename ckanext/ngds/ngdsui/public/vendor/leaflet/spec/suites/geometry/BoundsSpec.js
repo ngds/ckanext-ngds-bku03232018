@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe('Bounds', function () {
 	var a, b, c;
 

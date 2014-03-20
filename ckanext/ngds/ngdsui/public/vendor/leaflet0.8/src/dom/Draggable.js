@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Draggable allows you to add dragging capabilities to any element. Supports mobile devices too.
  */

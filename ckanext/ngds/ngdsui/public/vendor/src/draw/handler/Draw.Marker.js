@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 L.Draw.Marker = L.Draw.Feature.extend({
 	statics: {
 		TYPE: 'marker'

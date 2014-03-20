@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /**
  * Sinon.JS 1.6.0, 2013/02/18
  *

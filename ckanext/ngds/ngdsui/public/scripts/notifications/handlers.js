@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 var ngds = ngds || (ngds = { }); 
 
 (function subscribe_notifications_received() {

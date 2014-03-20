@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*!
  * jScrollPane - v2.0.0beta12 - 2012-09-27
  * http://jscrollpane.kelvinluck.com/

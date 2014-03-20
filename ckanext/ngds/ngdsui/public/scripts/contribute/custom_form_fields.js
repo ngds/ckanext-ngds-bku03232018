@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 $(document).ready(function () {
     $("#field-language").select2({
         'minimumInputLength': 3

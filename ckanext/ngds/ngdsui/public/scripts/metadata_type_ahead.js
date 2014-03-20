@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
   author : Vivek
   Autocomplete for textboxes on the edit and resource creation pages.

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 module( "progressbar: options" );
 
 test( "{ value: 0 }, default", function() {

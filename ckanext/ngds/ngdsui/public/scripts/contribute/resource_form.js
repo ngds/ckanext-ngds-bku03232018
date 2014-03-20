@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 var populate_content_models = function () {
     var content_model_combo = $(".content_model");
     if (typeof options === 'undefined') {

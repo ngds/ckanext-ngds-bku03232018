@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* Flot plugin for automatically redrawing plots as the placeholder resizes.
 
 Copyright (c) 2007-2013 IOLA and Ole Laursen.

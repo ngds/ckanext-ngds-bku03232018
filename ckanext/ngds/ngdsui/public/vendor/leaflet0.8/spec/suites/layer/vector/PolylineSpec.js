@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe('Polyline', function () {
 
 	var c = document.createElement('div');

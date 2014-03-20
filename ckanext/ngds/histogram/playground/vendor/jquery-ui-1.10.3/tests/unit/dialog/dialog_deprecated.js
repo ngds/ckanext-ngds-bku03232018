@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 module("dialog (deprecated): position option with string and array");
 
 test( "position, right bottom on window w/array", function() {

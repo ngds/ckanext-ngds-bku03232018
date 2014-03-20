@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /**
  * @author - Vivek
  * This function validates HTML form fields dynamically and is purely based on information that is put into the HTML itself

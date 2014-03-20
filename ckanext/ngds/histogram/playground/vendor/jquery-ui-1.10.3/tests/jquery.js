@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 (function() {
 
 var parts = document.location.search.slice( 1 ).split( "&" ),

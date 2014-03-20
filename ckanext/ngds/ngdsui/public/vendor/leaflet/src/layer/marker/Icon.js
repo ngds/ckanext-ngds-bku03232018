@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Icon is an image-based icon class that you can use with L.Marker for custom markers.
  */

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 var form_generator = function (form) {
 
     var input_groups = [];

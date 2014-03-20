@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.SVG renders vector layers with SVG. All SVG-specific code goes here.
  */

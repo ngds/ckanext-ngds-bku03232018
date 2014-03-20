@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe("CRS.EPSG3857", function () {
 	var crs = L.CRS.EPSG3857;
 

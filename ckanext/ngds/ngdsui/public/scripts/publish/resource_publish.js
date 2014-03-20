@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 $(document).ready(function () {
     $("button[data-ogc-publish]").click(function (ev) {
         var resource_id = $(this).attr("data-ogc-resource"),

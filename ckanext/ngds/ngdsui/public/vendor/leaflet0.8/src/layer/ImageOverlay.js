@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.ImageOverlay is used to overlay images over the map (to specific geographical bounds).
  */
