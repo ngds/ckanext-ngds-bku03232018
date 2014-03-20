@@ -55,13 +55,18 @@ class NgdsHarvester(CSWHarvester):
 
         def party2person(party):
             """For converting an ISOResponsibleParty to an NGDS contact"""
+            name = ""
+            email = ""
             if party.get('individual-name', '') != '':
                 name = party.get('individual-name', '')
             else:
-                name = party.get('organisation-name', '')
+                if party.get('organisation-name', '') != '':
+                    name = party.get('organisation-name', '')
+            if party.get('contact-info', {}):
+                email = party.get('contact-info', {}).get('email', '')
             return {
                 "name": name,
-                "email": party.get('contact-info', {}).get('email', '')
+                "email": email
             }
 
         # Any otherID
