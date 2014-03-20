@@ -1,4 +1,6 @@
-/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 /*
  *	@author - Vivek
  *	A set of functions to make ajax calls to the CKAN API.

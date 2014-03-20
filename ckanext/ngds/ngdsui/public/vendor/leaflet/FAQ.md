@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 # Leaflet FAQ
 
 This is a collection of answers to the most frequently asked questions about Leaflet.

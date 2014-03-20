@@ -1,4 +1,6 @@
-/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 /**
  * Created by Adrian Sonnenschein on 12/23/13.
  */

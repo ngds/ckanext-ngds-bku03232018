@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 /* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Control.GeoSearch - search for an address and zoom to it's location
