@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* Malayalam (UTF-8) initialisation for the jQuery UI date picker plugin. */
 /* Written by Saji Nediyanchath (saji89@gmail.com). */
 jQuery(function($){

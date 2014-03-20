@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 // moment.js
 // version : 1.6.2
 // author : Tim Wood

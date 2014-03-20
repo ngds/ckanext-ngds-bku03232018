@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.LatLng represents a geographical point with latitude and longitude coordinates.
  */

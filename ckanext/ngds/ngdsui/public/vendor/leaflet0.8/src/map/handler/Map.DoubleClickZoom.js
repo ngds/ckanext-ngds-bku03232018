@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Handler.DoubleClickZoom is used to handle double-click zoom on the map, enabled by default.
  */

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 L.Control.FullScreen = L.Control.extend({
 	options: {
 		position: 'topleft',

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /**
  * QUnit v1.11.0 - A JavaScript Unit Testing Framework
  *

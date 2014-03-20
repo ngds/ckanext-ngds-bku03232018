@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Path is the base class for all Leaflet vector layers like polygons and circles.
  */

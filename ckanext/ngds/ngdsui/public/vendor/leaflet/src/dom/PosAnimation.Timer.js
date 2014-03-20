@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.PosAnimation fallback implementation that powers Leaflet pan animations
  * in browsers that don't support CSS3 Transitions.

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Handler.MarkerDrag is used internally by L.Marker to make the markers draggable.
  */

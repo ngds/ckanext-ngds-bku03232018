@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* Belarusian initialisation for the jQuery UI date picker plugin. */
 /* Written by Pavel Selitskas <p.selitskas@gmail.com> */
 jQuery(function($){

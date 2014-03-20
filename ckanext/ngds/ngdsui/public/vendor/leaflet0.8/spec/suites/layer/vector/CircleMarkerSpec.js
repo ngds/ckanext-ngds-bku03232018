@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 ﻿describe('CircleMarker', function () {
 	describe("#_radius", function () {
 		var map;

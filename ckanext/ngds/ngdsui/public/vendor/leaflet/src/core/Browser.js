@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Browser handles different browser and feature detections for internal Leaflet use.
  */

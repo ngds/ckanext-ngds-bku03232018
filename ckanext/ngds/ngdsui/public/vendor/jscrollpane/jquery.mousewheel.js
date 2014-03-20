@@ -1,3 +1,5 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*! Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net)
  * Licensed under the MIT License (LICENSE.txt).
  *

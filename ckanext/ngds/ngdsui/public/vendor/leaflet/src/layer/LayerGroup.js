@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.LayerGroup is a class to combine several layers into one so that
  * you can manipulate the group (e.g. add/remove it) as one layer.

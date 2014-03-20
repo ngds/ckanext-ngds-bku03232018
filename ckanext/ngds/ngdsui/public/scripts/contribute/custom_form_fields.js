@@ -1,3 +1,6 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 $(document).ready(function () {
     $("#field-language").select2({
         'minimumInputLength': 3

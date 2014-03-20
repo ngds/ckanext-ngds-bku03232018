@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* Flot plugin for adding the ability to pan and zoom the plot.
 
 Copyright (c) 2007-2013 IOLA and Ole Laursen.

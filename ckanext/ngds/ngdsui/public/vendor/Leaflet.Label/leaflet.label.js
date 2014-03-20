@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
 	Leaflet.label, a plugin that adds labels to markers and vectors for Leaflet powered maps.
 	(c) 2012-2013, Jacob Toye, Smartrak

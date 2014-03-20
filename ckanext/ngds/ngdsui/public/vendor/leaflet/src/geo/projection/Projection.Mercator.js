@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * Mercator projection that takes into account that the Earth is not a perfect sphere.
  * Less popular than spherical mercator; used by projections like EPSG:3395.

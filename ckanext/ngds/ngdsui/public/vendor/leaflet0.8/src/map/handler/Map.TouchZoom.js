@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Handler.TouchZoom is used by L.Map to add pinch zoom on supported mobile browsers.
  */

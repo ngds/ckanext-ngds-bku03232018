@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 TestHelpers.sortable = {
 	sort: function( handle, dx, dy, index, msg ) {
 		$( handle ).simulate( "drag", {

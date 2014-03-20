@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  Copyright (c) 2012, Smartrak, David Leaver
  Leaflet.markercluster is an open-source JavaScript library for Marker Clustering on leaflet powered maps.

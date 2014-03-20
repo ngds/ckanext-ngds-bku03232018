@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.CircleMarker is a circle overlay with a permanent pixel radius.
  */

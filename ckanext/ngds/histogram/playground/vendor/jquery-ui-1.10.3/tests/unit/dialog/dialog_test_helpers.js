@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 TestHelpers.dialog = {
 	drag: function(element, handle, dx, dy) {
 		var d = element.dialog("widget");

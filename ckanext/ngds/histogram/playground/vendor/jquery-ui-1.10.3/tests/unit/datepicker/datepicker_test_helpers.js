@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 TestHelpers.datepicker = {
 	addMonths: function(date, offset) {
 		var maxDay = 32 - new Date(date.getFullYear(), date.getMonth() + offset, 32).getDate();

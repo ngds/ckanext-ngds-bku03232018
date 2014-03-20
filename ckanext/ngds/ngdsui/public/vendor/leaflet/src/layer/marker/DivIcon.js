@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.DivIcon is a lightweight HTML-based icon class (as opposed to the image-based L.Icon)
  * to use with L.Marker.

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* Flot plugin that adds some extra symbols for plotting points.
 
 Copyright (c) 2007-2013 IOLA and Ole Laursen.

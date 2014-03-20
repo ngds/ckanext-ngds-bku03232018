@@ -1,3 +1,5 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* ===================================================
  * bootstrap-transition.js v2.3.1
  * http://twitter.github.com/bootstrap/javascript.html#transitions

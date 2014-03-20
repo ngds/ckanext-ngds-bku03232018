@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.LatLngBounds represents a rectangular area on the map in geographical coordinates.
  */

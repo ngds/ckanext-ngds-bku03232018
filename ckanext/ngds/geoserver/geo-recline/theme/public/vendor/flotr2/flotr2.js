@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*!
   * bean.js - copyright Jacob Thornton 2011
   * https://github.com/fat/bean

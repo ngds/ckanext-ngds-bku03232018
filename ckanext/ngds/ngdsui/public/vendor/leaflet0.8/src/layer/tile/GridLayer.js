@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.GridLayer is used as base class for grid-like layers like TileLayer.
  */
