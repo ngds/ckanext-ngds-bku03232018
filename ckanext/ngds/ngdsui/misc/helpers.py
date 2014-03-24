@@ -49,6 +49,8 @@ import ckanext.ngds.logic.file_processors.ProcessorRegistry as PR
 import ckanext.ngds.logic.file_processors.ContentModelConstants as CMC
 import ckanext.datastore.plugin as datastore
 from ckan.plugins import toolkit
+from ckanext.ngds.geoserver.model.Geoserver import Geoserver
+from ckanext.ngds.geoserver.model import OGCServices
 
 try:
     from collections import OrderedDict # 2.7
@@ -1007,3 +1009,12 @@ def check_datastore_resource(resource_id):
         return True
     except:
         return False
+
+def geothermal_prospector_link(url):
+    base_url = 'http://maps.nrel.gov/gt_prospector'
+    host = url.split('?')[0]
+    type_name = re.search('typeName=(.*)&?', url).group(1)
+    return {
+        'wms': base_url + '?wmsHost=' + host + '&wmsLayerTypeName=' + type_name,
+        'wfs': base_url + '?wfsHost=' + host + '&wfsLayerTypeName=' + type_name
+    }

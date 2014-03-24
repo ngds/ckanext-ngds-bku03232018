@@ -314,7 +314,8 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_content_model_dict': helpers.get_content_model_dict,
             'metadata_fields_to_display_for_cm': helpers.metadata_fields_to_display_for_cm,
             'get_role_for_username': helpers.get_role_for_username,
-            'check_datastore': helpers.check_datastore_resource
+            'check_datastore': helpers.check_datastore_resource,
+            'geo_prospector': helpers.geothermal_prospector_link
         }
 
     implements(IPackageController, inherit=True)

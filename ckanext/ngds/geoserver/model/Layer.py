@@ -171,7 +171,7 @@ class Layer(object):
 
         def capabilities_url(service_url, workspace, layer, service, version):
             try:
-                specifications = "/%s/ows?service=%s&version=%s&request=GetCapabilities&layers=%s:%s" % \
+                specifications = "/%s/ows?service=%s&version=%s&request=GetCapabilities&typeName=%s:%s" % \
                         (workspace, service, version, workspace, layer)
                 return service_url.replace("/rest", specifications)
             except:
