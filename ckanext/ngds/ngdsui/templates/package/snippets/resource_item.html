@@ -48,6 +48,7 @@ ___NGDS_HEADER_END___ #}
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
     {% if res.protocol and res.protocol.lower().startswith('ogc') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('GetCapabilities') }}</a>
+      <a href="{{ res.url }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
     {% else %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
     {% endif %}
@@ -98,7 +99,6 @@ ___NGDS_HEADER_END___ #}
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
     {% if res.protocol and res.protocol.lower().startswith('ogc') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
-      <a href="{{ res.url }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
     {% else %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
     {% endif %}
