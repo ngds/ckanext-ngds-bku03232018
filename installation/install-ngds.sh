@@ -742,9 +742,9 @@ function configure_ngds() {
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.starttls" -v "$SMTP_STARTTLS"
 
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.user" -v "SMTP_USER"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.user" -v "$SMTP_USER"
 
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.password" -v "SMTP_PASSWORD"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.password" -v "$SMTP_PASSWORD"
 
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/banner_image0.png $NGDS_CUSTOM_PUBLIC/assets/
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/usgs.png $NGDS_CUSTOM_PUBLIC/assets/
