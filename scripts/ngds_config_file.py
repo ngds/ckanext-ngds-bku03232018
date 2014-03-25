@@ -66,7 +66,24 @@ params_to_set = [
     ("extra_public_paths", "/home/ngds/extrapublic/"),
     ("solr_url", "http://localhost:8983/solr"),
     ("ckan.i18n_directory", args.root),
-    ("search.facets.limit", "30000")
+    ("search.facets.limit", "30000"),
+
+    # User defined variables for email server:
+    # SMTP server to connect to when sending emails
+    # Ex: smtp.gmail.com:587
+    ("smtp.server", "undefined"),
+
+    # Whether or not to use STARTTLS when connecting to the SMTP server
+    # Ex: True
+    ("smtp.starttls", "undefined"),
+
+    # Username used to authenticate with the SMTP server
+    # Ex: your_username@gmail.com
+    ("smtp.user", "undefined"),
+
+    # Password used to authenticate with the SMTP server
+    # Ex: your_password
+    ("smtp.password", "undefined")
 ]
 
 node_params = [
