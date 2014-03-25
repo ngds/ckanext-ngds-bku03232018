@@ -721,6 +721,8 @@ function configure_ngds() {
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "ckan.locales_offered" -v "en es de"
 
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k ""
+
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/banner_image0.png $NGDS_CUSTOM_PUBLIC/assets/
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/usgs.png $NGDS_CUSTOM_PUBLIC/assets/
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/smu.png $NGDS_CUSTOM_PUBLIC/assets/
