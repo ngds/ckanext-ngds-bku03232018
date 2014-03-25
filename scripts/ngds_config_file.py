@@ -77,24 +77,7 @@ node_params = [
     ("geoserver.workspace_uri", "http://localhost:5000/ngds","Geoserver Workspace URI"),
     ("ngds.bulk_upload_dir", "/home/ngds/work/bulkupload/"),
     ("ngds.client_config_file", args.root + "/ckanclient.cfg"),
-    ("ckan.site_logo", "/assets/nib.png"),
-
-    # User defined variables for email server:
-    # SMTP server to connect to when sending emails
-    # Ex: smtp.gmail.com:587
-    ("smtp.server", "undefined"),
-
-    # Whether or not to use STARTTLS when connecting to the SMTP server
-    # Ex: True
-    ("smtp.starttls", "undefined"),
-
-    # Username used to authenticate with the SMTP server
-    # Ex: your_username@gmail.com
-    ("smtp.user", "undefined"),
-
-    # Password used to authenticate with the SMTP server
-    # Ex: your_password
-    ("smtp.password", "undefined")
+    ("ckan.site_logo", "/assets/nib.png")
 ]
 
 node_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query datastorer csw metadata geoserver ngdsui'
@@ -104,24 +87,7 @@ central_params = [
     ("ngds.home_images_dir", "assets"),
     ("ngds.logo_text", "CONTRIBUTING GEOTHERMAL DATA"),
     ("ngds.home_images_config_path", args.root + "/home_images.cfg"),
-    ("ckan.site_logo", "/assets/logo.png"),
-
-    # User defined variables for email server:
-    # SMTP server to connect to when sending emails
-    # Ex: smtp.gmail.com:587
-    ("smtp.server", "undefined"),
-
-    # Whether or not to use STARTTLS when connecting to the SMTP server
-    # Ex: True
-    ("smtp.starttls", "undefined"),
-
-    # Username used to authenticate with the SMTP server
-    # Ex: your_username@gmail.com
-    ("smtp.user", "undefined"),
-
-    # Password used to authenticate with the SMTP server
-    # Ex: your_password
-    ("smtp.password", "undefined")
+    ("ckan.site_logo", "/assets/logo.png")
 ]
 
 central_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query spatial_harvest_metadata_api csw_harvester csw metadata ngds_harvester geoserver ngdsui cswserver harvest ckan_harvester'
