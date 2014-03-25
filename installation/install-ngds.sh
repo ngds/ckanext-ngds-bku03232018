@@ -104,6 +104,7 @@ function configure_properties() {
 #  - Creates temporary installation folder
 #  - creates the final installation folder and changes ownership
 #
+
 function setup_env() {
 
     configure_properties
@@ -159,8 +160,24 @@ function setup_env() {
     sudo mkdir -p $SOLR_LIB $GEOSERVER_CATALINA_BASE $NGDS_SCRIPTS $GEOSERVER_LIB
     sudo chown -R $MYUSERID:$MYUSERID $SOLR_LIB $NGDS_SCRIPTS $GEOSERVER_LIB
     sudo chown -R $MYUSERID:$MYUSERID $GEOSERVER_CATALINA_BASE
-}
 
+    # User defined variables for email server:
+    # SMTP server to connect to when sending emails
+    # Ex: smtp.gmail.com:587
+    SMTP_SERVER="undefined"
+
+    # Whether or not to use STARTTLS when connecting to the SMTP server
+    # Ex: True
+    SMTP_STARTTLS="undefined"
+
+    # Username used to authenticate with the SMTP server
+    # Ex: your_username@gmail.com
+    SMTP_USER="undefined"
+
+    # Password used to authenticate with the SMTP server
+    # Ex: your_password
+    SMTP_PASSWORD="undefined"
+}
 
 # -------------------------------------------------------------------------------------------------
 # install_prereqs
@@ -720,6 +737,14 @@ function configure_ngds() {
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "extra_public_paths" -v "$NGDS_CUSTOM_PUBLIC"
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "ckan.locales_offered" -v "en es de"
+
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.server" -v "$SMTP_SERVER"
+
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.starttls" -v "$SMTP_STARTTLS"
+
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.user" -v "$SMTP_USER"
+
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.password" -v "$SMTP_PASSWORD"
 
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/banner_image0.png $NGDS_CUSTOM_PUBLIC/assets/
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/usgs.png $NGDS_CUSTOM_PUBLIC/assets/
