@@ -146,6 +146,7 @@ class GeoserverPlugin(p.SingletonPlugin):
     # Render the jinja2 template which builds the recline preview
     def preview_template(self, context, data_dict):
         error_log = data_dict.get("resource", {}).get("error", {})
+        log.debug(error_log)
         try:
             protocol = data_dict.get("resource", {}).get("protocol", {})
             if error_log is False and protocol == "OGC:WFS":
@@ -153,6 +154,7 @@ class GeoserverPlugin(p.SingletonPlugin):
             elif error_log is False and protocol == "OGC:WMS":
                 return "wms_preview_template.html"
         except error_log is True:
+            log.debug('ERROR LOG IS TRUE')
             return "preview_error.html"
         else:
             return "preview_error.html"
