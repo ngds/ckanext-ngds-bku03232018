@@ -177,6 +177,10 @@ function setup_env() {
     # Password used to authenticate with the SMTP server
     # Ex: your_password
     SMTP_PASSWORD="undefined"
+
+    # Connection parameters for Geoserver, in the form:
+    # "geoserver://{username}:{password}@{geoserver_rest_api_url}"
+    GEOSERVER_REST_URL="geoserver://admin:geoserver@localhost:8080/geoserver/rest"
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -745,6 +749,8 @@ function configure_ngds() {
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.user" -v "$SMTP_USER"
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.password" -v "$SMTP_PASSWORD"
+
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "geoserver.rest_url" -v "$GEOSERVER_REST_URL"
 
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/banner_image0.png $NGDS_CUSTOM_PUBLIC/assets/
     run_or_die sudo cp $NGDS_SRC/ckanext/ngds/ngdsui/public/assets/usgs.png $NGDS_CUSTOM_PUBLIC/assets/
