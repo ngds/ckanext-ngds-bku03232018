@@ -819,7 +819,11 @@ function deploy_in_webserver() {
 
     WSGI_SCRIPT=$CKAN_ETC/default/apache.wsgi
 
+    PYCSW_WSGI_SCRIPT=$PYENV_DIR/src/pycsw/csw.wsgi
+
     create_wsgi_script > $WSGI_SCRIPT
+
+    create_pycsw_wsgi_script > $PYCSW_WSGI_SCRIPT
 
     create_apache_config > /etc/apache2/sites-available/ckan_default
 
@@ -847,6 +851,100 @@ fileConfig(config_filepath)
 application = loadapp('config:%s' % config_filepath)
 EOF
 }
+
+# -------------------------------------------------------------------------------------------------
+# create_pycsw_wsgi_script
+#
+# Helper function to create a pycsw wsgi script for the installation via apache2 and the wsgi mod.
+function create_pycsw_wsgi_script() {
+
+#PYCSW_WSGI_SCRIPT=$PYENV_DIR/src/pycsw/csw.wsgi
+
+cat <<EOF
+from StringIO import StringIO
+import os
+import sys
+
+activate_this = os.path.join('$PYENV_DIR/bin/activate_this.py')
+execfile(activate_this, {"__file__":activate_this})
+
+app_path = os.path.dirname(__file__)
+sys.path.append(app_path)
+
+from pycsw import server
+
+
+def application(env, start_response):
+    """WSGI wrapper"""
+    config = 'default.cfg'
+
+    if 'PYCSW_CONFIG' in env:
+        config = env['PYCSW_CONFIG']
+
+    if env['QUERY_STRING'].lower().find('config') != -1:
+        for kvp in env['QUERY_STRING'].split('&'):
+            if kvp.lower().find('config') != -1:
+                config = kvp.split('=')[1]
+
+    if not os.path.isabs(config):
+        config = os.path.join(app_path, config)
+
+    if 'HTTP_HOST' in env and ':' in env['HTTP_HOST']:
+        env['HTTP_HOST'] = env['HTTP_HOST'].split(':')[0]
+
+    env['local.app_root'] = app_path
+
+    csw = server.Csw(config, env)
+
+    gzip = False
+    if ('HTTP_ACCEPT_ENCODING' in env and
+            env['HTTP_ACCEPT_ENCODING'].find('gzip') != -1):
+        # set for gzip compressed response
+        gzip = True
+
+    # set compression level
+    if csw.config.has_option('server', 'gzip_compresslevel'):
+        gzip_compresslevel = \
+            int(csw.config.get('server', 'gzip_compresslevel'))
+    else:
+        gzip_compresslevel = 0
+
+    contents = csw.dispatch_wsgi()
+
+    headers = {}
+
+    if gzip and gzip_compresslevel > 0:
+        import gzip
+
+        buf = StringIO()
+        gzipfile = gzip.GzipFile(mode='wb', fileobj=buf,
+                                 compresslevel=gzip_compresslevel)
+        gzipfile.write(contents)
+        gzipfile.close()
+
+        contents = buf.getvalue()
+
+        headers['Content-Encoding'] = 'gzip'
+
+    headers['Content-Length'] = str(len(contents))
+    headers['Content-Type'] = csw.contenttype
+
+    status = '200 OK'
+    start_response(status, headers.items())
+
+    return [contents]
+
+if __name__ == '__main__':  # run inline using WSGI reference implementation
+    from wsgiref.simple_server import make_server
+    port = 8000
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+    httpd = make_server('', port, application)
+    print "Serving on port %d..." % port
+    httpd.serve_forever()
+EOF
+}
+
 
 # -------------------------------------------------------------------------------------------------
 # create_apache_config
@@ -1069,19 +1167,6 @@ EOF
 sudo chmod 755 $NGDS_SCRIPTS/ckan-tomcat.conf
 cp $NGDS_SCRIPTS/ckan-tomcat.conf /etc/init/
 service ckan-tomcat start
-
-# Upstart job for PyCSW
-cat > $NGDS_SCRIPTS/ckan-pyscw.conf <<EOF
-#!/bin/bash
-start on runlevel [2345]
-stop on runlevel [!2345]
-respawn
-exec python $PYENV_DIR/src/pycsw/csw.wsgi >> /var/log/ckan-pycsw.log 2>&1
-EOF
-
-sudo chmod 755 $NGDS_SCRIPTS/ckan-pycsw.conf
-cp $NGDS_SCRIPT/ckan-pycsw.conf /etc/init/
-service ckan-pyscw start
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1153,6 +1238,9 @@ function install_csw_server() {
     # Build tables in PyCSW database
     cd $PYENV_DIR/src/ckanext-spatial
     run_or_die $PYENV_DIR/bin/paster ckan-pycsw setup -p $PYCSW_CONFIG
+
+    # Move PyCSW WSGI script out of the way so that 'create_pycsw_wsgi_script()' can make custom one
+    run_or_die mv $PYENV_DIR/src/pycsw/csw.wsgi $PYENV_DIR/src/pycsw/csw.wsgi.bak
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1204,6 +1292,8 @@ function run() {
     install_ckanext_importlib    
 
     install_ngds
+
+    install_csw_server
 
     deploy_in_webserver
 
