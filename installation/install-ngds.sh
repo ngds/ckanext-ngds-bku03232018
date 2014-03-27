@@ -81,6 +81,8 @@ function configure_properties() {
     pg_pw_datastore=pass
     #Datastore Database Name
     pg_db_for_datastore=datastore_default
+    #PyCSW Database Name
+    pg_db_for_pycsw=pycsw_ckan_default
 
     #Application defult admin user for setup.
     ADMIN_NAME=admin
@@ -287,6 +289,9 @@ pg_db_for_ckan=$pg_db_for_ckan
 pg_id_datastore=$pg_id_datastore
 pg_pw_datastore=$pg_pw_datastore
 pg_db_for_datastore=$pg_db_for_datastore
+pg_id_for_pycsw=$pg_id_for_ckan
+pg_pw_for_pycsw=$pg_pw_for_ckan
+pg_db_for_pycsw=$pg_db_for_pycsw
 
 # Application installation path. All application binary,liba and onfig options 
 # will go under this directory
@@ -1112,6 +1117,32 @@ function install_java() {
 }
 
 # -------------------------------------------------------------------------------------------------
+# Install CSW Server
+
+function install_csw_server() {
+    # Install PyCSW v1.8.0
+    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/geopython/pycsw.git@1.8.0#egg=pycsw
+    # Build database for PyCSW in PostgreSQL
+    run_or_die sudo -u postgres createdb -O $pg_id_for_pycsw $pg_db_for_pycsw -E utf-8
+
+
+    # Make PyCSW configuration file
+    run_or_die cp $PYENV_DIR/src/pycsw/default-sample.cfg $PYENV_DIR/src/pycsw/default.cfg
+    run or die ln -s $PYENV_DIR/src/pycsw/default.cfg $CKAN_ETC/default/pycsw.cfg
+
+    CSW_SERVER_HOME = $PYENV_DIR/src/pycsw
+    CSW_DB_PARAMS = postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
+    PYCSW_CONFIG = $CKAN_ETC/default/pycsw.cfg
+
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -k "home" -v "$CSW_SERVER_HOME"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -k "database" -v "$CSW_DB_PARAMS"
+
+    # Build tables in PyCSW database
+    cd $PYENV_DIR/src/ckanext-spatial
+    run_or_die $PYENV_DIR/bin/paster ckan-pycsw setup -p $PYCSW_CONFIG
+}
+
+# -------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------
 #
 # Part V: Run the script
@@ -1129,7 +1160,10 @@ function install_java() {
 # This is the main function of the installer.  It calls the individual installer steps one after
 # the other.
 # For developers: You may outcomment steps while debugging the installer.
-# 
+#
+
+# MAKE SURE TO FIGURE OUT VENV!!!
+
 function run() {
 
     check_release
