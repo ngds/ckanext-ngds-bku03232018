@@ -1069,6 +1069,19 @@ EOF
 sudo chmod 755 $NGDS_SCRIPTS/ckan-tomcat.conf
 cp $NGDS_SCRIPTS/ckan-tomcat.conf /etc/init/
 service ckan-tomcat start
+
+# Upstart job for PyCSW
+cat > $NGDS_SCRIPTS/ckan-pyscw.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec python $PYENV_DIR/src/pycsw/csw.wsgi >> /var/log/ckan-pycsw.log 2>&1
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-pycsw.conf
+cp $NGDS_SCRIPT/ckan-pycsw.conf /etc/init/
+service ckan-pyscw start
 }
 
 # -------------------------------------------------------------------------------------------------
