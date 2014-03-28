@@ -1216,7 +1216,7 @@ function install_java() {
 
 function install_csw_server() {
     # Install PyCSW v1.8.0
-    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/geopython/pycsw.git@1.8.0#egg=pycsw
+    run_or_die $PYENV_DIR/bin/
     # Build database for PyCSW in PostgreSQL
     run_or_die sudo -u postgres createdb -O $pg_id_for_pycsw $pg_db_for_pycsw -E utf-8
 
