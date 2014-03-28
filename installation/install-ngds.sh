@@ -748,11 +748,8 @@ function configure_ngds() {
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "ckan.locales_offered" -v "en es de"
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.server" -v "$SMTP_SERVER"
-
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.starttls" -v "$SMTP_STARTTLS"
-
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.user" -v "$SMTP_USER"
-
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.password" -v "$SMTP_PASSWORD"
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "geoserver.rest_url" -v "$GEOSERVER_REST_URL"
@@ -821,7 +818,7 @@ function deploy_in_webserver() {
 
     PYCSW_WSGI_SCRIPT=$PYENV_DIR/src/pycsw/csw.wsgi
 
-    create_wsgi_script > $WSGI_SCRIPT
+    create_ckan_wsgi_script > $WSGI_SCRIPT
 
     create_pycsw_wsgi_script > $PYCSW_WSGI_SCRIPT
 
@@ -832,10 +829,10 @@ function deploy_in_webserver() {
 }
 
 # -------------------------------------------------------------------------------------------------
-# create_wsgi_script
+# create_ckan_wsgi_script
 #
 # Helper function to create the wsgi script for the installation via apache2 and the wsgi mod.
-function create_wsgi_script() {
+function create_ckan_wsgi_script() {
     
 #WSGI_SCRIPT=$CKAN_ETC/default/apache.wsgi
 
@@ -1013,7 +1010,7 @@ function get_solr() {
 }
 
 # -------------------------------------------------------------------------------------------------
-# get_solr
+# deploy_solr
 #
 # This function deploys SOLR in tomcat
 #  - download SOLr with previous helper function
@@ -1228,9 +1225,9 @@ function install_csw_server() {
     run_or_die cp $PYENV_DIR/src/pycsw/default-sample.cfg $PYENV_DIR/src/pycsw/default.cfg
     run or die ln -s $PYENV_DIR/src/pycsw/default.cfg $CKAN_ETC/default/pycsw.cfg
 
-    CSW_SERVER_HOME = $PYENV_DIR/src/pycsw
-    CSW_DB_PARAMS = postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
-    PYCSW_CONFIG = $CKAN_ETC/default/pycsw.cfg
+    CSW_SERVER_HOME=$PYENV_DIR/src/pycsw
+    CSW_DB_PARAMS=postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
+    PYCSW_CONFIG=$CKAN_ETC/default/pycsw.cfg
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -k "home" -v "$CSW_SERVER_HOME"
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -k "database" -v "$CSW_DB_PARAMS"
@@ -1241,6 +1238,10 @@ function install_csw_server() {
 
     # Move PyCSW WSGI script out of the way so that 'create_pycsw_wsgi_script()' can make custom one
     run_or_die mv $PYENV_DIR/src/pycsw/csw.wsgi $PYENV_DIR/src/pycsw/csw.wsgi.bak
+
+    # Make a cron job to run the load command every hour
+    CRON_JOB="0 * * * * $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw load -p $CKAN_ETC/default/pycsw.cfg"
+    ( crontab -l; echo "$CRON_JON" ) | crontab -e
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1260,10 +1261,8 @@ function install_csw_server() {
 #
 # This is the main function of the installer.  It calls the individual installer steps one after
 # the other.
-# For developers: You may outcomment steps while debugging the installer.
+# For developers: You may comment out steps while debugging the installer.
 #
-
-# MAKE SURE TO FIGURE OUT VENV!!!
 
 function run() {
 
