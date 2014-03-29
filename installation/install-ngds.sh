@@ -81,6 +81,10 @@ function configure_properties() {
     pg_pw_datastore=pass
     #Datastore Database Name
     pg_db_for_datastore=datastore_default
+    # PyCSW DB username
+    pg_id_for_pycsw=ckan_default
+    # PyCSW DB pass
+    pg_pw_for_pycsw=pass
     #PyCSW Database Name
     pg_db_for_pycsw=pycsw_ckan_default
 
@@ -289,8 +293,8 @@ pg_db_for_ckan=$pg_db_for_ckan
 pg_id_datastore=$pg_id_datastore
 pg_pw_datastore=$pg_pw_datastore
 pg_db_for_datastore=$pg_db_for_datastore
-pg_id_for_pycsw=$pg_id_for_ckan
-pg_pw_for_pycsw=$pg_pw_for_ckan
+pg_id_for_pycsw=$pg_id_for_pycsw
+pg_pw_for_pycsw=$pg_pw_for_pycsw
 pg_db_for_pycsw=$pg_db_for_pycsw
 
 # Application installation path. All application binary,liba and onfig options 
@@ -1216,31 +1220,33 @@ function install_java() {
 
 function install_csw_server() {
     # Install PyCSW v1.8.0
-    run_or_die $PYENV_DIR/bin/
+    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/geopython/pycsw.git@1.8.0#egg=pycsw
     # Build database for PyCSW in PostgreSQL
     run_or_die sudo -u postgres createdb -O $pg_id_for_pycsw $pg_db_for_pycsw -E utf-8
 
 
     # Make PyCSW configuration file
     run_or_die cp $PYENV_DIR/src/pycsw/default-sample.cfg $PYENV_DIR/src/pycsw/default.cfg
-    run or die ln -s $PYENV_DIR/src/pycsw/default.cfg $CKAN_ETC/default/pycsw.cfg
+    run_or_die ln -s $PYENV_DIR/src/pycsw/default.cfg $CKAN_ETC/default/pycsw.cfg
 
     CSW_SERVER_HOME=$PYENV_DIR/src/pycsw
     CSW_DB_PARAMS=postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
     PYCSW_CONFIG=$CKAN_ETC/default/pycsw.cfg
 
+
+    ### THESE TWO COMMANDS DONT WORK ######################################################
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -k "home" -v "$CSW_SERVER_HOME"
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -k "database" -v "$CSW_DB_PARAMS"
 
     # Build tables in PyCSW database
     cd $PYENV_DIR/src/ckanext-spatial
-    run_or_die $PYENV_DIR/bin/paster ckan-pycsw setup -p $PYCSW_CONFIG
+    run_or_die $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw setup -p $PYCSW_CONFIG
 
     # Move PyCSW WSGI script out of the way so that 'create_pycsw_wsgi_script()' can make custom one
     run_or_die mv $PYENV_DIR/src/pycsw/csw.wsgi $PYENV_DIR/src/pycsw/csw.wsgi.bak
 
     # Make a cron job to run the load command every hour
-    CRON_JOB="0 * * * * $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw load -p $CKAN_ETC/default/pycsw.cfg"
+    CRON_JOB="0 * * * * $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw load -p $PYCSW_CONFIG"
     ( crontab -l; echo "$CRON_JON" ) | crontab -e
 }
 
