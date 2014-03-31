@@ -1232,8 +1232,8 @@ function check_release() {
 # Install Java
 
 function install_java() {
-    sudo apt-get update
-    sudo apt-get upgrade
+    sudo apt-get -y update
+    sudo apt-get -y upgrade
     sudo apt-get -y purge openjdk*
     sudo apt-get -y install software-properties-common python-software-properties git git-core
     sudo add-apt-repository -y ppa:webupd8team/java
