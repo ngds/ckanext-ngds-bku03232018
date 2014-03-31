@@ -90,7 +90,7 @@ central_params = [
     ("ckan.site_logo", "/assets/logo.png")
 ]
 
-central_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query spatial_harvest_metadata_api csw_harvester csw metadata ngds_harvester geoserver ngdsui cswserver harvest ckan_harvester'
+central_plugins = 'stats json_preview recline_preview datastore spatial_metadata spatial_query spatial_harvest_metadata_api csw_harvester csw metadata ngds_harvester geoserver ngdsui harvest ckan_harvester'
 
 if not os.path.exists(args.filename):
     print "Could not find config file: %s" % args.filename

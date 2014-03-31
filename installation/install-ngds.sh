@@ -81,6 +81,12 @@ function configure_properties() {
     pg_pw_datastore=pass
     #Datastore Database Name
     pg_db_for_datastore=datastore_default
+    # PyCSW DB username
+    pg_id_for_pycsw=ckan_default
+    # PyCSW DB pass
+    pg_pw_for_pycsw=pass
+    #PyCSW Database Name
+    pg_db_for_pycsw=pycsw_ckan_default
 
     #Application defult admin user for setup.
     ADMIN_NAME=admin
@@ -177,6 +183,10 @@ function setup_env() {
     # Password used to authenticate with the SMTP server
     # Ex: your_password
     SMTP_PASSWORD="undefined"
+
+    # Email address used by CKAN to send emails
+    # Ex: user@gmail.com
+    SMTP_MAIL_FROM="undefined"
 
     # Connection parameters for Geoserver, in the form:
     # "geoserver://{username}:{password}@{geoserver_rest_api_url}"
@@ -287,6 +297,9 @@ pg_db_for_ckan=$pg_db_for_ckan
 pg_id_datastore=$pg_id_datastore
 pg_pw_datastore=$pg_pw_datastore
 pg_db_for_datastore=$pg_db_for_datastore
+pg_id_for_pycsw=$pg_id_for_pycsw
+pg_pw_for_pycsw=$pg_pw_for_pycsw
+pg_db_for_pycsw=$pg_db_for_pycsw
 
 # Application installation path. All application binary,liba and onfig options 
 # will go under this directory
@@ -743,12 +756,10 @@ function configure_ngds() {
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "ckan.locales_offered" -v "en es de"
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.server" -v "$SMTP_SERVER"
-
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.starttls" -v "$SMTP_STARTTLS"
-
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.user" -v "$SMTP_USER"
-
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.password" -v "$SMTP_PASSWORD"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.mail_from" -v "$SMTP_MAIL_FROM"
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "geoserver.rest_url" -v "$GEOSERVER_REST_URL"
 
@@ -814,7 +825,11 @@ function deploy_in_webserver() {
 
     WSGI_SCRIPT=$CKAN_ETC/default/apache.wsgi
 
-    create_wsgi_script > $WSGI_SCRIPT
+    PYCSW_WSGI_SCRIPT=$PYENV_DIR/src/pycsw/csw.wsgi
+
+    create_ckan_wsgi_script > $WSGI_SCRIPT
+
+    create_pycsw_wsgi_script > $PYCSW_WSGI_SCRIPT
 
     create_apache_config > /etc/apache2/sites-available/ckan_default
 
@@ -823,10 +838,10 @@ function deploy_in_webserver() {
 }
 
 # -------------------------------------------------------------------------------------------------
-# create_wsgi_script
+# create_ckan_wsgi_script
 #
 # Helper function to create the wsgi script for the installation via apache2 and the wsgi mod.
-function create_wsgi_script() {
+function create_ckan_wsgi_script() {
     
 #WSGI_SCRIPT=$CKAN_ETC/default/apache.wsgi
 
@@ -844,6 +859,100 @@ EOF
 }
 
 # -------------------------------------------------------------------------------------------------
+# create_pycsw_wsgi_script
+#
+# Helper function to create a pycsw wsgi script for the installation via apache2 and the wsgi mod.
+function create_pycsw_wsgi_script() {
+
+#PYCSW_WSGI_SCRIPT=$PYENV_DIR/src/pycsw/csw.wsgi
+
+cat <<EOF
+from StringIO import StringIO
+import os
+import sys
+
+activate_this = os.path.join('$PYENV_DIR/bin/activate_this.py')
+execfile(activate_this, {"__file__":activate_this})
+
+app_path = os.path.dirname(__file__)
+sys.path.append(app_path)
+
+from pycsw import server
+
+
+def application(env, start_response):
+    """WSGI wrapper"""
+    config = 'default.cfg'
+
+    if 'PYCSW_CONFIG' in env:
+        config = env['PYCSW_CONFIG']
+
+    if env['QUERY_STRING'].lower().find('config') != -1:
+        for kvp in env['QUERY_STRING'].split('&'):
+            if kvp.lower().find('config') != -1:
+                config = kvp.split('=')[1]
+
+    if not os.path.isabs(config):
+        config = os.path.join(app_path, config)
+
+    if 'HTTP_HOST' in env and ':' in env['HTTP_HOST']:
+        env['HTTP_HOST'] = env['HTTP_HOST'].split(':')[0]
+
+    env['local.app_root'] = app_path
+
+    csw = server.Csw(config, env)
+
+    gzip = False
+    if ('HTTP_ACCEPT_ENCODING' in env and
+            env['HTTP_ACCEPT_ENCODING'].find('gzip') != -1):
+        # set for gzip compressed response
+        gzip = True
+
+    # set compression level
+    if csw.config.has_option('server', 'gzip_compresslevel'):
+        gzip_compresslevel = \
+            int(csw.config.get('server', 'gzip_compresslevel'))
+    else:
+        gzip_compresslevel = 0
+
+    contents = csw.dispatch_wsgi()
+
+    headers = {}
+
+    if gzip and gzip_compresslevel > 0:
+        import gzip
+
+        buf = StringIO()
+        gzipfile = gzip.GzipFile(mode='wb', fileobj=buf,
+                                 compresslevel=gzip_compresslevel)
+        gzipfile.write(contents)
+        gzipfile.close()
+
+        contents = buf.getvalue()
+
+        headers['Content-Encoding'] = 'gzip'
+
+    headers['Content-Length'] = str(len(contents))
+    headers['Content-Type'] = csw.contenttype
+
+    status = '200 OK'
+    start_response(status, headers.items())
+
+    return [contents]
+
+if __name__ == '__main__':  # run inline using WSGI reference implementation
+    from wsgiref.simple_server import make_server
+    port = 8000
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+    httpd = make_server('', port, application)
+    print "Serving on port %d..." % port
+    httpd.serve_forever()
+EOF
+}
+
+
+# -------------------------------------------------------------------------------------------------
 # create_apache_config
 #
 # Helper function that creates the apache configuration to serve CKAN via apache2.
@@ -855,6 +964,7 @@ cat <<EOF
 <VirtualHost 0.0.0.0:80>
     ServerName $SERVER_NAME
     ServerAlias $SERVER_NAME_ALIAS
+    WSGIScriptAlias /csw $PYCSW_WSGI_SCRIPT
     WSGIScriptAlias / $WSGI_SCRIPT
 
     # Pass authorization info on (needed for rest api).
@@ -910,7 +1020,7 @@ function get_solr() {
 }
 
 # -------------------------------------------------------------------------------------------------
-# get_solr
+# deploy_solr
 #
 # This function deploys SOLR in tomcat
 #  - download SOLr with previous helper function
@@ -1064,6 +1174,33 @@ EOF
 sudo chmod 755 $NGDS_SCRIPTS/ckan-tomcat.conf
 cp $NGDS_SCRIPTS/ckan-tomcat.conf /etc/init/
 service ckan-tomcat start
+
+# Upstart job for starting PyCSW server
+cat > $NGDS_SCRIPTS/ckan-pycsw-server.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec $PYENV_DIR/bin/python /opt/ngds/bin/default/src/pycsw/csw.wsgi >> /var/log/ckan-pycsw-server.log 2>&1
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-pycsw-server.conf
+cp $NGDS_SCRIPTS/ckan-pycsw-server.conf /etc/init/
+service ckan-pycsw-server start
+
+# Upstart job for loading data into PyCSW
+cat > $NGDS_SCRIPTS/ckan-pycsw-loader.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw load -p $PRODUCTION_PYCSW_CONFIG >> /var/log/ckan-pycsw-loader.log 2>&1
+post-stop exec sleep 3600
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-pycsw-loader.conf
+cp $NGDS_SCRIPTS/ckan-pycsw-loader.conf /etc/init/
+service ckan-pycsw-loader start
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1101,14 +1238,47 @@ function check_release() {
 # Install Java
 
 function install_java() {
-    sudo apt-get update
-    sudo apt-get upgrade
+    sudo apt-get -y update
+    sudo apt-get -y upgrade
     sudo apt-get -y purge openjdk*
     sudo apt-get -y install software-properties-common python-software-properties git git-core
     sudo add-apt-repository -y ppa:webupd8team/java
     sudo apt-get -y update
     sudo apt-get install curl
     sudo apt-get -y install oracle-java6-installer
+}
+
+# -------------------------------------------------------------------------------------------------
+# Install CSW Server
+
+function install_csw_server() {
+    # Install PyCSW v1.8.0
+    run_or_die $PYENV_DIR/bin/pip install -e git+https://github.com/geopython/pycsw.git@1.8.0#egg=pycsw
+    # Build database for PyCSW in PostgreSQL
+    run_or_die sudo -u postgres createdb -O $pg_id_for_pycsw $pg_db_for_pycsw -E utf-8
+
+    # Make PyCSW configuration file
+    run_or_die cp $PYENV_DIR/src/pycsw/default-sample.cfg $PYENV_DIR/src/pycsw/default.cfg
+
+    CSW_SERVER_HOME=$PYENV_DIR/src/pycsw
+    CSW_DB_PARAMS=postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
+    PYCSW_CONFIG=$PYENV_DIR/src/pycsw/default.cfg
+    PYCSW_URL=$site_url/csw
+
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "server" -k "home" -v "$CSW_SERVER_HOME"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "repository" -k "database" -v "$CSW_DB_PARAMS"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "server" -k "url" -v "$PYCSW_URL"
+
+    run_or_die ln -s $PYENV_DIR/src/pycsw/default.cfg $CKAN_ETC/default/pycsw.cfg
+
+    PRODUCTION_PYCSW_CONFIG=$CKAN_ETC/default/pycsw.cfg
+
+    # Build tables in PyCSW database
+    cd $PYENV_DIR/src/ckanext-spatial
+    run_or_die $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw setup -p $PYCSW_CONFIG
+
+    # Move PyCSW WSGI script out of the way so that 'create_pycsw_wsgi_script()' can make custom one
+    run_or_die mv $PYENV_DIR/src/pycsw/csw.wsgi $PYENV_DIR/src/pycsw/csw.wsgi.bak
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1128,8 +1298,9 @@ function install_java() {
 #
 # This is the main function of the installer.  It calls the individual installer steps one after
 # the other.
-# For developers: You may outcomment steps while debugging the installer.
-# 
+# For developers: You may comment out steps while debugging the installer.
+#
+
 function run() {
 
     check_release
@@ -1157,6 +1328,8 @@ function run() {
     install_ckanext_importlib    
 
     install_ngds
+
+    install_csw_server
 
     deploy_in_webserver
 

@@ -35,6 +35,7 @@ Comments can be updated by passing '-c' parameter. Enclose the comments value wi
 
 parser = argparse.ArgumentParser(description='Config File Updater')
 parser.add_argument('-f','--filename', help='Config File to be updated(Full file Path)', required=True)
+parser.add_argument('-s','--section', help='Section of file to look for key (ex. [app:main])', default='app:main')
 parser.add_argument('-a','--append', help='Specify if needs to be appended with existing value', action='store_true')
 parser.add_argument('-k','--key', help='Config File Key to be added/updated', required=True)
 parser.add_argument('-v','--value', help='Value of the key', required=True)
@@ -46,12 +47,12 @@ if not os.path.exists(args.filename):
     print "Could not find config file: %s" % args.filename
 else:
     config = ConfigObj(args.filename)
-    old_value = config["app:main"].get(args.key)
+    old_value = config[args.section].get(args.key)
 
     new_value = args.value if not args.append else old_value+" "+args.value
 
-    config["app:main"][args.key] = new_value
+    config[args.section][args.key] = new_value
     if args.comments:
-        config["app:main"].comments[args.key] = ["","# %s"%args.comments]
+        config[args.section].comments[args.key] = ["","# %s"%args.comments]
 
     config.write()
