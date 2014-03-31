@@ -1194,7 +1194,7 @@ cat > $NGDS_SCRIPTS/ckan-pycsw-loader.conf <<EOF
 start on runlevel [2345]
 stop on runlevel [!2345]
 respawn
-exec $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw load -p $PYCSW_CONFIG" >> /var/log/ckan-pycsw-loader.log 2>&1
+exec $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw load -p $PRODUCTION_PYCSW_CONFIG >> /var/log/ckan-pycsw-loader.log 2>&1
 post-stop exec sleep 3600
 EOF
 
@@ -1270,6 +1270,8 @@ function install_csw_server() {
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "server" -k "url" -v "$PYCSW_URL"
 
     run_or_die ln -s $PYENV_DIR/src/pycsw/default.cfg $CKAN_ETC/default/pycsw.cfg
+
+    PRODUCTION_PYCSW_CONFIG=$CKAN_ETC/default/pycsw.cfg
 
     # Build tables in PyCSW database
     cd $PYENV_DIR/src/ckanext-spatial
