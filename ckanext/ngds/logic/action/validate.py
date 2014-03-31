@@ -42,6 +42,9 @@ required = tk.get_validator('not_empty')
 # Grab NGDS validators
 from ckanext.ngds.logic.action import validators as ngds_rules
 
+import re
+from itertools import count
+
 def ngds_create_schema(schema):
     """
     A schema used to validate Packages when they are created, i.e. during `package_create` actions. Please note that
@@ -76,6 +79,8 @@ def _ngds_create_additions(schema):
 
     schema['notes'] = [required, unicode]
     schema['owner_org'] = [ngds_rules.apply_default_org]
+    schema['tags']['name'] = [tk.get_validator('not_missing'), tk.get_validator('not_empty'), unicode, tk.get_validator('tag_length_validator'), ngds_rules.ngds_tag_name_validator]
+    schema['tag_string']= [tk.get_validator('ignore_missing'), ngds_rules.ngds_tag_string_convert]
 
     # Extras are a tricky beast. See below for more info
     schema['extras']['key'].append(validate_extras)
