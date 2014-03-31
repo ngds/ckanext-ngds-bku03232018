@@ -1224,19 +1224,16 @@ function install_csw_server() {
     # Build database for PyCSW in PostgreSQL
     run_or_die sudo -u postgres createdb -O $pg_id_for_pycsw $pg_db_for_pycsw -E utf-8
 
-
     # Make PyCSW configuration file
     run_or_die cp $PYENV_DIR/src/pycsw/default-sample.cfg $PYENV_DIR/src/pycsw/default.cfg
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "server" -k "home" -v "$CSW_SERVER_HOME"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "repository" -k "database" -v "$CSW_DB_PARAMS"
     run_or_die ln -s $PYENV_DIR/src/pycsw/default.cfg $CKAN_ETC/default/pycsw.cfg
 
     CSW_SERVER_HOME=$PYENV_DIR/src/pycsw
     CSW_DB_PARAMS=postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
     PYCSW_CONFIG=$CKAN_ETC/default/pycsw.cfg
 
-
-    ### THESE TWO COMMANDS DONT WORK ######################################################
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -k "home" -v "$CSW_SERVER_HOME"
-    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -k "database" -v "$CSW_DB_PARAMS"
 
     # Build tables in PyCSW database
     cd $PYENV_DIR/src/ckanext-spatial
