@@ -184,6 +184,10 @@ function setup_env() {
     # Ex: your_password
     SMTP_PASSWORD="undefined"
 
+    # Email address used by CKAN to send emails
+    # Ex: user@gmail.com
+    SMTP_MAIL_FROM="undefined"
+
     # Connection parameters for Geoserver, in the form:
     # "geoserver://{username}:{password}@{geoserver_rest_api_url}"
     GEOSERVER_REST_URL="geoserver://admin:geoserver@localhost:8080/geoserver/rest"
@@ -755,6 +759,7 @@ function configure_ngds() {
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.starttls" -v "$SMTP_STARTTLS"
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.user" -v "$SMTP_USER"
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.password" -v "$SMTP_PASSWORD"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "smtp.mail_from" -v "$SMTP_MAIL_FROM"
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $deployment_file -k "geoserver.rest_url" -v "$GEOSERVER_REST_URL"
 
