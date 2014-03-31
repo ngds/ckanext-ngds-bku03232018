@@ -25,6 +25,9 @@ NGDS_HEADER_END """
 from pylons.i18n import _
 from ckan.plugins import toolkit as tk
 import json, datetime, re
+from itertools import count
+from ckan.lib.navl.dictization_functions import Invalid
+from ckan.model import (MAX_TAG_LENGTH, MIN_TAG_LENGTH)
 
 # Content Model utilities
 from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile as check_model_file
@@ -214,3 +217,39 @@ def is_non_geographic(key, data, errors, context):
         data.update({'spatial': 'None'})
     else:
         errors[key].append(_("Invalid Non-Geographic Value"))
+
+def ngds_tag_name_validator(value, context):
+
+    tagname_match = re.compile('[\w \-.:]*$', re.UNICODE)
+    if not tagname_match.match(value):
+        raise Invalid(_('Tag "%s" must be alphanumeric characters or symbols: -_.:') % (value))
+    return value
+
+def ngds_tag_string_convert(key, data, errors, context):
+    '''Takes a list of tags that is a comma-separated string (in data[key])
+    and parses tag names. These are added to the data dict, enumerated. They
+    are also validated.'''
+
+    if isinstance(data[key], basestring):
+        tags = [tag.strip() \
+                for tag in data[key].split(',') \
+                if tag.strip()]
+    else:
+        tags = data[key]
+
+    current_index = max( [int(k[1]) for k in data.keys() if len(k) == 3 and k[0] == 'tags'] + [-1] )
+
+    for num, tag in zip(count(current_index+1), tags):
+        data[('tags', num, 'name')] = tag
+
+    for tag in tags:
+        ngds_tag_length_validator(tag, context)
+        ngds_tag_name_validator(tag, context)
+
+def ngds_tag_length_validator(value, context):
+
+    if len(value) < MIN_TAG_LENGTH:
+        raise Invalid(('Tag "%s" length is less than minimum %s') % (value, MIN_TAG_LENGTH))
+    if len(value) > MAX_TAG_LENGTH:
+        raise Invalid(('Tag "%s" length is more than maximum %i') % (value, MAX_TAG_LENGTH))
+    return value
