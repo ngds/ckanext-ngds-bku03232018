@@ -1168,6 +1168,33 @@ EOF
 sudo chmod 755 $NGDS_SCRIPTS/ckan-tomcat.conf
 cp $NGDS_SCRIPTS/ckan-tomcat.conf /etc/init/
 service ckan-tomcat start
+
+# Upstart job for starting PyCSW server
+cat > $NGDS_SCRIPTS/ckan-pycsw-server.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec $PYENV_DIR/bin/python /opt/ngds/bin/default/src/pycsw/csw.wsgi >> /var/log/ckan-pycsw-server.log 2>&1
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-pycsw-server.conf
+cp $NGDS_SCRIPTS/ckan-pycsw-server.conf /etc/init/
+service ckan-pycsw-server start
+
+# Upstart job for loading data into PyCSW
+cat > $NGDS_SCRIPTS/ckan-pycsw-loader.conf <<EOF
+#!/bin/bash
+start on runlevel [2345]
+stop on runlevel [!2345]
+respawn
+exec $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw load -p $PYCSW_CONFIG" >> /var/log/ckan-pycsw.log 2>&1
+post-stop exec sleep 3600
+EOF
+
+sudo chmod 755 $NGDS_SCRIPTS/ckan-pycsw-loader.conf
+cp $NGDS_SCRIPTS/ckan-pycsw-loader.conf /etc/init/
+service ckan-pycsw-loader start
 }
 
 # -------------------------------------------------------------------------------------------------
@@ -1226,7 +1253,7 @@ function install_csw_server() {
 
     # Make PyCSW configuration file
     run_or_die cp $PYENV_DIR/src/pycsw/default-sample.cfg $PYENV_DIR/src/pycsw/default.cfg
-    
+
     CSW_SERVER_HOME=$PYENV_DIR/src/pycsw
     CSW_DB_PARAMS=postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
     PYCSW_CONFIG=$PYENV_DIR/src/pycsw/default.cfg
@@ -1241,10 +1268,6 @@ function install_csw_server() {
 
     # Move PyCSW WSGI script out of the way so that 'create_pycsw_wsgi_script()' can make custom one
     run_or_die mv $PYENV_DIR/src/pycsw/csw.wsgi $PYENV_DIR/src/pycsw/csw.wsgi.bak
-
-    # Make a cron job to run the load command every hour
-    CRON_JOB="0 * * * * $PYENV_DIR/bin/paster --plugin=ckanext-spatial ckan-pycsw load -p $PYCSW_CONFIG"
-    ( crontab -l; echo "$CRON_JON" ) | crontab -e
 }
 
 # -------------------------------------------------------------------------------------------------
