@@ -1263,7 +1263,7 @@ function install_csw_server() {
     CSW_SERVER_HOME=$PYENV_DIR/src/pycsw
     CSW_DB_PARAMS=postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
     PYCSW_CONFIG=$PYENV_DIR/src/pycsw/default.cfg
-    PYCSW_URL=http://$site_url/csw
+    PYCSW_URL=$site_url/csw
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "server" -k "home" -v "$CSW_SERVER_HOME"
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "repository" -k "database" -v "$CSW_DB_PARAMS"
