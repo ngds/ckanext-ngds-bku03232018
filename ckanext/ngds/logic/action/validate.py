@@ -42,9 +42,6 @@ required = tk.get_validator('not_empty')
 # Grab NGDS validators
 from ckanext.ngds.logic.action import validators as ngds_rules
 
-import re
-from itertools import count
-
 def ngds_create_schema(schema):
     """
     A schema used to validate Packages when they are created, i.e. during `package_create` actions. Please note that
