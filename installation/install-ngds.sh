@@ -959,6 +959,7 @@ cat <<EOF
 <VirtualHost 0.0.0.0:80>
     ServerName $SERVER_NAME
     ServerAlias $SERVER_NAME_ALIAS
+    WSGIScriptAlias /csw $PYCSW_WSGI_SCRIPT
     WSGIScriptAlias / $WSGI_SCRIPT
 
     # Pass authorization info on (needed for rest api).
@@ -1257,9 +1258,12 @@ function install_csw_server() {
     CSW_SERVER_HOME=$PYENV_DIR/src/pycsw
     CSW_DB_PARAMS=postgresql://$pg_id_for_pycsw:$pg_pw_for_pycsw@localhost/$pg_db_for_pycsw
     PYCSW_CONFIG=$PYENV_DIR/src/pycsw/default.cfg
+    PYCSW_URL = http://$site_url/csw
 
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "server" -k "home" -v "$CSW_SERVER_HOME"
     $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "repository" -k "database" -v "$CSW_DB_PARAMS"
+    $PYENV_DIR/bin/python $CONFIG_UPDATER -f $PYCSW_CONFIG -s "server" -k "url" -v "$PYCSW_URL"
+
     run_or_die ln -s $PYENV_DIR/src/pycsw/default.cfg $CKAN_ETC/default/pycsw.cfg
 
     # Build tables in PyCSW database
