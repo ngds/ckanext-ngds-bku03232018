@@ -95,6 +95,10 @@ class HandleWFS():
         self.title = self.wfs.identification.title
         self.abstract = self.wfs.identification.abstract
 
+    def get_service_url(self, operation='{http://www.opengis.net/wfs}GetFeature',
+                        method='{http://www.opengis.net/wfs}Get'):
+        return self.wfs.getOperationByName(operation).methods[method]['url']
+
     def do_layer_check(self, data_dict):
         layer_list = list(self.wfs.contents)
         resource = data_dict.get("resource", {})

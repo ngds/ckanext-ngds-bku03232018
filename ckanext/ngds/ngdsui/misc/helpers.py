@@ -1010,21 +1010,23 @@ def check_datastore_resource(resource_id):
     except:
         return False
 
-def geothermal_prospector_link(url):
-    '''
-    # NGDS Parameters
-    base_url = 'http://maps.nrel.gov/gt_prospector'
-    host = url.split('?')[0]
-    type_name = re.search('typeName=(.*)&?', url).group(1)
-
-    # NREL Parameters
-    base_layer = '6'
-    overlay_layer = '0'
-    zoom_level = '3'
-
-    return {
-        'wms': base_url + '?baselayer=' + base_layer + '&overlaylayer=' + overlay_layer + '&zoomlevel=' + zoom_level + '&wmsHost=' + host + '&wmsLayerName=' + type_name,
-        'wfs': base_url + '?baselayer=' + base_layer + '&overlaylayer=' + overlay_layer + '&zoomlevel=' + zoom_level + '&wfsHost=' + host + '&wfsLayerName=' + type_name
-    }
-    '''
-    return {'wms': 'undefined', 'wfs': 'undefined'}
+def geothermal_prospector_link(url, layer, protocol):
+    try:
+        base_url = 'https://maps-stage.nrel.gov/geothermal-prospector/#/'
+        base_layer = '6'
+        if protocol == 'wms':
+            this_layer = {'layer': layer}
+            wms = ogc.HandleWMS(url)
+            host_url = wms.get_service_url()
+            type_name = wms.do_layer_check(this_layer)
+            return {'wms': base_url + '?baselayer=' + base_layer + '&wmsHost=' + host_url + '&wmsLayerName=' + type_name}
+        elif protocol == 'wfs':
+            this_layer = {'resource': {'layer': layer}}
+            wfs = ogc.HandleWFS(url)
+            host_url =  wfs.get_service_url()
+            type_name = wfs.do_layer_check(this_layer)
+            return {'wfs': base_url + '?baselayer=' + base_layer + '&wfsHost=' + host_url + '&wfsLayerName=' + type_name}
+        else:
+            return {'wms': 'undefined', 'wfs': 'undefined'}
+    except:
+        return {'wms': 'undefined', 'wfs': 'undefined'}
