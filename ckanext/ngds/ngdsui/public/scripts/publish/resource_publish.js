@@ -113,22 +113,40 @@ $(document).ready(function () {
         },
         'publish_usgin': function (resource_id, collection_id, content_model_layer) {
             ckan.notify("Publishing tier 3 structured OGC services...", "", "info");
-            ngds.ckanlib.publish_to_geoserver({
-                'action': '/api/action/geoserver_publish_usgin_layer',
-                'layer_name': content_model_layer,
-                'resource_id': resource_id,
-                'package_id': collection_id,
-                'content_model_layer': content_model_layer,
-                'col_geo': "geometry",
-                'col_lat': "LatDegree",
-                'col_lng': "LongDegree",
-                'callback': function (resp_obj) {
-                    if (resp_obj['status'] === 'failure') {
-                        ckan.notify("Failed to publish OGC services", "", "error")
-                    } else {
-                        window.location.reload();
+            ngds.ckanlib.datastore_search(resource_id, function (response) {
+                var fields = response.result.fields,
+                    field_ids = (function() {
+                        var these_ids = [];
+                        for (var i=0; i<fields.length; i++) {
+                            these_ids.push(fields[i].id);
+                        }
+                        return these_ids;
+                    })(),
+                    geo_fields = (function() {
+                        if (field_ids.indexOf('LatDegree') !== -1 && field_ids.indexOf('LongDegree') !== -1) {
+                            return geo_fields = {'lat': 'LatDegree', 'lng': 'LongDegree'}
+                        } else {
+                            return geo_fields = {'lat': 'LatDegreeWGS84', 'lng': 'LongDegreeWGS84'}
+                        }
+                    })();
+
+                ngds.ckanlib.publish_to_geoserver({
+                    'action': '/api/action/geoserver_publish_usgin_layer',
+                    'layer_name': content_model_layer,
+                    'resource_id': resource_id,
+                    'package_id': collection_id,
+                    'content_model_layer': content_model_layer,
+                    'col_geo': "geometry",
+                    'col_lat': geo_fields.lat,
+                    'col_lng': geo_fields.lng,
+                    'callback': function (resp_obj) {
+                        if (resp_obj['status'] === 'failure') {
+                            ckan.notify("Failed to publish OGC services", "", "error")
+                        } else {
+                            window.location.reload();
+                        }
                     }
-                }
+                });
             });
         },
         'unpublish': function (resource_id, layer_name) {
