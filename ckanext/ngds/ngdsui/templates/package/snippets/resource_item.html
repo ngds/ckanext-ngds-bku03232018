@@ -30,18 +30,6 @@ ___NGDS_HEADER_END___ #}
       <span class="empty">{{ _('No description for this resource') }}</span>
     {% endif %}
   </p>
-  <div class="metrics">
-      {% if res.content_model_uri and res.content_model_version %}
-       {{h.get_content_model_dict(res.content_model_uri).title}},
-      {% for mf in h.metadata_fields_to_display_for_cm(res.content_model_uri, res.content_model_version) %}
-        &nbsp;{{mf|replace('_',' ')|title}} : {{res[mf]}}&nbsp;
-      {% endfor %}
-      {% endif %}
-      <br/>
-      {% if res.lcount %}
-        {{res.lcount}} lines
-      {% endif %}
-  </div>
 
   {% block resource_item_explore_central %}
   <div class="btn-group">
@@ -90,18 +78,6 @@ ___NGDS_HEADER_END___ #}
       <span class="empty">{{ _('No description for this resource') }}</span>
     {% endif %}
   </p>
-  <div class="metrics">
-      {% if res.content_model_uri and res.content_model_version %}
-       {{h.get_content_model_dict(res.content_model_uri).title}},
-      {% for mf in h.metadata_fields_to_display_for_cm(res.content_model_uri, res.content_model_version) %}
-        &nbsp;{{mf|replace('_',' ')|title}} : {{res[mf]}}&nbsp;
-      {% endfor %}
-      {% endif %}
-      <br/>
-      {% if res.lcount %}
-        {{res.lcount}} lines
-      {% endif %}
-  </div>
 
   {% block resource_item_explore %}
   <div class="btn-group">
