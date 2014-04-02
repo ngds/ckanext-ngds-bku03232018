@@ -30,24 +30,22 @@ ___NGDS_HEADER_END___ #}
       <span class="empty">{{ _('No description for this resource') }}</span>
     {% endif %}
   </p>
-  <div class="metrics">
-      {% if res.content_model_uri and res.content_model_version %}
-       {{h.get_content_model_dict(res.content_model_uri).title}},
-      {% for mf in h.metadata_fields_to_display_for_cm(res.content_model_uri, res.content_model_version) %}
-        &nbsp;{{mf|replace('_',' ')|title}} : {{res[mf]}}&nbsp;
-      {% endfor %}
-      {% endif %}
-      <br/>
-      {% if res.lcount %}
-        {{res.lcount}} lines
-      {% endif %}
-  </div>
 
   {% block resource_item_explore_central %}
   <div class="btn-group">
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
-    {% if res.protocol and res.protocol.lower().startswith('ogc') %}
-      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('GetCapabilities') }}</a>
+    {% if res.protocol and res.protocol.lower() == ('ogc:wms') %}
+      {% set prospector_url = h.geo_prospector(res.url, res.layer, 'wms') %}
+      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
+      {% if not prospector_url.wms == 'undefined' %}
+        <a href="{{ prospector_url.wms }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
+      {% endif %}
+    {% elif res.protocol and res.protocol.lower() == ('ogc:wfs') %}
+      {% set prospector_url = h.geo_prospector(res.url, res.layer, 'wfs') %}
+      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
+      {% if not prospector_url.wfs == 'undefined' %}
+        <a href="{{ prospector_url.wfs }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
+      {% endif %}
     {% else %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
     {% endif %}
@@ -80,24 +78,22 @@ ___NGDS_HEADER_END___ #}
       <span class="empty">{{ _('No description for this resource') }}</span>
     {% endif %}
   </p>
-  <div class="metrics">
-      {% if res.content_model_uri and res.content_model_version %}
-       {{h.get_content_model_dict(res.content_model_uri).title}},
-      {% for mf in h.metadata_fields_to_display_for_cm(res.content_model_uri, res.content_model_version) %}
-        &nbsp;{{mf|replace('_',' ')|title}} : {{res[mf]}}&nbsp;
-      {% endfor %}
-      {% endif %}
-      <br/>
-      {% if res.lcount %}
-        {{res.lcount}} lines
-      {% endif %}
-  </div>
 
   {% block resource_item_explore %}
   <div class="btn-group">
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
-    {% if res.protocol and res.protocol.lower().startswith('ogc') %}
-      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('GetCapabilities') }}</a>
+    {% if res.protocol and res.protocol.lower() == ('ogc:wms') %}
+      {% set prospector_url = h.geo_prospector(res.url, res.layer, 'wms') %}
+      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
+      {% if not prospector_url.wms == 'undefined' %}
+        <a href="{{ prospector_url.wms }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
+      {% endif %}
+    {% elif res.protocol and res.protocol.lower() == ('ogc:wfs') %}
+      {% set prospector_url = h.geo_prospector(res.url, res.layer, 'wfs') %}
+      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
+      {% if not prospector_url.wfs == 'undefined' %}
+        <a href="{{ prospector_url.wfs }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
+      {% endif %}
     {% else %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
     {% endif %}
