@@ -1019,13 +1019,13 @@ def geothermal_prospector_link(url, layer, protocol):
             wms = ogc.HandleWMS(url)
             host_url = wms.get_service_url()
             type_name = wms.do_layer_check(this_layer)
-            return {'wms': base_url + '?baselayer=' + base_layer + '&wmsHost=' + host_url + '&wmsLayerName=' + type_name}
+            return {'wms': base_url + '?baselayer=' + base_layer + '&zoomlevel=3' + '&wmsHost=' + host_url + '&wmsLayerName=' + type_name}
         elif protocol == 'wfs':
             this_layer = {'resource': {'layer': layer}}
             wfs = ogc.HandleWFS(url)
             host_url =  wfs.get_service_url()
             type_name = wfs.do_layer_check(this_layer)
-            return {'wfs': base_url + '?baselayer=' + base_layer + '&wfsHost=' + host_url + '&wfsLayerName=' + type_name}
+            return {'wfs': base_url + '?baselayer=' + base_layer + '&zoomlevel=3' +'&wfsHost=' + host_url + '&wfsLayerName=' + type_name}
         else:
             return {'wms': 'undefined', 'wfs': 'undefined'}
     except:
