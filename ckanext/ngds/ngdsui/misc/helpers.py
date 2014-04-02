@@ -50,7 +50,7 @@ import ckanext.ngds.logic.file_processors.ContentModelConstants as CMC
 import ckanext.datastore.plugin as datastore
 from ckan.plugins import toolkit
 from ckanext.ngds.geoserver.model.Geoserver import Geoserver
-from ckanext.ngds.geoserver.model import OGCServices
+from ckanext.ngds.geoserver.model import OGCServices as ogc
 
 try:
     from collections import OrderedDict # 2.7
@@ -1011,10 +1011,20 @@ def check_datastore_resource(resource_id):
         return False
 
 def geothermal_prospector_link(url):
+    '''
+    # NGDS Parameters
     base_url = 'http://maps.nrel.gov/gt_prospector'
     host = url.split('?')[0]
     type_name = re.search('typeName=(.*)&?', url).group(1)
+
+    # NREL Parameters
+    base_layer = '6'
+    overlay_layer = '0'
+    zoom_level = '3'
+
     return {
-        'wms': base_url + '?wmsHost=' + host + '&wmsLayerTypeName=' + type_name,
-        'wfs': base_url + '?wfsHost=' + host + '&wfsLayerTypeName=' + type_name
+        'wms': base_url + '?baselayer=' + base_layer + '&overlaylayer=' + overlay_layer + '&zoomlevel=' + zoom_level + '&wmsHost=' + host + '&wmsLayerName=' + type_name,
+        'wfs': base_url + '?baselayer=' + base_layer + '&overlaylayer=' + overlay_layer + '&zoomlevel=' + zoom_level + '&wfsHost=' + host + '&wfsLayerName=' + type_name
     }
+    '''
+    return {'wms': 'undefined', 'wfs': 'undefined'}
