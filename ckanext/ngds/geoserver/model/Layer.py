@@ -181,7 +181,6 @@ class Layer(object):
 
         # WMS Resource Creation
         data_dict = {
-            'simple_url': self.geoserver.service_url.replace("/rest", "/wms?request=GetCapabilities"),
             'url': capabilities_url(self.geoserver.service_url, self.store.workspace.name, self.name, 'WMS', '1.1.1'),
             'package_id': self.package_id,
             'description': 'WMS for %s' % self.file_resource['name'],
@@ -201,9 +200,8 @@ class Layer(object):
 
         # WFS Resource Creation
         data_dict.update({
-            'simple_url': self.geoserver.service_url.replace("/rest", "/wfs?request=GetCapabilities"),
             "package_id": self.package_id,
-            "url": capabilities_url(self.geoserver.service_url, self.store.workspace.name, self.name, 'WFS', '1.1.0'),
+            "url": capabilities_url(self.geoserver.service_url, self.store.workspace.name, self.name, 'WFS', '1.0.0'),
             'distributor': self.file_resource.get("distributor", json.dumps({"name": "Unknown", "email": "unknown"})),
             "description": "WFS for %s" % self.file_resource["name"],
             "protocol": "OGC:WFS",
