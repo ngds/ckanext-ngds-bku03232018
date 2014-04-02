@@ -47,13 +47,17 @@ ___NGDS_HEADER_END___ #}
   <div class="btn-group">
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
     {% if res.protocol and res.protocol.lower() == ('ogc:wms') %}
-      {% set prospector_url = h.geo_prospector(res.url) %}
+      {% set prospector_url = h.geo_prospector(res.url, res.layer, 'wms') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
-      <a href="{{ prospector_url.wms }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
+      {% if not prospector_url.wms == 'undefined' %}
+        <a href="{{ prospector_url.wms }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
+      {% endif %}
     {% elif res.protocol and res.protocol.lower() == ('ogc:wfs') %}
-      {% set prospector_url = h.geo_prospector(res.url) %}
+      {% set prospector_url = h.geo_prospector(res.url, res.layer, 'wfs') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
-      <a href="{{ prospector_url.wfs }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
+      {% if not prospector_url.wfs == 'undefined' %}
+        <a href="{{ prospector_url.wfs }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
+      {% endif %}
     {% else %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
     {% endif %}
