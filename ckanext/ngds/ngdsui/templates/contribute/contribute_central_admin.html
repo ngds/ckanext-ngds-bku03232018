@@ -66,14 +66,7 @@ ___NGDS_HEADER_END___ #}
 					<form method="post" action="do_harvest">
 				    	<tr>
 				    		<td>
-
 				    			<img src="/images/node_edit.png"  alt="Edit" title="Edit" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='edit', id=node.id) }}', 'edit')" style="cursor: pointer;cursor: hand;float:middle"/>
-				    			<!--
-				    			<img src="/images/node_view.png" alt="View" title="View" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='read', id=node.id) }}', 'read')" style="cursor: pointer;cursor: hand;"/>
-				    			<img src="/images/node_delete.png" alt="Delete" title="Delete" onclick="invokeAction( '{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='delete', id=node.id) }}', 'delete')" style="cursor: pointer;cursor: hand;"/>
-				    			<img src="/images/node_schedule.png" alt="Schedule" title="Schedule" class="not-implemented" style="cursor: pointer;cursor: hand;"/>
-				    			<img src="/images/node_refresh.png" alt="Refresh" title="Refresh" class="not-implemented" style="cursor: pointer;cursor: hand;"/><img src="/images/u90_normal.png" />
-				    			<img src="/images/node_refresh.png" alt="Refresh" title="Refresh" class="not-implemented" style="cursor: pointer;cursor: hand;"/> -->
 				    		</td>
 				    		
 				    		<td>{{ node.title }}</td>
@@ -90,14 +83,6 @@ ___NGDS_HEADER_END___ #}
 <script type="text/javascript">
 function invokeAction(url,action)
 {
-
-/*	var msg = "Harevested Node will be deleted. Do you want to continue?";
-
-	if(action=='edit'){
-		msg = "Do you want to edit the harvested Node?";
-	} else if(action =='read'){
-		msg = "View the full details about the Node?";
-	}*/
 	if(action=='delete'){
 		if(confirm("Harevested Node will be deleted. Do you want to continue?")){
 			
@@ -108,9 +93,4 @@ function invokeAction(url,action)
 	window.location.href =url;		
 }
 </script>
-<!--
-	<div class="create-node-admin">
-		<p>Harvest new node? <a href="{{ h.url_for(controller='ckanext.ngds.ngdsui.controllers.contribute:ContributeController', action='harvest') }}" >Click here</a></p>
-	</div> -->
-
 </div>
