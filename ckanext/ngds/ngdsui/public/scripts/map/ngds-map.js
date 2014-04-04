@@ -1,6 +1,4 @@
 /* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
-/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
-/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 /**
  * Created by Adrian Sonnenschein on 12/23/13.
  */
@@ -51,8 +49,14 @@ ngds.Map.topLevelSearch = function (parameters) {
     var theseLayers = ngds.Map.layers.searchResultsGroup["Search Results"];
     if (theseLayers.getLayers().length > 1) {theseLayers.clearLayers();}
     $('#query-results #search-results').empty();
-    var searchQuery = $('#map-search-query').val();
-    parameters['q'] = searchQuery;
+
+    if (parameters['q'].length === 0) {
+        var searchQuery = $('#map-search-query').val();
+        parameters['q'] = searchQuery;
+    } else {
+        $('#map-search-query').val(parameters['q']);
+    }
+
     ngds.Map.makeSearch(parameters);
     $('#content-legend-menu').addClass('shown');
 };
@@ -72,6 +76,10 @@ ngds.Map.makeSearch = function (parameters) {
 
         if (count === 0) {
             var html = '<div class="top-showing-results">No Search Results</div>';
+            $('#query-results .query-hit-count').empty();
+            $('#query-results .query-hit-count').append(html);
+        } else if (count < 50 && page === 1) {
+            var html = '<div class="top-showing-results">Results 0 - ' + count + ' of ' + count + '</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         } else if (count != 0 && page === 1) {

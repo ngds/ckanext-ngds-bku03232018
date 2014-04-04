@@ -240,7 +240,8 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_content_models_for_ui': helpers.get_content_models_for_ui_action,
             'get_content_model_version_for_uri': helpers.get_content_model_version_for_uri_action,
             'get_better_package_info': helpers.make_better_json,
-            'get_content_model_layers_for_uri': helpers.get_content_model_layers_for_uri_action
+            'get_content_model_layers_for_uri': helpers.get_content_model_layers_for_uri_action,
+            'geothermal_prospector': helpers.geothermal_prospector_url
 
 
             #'create_resource_document_index': lib_action.create_resource_document_index
@@ -315,7 +316,6 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'metadata_fields_to_display_for_cm': helpers.metadata_fields_to_display_for_cm,
             'get_role_for_username': helpers.get_role_for_username,
             'check_datastore': helpers.check_datastore_resource,
-            'geo_prospector': helpers.geothermal_prospector_link
         }
 
     implements(IPackageController, inherit=True)

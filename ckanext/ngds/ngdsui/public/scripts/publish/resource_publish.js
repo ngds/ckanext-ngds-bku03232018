@@ -166,4 +166,31 @@ $(document).ready(function () {
             });
         }
     };
+
+(function () {
+    var url = $("#prospector-btn").attr("res_url"),
+        layer = $("#prospector-btn").attr("res_layer");
+
+    $("#prospector-btn").attr("data-toggle", "tooltip");
+    $("#prospector-btn").attr("title", "Loading data...");
+
+    $.ajax({
+        url: '/api/action/geothermal_prospector',
+        type: 'POST',
+        data: JSON.stringify({'url': url, 'layer': layer}),
+        success: function (response) {
+            var wms_url = response.result.wms;
+            $("#prospector-btn").attr("href", wms_url);
+            $("#prospector-btn").attr("target", "_blank");
+            $("#prospector-btn").removeClass("disabled");
+            $("#prospector-btn").removeAttr("data-toggle");
+            $("#prospector-btn").removeAttr("title");
+        },
+        error: function () {
+            $("#prospector-btn").removeAttr("title");
+            $("#prospector-btn").attr("title", "Error loading service");
+        }
+    })
+}).call(this);
+
 });
