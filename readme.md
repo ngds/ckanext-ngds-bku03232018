@@ -1,9 +1,8 @@
 # ckanext-ngds
 
-This [CKAN extension](http://docs.ckan.org/en/ckan-2.0.3/extensions.html) contains a number of functions that build
-intergration with the [National Geothermal Data System (NGDS)](http://geothermaldata.org/).
+This [CKAN extension](http://docs.ckan.org/en/ckan-2.0.3/extensions.html) contains a number of functions that build integration with the [National Geothermal Data System (NGDS)](http://geothermaldata.org/).
 
-The National Geothermal Data System (NGDS) supports the storage and search of information resources relevant to the discovery, understanding, and utilization of geothermal energy. It is a network of data pro-viders supplying data and metadata, with an aggregating feature that provides a single entry point for searching resources avaialbleavailable through the system. 
+The National Geothermal Data System (NGDS) supports the storage and search of information resources relevant to the discovery, understanding, and utilization of geothermal energy. It is a network of data providers supplying data and metadata, with an aggregating feature that provides a single entry point for searching resources available through the system. 
 
 
 ## Fundamental Operating Modes
