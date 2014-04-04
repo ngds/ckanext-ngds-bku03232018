@@ -49,8 +49,14 @@ ngds.Map.topLevelSearch = function (parameters) {
     var theseLayers = ngds.Map.layers.searchResultsGroup["Search Results"];
     if (theseLayers.getLayers().length > 1) {theseLayers.clearLayers();}
     $('#query-results #search-results').empty();
-    var searchQuery = $('#map-search-query').val();
-    parameters['q'] = searchQuery;
+
+    if (parameters['q'].length === 0) {
+        var searchQuery = $('#map-search-query').val();
+        parameters['q'] = searchQuery;
+    } else {
+        $('#map-search-query').val(parameters['q']);
+    }
+
     ngds.Map.makeSearch(parameters);
     $('#content-legend-menu').addClass('shown');
 };
