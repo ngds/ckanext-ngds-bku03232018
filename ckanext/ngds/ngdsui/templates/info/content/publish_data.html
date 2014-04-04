@@ -45,7 +45,12 @@ ___NGDS_HEADER_END___ #}
 
 <h4>Installing the NIAB</h4>
 
-<p>Instructions on installing and configuring a NIAB instance are in development and will be available here soon. Contributors interested in installing their own NIAB instance can join the conversation at the <a href="https://github.com/ngds/ckanext-ngds" target="_blank">NGDS CKAN GitHub</a>.</p>
+<p>Instructions on installing and configuring a NIAB instance are available with the following document:</p>
+
+<p><a href="http://ngds.github.io/install-and-run/NGDS_Installation_Documentation.htm">http://ngds.github.io/install-and-run/NGDS_Installation_Documentation.htm</a></p>
+
+<p>This document and other helpful information, including community conversation, are available at <a href="https://github.com/ngds/ckanext-ngds" target="_blank">NGDS CKAN GitHub</a>.</p>
+
 
 <h4>Finding an Existing NIAB</h4>
 
@@ -53,59 +58,33 @@ ___NGDS_HEADER_END___ #}
 
 <h3>Overview: Becoming an NGDS Node</h3>
 
-<p>The simplest way to become an NGDS node is to place file-based information resources in a web-accessible location and then submit metadata describing these resources to the NGDS metadata catalog. Various workflows are available to create and submit metadata:</p>
+<p>To become an NGDS node, one must place file-based information resources in a web-accessible location and then submit metadata describing these resources to the NGDS metadata catalog. Various workflows are available to create and submit metadata:</p>
 
 <ul>
 	<li>Log in to an existing registered instance of the NGDS Node-in-a-Box (NIAB) and add metadata records through the provided interface.</li>
 	<li>Set up and register an NGDS NIAB instance. This requires:
 	<ol>
-		<li>Installing and configuring the NGDS NIAB software.</li>
-		<li>Registering the NGDS NIAB instance with the NGDS portal.</li>
-		<li>Creating a metadata record using the interface provided by your NGDS NIAB instance.</li>
+		<li>Installing and configuring the NGDS NIAB software (see Installing the NIAB section above).</li>
+		<li>Registering an NGDS NIAB instance with the NGDS portal (main aggregator) via email: <a href="mailto:metadata@usgin.org">metadata@usgin.org</a>.</li>
+		<li>Creating metadata records using the interface provided by your NGDS NIAB instance.</li>
 	</ol>
 	</li>
-	<li>Deploy some other metadata management tool that provides a CSW interface to NGDS-conformant ISO metadata for registered resources, and registering the catalog service with the NGDS central portal for harvesting.</li>
-	<li>Create NGDS-conformant ISO metadata records using any other tool and place them in a web-accessible folder that is registered with the NGDS portal for harvesting.</li>
+	<li>Deploy some other metadata management tool that provides a CSW interface to NGDS-conformant ISO metadata for registered resources, and registering the catalog service with the NGDS central portal for harvesting. This will require contacting system adminstrators via email at <a href="mailto:metadata@usgin.org">metadata@usgin.org</a> to harvest your CSW into the main aggregator at <a href="http://www.geothermaldata.org">http://www.geothermaldata.org</a>.</li>
+	<li>Create NGDS-conformant ISO metadata records using any other tool and place them in a web-accessible folder that is registered with the NGDS portal for harvesting. Contact system adminstrators via email at <a href="mailto:metadata@usgin.org">metadata@usgin.org</a> for more information.</li>
 </ul>
+
 
 <h2>How to Submit Your Metadata Records via a pre-installed NGDS Node-in-a-Box (NIAB)</h2>
 
 <p>Data providers can publish their data to NGDS via any NGDS Node-in-a-Box instance for which they have an account with data publication permission.</p>
 
-<p>Connect to the NGDS NIAB using a web browser; click <a href="http://node.usgin.org/ngds/contribute" target="_blank">Contribute</a> and populate the appropriate forms to submit a metadata record to the catalog. During this process, either upload or specify the web location of an existing web-accessible data resource. Note that uploading data to an instance of the NIAB sacrifices some degree of control over uploaded data and data providers should make appropriate arrangements with the managers of the node that they are publishing data too before uploading.</p>
+<p>Connect to an NGDS NIAB using a web browser and click<strong> Contribute</strong> and populate the appropriate forms to submit a metadata record to the catalog. During this process, either upload a resource or specify the web location of an existing web-accessible data resource. Those providing data to a NIAB that is managed by another entity should make appropriate arrangements with the managers of the node regarding future edits to that data; those who manage their own NIAB have complete control over the data submitted then harvested to the main aggregator for larger use in the system. The nodes (NIAB installations or other node types) will be harvested at intervals, so any edits made at a node will be reflected in the system with the next scheduled harvest.</p>
 
-<p>Create Account and Select Upload Type. To contribute, <strong>sign up</strong> for an account and click <strong>Contribute</strong>; if they are not logged in, users will be prompted to do so upon clicking <strong>Contribute</strong>.</p>
-
-<p>Clicking <strong>Contribute</strong> leads to the <strong>Contribute</strong> page; here, users are presented with two options:</p>
-
-<ul>
-	<li><strong>Individual Upload</strong>: Users create a <em>collection</em> and then add one or more metadata records to this collection; each metadata record describes a data resource. During the metadata record creation process, the user can bind the metadata record to the data resource it describes in one of two ways:
-
-	<ul>
-		<li>By providing a hyperlink to the data resource described by a given metadata record</li>
-		<li>By uploading the data resource described by a given metadata record</li>
-	</ul>
-	</li>
-	<li><strong>Bulk Upload</strong>: Users upload large numbers of datasets simultaneously in a single zip file; metadata records are generated automatically.</li>
-</ul>
-
-<p>To proceed, click either <strong>Individual Upload</strong> or <strong>Bulk Upload</strong>; these options are described below.</p>
-
-<h2>Individual Uploads</h2>
-
-<p>Performing an individual upload is a three-step process:</p>
-
-<ul>
-	<li><strong>Create a Collection</strong>: Create a collection that will contain one or more metadata record(s)</li>
-	<li><strong>Add Data</strong>: Add one or more metadata record(s) to the collection; each metadata record describes a data resource, which will be either specified or uploaded in this step</li>
-	<li><strong>Collection Metadata</strong>: Provide metadata that applies to all metadata records in the collection</li>
-</ul>
-
-<p>These steps are described further in the following sections</p>
+<p>The following help guide can be navigated at <a href="http://node.usgin.org/ngds/contribute">http://node.usgin.org/ngds/contribute</a> as an example; this site exists only for demonstration purposes.</p>
 
 <h3>Step 1: Create a Collection</h3>
 
-<p>Clicking <strong>Individual Upload</strong> on the <strong>Contribute</strong> page leads to the <strong>Create a Collection</strong> form; as the name implies, populating this form will create a collection for metadata records, which is the first step of the <strong>Individual Upload</strong> process. The fields on this form are as follows:</p>
+<p>The <strong>Contribute</strong> page leads to the <strong>Create a Collection</strong> form; as the name implies, populating this form will create a collection for a single or multiple metadata records. This is the first step in the file or resource upload process, which will create metadata in the system for that resource. The fields on this form are as follows:</p>
 
 <ul>
 	<li><strong>Title</strong>: Collection title</li>
@@ -126,39 +105,22 @@ ___NGDS_HEADER_END___ #}
 
 <h3>Step 2: Add Data</h3>
 
-<p>Clicking <strong>Next: Add Data</strong> on the <strong>Create Collection</strong> form leads to the <strong>Add Data</strong> form. Populating this form creates a metadata record describing a specified data resource; this metadata record is added to the collection created in Step 1. Fields found on this form regardless of the type of resource described by this metadata record are as follows:</p>
+<p>Clicking <strong>Next: Add Data</strong> on the <strong>Create Collection</strong> form leads to the <strong>Add Data</strong> form. Populating this form creates a metadata record describing a specified data resource; this metadata record is added to the collection created in Step 1.</p>
+
+<p>Four types of data may be upload. See <a href="http://www.geothermaldata.org/ngds/data">Data Models, Exchange Methods, and Metadata page</a> for helpful text on determining categories (tiers) of data which may be uploaded.</p>
 
 <ul>
-	<li><strong>Resource</strong>: The URL by which the data resource described by this metadata record can be accessed; if a data resource is instead uploaded to the NGDS Node-in-a-Box Repository, this field will be automatically populated</li>
-	<li><strong>Name</strong>: The name of the data resource described by this metadata record as it will appear in the metadata catalog</li>
-	<li><strong>Description</strong>: A brief description of the data resource described by this metadata record</li>
-	<li><strong>Structured Resource</strong>: Data that has been mapped to an interchange format such as an <a href="http://schemas.usgin.org/" target="_blank">NGDS data exchange content model</a>; if the data in the dataset described by this metadata record has been mapped to an NGDS data exchange content model, specify the content model to which the data has been mapped. Fields specific to this resource type are as follows:
-	<ul>
-		<li><strong>Content Model</strong>: The NGDS content model to which the data resource described by this metadata record conforms</li>
-		<li><strong>Content Model Version</strong>: The NGDS content model version to which the data resource described by this metadata record conforms</li>
-		<li><strong>Distributor</strong>: The individual, agency, company, or organization responsible for distributing the data resource described by this metadata record</li>
-		<li><strong>File Format</strong>: The file format of the data resource described by this metadata record</li>
-	</ul>
-	</li>
-	<li><strong>Unstructured Resource</strong>: Data such as plain text, a scanned image, or a sound file that cannot be processed or analyzed by machines without user input. Fields specific to this resource type are as follows:</li>
-	<li><strong>Distributor</strong>: The individual, agency, company, or organization responsible for distributing the dataset described by this metadata record</li>
-	<li><strong>Format</strong>: The file format of the data resource described by this metadata record</li>
-	<li><strong>Ordering Procedure</strong>: The manner in which the data resource described by this metadata record can be procured</li>
-	<li><strong>Distributor</strong>: The individual, agency, company, or organization responsible for distributing the data resource described by this metadata record</li>
-	<li><strong>Protocol</strong>: The specific web service protocol used by the web service specified as the data resource described by this metadata record.</li>
-	<li><strong>Layer</strong>: The label for a given data service when it is viewed as a layer in a GIS application</li>
-	<li><strong>Offline Resource</strong>: A data resource that is only available in print format. Fields specific to this resource type are as follows:</li>
-	<li><strong>Data Service</strong>: Data that is available as a <em>web service</em>; specify the type of web service. Fields specific to this resource type are as follows:</li>
+	<li><strong>Structured Resource</strong>: Tier 3 structured and standardized data (CSV files). Files submitted here must be &ldquo;schema-valid&rdquo;, which refers to the file as is conforming to the standards of a given information exhange schema. The blank Excel files for a given information exchange are found at <a href="http://schemas.usgin.org/models/">http://schemas.usgin.org/models/</a>. When data conforms to these specifications (field headings, data types, etc.) the file can be validated at <a href="http://schemas.usgin.org/validate/cm">http://schemas.usgin.org/validate/cm</a> before up-loading to the node as a tier 3, structured dataset. After file upload, the option exists to publish the data as OGC web services (WFS and WMS), which have the greatest utility in the system. Once a &ldquo;schema-valid&rdquo; file is uploaded, one must choose the appropriate information exchanges used from the <strong>Content Model</strong> drop-down lists.</li>
+	<li><strong>Unstructured Resource</strong>: Tier 1 and 2 data (text, images, structured (but not standardized) files like CSV or Excel, PDF files, etc.)</li>
+	<li><strong>Offline Resource</strong>: Metadata record would describe resources which do not exist online such as a core repository.</li>
+	<li><strong>Data Service</strong>: Register already published web services such as WMS, WFS, CSW, and OPeNDAP by providing the GetCapabilites or other URL in the <strong>Resource</strong> field.</li>
 </ul>
-
-
-<p>More information on data resource types is available on the <a href="data">Data Models, Exchange Methods, and Metadata page</a>.</p>
 
 <p>When the appropriate fields have been populated:</p>
 
 <ul>
-	<li>Click <strong>Save &amp; add another</strong> to add another metadata record to the collection; this will repeat the steps described in Step 2</li>
-	<li>Click <strong>Next: Additional Info</strong> to finalize process by adding collection metadata</li>
+	<li>Click <strong>Save &amp; add another</strong> to add another metadata record to the collection; this will repeat the steps described in Step 2.</li>
+	<li>Click <strong>Next: Additional Info</strong> to finalize process by adding collection metadata.</li>
 </ul>
 
 <h3>Step 3: Collection Metadata</h3>
@@ -173,7 +135,7 @@ ___NGDS_HEADER_END___ #}
 	<li><strong>Maintainer</strong>: The individual, agency, company, or organization responsible for the data resource(s) described by metadata record(s) in the collection</li>
 	<li><strong>Spatial Location</strong>: A rough approximation of the features in the data resource(s) described by metadata record(s) in the collection</li>
 	<li><strong>Category</strong>: A description of the type of data resource(s) described by metadata record(s) in the collection</li>
-	<li><strong>URI</strong>: A <em>uniform resource identifier</em> for the collection; see the <a href="http://usgin.org/content/usgin-uri-tutorial" target="_blank">USGIN URI Tutorial</a> for more information</li>
+	<li><strong>URI</strong>: A <em>uniform resource identifier</em> for the collection; see the <a href="http://tech.usgin.org/content/usgin-uri-tutorial" target="_blank">USGIN URI Tutorial</a> for more information</li>
 	<li><strong>Quality</strong>: A rough assessment of the quality of the data resource(s) described by metadata record(s) in the collection</li>
 	<li><strong>Lineage</strong>: The provenance of data resource(s) described by metadata record(s) in the collection</li>
 	<li><strong>Status</strong>: The workflow status of data resource(s) described by metadata record(s) in the collection</li>
@@ -184,12 +146,9 @@ ___NGDS_HEADER_END___ #}
 
 <p>When done, click <strong>Finish</strong>. Doing so will finalize this collection and all metadata records within it; these records will be added to the catalog.</p>
 
-<h2>Bulk Uploads</h2>
+<p>For <strong>Structured Resources</strong>, continue with the following one-click step to publish the resource as OGC WFS and WMS services:</p>
 
-<p>Clicking <strong>Bulk Upload</strong> leads to the <strong>Bulk Upload</strong> form. Here, users have the opportunity to upload a .ZIP file containing numerous data resources; the Bulk Upload feature will automatically generate metadata records for each data resource in the ZIP file.</p>
+<p>Click <strong>Publish as OGC.</strong></p>
 
-<p>To proceed, click the <strong>Choose File</strong> button on the second row; in the window that appears, locate the desired .ZIP file and click <strong>Open</strong>. In the <strong>Bulk Upload</strong> form, click <strong>Submit</strong>.</p>
-
-<p>Following the successful submission of metadata to a registered instance of the NGDS NIAB, the metadata records will be harvested by the NGDS central portal aggregator (and possibly by other interested catalog operators) and will appear in NGDS catalog searches. Metadata records in this catalog can be used to locate and access the data resources they describe.</p>
 </section>
 </section>
