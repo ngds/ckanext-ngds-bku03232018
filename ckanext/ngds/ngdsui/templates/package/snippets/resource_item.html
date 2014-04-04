@@ -35,11 +35,8 @@ ___NGDS_HEADER_END___ #}
   <div class="btn-group">
     <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
     {% if res.protocol and res.protocol.lower() == ('ogc:wms') %}
-      {% set prospector_url = h.geo_prospector(res.url, res.layer, 'wms') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
-      {% if not prospector_url.wms == 'undefined' %}
-        <a href="{{ prospector_url.wms }}" class="btn btn-primary" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
-      {% endif %}
+      <a href="javascript: void(0)" id="prospector-btn" class="btn btn-primary disabled" res_url="{{ res.url }}" res_layer="{{ res.layer }}" style="margin-left:10px;" target="_blank"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
     {% elif res.protocol and res.protocol.lower() == ('ogc:wfs') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
     {% else %}
@@ -154,3 +151,24 @@ ___NGDS_HEADER_END___ #}
   {% endblock %}
 </li>
 {% endif %}
+
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-03-06T16:49:10.08/jquery.min.js"></script>
+<script>
+    (function () {
+        var url = $("#prospector-btn").attr("res_url"),
+            layer = $("#prospector-btn").attr("res_layer");
+        $.ajax({
+            url: '/api/action/geothermal_prospector',
+            type: 'POST',
+            data: JSON.stringify({'url': url, 'layer': layer}),
+            success: function (response) {
+                var wms_url = response.result.wms;
+                $("#prospector-btn").attr("href", wms_url);
+                $("#prospector-btn").removeClass("disabled");
+            },
+            error: function () {
+                console.log('error')
+            }
+        })
+    }).call(this);
+</script>
