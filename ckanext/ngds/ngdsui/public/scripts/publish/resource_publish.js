@@ -166,10 +166,11 @@ $(document).ready(function () {
             });
         }
     };
-
+});
 (function () {
     var url = $("#prospector-btn").attr("res_url"),
-        layer = $("#prospector-btn").attr("res_layer");
+        layer = $("#prospector-btn").attr("res_layer"),
+        data = JSON.stringify({'url': url, 'layer': layer});
 
     $("#prospector-btn").attr("data-toggle", "tooltip");
     $("#prospector-btn").attr("title", "Loading data...");
@@ -177,7 +178,7 @@ $(document).ready(function () {
     $.ajax({
         url: '/api/action/geothermal_prospector',
         type: 'POST',
-        data: JSON.stringify({'url': url, 'layer': layer}),
+        data: data,
         success: function (response) {
             var wms_url = response.result.wms;
             $("#prospector-btn").attr("href", wms_url);
@@ -192,5 +193,3 @@ $(document).ready(function () {
         }
     })
 }).call(this);
-
-});
