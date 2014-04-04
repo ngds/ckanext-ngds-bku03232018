@@ -18,24 +18,17 @@ This extension is designed to run two different types of CKAN sites to serve two
 - **Aggregator**: A node that is primarily used to collect metadata from NGDS publishing nodes (and possibly from other metadata sources), and provide search and data browsing services to help users find what they need, evaluate it, and get it for their application. Also called __Central__.
 
     - NGDS Plugins: `metadata`, `csw`, `ngdsui`, `ngds_harvester`, `geoserver`
-    - External Plugins: `spatial_metadata`, `spatial_harvest_metadata_api`, `spatial_query` (ckanext-spatial), `csw_harvester`, `harvest`, `ckan_harvester`, `cswserver`, and
-    `harvest` (ckanext-harvest)
+    - External Plugins: `spatial_metadata`, `spatial_harvest_metadata_api`, `spatial_query` (ckanext-spatial), `csw_harvester`, `harvest`, `ckan_harvester`, `cswserver`, and `harvest` (ckanext-harvest)
 
 ## Plugins
 
 This extension provides a number of plugins, each of which encapsulates a different aspect of NGDS functionality:
 
-- **ngdsui**: This plugin represents the core of ckanext-ngds functionality. It makes UI adjustments,
-performs validation of NGDS-specific metadata fields, and provides integration with NGDS standard data models defined
- by http://schemas.usgin.org/models.
+- **ngdsui**: This plugin represents the core of ckanext-ngds functionality. It makes UI adjustments, performs validation of NGDS-specific metadata fields, and provides integration with NGDS standard data models defined by http://schemas.usgin.org/models.
 - **metadata**: Builds additional tables required by ckanext-ngds
-- **csw**: Provides access to metadata through the [OGC CSW Protocol](http://www.opengeospatial.org/standards/cat), and maintains [ISO-19139](http://www.iso.org/iso/catalogue_detail.htm?csnumber=32557) metadata
-documents that conform to the [USGIN profile](http://lab.usgin.org/sites/default/files/profile/file/u4/USGIN_ISO_Metadata_1.1.4.pdf).
-- **ngds_harvester**: Provides a customized [CKAN Harvester](https://github
-.com/okfn/ckanext-harvest#the-ckan-harvester) that translates between ISO-19139 documents and
-[NGDS-specific CKAN Datasets](https://github.com/ngds/ckanext-ngds/wiki/The-NGDS-Package-and-Resource-Schema).
-- **geoserver**: Integration with [Geoserver](http://geoserver.org), allowing uploaded CSV files and shapefiles to be
-exposed as [WMS and WFS data services](http://opengeospatial.org).
+- **csw**: Provides access to metadata through the [OGC CSW Protocol](http://www.opengeospatial.org/standards/cat), and maintains [ISO-19139](http://www.iso.org/iso/catalogue_detail.htm?csnumber=32557) metadata documents that conform to the [USGIN profile](http://lab.usgin.org/sites/default/files/profile/file/u4/USGIN_ISO_Metadata_1.1.4.pdf).
+- **ngds_harvester**: Provides a customized [CKAN Harvester](https://github.com/okfn/ckanext-harvest#the-ckan-harvester) that translates between ISO-19139 documents and [NGDS-specific CKAN Datasets](https://github.com/ngds/ckanext-ngds/wiki/The-NGDS-Package-and-Resource-Schema).
+- **geoserver**: Integration with [Geoserver](http://geoserver.org), allowing uploaded CSV files and shapefiles to be exposed as [WMS and WFS data services](http://opengeospatial.org).
 
 ## Extension Dependencies
 
@@ -53,4 +46,4 @@ instance to another.
 The installation of an entire CKAN system configured for ckanext-ngds on a clean,
 Ubuntu 12.04 server can be accomplished using a simple installation script. See [here](https://github.com/ngds/install-and-run).
 
-For users who wish to install ckanext-ngds alongside an existing CKAN system, or for developers interested in working with the code in this repository see [this wiki]().
+For users who wish to install ckanext-ngds alongside an existing CKAN system, or for developers interested in working with the code in this repository see [this wiki](https://github.com/ngds/ckanext-ngds/wiki).
