@@ -47,7 +47,7 @@ ___NGDS_HEADER_END___ #}
 
 <p>Instructions on installing and configuring a NIAB instance are available with the following document:</p>
 
-<p><a href="http://ngds.github.io/install-and-run/NGDS_Installation_Documentation.htm">http://ngds.github.io/install-and-run/NGDS_Installation_Documentation.htm</a></p>
+<p><a href="http://ngds.github.io/install-and-run/NGDS_Installation_Documentation.htm" target="_blank">http://ngds.github.io/install-and-run/NGDS_Installation_Documentation.htm</a></p>
 
 <p>This document and other helpful information, including community conversation, are available at <a href="https://github.com/ngds/ckanext-ngds" target="_blank">NGDS CKAN GitHub</a>.</p>
 
@@ -78,9 +78,7 @@ ___NGDS_HEADER_END___ #}
 
 <p>Data providers can publish their data to NGDS via any NGDS Node-in-a-Box instance for which they have an account with data publication permission.</p>
 
-<p>Connect to an NGDS NIAB using a web browser and click<strong> Contribute</strong> and populate the appropriate forms to submit a metadata record to the catalog. During this process, either upload a resource or specify the web location of an existing web-accessible data resource. Those providing data to a NIAB that is managed by another entity should make appropriate arrangements with the managers of the node regarding future edits to that data; those who manage their own NIAB have complete control over the data submitted then harvested to the main aggregator for larger use in the system. The nodes (NIAB installations or other node types) will be harvested at intervals, so any edits made at a node will be reflected in the system with the next scheduled harvest.</p>
-
-<p>The following help guide can be navigated at <a href="http://node.usgin.org/ngds/contribute">http://node.usgin.org/ngds/contribute</a> as an example; this site exists only for demonstration purposes.</p>
+<p>Connect to an NGDS NIAB using a web browser and click <strong>Contribute</strong> and populate the appropriate forms to submit a metadata record to the catalog. During this process, either upload a resource or specify the web location of an existing web-accessible data resource. Those providing data to a NIAB that is managed by another entity should make appropriate arrangements with the managers of the node regarding future edits to that data; those who manage their own NIAB have complete control over the data submitted then harvested to the main aggregator for larger use in the system. The nodes (NIAB installations or other node types) will be harvested at intervals, so any edits made at a node will be reflected in the system with the next scheduled harvest.</p>
 
 <h3>Step 1: Create a Collection</h3>
 
@@ -107,10 +105,10 @@ ___NGDS_HEADER_END___ #}
 
 <p>Clicking <strong>Next: Add Data</strong> on the <strong>Create Collection</strong> form leads to the <strong>Add Data</strong> form. Populating this form creates a metadata record describing a specified data resource; this metadata record is added to the collection created in Step 1.</p>
 
-<p>Four types of data may be upload. See <a href="http://www.geothermaldata.org/ngds/data">Data Models, Exchange Methods, and Metadata page</a> for helpful text on determining categories (tiers) of data which may be uploaded.</p>
+<p>Four types of data may be upload. See <a href="data">Data Models, Exchange Methods, and Metadata page</a> for helpful text on determining categories (tiers) of data which may be uploaded.</p>
 
 <ul>
-	<li><strong>Structured Resource</strong>: Tier 3 structured and standardized data (CSV files). Files submitted here must be &ldquo;schema-valid&rdquo;, which refers to the file as is conforming to the standards of a given information exhange schema. The blank Excel files for a given information exchange are found at <a href="http://schemas.usgin.org/models/">http://schemas.usgin.org/models/</a>. When data conforms to these specifications (field headings, data types, etc.) the file can be validated at <a href="http://schemas.usgin.org/validate/cm">http://schemas.usgin.org/validate/cm</a> before up-loading to the node as a tier 3, structured dataset. After file upload, the option exists to publish the data as OGC web services (WFS and WMS), which have the greatest utility in the system. Once a &ldquo;schema-valid&rdquo; file is uploaded, one must choose the appropriate information exchanges used from the <strong>Content Model</strong> drop-down lists.</li>
+	<li><strong>Structured Resource</strong>: Tier 3 structured and standardized data (CSV files). Files submitted here must be &ldquo;schema-valid&rdquo;, which refers to the file as is conforming to the standards of a given information exhange schema. The blank Excel files for a given information exchange are found at <a href="http://schemas.usgin.org/models/" target="_blank">http://schemas.usgin.org/models/</a>. When data conforms to these specifications (field headings, data types, etc.) the file can be validated at <a href="http://schemas.usgin.org/validate/cm" target="_blank">http://schemas.usgin.org/validate/cm</a> before up-loading to the node as a tier 3, structured dataset. After file upload, the option exists to publish the data as OGC web services (WFS and WMS), which have the greatest utility in the system. Once a &ldquo;schema-valid&rdquo; file is uploaded, one must choose the appropriate information exchanges used from the <strong>Content Model</strong> drop-down lists.</li>
 	<li><strong>Unstructured Resource</strong>: Tier 1 and 2 data (text, images, structured (but not standardized) files like CSV or Excel, PDF files, etc.)</li>
 	<li><strong>Offline Resource</strong>: Metadata record would describe resources which do not exist online such as a core repository.</li>
 	<li><strong>Data Service</strong>: Register already published web services such as WMS, WFS, CSW, and OPeNDAP by providing the GetCapabilites or other URL in the <strong>Resource</strong> field.</li>
