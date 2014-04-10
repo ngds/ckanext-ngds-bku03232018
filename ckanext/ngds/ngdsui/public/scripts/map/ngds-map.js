@@ -117,6 +117,11 @@ ngds.Map.makeSearch = function (parameters) {
             $('#query-results #search-results').append(html);
         }
     })
+    /*
+    Empty the search query here.  This isn't really a hack, it's just kind of sloppy.  If we don't empty the search
+    query here, then you won't be able to make any new searches.  A refactor of the map search object is definitely
+    needed to clean this up.  We should have one object that can handle the search query.
+    */
     parameters['q'] = '';
 };
 
