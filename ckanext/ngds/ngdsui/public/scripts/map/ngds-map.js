@@ -117,6 +117,7 @@ ngds.Map.makeSearch = function (parameters) {
             $('#query-results #search-results').append(html);
         }
     })
+    parameters['q'] = '';
 };
 
 ngds.Map.returnSearchResult = function (result) {
