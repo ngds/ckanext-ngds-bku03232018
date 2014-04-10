@@ -233,6 +233,14 @@ def contentmodel_checkFile(context, data_dict):
             except:
                 validation_msg.append({'valid': False})
 
+            log.debug("Finished USGIN content model validation.")
+            if valid and not errors:
+                log.debug("Document is VALID.")
+            if valid and errors:
+                log.debug("With CHANGES the document will be VALID ")
+            else:
+                log.debug("Document is NOT VALID.")
+
     if len(validation_msg) == 0:
         data_dict["usgin_valid"] = True
         data_dict["usgin_errors"] = None
@@ -240,7 +248,7 @@ def contentmodel_checkFile(context, data_dict):
     else:
         data_dict["usgin_valid"] = False
         data_dict["usgin_errors"] = validation_msg
-        return {"valid": False, "messages": validation_msg, "usgin_errors": validation_msg}
+        return {"valid": False, "messages": "Not Okay", "usgin_errors": validation_msg}
 
 @logic.side_effect_free
 def contentmodel_checkBulkFile(context,cm_dict):
