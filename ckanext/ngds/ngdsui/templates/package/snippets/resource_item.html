@@ -33,14 +33,20 @@ ___NGDS_HEADER_END___ #}
 
   {% block resource_item_explore_central %}
   <div class="btn-group">
-    <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
+      {% if res.url.lower().endswith("csv") or res.url.lower().endswith("wfs") or res.url.lower().endswith("wms")%}
+         <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
+       {% endif %}
     {% if res.protocol and res.protocol.lower() == ('ogc:wms') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
       <a href="#" id="prospector-btn" class="btn btn-primary disabled" res_url="{{ res.url }}" res_layer="{{ res.layer }}" style="margin-left:10px;"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
     {% elif res.protocol and res.protocol.lower() == ('ogc:wfs') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
     {% else %}
-      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
+      {% if res.url.lower().endswith("zip") or res.url.lower().endswith("xls") or res.url.lower().endswith("xlsx") %}
+        <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
+      {% else %}
+        <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-bar-chart"></i>{{ _('View Resource') }}</a>
+      {% endif %}
     {% endif %}
     <ul class="dropdown-menu">
       {% block resource_item_explore_links_central %}
@@ -74,14 +80,20 @@ ___NGDS_HEADER_END___ #}
 
   {% block resource_item_explore %}
   <div class="btn-group">
-    <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
+    {% if res.url.lower().endswith("csv") or res.url.lower().endswith("wfs") or res.url.lower().endswith("wms") %}
+      <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
+    {% endif %}
     {% if res.protocol and res.protocol.lower() == ('ogc:wms') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
       <a href="#" id="prospector-btn" class="btn btn-primary disabled" res_url="{{ res.url }}" res_layer="{{ res.layer }}" style="margin-left:10px;"><i class="icon-circle-arrow-right"></i>{{ _('Geothermal Prospector') }}</a>
     {% elif res.protocol and res.protocol.lower() == ('ogc:wfs') %}
       <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-info-sign"></i>{{ _('GetCapabilities') }}</a>
     {% else %}
-      <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
+      {% if res.url.lower().endswith("zip") or res.url.lower().endswith("xls") or res.url.lower().endswith("xlsx") %}
+        <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-download"></i>{{ _('Download') }}</a>
+      {% else %}
+        <a href="{{ res.url }}" class="btn btn-primary" target="_blank"><i class="icon-bar-chart"></i>{{ _('View Resource') }}</a>
+      {% endif %}
     {% endif %}
     {% if h.check_access('package_create') and not g.central %}
     {% if h.is_plugin_enabled('geoserver') %}
