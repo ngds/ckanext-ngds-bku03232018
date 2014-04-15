@@ -40,16 +40,14 @@ A list of variables we need in this page.
                   <button type="submit" value="Search" onclick="submitForm()">{{_('Submit')}}</button>
                 </span>
                 </fieldset>
-
             </div>
-
             <div id="library-search-results">
 
                 <div class="library-search-accordion">
+                    <div id="search-hints">
+                        <a href="http://ngds.github.io/documents/SearchHints.htm" target="_blank">Click here for search hints</a>
+                    </div>
                     <ul class="accordion" id="search-accoridion">
-
-                        <!-- <img src="/assets/plus_grey.png" title="Expand All" id="expander-image"/>  -->
-
                         {% set facet_list = h.get_ngdsfacets() %}
 
                         {% for facet in facet_list %}
@@ -63,7 +61,6 @@ A list of variables we need in this page.
                         </li>
                         {% endfor %}
                     </ul>
-
                 </div>
                 <div id="search-result-block">
                     <div id="sort-save-bar">
