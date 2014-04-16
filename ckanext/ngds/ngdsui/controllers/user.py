@@ -128,10 +128,11 @@ class UserController(NGDSBaseController):
 
         return [(m.table_id, m.capacity,) for m in q.all()]
 
-    def custom_activity_stream(self, dataset):
+    def ngds_activity_stream(self, dataset):
         """
         Render custom package activity stream
         """
+        from ckanext.ngds.ngdsui.logic.action import ngds_activities_html
 
         context = {'model': model, 'session': model.Session,
                    'user': c.user or c.author, 'for_view': True}
@@ -139,8 +140,7 @@ class UserController(NGDSBaseController):
         try:
             c.pkg_dict = get_action('package_show')(context, data_dict)
             c.pkg = context['package']
-            c.package_activity_stream = get_action(
-                    'package_activity_list_html')(context,
+            c.package_activity_stream = ngds_activities_html(context,
                             {'id': c.pkg_dict['id']})
             c.related_count = c.pkg.related_count
         except NotFound:
