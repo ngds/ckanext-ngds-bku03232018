@@ -127,3 +127,6 @@ class UserController(NGDSBaseController):
             filter(model.Member.table_name == "user")
 
         return [(m.table_id, m.capacity,) for m in q.all()]
+
+    def custom_activity_stream(self):
+        return render('user/activity_stream.html')
