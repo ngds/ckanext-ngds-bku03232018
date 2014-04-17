@@ -195,6 +195,8 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
         map.connect("logout_page", "/user/logged_out_redirect", controller=user_controller, action="logged_out_page")
         map.connect("execute_fulltext_indexer", "/ngds/execute_fulltext_indexer", controller=contribute_controller,
                     action="execute_fulltext_indexer")
+        map.connect("custom_activity_stream", "/dataset/activity/{dataset}", controller=user_controller,
+                    action="ngds_activity_stream")
 
         #Help related paths
 

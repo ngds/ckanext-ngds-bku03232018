@@ -35,7 +35,7 @@ from ckan.logic import get_action, check_access
 from ckan.logic import (tuplize_dict, clean_dict, parse_params)
 
 from ckanext.ngds.ngdsui.controllers.ngds import NGDSBaseController
-from ckan.logic import NotAuthorized
+from ckan.logic import NotAuthorized, NotFound
 from ckanext.ngds.ngdsui.misc import helpers
 
 
@@ -127,3 +127,25 @@ class UserController(NGDSBaseController):
             filter(model.Member.table_name == "user")
 
         return [(m.table_id, m.capacity,) for m in q.all()]
+
+    def ngds_activity_stream(self, dataset):
+        """
+        Render custom package activity stream
+        """
+        from ckanext.ngds.ngdsui.logic.action import ngds_activities_html
+
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author, 'for_view': True}
+        data_dict = {'id': dataset}
+        try:
+            c.pkg_dict = get_action('package_show')(context, data_dict)
+            c.pkg = context['package']
+            c.package_activity_stream = ngds_activities_html(context,
+                            {'id': c.pkg_dict['id']})
+            c.related_count = c.pkg.related_count
+        except NotFound:
+            abort(404, _('Dataset not found'))
+        except NotAuthorized:
+            abort(401, _('Unauthorized to read dataset %s') % dataset)
+
+        return render('package/activity.html')
