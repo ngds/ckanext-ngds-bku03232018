@@ -92,7 +92,9 @@ def get_snippet_related_type(activity, detail):
 
 def ngds_snippet_harvest_title(activity, detail):
     title = activity['harvest']['harvest_title']
-    return literal('''<span>%s</span>''' % (title))
+    link = activity['harvest']['harvest_url']
+    url = '<a href=' + link + '>' + title + '</a>'
+    return literal('''<span>%s</span>''' % (url))
 
 def ngds_snippet_harvest_type(activity, detail):
     return
