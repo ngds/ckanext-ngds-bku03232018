@@ -180,8 +180,8 @@ $(document).ready(function () {
         type: 'POST',
         data: data,
         success: function (response) {
-            var wms_url = response.result.wms;
-            $("#prospector-btn").attr("href", wms_url);
+            var prospector_url = response.result.prospector_url;
+            $("#prospector-btn").attr("href", prospector_url);
             $("#prospector-btn").attr("target", "_blank");
             $("#prospector-btn").removeClass("disabled");
             $("#prospector-btn").removeAttr("data-toggle");

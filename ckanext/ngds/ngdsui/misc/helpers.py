@@ -1011,14 +1011,36 @@ def check_datastore_resource(resource_id):
         return False
 
 def geothermal_prospector_url(context, data_dict):
+    def prospector_wfs(url, layer):
+        try:
+            wfs = ogc.HandleWFS(url)
+            host_url = wfs.get_service_url()
+            type_name = wfs.do_layer_check(layer)
+            return {'host': host_url, 'type_name': type_name}
+        except:
+            return None
+
+    def prospector_wms(url, layer):
+        try:
+            wms = ogc.HandleWMS(url)
+            host_url = wms.get_service_url()
+            type_name = wms.do_layer_check(layer)
+            return {'host': host_url, 'type_name': type_name}
+        except:
+            return None
     try:
         this_url = data_dict['url']
         this_layer = {'layer': data_dict['layer']}
         base_url = 'https://maps-stage.nrel.gov/geothermal-prospector/#/'
         base_layer = '6'
-        wms = ogc.HandleWMS(this_url)
-        host_url = wms.get_service_url()
-        type_name = wms.do_layer_check(this_layer)
-        return {'wms': base_url + '?baselayer=' + base_layer + '&zoomlevel=3' + '&wmsHost=' + host_url + '&wmsLayerName=' + type_name}
+        wfs = prospector_wfs(this_url, this_layer)
+        wms = prospector_wms(this_url, this_layer)
+        if wms is not None and wfs is not None:
+            return {'prospector_url': base_url + '?baselayer=' + base_layer + '&zoomlevel=3' + '&wmsHost=' + wms['host']
+                    + '&wmsLayerName=' + wms['type_name'] + '&wfsHost=' + wfs['host'] + '&wfsFeatureTypeName='
+                    + wfs['type_name']}
+        elif wms is not None and wfs is None:
+            return {'prospector_url': base_url + '?baselayer=' + base_layer + '&zoomlevel=3' + '&wmsHost=' + wms['host']
+                    + '&wmsLayerName=' + wms['type_name']}
     except:
-        return {'wms': 'undefined'}
+        return {'prospector_url': 'undefined'}
