@@ -103,7 +103,7 @@ ___NGDS_HEADER_END___ #}
         <span class="left"><a
                 href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{
             _('HOME') }}</a></span>
-        <span class="center"><a href="mailto:ngdsweb@geothermaldata.org?subject=Contact%20Page">{{ _('CONTACT') }}</a></span>
+        <span class="center"><a href="mailto:{{ h.get_contact_email() }}">{{ _('CONTACT') }}</a></span>
         <span class="right"><a href="/ngds/terms_of_use">{{ _('TERMS OF USE') }} &amp; {{ _('PRIVACY') }}</a></span>
     </div>
 </div>
