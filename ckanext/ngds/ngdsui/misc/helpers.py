@@ -1022,3 +1022,15 @@ def geothermal_prospector_url(context, data_dict):
         return {'wms': base_url + '?baselayer=' + base_layer + '&zoomlevel=3' + '&wmsHost=' + host_url + '&wmsLayerName=' + type_name}
     except:
         return {'wms': 'undefined'}
+
+def get_contact_email():
+    """
+    Returns the NGDS contact email in the configuration.
+    """
+    try:
+        if g.contact_email:
+            log.debug("NGDS contact email is already loaded.")
+    except:
+        contact_email = config.get("ngds.contact_email", None)
+        g.contact_email = contact_email
+    return g.contact_email
