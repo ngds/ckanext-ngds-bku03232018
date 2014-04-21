@@ -20,6 +20,31 @@ ___NGDS_HEADER_END___ #}
 {%- endblock -%}
 {%- block content %}
 
+<script type="text/javascript" src="/fanstatic/vendor/:version:2013-05-30T10:31:49.79/:bundle:bootstrap/js/bootstrap.min.js;jed.min.js;select2/select2.min.js"></script>
+
+<div id="old-browser-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3>Unsupported Web Browser Detected</h3>
+    </div>
+    <div class="modal-body">
+        <p>This website displays a lot of information, and as a result will not perform well in Internet Explorer 8 or older.  Please consider using another browser:</p>
+        <ul>
+          <li><a href="https://www.google.com/intl/en/chrome/browser/">Google Chrome</a></li>
+          <li><a href="http://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a></li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+
+<script>
+  if ($.browser.msie && parseInt($.browser.version) <= 8) {
+    $('#old-browser-modal').modal('show');
+  };
+</script>
+
 <div id="search-datawatch-container">
     <div id="search-container" style="height:250px;">
 	<p style="padding-left:5px; padding-top:5px;">The National Geothermal Data System (NGDS) is a catalog of documents and datasets that provide information about geothermal resources.</p>  
@@ -149,4 +174,5 @@ ___NGDS_HEADER_END___ #}
 
 
 </script>
+
 {% endblock %}
