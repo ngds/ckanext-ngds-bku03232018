@@ -77,11 +77,11 @@ ngds.Map.makeSearch = function (parameters) {
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         } else if (count < 50 && page === 1) {
-            var html = '<div class="top-showing-results">Results 0 - ' + count + ' of ' + count + '</div>';
+            var html = '<div class="top-showing-results">Results 1 - ' + count + ' of ' + count + '</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         } else if (count != 0 && page === 1) {
-            var html = '<div class="top-showing-results">Results 0 - 50 of ' + count + '</div>';
+            var html = '<div class="top-showing-results">Results 1 - 50 of ' + count + '</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         } else {
@@ -107,7 +107,7 @@ ngds.Map.makeSearch = function (parameters) {
 
         if (count > 0 && rows < count && response.result.packages.length > 0) {
             var html = '<div id="load-results-' + nextPage + '" class="load-more-results">';
-                html += '<a href="javascript:void(0)" value="' + nextPage + '-' + nextRows + '-' + rows + '" onclick="ngds.Map.doPagination(this)">Load Results ' + (rows*(nextPage-1)) + ' - ' + (nextRows) + '</a>';
+                html += '<a href="javascript:void(0)" value="' + nextPage + '-' + nextRows + '-' + rows + '" onclick="ngds.Map.doPagination(this)">Load Results ' + (rows*(nextPage-1) + 1) + ' - ' + (nextRows) + '</a>';
                 html += '</div>';
             $('#query-results #search-results').append(html);
         } else {
@@ -375,7 +375,7 @@ ngds.Map.doPagination = function (event) {
         baseRows = parseInt(thisValue.split('-')[2]),
         parameters = ngds.Map.searchParameters,
         parentID = $("#load-results-" + nextPage),
-        html = '<div class="showing-results">Results ' + (baseRows*(nextPage-1)) + ' - ' + nextRows + '</div>';
+        html = '<div class="showing-results">Results ' + (baseRows*(nextPage-1) + 1) + ' - ' + nextRows + '</div>';
 
         parameters['page'] = nextPage;
         ngds.Map.makeSearch(parameters);
