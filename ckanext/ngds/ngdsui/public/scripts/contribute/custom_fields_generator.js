@@ -1,5 +1,8 @@
 /* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 $(document).ready(function () {
+
+    $("[rel=tooltip]").tooltip({ placement: 'right'});
+
     (function stage_setup() {
         ngds.util.state['prev_resource_type'] = $("[name=resource_format]:checked").val();
         ngds.util.state['versions'] = {};
@@ -153,19 +156,25 @@ $(document).ready(function () {
         if (resource_type === 'structured') {
             $(".validate-message").remove();
             var html = '<div class="validate-message">';
-                html += '<div class="message" style="padding-top:20px;text-align:center;font-size:15px;">';
-                html += '<a href="http://schemas.usgin.org/validate/cm" target="_blank">';
-                html += 'Use this service to make sure your structured data conforms to USGIN specifications'
+                html += '<div class="message" style="padding-top:20px;text-align:center;font-size:15px;color:red;">';
+                html += '<a href="http://schemas.usgin.org/validate/cm" target="_blank"'
+                html += 'rel="tooltip" title="Use this service to make sure your structured data conforms to USGIN specifications.">';
+                html += 'Click here to validate your dataset first!'
                 html += '</div></a></div>';
             $(ev.currentTarget).parent().after(html);
         } else if (resource_type === 'data-service') {
             $(".validate-message").remove();
             var html = '<div class="validate-message">';
                 html += '<div class="message" style="padding-top:20px;text-align:center;font-size:15px;">';
-                html += '<a href="http://schemas.usgin.org/validate/wfs" target="_blank">';
-                html += 'Use this service to make sure your structured data conforms to USGIN specifications'
+                html += '<a href="http://schemas.usgin.org/validate/wfs" target="_blank"'
+                html += 'rel="tooltip" title="Use this service to make sure your data service conforms to USGIN specifications.">';
+                html += 'Click here to validate your data service first!'
                 html += '</div></a></div>';
-            $(ev.currentTarget).parent().after(html);        }
+            $(ev.currentTarget).parent().after(html);
+        } else {
+            $(".validate-message").remove();
+        }
+
     });
 
     ngds.load_content_model_widget = function (resource_type) {

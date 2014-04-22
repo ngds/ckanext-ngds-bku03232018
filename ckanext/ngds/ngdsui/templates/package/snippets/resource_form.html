@@ -47,22 +47,22 @@ of the radio using css. eg. input[type=radio]+label {}
 <i class="ckan-icon ckan-icon-link-file"></i>
 <input id="field-resource-type-structured" type="radio" name="resource_format" value="structured"
 {{type_checked('structured')}}/>
-<label class="radio inline" for="field-resource-type-structured">{{ _('Structured Resource') }}</label>
+<label class="radio inline" for="field-resource-type-structured" rel="tooltip" title="Tier 2 and tier 3 structured data (CSV, Excel files, etc.). Tier 3 files must pass USGIN schema validation at the link below (link visible after the Dataset format is selected).">{{ _('Dataset') }}</label>
 
 <i class="ckan-icon ckan-icon-link-plugin"></i>
 <input id="field-resource-type-unstructured" type="radio" name="resource_format" value="unstructured"
 {{type_checked('unstructured')}}/>
-<label class="radio inline" for="field-resource-type-unstructured">{{ _('Unstructured Resource') }}</label>
+<label class="radio inline" for="field-resource-type-unstructured" rel="tooltip" title="Tier 1 and tier 2 unstructured data (text, images, PDF files, etc.).">{{ _('Document') }}</label>
 
 <i class="ckan-icon ckan-icon-link-plugin"></i>
 <input id="field-resource-type-offline" type="radio" name="resource_format" value="offline-resource"
 {{type_checked('offline-resource')}}/>
-<label class="radio inline" for="field-resource-type-offline">{{ _('Offline Resource') }}</label>
+<label class="radio inline" for="field-resource-type-offline" rel="tooltip" title="A resource which does not exist online, such as a core repository.">{{ _('Offline Resource') }}</label>
 
 <i class="ckan-icon ckan-icon-link-plugin"></i>
 <input id="field-resource-type-data-service" type="radio" name="resource_format" value="data-service"
 {{type_checked('data-service')}}/>
-<label class="radio inline" for="field-resource-type-data-service">{{ _('Data Service') }}</label>
+<label class="radio inline" for="field-resource-type-data-service" rel="tooltip" title="Already published web services such as WMS, WFS, CSW, and OPeNDAP. Provide the GetCapabilites or other URL in the Resource field.">{{ _('Data Service') }}</label>
 
 
 </div>
