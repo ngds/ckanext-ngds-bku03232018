@@ -1,7 +1,5 @@
 /* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
-/**
- * Created by Adrian Sonnenschein on 12/23/13.
- */
+
 (function () {
 
 var drawings = new L.FeatureGroup();
@@ -79,11 +77,11 @@ ngds.Map.makeSearch = function (parameters) {
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         } else if (count < 50 && page === 1) {
-            var html = '<div class="top-showing-results">Results 0 - ' + count + ' of ' + count + '</div>';
+            var html = '<div class="top-showing-results">Results 1 - ' + count + ' of ' + count + '</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         } else if (count != 0 && page === 1) {
-            var html = '<div class="top-showing-results">Results 0 - 50 of ' + count + '</div>';
+            var html = '<div class="top-showing-results">Results 1 - 50 of ' + count + '</div>';
             $('#query-results .query-hit-count').empty();
             $('#query-results .query-hit-count').append(html);
         } else {
@@ -109,7 +107,7 @@ ngds.Map.makeSearch = function (parameters) {
 
         if (count > 0 && rows < count && response.result.packages.length > 0) {
             var html = '<div id="load-results-' + nextPage + '" class="load-more-results">';
-                html += '<a href="javascript:void(0)" value="' + nextPage + '-' + nextRows + '-' + rows + '" onclick="ngds.Map.doPagination(this)">Load Results ' + (rows*(nextPage-1)) + ' - ' + (nextRows) + '</a>';
+                html += '<a href="javascript:void(0)" value="' + nextPage + '-' + nextRows + '-' + rows + '" onclick="ngds.Map.doPagination(this)">Load Results ' + (rows*(nextPage-1) + 1) + ' - ' + (nextRows) + '</a>';
                 html += '</div>';
             $('#query-results #search-results').append(html);
         } else {
@@ -244,6 +242,12 @@ ngds.Map.returnSearchResult = function (result) {
             html += '<a class="data-ogc" href="' + data.url + '">Download Open XML Resource</a>';
             html += '</div></div>';
             return html;
+        } else if (!(data.format) && data.url.indexOf("notifications.usgin.org") !== -1) {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" target="_blank" href="' + data.url + '">Service Notifications</a>';
+            html += '</div></div>';
+            return html;
         } else if (!(data.format) && data.url) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
@@ -371,7 +375,7 @@ ngds.Map.doPagination = function (event) {
         baseRows = parseInt(thisValue.split('-')[2]),
         parameters = ngds.Map.searchParameters,
         parentID = $("#load-results-" + nextPage),
-        html = '<div class="showing-results">Results ' + (baseRows*(nextPage-1)) + ' - ' + nextRows + '</div>';
+        html = '<div class="showing-results">Results ' + (baseRows*(nextPage-1) + 1) + ' - ' + nextRows + '</div>';
 
         parameters['page'] = nextPage;
         ngds.Map.makeSearch(parameters);

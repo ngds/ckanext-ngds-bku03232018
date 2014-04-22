@@ -6,3 +6,4 @@ build/
 *.mo
 ckanext/ngds/geoserver/your-last-test.log
 .idea/
+*codekit-config.json
