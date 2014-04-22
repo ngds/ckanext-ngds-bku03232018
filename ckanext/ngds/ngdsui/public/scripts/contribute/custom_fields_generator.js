@@ -594,7 +594,15 @@ var structured_form_raw = {
                         'class': 'control-label',
                         'for': 'field-distributor',
                         'text': 'Distributor'
-                    }
+                    },
+                    'children': [
+                        {
+                             'tag': 'span',
+                            'attributes': {
+                                'class': 'mandatory',
+                                'text': ' *'}
+                        }
+                    ]
                 },
                 {
                     'tag': 'div',
@@ -678,7 +686,15 @@ var data_service_raw = {
                         'class': 'control-label',
                         'for': 'field-distributor',
                         'text': 'Distributor'
-                    }
+                    },
+                    'children': [
+                        {
+                             'tag': 'span',
+                            'attributes': {
+                                'class': 'mandatory',
+                                'text': ' *'}
+                        }
+                    ]
                 },
                 {
                     'tag': 'div',
@@ -842,7 +858,15 @@ var unstructured_form_raw = {
                         'class': 'control-label',
                         'for': 'field-distributor',
                         'text': 'Distributor'
-                    }
+                    },
+                    'children': [
+                        {
+                             'tag': 'span',
+                            'attributes': {
+                                'class': 'mandatory',
+                                'text': ' *'}
+                        }
+                    ]
                 },
                 {
                     'tag': 'div',
@@ -925,7 +949,15 @@ var offline_form_raw = {
                             'class': 'control-label',
                             'for': 'field-distributor',
                             'text': 'Distributor'
-                        }
+                        },
+                        'children': [
+                            {
+                                 'tag': 'span',
+                                'attributes': {
+                                    'class': 'mandatory',
+                                    'text': ' *'}
+                            }
+                        ]
                     },
                     {
                         'tag': 'div',
@@ -955,7 +987,15 @@ var offline_form_raw = {
                         'class': 'control-label',
                         'for': 'field-ordering-procedure',
                         'text': 'Ordering Procedure'
-                    }
+                    },
+                        'children': [
+                            {
+                                 'tag': 'span',
+                                'attributes': {
+                                    'class': 'mandatory',
+                                    'text': ' *'}
+                            }
+                        ]
                 },
                 {
                     'tag': 'div',

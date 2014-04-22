@@ -34,6 +34,7 @@ selected
 {% endif %}
 {% endmacro %}
 
+{% block basic_fields %}
 {% block basic_fields_data %}
 <div class="controls"
 {% if allow_upload %} junk="junky" data-module="resource-upload-field"{% endif %}>
@@ -65,10 +66,20 @@ of the radio using css. eg. input[type=radio]+label {}
 
 
 </div>
-</div>
 {% endblock %}
-{% block basic_fields %}
-{{super()}}
+
+    {% block basic_fields_url %}
+    {{ form.input('url', id='field-url', label='%s <span class="mandatory">*</span>'|format(_('Resource'))|safe, placeholder=_('eg. http://example.com/gold-prices-jan-2011.json'), value=data.url, error=errors.url, classes=['control-full', 'control-large']) }}
+    {% endblock %}
+
+    {% block basic_fields_name %}
+    {{ form.input('name', id='field-name', label=_('Name'), placeholder=_('eg. January 2011 Gold Prices'), value=data.name, error=errors.name, classes=['control-full']) }}
+    {% endblock %}
+
+    {% block basic_fields_description %}
+    {{ form.markdown('description', id='field-description', label=_('Description'), placeholder=_('Some useful notes about the data'), value=data.description, error=errors.description) }}
+    {% endblock %}
+
 <div class="additional-resource-fields">
 
     {% if errors or resource %}
@@ -148,7 +159,7 @@ of the radio using css. eg. input[type=radio]+label {}
 
     {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete',
     'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
-    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('Eg. John Doe'),
+    {{ form.input('distributor', id='field-distributor', label='%s <span class="mandatory">*</span>'|format(_('Distributor'))|safe, placeholder=_('Eg. John Doe'),
     value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
     {% set format_attrs = {'data-module': 'autocomplete', 'data-module-source':
     '/api/2/util/resource/format_autocomplete?incomplete=?'} %}
@@ -171,7 +182,7 @@ of the radio using css. eg. input[type=radio]+label {}
     {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':'Eg. John
     Doe','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source':
     'responsible_parties?q=?'} %}
-    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('Eg. John Doe'),
+    {{ form.input('distributor', id='field-distributor', label='%s <span class="mandatory">*</span>'|format(_('Distributor'))|safe, placeholder=_('Eg. John Doe'),
     value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
     {% elif resource and resource.resource_format == 'offline-resource' %}
@@ -183,10 +194,10 @@ of the radio using css. eg. input[type=radio]+label {}
     {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-placeholder':'Eg. John
     Doe','data-module': 'autocomplete', 'data-module-distributor': '', 'data-module-source':
     'responsible_parties?q=?'} %}
-    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('Eg. John Doe'),
+    {{ form.input('distributor', id='field-distributor', label='%s <span class="mandatory">*</span>'|format(_('Distributor'))|safe, placeholder=_('Eg. John Doe'),
     value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
-    {{ form.markdown('ordering_procedure', id='field-ordering-procedure', label=_('Ordering Procedure'),
+    {{ form.markdown('ordering_procedure', id='field-ordering-procedure', label='%s <span class="mandatory">*</span>'|format(_('Ordering Procedure'))|safe,
     placeholder=_('Indicate how a person can go about obtaining this resource.'), value=data.ordering_procedure,
     error=errors.ordering_procedure) }}
 
@@ -194,7 +205,7 @@ of the radio using css. eg. input[type=radio]+label {}
 
     {% set distributor_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete',
     'data-module-distributor': '', 'data-module-source': 'responsible_parties?q=?'} %}
-    {{ form.input('distributor', id='field-distributor', label=_('Distributor'), placeholder=_('Eg. John Doe'),
+    {{ form.input('distributor', id='field-distributor', label='%s <span class="mandatory">*</span>'|format(_('Distributor'))|safe, placeholder=_('Eg. John Doe'),
     value=data.distributor, error=errors.distributor, classes=['control-full'], attrs=distributor_attrs) }}
 
     {% if "protocol" in errors %}
