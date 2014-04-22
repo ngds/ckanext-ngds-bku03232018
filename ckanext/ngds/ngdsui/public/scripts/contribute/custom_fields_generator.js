@@ -1,6 +1,4 @@
 /* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
-/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
-/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 $(document).ready(function () {
     (function stage_setup() {
         ngds.util.state['prev_resource_type'] = $("[name=resource_format]:checked").val();
