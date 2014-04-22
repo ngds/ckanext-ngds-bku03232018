@@ -242,16 +242,16 @@ ngds.Map.returnSearchResult = function (result) {
             html += '<a class="data-ogc" href="' + data.url + '">Download Open XML Resource</a>';
             html += '</div></div>';
             return html;
-        } else if (!(data.format) && data.url) {
-            html = '<div class="accordion-group" id="accordion-search-result">';
-            html += '<div class="accordion-heading">';
-            html += '<a class="data-ogc" target="_blank" href="' + data.url + '">External Website</a>';
-            html += '</div></div>';
-            return html;
         } else if (!(data.format) && data.url.indexOf("notifications.usgin.org") !== -1) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" target="_blank" href="' + data.url + '">Service Notifications</a>';
+            html += '</div></div>';
+            return html;
+        } else if (!(data.format) && data.url) {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" target="_blank" href="' + data.url + '">External Website</a>';
             html += '</div></div>';
             return html;
         }
