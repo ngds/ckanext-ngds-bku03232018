@@ -1,7 +1,5 @@
 /* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
-/**
- * Created by Adrian Sonnenschein on 12/23/13.
- */
+
 (function () {
 
 var drawings = new L.FeatureGroup();
@@ -248,6 +246,12 @@ ngds.Map.returnSearchResult = function (result) {
             html = '<div class="accordion-group" id="accordion-search-result">';
             html += '<div class="accordion-heading">';
             html += '<a class="data-ogc" target="_blank" href="' + data.url + '">External Website</a>';
+            html += '</div></div>';
+            return html;
+        } else if (!(data.format) && data.url.indexOf("notifications.usgin.org") !== -1) {
+            html = '<div class="accordion-group" id="accordion-search-result">';
+            html += '<div class="accordion-heading">';
+            html += '<a class="data-ogc" target="_blank" href="' + data.url + '">Service Notifications</a>';
             html += '</div></div>';
             return html;
         }
