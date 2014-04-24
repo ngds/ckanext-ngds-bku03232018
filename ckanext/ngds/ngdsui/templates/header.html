@@ -59,6 +59,9 @@ pass in the tab that is being rendered and the active_tab variable that we get f
                 <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.user:UserController', action='manage_users' %}"
                    class="float-left fit-to-login-div">{{ _('User Management') }}</a></li>
             {% endif %}
+            <li>
+                <a href="{{ h.url_for(controller='organization', action='index') }}"
+                   class="float-left fit-to-login-div">{{ _('Organizations') }}</a></li>
             <li><a href="{% url_for controller='user', action='logout' %}" class="float-left fit-to-login-div">{{
                 _('Logout') }}</a></li>
         </ul>
