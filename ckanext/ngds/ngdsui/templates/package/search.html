@@ -25,11 +25,7 @@ A list of variables we need in this page.
 {% block content %}
 
 <div id="library-container">
-    {% if g.central %}
     <form action="{% url_for controller='package', action='search'%}" method="get">
-        {% else %}
-        <form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
-            {% endif %}
             <div id="library-search-bar">
 
                 <input type="hidden" name="_tags_limit" value="0">
@@ -135,14 +131,8 @@ A list of variables we need in this page.
                                         {% for field in fields_grouped %}
                                         <span class="facet">{{ c.facet_titles.get(field) or h.get_field_title(field) }}:</span>
                                         {% for value in fields_grouped[field] %}
-                                        {% if g.central %}
                                         <a href="{{ h.remove_url_param(field, value=value, replace=None,controller='package', action='search')}}"
                                            class="remove" title="{{ _('Remove') }}">
-                                            {% else %}
-                                            <a href="{{ h.remove_url_param(field, value=value, replace=None,controller='organization', action='read',extras=dict(id=default_group)) }}"
-                                               class="remove" title="{{ _('Remove') }}">
-                                                {% endif %}
-
 
 
                           {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
