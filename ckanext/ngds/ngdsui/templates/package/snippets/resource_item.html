@@ -33,7 +33,7 @@ ___NGDS_HEADER_END___ #}
 
   {% block resource_item_explore_central %}
   <div class="btn-group">
-      {% if res.url.lower().endswith("csv") or "service=wfs" in res.url.lower() or "service=wms" in res.url.lower() %}
+      {% if res.url.lower().endswith("csv") or "wfs" in res.url.lower() or "wms" in res.url.lower() %}
          <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
        {% endif %}
     {% if res.protocol and res.protocol.lower() == ('ogc:wms') %}
@@ -80,7 +80,7 @@ ___NGDS_HEADER_END___ #}
 
   {% block resource_item_explore %}
   <div class="btn-group">
-    {% if res.url.lower().endswith("csv") or "service=wfs" in res.url.lower() or "service=wms" in res.url.lower() %}
+    {% if res.url.lower().endswith("csv") or "wfs" in res.url.lower() or "wms" in res.url.lower() %}
       <a href="{{url}}" class="btn btn-primary"><i class="icon-bar-chart"></i>Preview</a>
     {% endif %}
     {% if res.protocol and res.protocol.lower() == ('ogc:wms') %}
