@@ -1,9 +1,9 @@
 [
     {
-        "name":"Boise State University",
-        "abbreviation":"BSU",
-        "logo_path":"logos/boise.png",
-        "url":"http://www.boisestate.edu/",
+        "name":"DOE/NREL Geothermal Data Repository",
+        "abbreviation":"GDR",
+        "logo_path":"logos/gdr.png",
+        "url":"http://gdr.openei.org/",
         "is_gold":"true"
     },
     {
@@ -23,7 +23,7 @@
     {
         "name":"Association of American State Geologists",
         "abbreviation":"AASG",
-        "logo_path":"logos/aasg.png",
+        "logo_path":"logos/aasg_small.png",
         "url":"http://www.stategeologists.org/",
         "is_gold":"true"
     }

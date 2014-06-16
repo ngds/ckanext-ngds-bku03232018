@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  Copyright (c) 2012, Smartrak, Jacob Toye
  Leaflet.draw is an open-source JavaScript library for drawing shapes/markers on leaflet powered maps.

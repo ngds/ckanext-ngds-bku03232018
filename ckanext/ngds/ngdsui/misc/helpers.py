@@ -1,17 +1,26 @@
-''' ___NGDS_HEADER_BEGIN___
+""" NGDS_HEADER_BEGIN
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
 File: <filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+Please refer the the README.txt file in the base directory of the NGDS project:
+https://github.com/ngds/ckanext-ngds/blob/master/README.txt
 
-___NGDS_HEADER_END___ '''
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
+ngds/blob/master/LICENSE.md or
+http://www.gnu.org/licenses/agpl.html
+
+NGDS_HEADER_END """
 
 """
 This file defines a list of helper functions that are used from the site templates to obtain data that may not be available at the time of rendering, or to process information on the fly.
@@ -38,8 +47,10 @@ import ckan.plugins as p
 import json
 import ckanext.ngds.logic.file_processors.ProcessorRegistry as PR
 import ckanext.ngds.logic.file_processors.ContentModelConstants as CMC
-
+import ckanext.datastore.plugin as datastore
 from ckan.plugins import toolkit
+from ckanext.ngds.geoserver.model.Geoserver import Geoserver
+from ckanext.ngds.geoserver.model import OGCServices as ogc
 
 try:
     from collections import OrderedDict # 2.7
@@ -754,9 +765,12 @@ def get_content_models():
 
 
 def get_content_model_dict(uri):
-    cmlist = logic.get_action('contentmodel_list_short')()
-    cm = filter(lambda x: x['uri'] == uri, cmlist)
-    return cm[0]
+    if uri.lower() == 'none':
+        pass
+    else:
+        cmlist = logic.get_action('contentmodel_list_short')()
+        cm = filter(lambda x: x['uri'] == uri, cmlist)
+        return cm
 
 
 def get_content_models_for_ui():
@@ -986,3 +1000,37 @@ def make_better_json(context, data_dict):
         return better_packages
     these_packages = make_package(search)
     return {'count': search['count'], 'packages': these_packages}
+
+def check_datastore_resource(resource_id):
+    datastore_actions = datastore.DatastorePlugin().get_actions()
+    data_dict = {'resource_id': resource_id}
+    try:
+        datastore_actions.get('datastore_search')({}, data_dict)
+        return True
+    except:
+        return False
+
+def geothermal_prospector_url(context, data_dict):
+    try:
+        this_url = data_dict['url']
+        this_layer = {'layer': data_dict['layer']}
+        base_url = 'https://maps-stage.nrel.gov/geothermal-prospector/#/'
+        base_layer = '6'
+        wms = ogc.HandleWMS(this_url)
+        host_url = wms.get_service_url()
+        type_name = wms.do_layer_check(this_layer)
+        return {'wms': base_url + '?baselayer=' + base_layer + '&zoomlevel=3' + '&wmsHost=' + host_url + '&wmsLayerName=' + type_name}
+    except:
+        return {'wms': 'undefined'}
+
+def get_contact_email():
+    """
+    Returns the NGDS contact email in the configuration.
+    """
+    try:
+        if g.contact_email:
+            log.debug("NGDS contact email is already loaded.")
+    except:
+        contact_email = config.get("ngds.contact_email", None)
+        g.contact_email = contact_email
+    return g.contact_email

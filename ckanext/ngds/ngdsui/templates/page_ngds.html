@@ -24,8 +24,9 @@ File:
     {% endblock %}
 
     {% block links -%}
-
+      <link rel="shortcut icon" href="{{ g.favicon }}" />
     {% endblock -%}
+
 
     ## Include our css resources in this block
 
@@ -51,27 +52,13 @@ File:
     </script>
     <script type="text/javascript" src="/vendor/underscore/underscore-min.js"></script>
 
-
-    {% if h.is_development() %}
-    <script type="text/javascript" src="/vendor/PubSubJS/pubsub.js"></script>
-    <script type="text/javascript" src="/vendor/mustache/mustache.js"></script>
-    <script type="text/javascript" src="/scripts/utils/utils.js"></script>
-    <script type="text/javascript" src="/scripts/main/ngds_pubsub.js"></script>
-    <script type="text/javascript" src="/scripts/map/bounding_box.js"></script>
-    <script type="text/javascript" src="/scripts/notifications/handlers.js"></script>
-    <script type="text/javascript" src="/scripts/scripts.js"></script>
-    <script type="text/javascript" src="/scripts/ckanlib/ngds_notify.js"></script>
-
-    {% else %}
     <script type="text/javascript" src="/vendor/PubSubJS/pubsub.min.js"></script>
     <script type="text/javascript" src="/vendor/mustache/mustache.min.js"></script>
     <script type="text/javascript" src="/scripts/utils/utils.min.js"></script>
     <script type="text/javascript" src="/scripts/main/ngds_pubsub.min.js"></script>
-    <script type="text/javascript" src="/scripts/map/bounding_box.min.js"></script>
     <script type="text/javascript" src="/scripts/notifications/handlers.min.js"></script>
     <script type="text/javascript" src="/scripts/scripts.min.js"></script>
     <script type="text/javascript" src="/scripts/ckanlib/ngds_notify.min.js"></script>
-    {% endif %}
 
     {% endblock %}
 
@@ -143,5 +130,3 @@ File:
 
 
             {% endblock %}
-
-

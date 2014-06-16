@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 L.Tooltip = L.Class.extend({
 	initialize: function (map) {
 		this._map = map;

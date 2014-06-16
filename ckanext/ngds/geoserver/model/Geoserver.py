@@ -1,17 +1,26 @@
-''' ___NGDS_HEADER_BEGIN___
+""" NGDS_HEADER_BEGIN
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
 File: <filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+Please refer the the README.txt file in the base directory of the NGDS project:
+https://github.com/ngds/ckanext-ngds/blob/master/README.txt
 
-___NGDS_HEADER_END___ '''
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
+ngds/blob/master/LICENSE.md or
+http://www.gnu.org/licenses/agpl.html
+
+NGDS_HEADER_END """
 
 from geoserver.catalog import Catalog
 from pylons import config as ckan_config
@@ -36,6 +45,10 @@ class Geoserver(Catalog):
 
         # Remove it from the connection URL if it was there
         url = url.replace(userInfo.group("auth") or "", "")
+        if url:
+            url = url.replace('geoserver://', 'http://')
+        else:
+            pass
 
         # Make the connection
         return cls(url, username=user, password=pwd)
@@ -88,4 +101,26 @@ class Geoserver(Catalog):
             self.save(ds)
 
         # Return it
+        return ds
+
+    def get_datastore(self, name, store_name=None):
+        datastore_url = ckan_config.get('ckan.datastore.write_url','postgresql://ckanuser:pass@localhost/datastore')
+        pattern = "://(?P<user>.+?):(?P<pass>.+?)@(?P<host>.+?)/(?P<database>.+)$"
+        details = re.search(pattern, datastore_url)
+        workspace = self.get_workspace(name)
+        if store_name is None:
+            store_name = details.group("database")
+        try:
+            ds = self.get_store(store_name, workspace)
+        except Exception as ex:
+            ds = self.create_datastore(store_name, workspace)
+            ds.connection_parameters.update(
+                host=details.group("host"),
+                port="5432",
+                database=details.group("database"),
+                user=details.group("user"),
+                passwd=details.group("pass"),
+                dbtype="postgis"
+            )
+            self.save(ds)
         return ds

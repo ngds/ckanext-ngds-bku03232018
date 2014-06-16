@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Evented is a base class that Leaflet classes inherit from to handle custom events.
  */

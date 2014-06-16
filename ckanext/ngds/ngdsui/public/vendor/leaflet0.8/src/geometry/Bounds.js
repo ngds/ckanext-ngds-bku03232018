@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Bounds represents a rectangular area on the screen in pixel coordinates.
  */

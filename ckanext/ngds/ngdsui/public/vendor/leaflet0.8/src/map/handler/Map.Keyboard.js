@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Map.Keyboard is handling keyboard interaction with the map, enabled by default.
  */

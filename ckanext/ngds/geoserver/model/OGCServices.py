@@ -1,23 +1,30 @@
-''' ___NGDS_HEADER_BEGIN___
+""" NGDS_HEADER_BEGIN
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
 File: <filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+Please refer the the README.txt file in the base directory of the NGDS project:
+https://github.com/ngds/ckanext-ngds/blob/master/README.txt
 
-___NGDS_HEADER_END___ '''
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
+ngds/blob/master/LICENSE.md or
+http://www.gnu.org/licenses/agpl.html
+
+NGDS_HEADER_END """
 
 from owslib.wms import WebMapService
 from owslib.wfs import WebFeatureService
 from osgeo import ogr
-from ckan.plugins import toolkit
-
 
 class HandleWMS():
 
@@ -87,6 +94,10 @@ class HandleWFS():
         self.version = self.wfs.identification.version
         self.title = self.wfs.identification.title
         self.abstract = self.wfs.identification.abstract
+
+    def get_service_url(self, operation='{http://www.opengis.net/wfs}GetFeature',
+                        method='{http://www.opengis.net/wfs}Get'):
+        return self.wfs.getOperationByName(operation).methods[method]['url']
 
     def do_layer_check(self, data_dict):
         layer_list = list(self.wfs.contents)

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*! 
  * jquery.event.drag - v 2.0.0 
  * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com

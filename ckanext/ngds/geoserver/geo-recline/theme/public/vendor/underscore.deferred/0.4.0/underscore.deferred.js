@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 (function(root){
 
   // Let's borrow a couple of things from Underscore that we'll need

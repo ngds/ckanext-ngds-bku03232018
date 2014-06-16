@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * Vector rendering for IE7-8 through VML.
  * Thanks to Dmitry Baranovsky and his Raphael library for inspiration!

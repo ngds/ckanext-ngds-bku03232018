@@ -1,3 +1,6 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 $(document).ready(function () {
     var ngds = ngds || (ngds = { });
 
@@ -10,11 +13,11 @@ $(document).ready(function () {
 
     ngds.ratings.fetch_text = function (rating) {
         return {
-            "1": "Very Poor",
-            "2": "Poor",
-            "3": "Fair",
-            "4": "Good",
-            "5": "Very Good"
+            "1": "Errors or inappropriate content",
+            "2": "Content not what I expected",
+            "3": "Doesn't include information I need",
+            "4": "Good enough to download",
+            "5": "Just what I needed"
         }[rating];
     };
 

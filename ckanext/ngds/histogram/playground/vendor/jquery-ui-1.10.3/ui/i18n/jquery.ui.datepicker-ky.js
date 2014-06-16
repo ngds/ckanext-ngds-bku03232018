@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* Kyrgyz (UTF-8) initialisation for the jQuery UI date picker plugin. */
 /* Written by Sergey Kartashov (ebishkek@yandex.ru). */
 jQuery(function($){

@@ -1,3 +1,6 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 $("[name=title]").on('input',function(ev){
 	var title = $("[name=title]").val();
 	title = title.trim(); // Remove leading and trailing spaces.

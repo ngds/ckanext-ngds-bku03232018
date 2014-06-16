@@ -15,6 +15,9 @@
 	<li><a href="#search">Search feature</a></li>
 	<li><a href="#map">Map interface</a></li>
 	<li><a href="#library">Library</a></li>
+    <li><a href="#managing-datasets">Managing Datasets</a></li>
+     <li><a href="/ngds/resources">Software for NGDS</a></li>
+     <li><a href="/ngds/faq">Frequently asked questions</a></li>
 	</ul>
 
 <a id="search" name="search"></a><h3>Search Feature</h3>
@@ -52,6 +55,7 @@
 
 <p>The <a href="ngds/library">Library interface</a> allows you to use keywords and phrases to search the data records. Once you have results, you can narrow them to find the records you are looking for by choosing a set of criteria by which to filter your results.</p>
 
+
 <p><strong>Narrowing Your Search Results</strong></p>
 
 <ol>
@@ -81,12 +85,26 @@
        
     </section>
 
-    <section id="ngds/resources" class="help-content">
+    <section id="ngds/managing-datasets" class="help-content">
 
-        <h3>Resources</h3>
+        <a id="managing-datasets" name="managing-datasets"></a><h3>Managing Datasets</h3>
+	<p><b>Delete a Dataset</b></p>
+        <p>In order to delete a dataset, click the <b>Edit</b> button on the page for the dataset. At the bottom of the page click <b>Delete.</b></p>
+        <p>This does not permanently delete the dataset but does remove it from the Library. Since the dataset is not permanently deleted, the dataset's URL is not available for use by a new dataset.</p>
+        <p>To permanently delete a dataset go to the <a href="http://node.usgin.org/ckan-admin/trash">Node Admin</a> page and purge the datasets. Now the dataset's URL is available for use again.</p>
+
+    </section>
+
+<!--  LInk directly to this page from switchboard at the top -->
+<!-- <section id="ngds/resources" class="help-content">
+
+        <a id="resources" name="resources"></a><h3>Resources</h3>
 	<p>A number of resources are available to NGDS users in the form of applications developed for NGDS and applications compatible with NGDS data. A full list of these are available on the <a href="ngds/resources">Resources page</a>.</p>
         
-    </section>
+    </section>  -->
+
+        </section>
+
 
 </section>
 {% endblock %}

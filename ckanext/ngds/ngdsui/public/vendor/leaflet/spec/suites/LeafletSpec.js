@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe('L#noConflict', function () {
 	it('restores the previous L value and returns Leaflet namespace', function () {
 

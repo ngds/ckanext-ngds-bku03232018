@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
 Copyright (c) 2010,2011,2012 Morgan Roderick http://roderick.dk
 License: MIT - http://mrgnrdrck.mit-license.org

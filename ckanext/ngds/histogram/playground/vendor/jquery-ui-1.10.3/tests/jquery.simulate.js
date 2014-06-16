@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
  /*!
  * jQuery Simulate v0.0.1 - simulate browser mouse and keyboard events
  * https://github.com/jquery/jquery-simulate

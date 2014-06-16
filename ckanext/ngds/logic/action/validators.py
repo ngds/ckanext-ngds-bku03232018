@@ -1,21 +1,33 @@
-''' ___NGDS_HEADER_BEGIN___
+""" NGDS_HEADER_BEGIN
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
 File: <filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+Please refer the the README.txt file in the base directory of the NGDS project:
+https://github.com/ngds/ckanext-ngds/blob/master/README.txt
 
-___NGDS_HEADER_END___ '''
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
+ngds/blob/master/LICENSE.md or
+http://www.gnu.org/licenses/agpl.html
+
+NGDS_HEADER_END """
 
 from pylons.i18n import _
 from ckan.plugins import toolkit as tk
 import json, datetime, re
+from itertools import count
+from ckan.lib.navl.dictization_functions import Invalid
+from ckan.model import (MAX_TAG_LENGTH, MIN_TAG_LENGTH)
 
 # Content Model utilities
 from ckanext.ngds.contentmodel.logic.action import contentmodel_checkFile as check_model_file
@@ -93,6 +105,7 @@ def is_valid_rectangle(key, data, errors, context):
         if value['type'] != 'Polygon': valid = False
         if len(value['coordinates'][0]) != 5: valid = False
         if value['coordinates'][0][0] != value['coordinates'][0][4]: valid = False
+        data.update({'non-geographic': 'False'})
     except:
         valid = False
 
@@ -157,25 +170,30 @@ def is_valid_model_uri(key, data, errors, context):
     """
     Checks that a uri is valid
     """
-    models = models_list({}, {})
-    uris = [cm['uri'] for cm in models]
     uri = data[key]
-    if uri not in uris:
-        errors[key].append(_('Invalid Content Model URI'))
+    if uri.lower() == 'none':
+        pass
+    else:
+        models = models_list({}, {})
+        uris = [cm['uri'] for cm in models]
+        if uri not in uris:
+            errors[key].append(_('Invalid Content Model URI'))
 
 
 def is_valid_model_version(key, data, errors, context):
     """
     Checks that a version is valid.
     """
-
-    models = dict((cm['uri'], cm) for cm in models_list({}, {}))
-    uri = data.get('content_model_uri', '')
     version = data[key]
-    version_number = version.split('/')[-1]
-    this_model = models.get(uri, {})
-    if version_number not in [v['version'] for v in this_model.get('versions', [])]:
-        errors[key].append(_('Invalid Content Model Version'))
+    if version.lower() == 'none':
+        pass
+    else:
+        models = dict((cm['uri'], cm) for cm in models_list({}, {}))
+        uri = data.get('content_model_uri', '')
+        version_number = version.split('/')[-1]
+        this_model = models.get(uri, {})
+        if version_number not in [v['version'] for v in this_model.get('versions', [])]:
+            errors[key].append(_('Invalid Content Model Version'))
 
 def check_uploaded_file(resource, errors, error_key):
     """
@@ -192,3 +210,46 @@ def check_uploaded_file(resource, errors, error_key):
 
     if not validation_results['valid']:
         errors[error_key] = list(set(errors.get(error_key, [])) & set(validation_results['messages']))
+
+def is_non_geographic(key, data, errors, context):
+    value = data[key]
+    if value.lower() == "true" or "false":
+        data.update({'spatial': 'None'})
+    else:
+        errors[key].append(_("Invalid Non-Geographic Value"))
+
+def ngds_tag_name_validator(value, context):
+
+    tagname_match = re.compile('[\w \-.:]*$', re.UNICODE)
+    if not tagname_match.match(value):
+        raise Invalid(_('Tag "%s" must be alphanumeric characters or symbols: -_.:') % (value))
+    return value
+
+def ngds_tag_string_convert(key, data, errors, context):
+    '''Takes a list of tags that is a comma-separated string (in data[key])
+    and parses tag names. These are added to the data dict, enumerated. They
+    are also validated.'''
+
+    if isinstance(data[key], basestring):
+        tags = [tag.strip() \
+                for tag in data[key].split(',') \
+                if tag.strip()]
+    else:
+        tags = data[key]
+
+    current_index = max( [int(k[1]) for k in data.keys() if len(k) == 3 and k[0] == 'tags'] + [-1] )
+
+    for num, tag in zip(count(current_index+1), tags):
+        data[('tags', num, 'name')] = tag
+
+    for tag in tags:
+        ngds_tag_length_validator(tag, context)
+        ngds_tag_name_validator(tag, context)
+
+def ngds_tag_length_validator(value, context):
+
+    if len(value) < MIN_TAG_LENGTH:
+        raise Invalid(('Tag "%s" length is less than minimum %s') % (value, MIN_TAG_LENGTH))
+    if len(value) > MAX_TAG_LENGTH:
+        raise Invalid(('Tag "%s" length is more than maximum %i') % (value, MAX_TAG_LENGTH))
+    return value

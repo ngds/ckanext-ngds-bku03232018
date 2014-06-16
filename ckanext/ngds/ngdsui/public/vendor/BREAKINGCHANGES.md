@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 # How to upgrade from 0.1 to 0.2
 
 There are a number of changes to the plugin in 0.2 that may break peoples implementations of Leaflet.draw 0.1. If you  I will try my best to list any changes here.

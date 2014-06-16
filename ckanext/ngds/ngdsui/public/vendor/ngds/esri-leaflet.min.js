@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*! Esri-Leaflet - v0.0.1 - 2013-07-03
 *   Copyright (c) 2013 Environmental Systems Research Institute, Inc.
 *   Apache License*/

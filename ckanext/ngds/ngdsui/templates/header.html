@@ -23,14 +23,13 @@ pass in the tab that is being rendered and the active_tab variable that we get f
            class="logo">
             <img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }} Logo"
                  title="{{ g.site_title }} Logo"/>
-            <span>{{ g.logo_text }}</span>
+            <span>National Geothermal Data System</span><br>
+            <span>YOUR PORTAL TO GEOTHERMAL DATA</span>
         </a>
     </div>
 
     <nav class="span12 row-fluid">
-        {% snippet "snippets/language_selector.html" %}
         <ul>
-
             <li>
                 <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.home:HomeController', action='render_index' %}">{{
                     _('Home') }}</a></li>
@@ -60,6 +59,9 @@ pass in the tab that is being rendered and the active_tab variable that we get f
                 <a href="{% url_for controller='ckanext.ngds.ngdsui.controllers.user:UserController', action='manage_users' %}"
                    class="float-left fit-to-login-div">{{ _('User Management') }}</a></li>
             {% endif %}
+            <li>
+                <a href="{{ h.url_for(controller='organization', action='index') }}"
+                   class="float-left fit-to-login-div">{{ _('Organizations') }}</a></li>
             <li><a href="{% url_for controller='user', action='logout' %}" class="float-left fit-to-login-div">{{
                 _('Logout') }}</a></li>
         </ul>
@@ -79,11 +81,7 @@ pass in the tab that is being rendered and the active_tab variable that we get f
 			</span>
         </a>
 
-        {% if g.central %}
         <a href="{% url_for controller='package', action='search', _tags_limit=0 %}">
-        {% else %}
-        <a href="{% url_for controller='organization', id=default_group , action='read', _tags_limit=0 %}">
-        {% endif %}
             {% if active_tab == "library" %}
             <span class="active main-nav-span borders">
             {% else %}

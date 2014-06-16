@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe('LatLng', function () {
 	describe('constructor', function () {
 		it("sets lat and lng", function () {

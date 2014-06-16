@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * Leaflet.draw assumes that you have already included the Leaflet library.
  */

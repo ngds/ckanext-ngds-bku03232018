@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*!
  * jQuery JavaScript Library v1.7.2
  * http://jquery.com/

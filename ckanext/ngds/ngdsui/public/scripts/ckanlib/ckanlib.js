@@ -1,3 +1,6 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 /*
  *	@author - Vivek
  *	A set of functions to make ajax calls to the CKAN API.
@@ -279,7 +282,7 @@ ngds.ckanlib = {
     },
     'publish_to_geoserver': function (params) {
         $.ajax({
-            'url': '/api/action/geoserver_publish_layer',
+            'url': params['action'],
             'type': 'POST',
             'data': JSON.stringify({
                 gs_lyr_name: params['layer_name'],

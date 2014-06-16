@@ -25,11 +25,7 @@ A list of variables we need in this page.
 {% block content %}
 
 <div id="library-container">
-    {% if g.central %}
     <form action="{% url_for controller='package', action='search'%}" method="get">
-        {% else %}
-        <form action="{% url_for controller='organization', id=default_group , action='read' %}" method="get">
-            {% endif %}
             <div id="library-search-bar">
 
                 <input type="hidden" name="_tags_limit" value="0">
@@ -40,16 +36,14 @@ A list of variables we need in this page.
                   <button type="submit" value="Search" onclick="submitForm()">{{_('Submit')}}</button>
                 </span>
                 </fieldset>
-
             </div>
-
             <div id="library-search-results">
 
                 <div class="library-search-accordion">
+                    <div id="search-hints">
+                        <a href="http://ngds.github.io/documents/SearchHints.htm" target="_blank">Click here for search hints</a>
+                    </div>
                     <ul class="accordion" id="search-accoridion">
-
-                        <!-- <img src="/assets/plus_grey.png" title="Expand All" id="expander-image"/>  -->
-
                         {% set facet_list = h.get_ngdsfacets() %}
 
                         {% for facet in facet_list %}
@@ -63,7 +57,6 @@ A list of variables we need in this page.
                         </li>
                         {% endfor %}
                     </ul>
-
                 </div>
                 <div id="search-result-block">
                     <div id="sort-save-bar">
@@ -88,19 +81,21 @@ A list of variables we need in this page.
                                 <div>
                                     <i class="icon-save btn-primary" id="save_search" title="Save Search"></i>
                                 </div>
-                                <div>
+                                <div class="dropdown">
                                     {% set user_searches=h.get_usersearches() %}
-                                    <i id="saved_searches_list_button" class="icon-th-list btn-primary"
-                                       title="Saved List"></i>
+                                    <a id="saved_searches_list_button" class="dropdown-toggle"
+                                       role="button" data-toggle="dropdown" href="#" title="Saved List">
+                                        <b class="icon-th-list"></b>
+                                    </a>
                                     {% if user_searches %}
-                                    <ul id="saved-list">
+                                    <ul id="saved-list" class="dropdown-menu" role="menu" aria-labelledby="saved_searches_list_button">
                                         {% for usersearch in user_searches %}
                                         <li><a href="{{usersearch.url}}" title="{{usersearch.url}}">{{usersearch.search_name}}</a>
                                         </li>
                                         {% endfor %}
                                     </ul>
                                     {% else %}
-                                    <ul id="saved-list">
+                                    <ul id="saved-list" class="dropdown-menu" role="menu" aria-labelledby="saved_searches_list_button">
                                         <li id="none">No Saved Searches</li>
                                     </ul>
                                     {% endif %}
@@ -115,8 +110,6 @@ A list of variables we need in this page.
 
 
                         <div class="search-results-container">
-                            <div class="search-item-image">
-                            </div>
                             <div class="search-results-item no-border">
                                 <div id="search-text-block">
                                     <div id="search-text">
@@ -138,14 +131,8 @@ A list of variables we need in this page.
                                         {% for field in fields_grouped %}
                                         <span class="facet">{{ c.facet_titles.get(field) or h.get_field_title(field) }}:</span>
                                         {% for value in fields_grouped[field] %}
-                                        {% if g.central %}
                                         <a href="{{ h.remove_url_param(field, value=value, replace=None,controller='package', action='search')}}"
                                            class="remove" title="{{ _('Remove') }}">
-                                            {% else %}
-                                            <a href="{{ h.remove_url_param(field, value=value, replace=None,controller='organization', action='read',extras=dict(id=default_group)) }}"
-                                               class="remove" title="{{ _('Remove') }}">
-                                                {% endif %}
-
 
 
                           {% if c.translated_fields and c.translated_fields.has_key((field,value)) %}
@@ -157,7 +144,15 @@ A list of variables we need in this page.
                             {% if field=='publication_date' %}
                                 <div class="ngds-tag">{{h.parse_publication_date_range(value)}}<span class="close-button">X</span></div>
                             {% else %}
-                                 <div class="ngds-tag">{{value}}<span class="close-button">X</span></div>
+                                {% if field=='private' %}
+                                    {% if value=='true' %}
+                                        <div class="ngds-tag">private<span class="close-button">X</span></div>
+                                    {% else %}
+                                        <div class="ngds-tag">public<span class="close-button">X</span></div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="ngds-tag">{{value}}<span class="close-button">X</span></div>
+                                {% endif %}
                             {% endif %}
                           {% endif %}
 
@@ -192,10 +187,6 @@ A list of variables we need in this page.
 
 </div>
 
-{% if h.is_development() %}
-<script type="text/javascript" src="/scripts/library/library.js"></script>
-{% else %}
 <script type="text/javascript" src="/scripts/library/library.min.js"></script>
-{% endif %}
 
 {% endblock %}

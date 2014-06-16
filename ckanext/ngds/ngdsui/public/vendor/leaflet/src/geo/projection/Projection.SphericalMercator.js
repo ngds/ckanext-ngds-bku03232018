@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * Spherical Mercator is the most popular map projection, used by EPSG:3857 CRS used by default.
  */

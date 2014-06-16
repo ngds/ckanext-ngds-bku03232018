@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* Plugin for jQuery for working with colors.
  * 
  * Version 1.1.

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /* Portuguese initialisation for the jQuery UI date picker plugin. */
 jQuery(function($){
 	$.datepicker.regional['pt'] = {

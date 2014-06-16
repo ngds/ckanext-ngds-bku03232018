@@ -1,4 +1,8 @@
+/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
 $(document).ready(function () {
+
+    $("[rel=tooltip]").tooltip({ placement: 'right'});
+
     (function stage_setup() {
         ngds.util.state['prev_resource_type'] = $("[name=resource_format]:checked").val();
         ngds.util.state['versions'] = {};
@@ -148,6 +152,28 @@ $(document).ready(function () {
             ngds.util.state['prev_resource_type'] = resource_type;
             ngds.resource_type_change(resource_type);
         }
+        var resource_type = $("#" + $(ev.currentTarget).attr("for")).val();
+        if (resource_type === 'structured') {
+            $(".validate-message").remove();
+            var html = '<div class="validate-message">';
+                html += '<div class="message" style="padding-top:20px;text-align:center;font-size:15px;color:red;">';
+                html += '<a href="http://schemas.usgin.org/validate/cm" target="_blank"'
+                html += 'rel="tooltip" title="Use this service to make sure your structured data conforms to USGIN specifications.">';
+                html += 'Click here to validate your dataset first!'
+                html += '</div></a></div>';
+            $(ev.currentTarget).parent().after(html);
+        } else if (resource_type === 'data-service') {
+            $(".validate-message").remove();
+            var html = '<div class="validate-message">';
+                html += '<div class="message" style="padding-top:20px;text-align:center;font-size:15px;">';
+                html += '<a href="http://schemas.usgin.org/validate/wfs" target="_blank"'
+                html += 'rel="tooltip" title="Use this service to make sure your data service conforms to USGIN specifications.">';
+                html += 'Click here to validate your data service first!'
+                html += '</div></a></div>';
+            $(ev.currentTarget).parent().after(html);
+        } else {
+            $(".validate-message").remove();
+        }
 
     });
 
@@ -156,10 +182,6 @@ $(document).ready(function () {
             if (typeof $("#field-content-model")[0] !== 'undefined') {
                 ckan.module.initializeElement($("#field-content-model")[0]);
             }
-//            if (typeof $("#field-content-model-version")[0] !== 'undefined') {
-//
-//                ckan.module.initializeElement($("#field-content-model-version")[0]);
-//            }
 
             if (typeof $("[name=content_model_uri]").val() !== 'undefined' && $("[name=content_model_uri]").val() !== "None") {
                 var val = $("[name=content_model_uri]").val();
@@ -173,9 +195,6 @@ $(document).ready(function () {
             }
 
             function load_content_model_versions(content_model_uri) {
-//                if (ngds.memorizer.remind('structured', 'content_model_version') === "") {
-//                    return;
-//                }
                 $("#field-content-model-version").select2("destroy");
                 var val = content_model_uri;
                 var option_constructor = function (version) {
@@ -189,7 +208,14 @@ $(document).ready(function () {
                     return ngds.util.dom_element_constructor(option);
                 };
 
-                if (typeof ngds.util.state['versions'][val] === 'undefined') {
+                if (content_model_uri === 'None' || content_model_uri === 'none') {
+                    $("[name=content_model_version]").empty();
+                    $("[name=content_model_version]").append(option_constructor({"uri": "None", "version": "None"}));
+                    $("#field-content-model-version").select2();
+                    if ($("[name=content_model_version]").val()) {
+                        loadContentModelLayers($("[name=content_model_version]").val());
+                    }
+                } else if (typeof ngds.util.state['versions'][val] === 'undefined') {
                     $.ajax({
                         'url': '/api/action/get_content_model_version_for_uri',
                         'data': JSON.stringify({
@@ -209,9 +235,6 @@ $(document).ready(function () {
                             if (ngds.memorizer.remind("structured", "content_model_version") !== "") {
                                 $("#field-content-model-version option").filter("[value=" + ngds.memorizer.remind("structured", "content_model_version")['id'] + "]").prop("selected", true);
                             }
-                            else {
-//                                $("[name=content_model_version]").prop("selectedIndex", -1);
-                            }
                             $("#field-content-model-version").select2();
                             if ($("[name=content_model_version]").val()) {
                                 loadContentModelLayers($("[name=content_model_version]").val());
@@ -219,14 +242,12 @@ $(document).ready(function () {
                         }
 
                     });
-                }
-                else {
+                } else {
                     var versions_dom = ngds.util.state['versions_dom'][val];
                     $("[name=content_model_version]").empty();
                     for (var i = 0; i < versions_dom.length; i++) {
                         $("[name=content_model_version]").append(versions_dom[i]);
                     }
-//                    $("[name=content_model_version]").prop("selectedIndex", -1);
                 }
 
             };
@@ -244,7 +265,11 @@ $(document).ready(function () {
                     };
                     return ngds.util.dom_element_constructor(option);
                 };
-                if (typeof ngds.util.state['layers'][val] === 'undefined') {
+                if (content_model_uri === 'None' || content_model_uri === 'none') {
+                    $("[name=content_model_layer]").empty();
+                    $("[name=content_model_layer]").append(optionConstructor({"layer": "None", "layer": "None"}));
+                    $("#field-content-model-layer").select2();
+                } else if (typeof ngds.util.state['layers'][val] === 'undefined') {
                     $.ajax({
                         'url': '/api/action/get_content_model_layers_for_uri',
                         'data': JSON.stringify({'cm_uri': val}),
@@ -280,35 +305,29 @@ $(document).ready(function () {
 
             $("[name=content_model_uri]").on('change', function (ev) {
                 var val = ev.val;
-                console.log(val);
-                if (val === "None" || val==="none") {
-                    $("[name=content_model_version]").select2("destroy");
-                    $("[name=content_model_version]").empty();
-                    $("[name=content_model_version]").select2();
-                    return;
-                }
+                $("[name=content_model_version]").select2("destroy");
+                $("[name=content_model_version]").empty();
+                $("[name=content_model_version]").select2();
                 load_content_model_versions(val);
             });
 
             $("[name=content_model_version]").on('change', function (e) {
                 var val = e.val;
-                if (val === 'None' || val === 'none') {
-                    $("[name=content_model_layer]").select2("destroy");
-                    $("[name=content_model_layer]").empty();
-                    $("[name=content_model_layer]").select2();
-                    return;
-                }
+                $("[name=content_model_layer]").select2("destroy");
+                $("[name=content_model_layer]").empty();
+                $("[name=content_model_layer]").select2();
                 loadContentModelLayers(val);
             });
 
             ngds.restore_additional_fields(resource_type);
 
-            if ($("[name=content_model_uri]").length > 0 && $("[name=content_model_uri]").val() !== "None" && $("[name=content_model_uri]").val() !== "none") {
+            if ($("[name=content_model_uri]").length > 0) {
                 load_content_model_versions($("[name=content_model_uri]").val());
             }
 
         });
         $("[name=content_model_version]").select2();
+        $("[name=content_model_layer]").select2();
 
         if (resource_type===undefined) {
             $(".resource-upload-field").css("display", "none");
@@ -421,7 +440,7 @@ ngds.initialize_content_model_widget = function (callback) {
 
                 var content_models = ngds.util.state['content_models'];
                 var content_models_dom = ngds.util.state['content_models_dom'] = [];
-                var none = option_constructor({"uri": "None", "title": "none"});
+                var none = option_constructor({"uri": "None", "title": "None"});
 
                 $("[name=content_model_uri]").append(none);
                 content_models_dom.push(none);
@@ -582,7 +601,15 @@ var structured_form_raw = {
                         'class': 'control-label',
                         'for': 'field-distributor',
                         'text': 'Distributor'
-                    }
+                    },
+                    'children': [
+                        {
+                             'tag': 'span',
+                            'attributes': {
+                                'class': 'mandatory',
+                                'text': ' *'}
+                        }
+                    ]
                 },
                 {
                     'tag': 'div',
@@ -666,7 +693,15 @@ var data_service_raw = {
                         'class': 'control-label',
                         'for': 'field-distributor',
                         'text': 'Distributor'
-                    }
+                    },
+                    'children': [
+                        {
+                             'tag': 'span',
+                            'attributes': {
+                                'class': 'mandatory',
+                                'text': ' *'}
+                        }
+                    ]
                 },
                 {
                     'tag': 'div',
@@ -830,7 +865,15 @@ var unstructured_form_raw = {
                         'class': 'control-label',
                         'for': 'field-distributor',
                         'text': 'Distributor'
-                    }
+                    },
+                    'children': [
+                        {
+                             'tag': 'span',
+                            'attributes': {
+                                'class': 'mandatory',
+                                'text': ' *'}
+                        }
+                    ]
                 },
                 {
                     'tag': 'div',
@@ -913,7 +956,15 @@ var offline_form_raw = {
                             'class': 'control-label',
                             'for': 'field-distributor',
                             'text': 'Distributor'
-                        }
+                        },
+                        'children': [
+                            {
+                                 'tag': 'span',
+                                'attributes': {
+                                    'class': 'mandatory',
+                                    'text': ' *'}
+                            }
+                        ]
                     },
                     {
                         'tag': 'div',
@@ -943,7 +994,15 @@ var offline_form_raw = {
                         'class': 'control-label',
                         'for': 'field-ordering-procedure',
                         'text': 'Ordering Procedure'
-                    }
+                    },
+                        'children': [
+                            {
+                                 'tag': 'span',
+                                'attributes': {
+                                    'class': 'mandatory',
+                                    'text': ' *'}
+                            }
+                        ]
                 },
                 {
                     'tag': 'div',

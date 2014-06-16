@@ -1,17 +1,26 @@
-''' ___NGDS_HEADER_BEGIN___
+""" NGDS_HEADER_BEGIN
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
 File: <filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+Please refer the the README.txt file in the base directory of the NGDS project:
+https://github.com/ngds/ckanext-ngds/blob/master/README.txt
 
-___NGDS_HEADER_END___ '''
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
+ngds/blob/master/LICENSE.md or
+http://www.gnu.org/licenses/agpl.html
+
+NGDS_HEADER_END """
 
 from pylons import config
 import ckanext.datastore.db as db
@@ -28,7 +37,7 @@ class Datastored(object):
     resource_id = None
     lat_col = None
     lng_col = None
-    geo_col = 'geometry'
+    geo_col = 'Shape'
     connection_url = None
 
     def __init__(self, resource_id, lat_field, lng_field):

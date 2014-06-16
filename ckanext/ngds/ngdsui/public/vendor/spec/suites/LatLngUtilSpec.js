@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe("L.LatLngUtil", function () {
 	it("cloneLatLngs", function () {
 		var latLngs = [{ lat: 0, lng: 0 }],

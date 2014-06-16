@@ -1,17 +1,26 @@
-''' ___NGDS_HEADER_BEGIN___
+""" NGDS_HEADER_BEGIN
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
 File: <filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+Please refer the the README.txt file in the base directory of the NGDS project:
+https://github.com/ngds/ckanext-ngds/blob/master/README.txt
 
-___NGDS_HEADER_END___ '''
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
+ngds/blob/master/LICENSE.md or
+http://www.gnu.org/licenses/agpl.html
+
+NGDS_HEADER_END """
 
 from ckan.plugins import implements, SingletonPlugin, IRoutes, IConfigurer, toolkit, IAuthFunctions, IFacets, \
     ITemplateHelpers, IPackageController, IConfigurable, IActions, IDatasetForm
@@ -149,6 +158,7 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
                     conditions={"method": ["GET"]})
 
         contribute_controller = "ckanext.ngds.ngdsui.controllers.contribute:ContributeController"
+        map.redirect('/ngds/contribute', '/ngds/contribute/dataset/new')
         map.connect("contribute", "/ngds/contribute", controller=contribute_controller, action="index")
         map.connect("create_or_update_resource", "/ngds/contribute/create_or_update_resource",
                     controller=contribute_controller, action="create_or_update_resource",
@@ -185,6 +195,8 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
         map.connect("logout_page", "/user/logged_out_redirect", controller=user_controller, action="logged_out_page")
         map.connect("execute_fulltext_indexer", "/ngds/execute_fulltext_indexer", controller=contribute_controller,
                     action="execute_fulltext_indexer")
+        map.connect("custom_activity_stream", "/dataset/activity/{dataset}", controller=user_controller,
+                    action="ngds_activity_stream")
 
         #Help related paths
 
@@ -226,10 +238,13 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'contentmodel_get': contentmodel_action.contentmodel_get,
             'contentmodel_checkFile': contentmodel_action.contentmodel_checkFile,
             'contentmodel_checkBulkFile': contentmodel_action.contentmodel_checkBulkFile,
+            'geoserver_publish_usgin_layer': contentmodel_action.publish_usgin_layer,
             'get_content_models_for_ui': helpers.get_content_models_for_ui_action,
             'get_content_model_version_for_uri': helpers.get_content_model_version_for_uri_action,
             'get_better_package_info': helpers.make_better_json,
-            'get_content_model_layers_for_uri': helpers.get_content_model_layers_for_uri_action
+            'get_content_model_layers_for_uri': helpers.get_content_model_layers_for_uri_action,
+            'geothermal_prospector': helpers.geothermal_prospector_url
+
 
             #'create_resource_document_index': lib_action.create_resource_document_index
             # 'validate_resource': validate_action.validate_resource,
@@ -301,7 +316,9 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
             'get_cur_page_help': helpers.get_cur_page_help,
             'get_content_model_dict': helpers.get_content_model_dict,
             'metadata_fields_to_display_for_cm': helpers.metadata_fields_to_display_for_cm,
-            'get_role_for_username': helpers.get_role_for_username
+            'get_role_for_username': helpers.get_role_for_username,
+            'check_datastore': helpers.check_datastore_resource,
+            'get_contact_email': helpers.get_contact_email,
         }
 
     implements(IPackageController, inherit=True)
@@ -351,6 +368,41 @@ class NgdsuiPlugin(SingletonPlugin, toolkit.DefaultDatasetForm):
 
             if is_full_text_enabled == 'true' and document_index_list:
                 helpers.create_package_resource_document_index(pkg_dict.get('id'), document_index_list)
+
+        # Authors
+        if pkg_dict.get('extras_authors'):
+            authors_list = []
+            for author in json.loads(pkg_dict.get('extras_authors')):
+                authors_list.append(author['name'])
+            pkg_dict['author'] = authors_list
+
+        # Maintainers
+        if pkg_dict.get('extras_maintainers'):
+            maintainers_list = []
+            for maintainer in json.loads(pkg_dict.get('extras_maintainers')):
+                maintainers_list.append(maintainer['name'])
+                pkg_dict['maintainer'] = maintainers_list
+        # If not harvested UI only allows one maintainer
+        elif pkg_dict.get('extras_maintainer'):
+            pkg_dict['maintainer'] = json.loads(pkg_dict.get('extras_maintainer'))['name']
+
+        # Data Type & Content Model
+        if pkg_dict.get('tags'):
+            data_types_list = []
+            content_model_list = []
+            for tag in pkg_dict.get('tags'):
+                try:
+                    if str(tag).startswith('usginres:'):
+                        data_types_list.append(str(tag).rsplit(":",1)[1])
+                except:
+                    pass
+                try:
+                    if str(tag).startswith('usgincm:'):
+                        content_model_list.append(str(tag).rsplit(":",1)[1])
+                except:
+                    pass
+            pkg_dict['data_type'] = data_types_list
+            pkg_dict['res_content_model'] = content_model_list
 
         return pkg_dict
 

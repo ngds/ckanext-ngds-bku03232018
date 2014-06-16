@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe('Polygon', function () {
 
 	var c = document.createElement('div');

@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * L.Renderer is a base class for renderer implementations (SVG, Canvas);
  * handles renderer container, bounds and zoom animation.

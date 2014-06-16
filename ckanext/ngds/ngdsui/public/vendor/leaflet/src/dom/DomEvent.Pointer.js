@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 /*
  * Extends L.DomEvent to provide touch support for Internet Explorer and Windows-based devices.
  */

@@ -1,17 +1,26 @@
-''' ___NGDS_HEADER_BEGIN___
+""" NGDS_HEADER_BEGIN
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
 File: <filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+Please refer the the README.txt file in the base directory of the NGDS project:
+https://github.com/ngds/ckanext-ngds/blob/master/README.txt
 
-___NGDS_HEADER_END___ '''
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
+ngds/blob/master/LICENSE.md or
+http://www.gnu.org/licenses/agpl.html
+
+NGDS_HEADER_END """
 
 from ckanext.spatial.harvesters import CSWHarvester
 from ckanext.ngds.harvest.harvester.xml_reader import NgdsXmlMapping
@@ -55,26 +64,19 @@ class NgdsHarvester(CSWHarvester):
 
         def party2person(party):
             """For converting an ISOResponsibleParty to an NGDS contact"""
-            if party.get('position-name', '') != '':
-                name = party.get('position-name')
+            name = ""
+            email = ""
+            if party.get('individual-name', '') != '':
+                name = party.get('individual-name', '')
             else:
-                name = party.get('organisation-name', '')
+                if party.get('organisation-name', '') != '':
+                    name = party.get('organisation-name', '')
+            if party.get('contact-info', {}):
+                email = party.get('contact-info', {}).get('email', '')
             return {
                 "name": name,
-                "email": party.get('contact-info', {}).get('email', '')
+                "email": email
             }
-
-        # Maintainer
-        if ngds_values['maintainer']['position-name'] != '':
-            maintainer_name = ngds_values['maintainer']['position-name']
-        else:
-            maintainer_name = ngds_values['maintainer']['organisation-name']
-
-        maintainer = {
-            "key": "maintainer",
-            "value": json.dumps(party2person(ngds_values.get('maintainer', {})))
-        }
-        extras.append(maintainer)
 
         # Any otherID
         other_id = {"key": "other_id", "value": json.dumps([ngds_values['other_id']])}
@@ -88,9 +90,16 @@ class NgdsHarvester(CSWHarvester):
         publication_date = {"key": "publication_date", "value": ngds_values['publication_date']}
         extras.append(publication_date)
 
+        # Maintainers
+        maintainers = {
+            "key": "maintainers",
+            "value": json.dumps([party2person(party) for party in ngds_values.get('maintainers', [])])
+        }
+        extras.append(maintainers)
+
         # Authors
         authors = {
-            "key": "author",
+            "key": "authors",
             "value": json.dumps([party2person(party) for party in ngds_values.get('authors', [])])
         }
         extras.append(authors)

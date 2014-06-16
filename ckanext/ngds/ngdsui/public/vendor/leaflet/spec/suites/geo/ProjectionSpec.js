@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 describe("Projection.Mercator", function () {
 	var p = L.Projection.Mercator;
 

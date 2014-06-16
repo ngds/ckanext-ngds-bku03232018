@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 // https://github.com/tmcw/happen
 
 !(function(context) {

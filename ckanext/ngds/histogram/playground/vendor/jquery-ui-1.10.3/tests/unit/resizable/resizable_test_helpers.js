@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 TestHelpers.resizable = {
 	drag: function( el, dx, dy ) {
 		// this mouseover is to work around a limitation in resizable

@@ -1,17 +1,26 @@
-''' ___NGDS_HEADER_BEGIN___
+""" NGDS_HEADER_BEGIN
 
 National Geothermal Data System - NGDS
 https://github.com/ngds
 
 File: <filename>
 
-Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
 
-Please Refer to the README.txt file in the base directory of the NGDS
-project:
-https://github.com/ngds/ckanext-ngds/README.txt
+Please refer the the README.txt file in the base directory of the NGDS project:
+https://github.com/ngds/ckanext-ngds/blob/master/README.txt
 
-___NGDS_HEADER_END___ '''
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+General Public License as published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
+ngds/blob/master/LICENSE.md or
+http://www.gnu.org/licenses/agpl.html
+
+NGDS_HEADER_END """
 
 import logging
 
@@ -27,12 +36,6 @@ import ckanext.ngds.geoserver.misc.helpers as helpers
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
-
-
-# We use this one from Datastore
-#class DatastoreException(Exception):
-#    pass
-
 
 class GeoserverPlugin(p.SingletonPlugin):
     '''
@@ -53,20 +56,6 @@ class GeoserverPlugin(p.SingletonPlugin):
     p.implements(p.IAuthFunctions)
 
     def get_actions(self):
-        '''
-        actions = {'datastore_spatialize' : action.datastore_spatialize,
-                   'datastore_expose_as_layer': action.datastore_expose_as_layer,
-                   'datastore_is_spatialized' : action.datastore_is_spatialized,
-                   'datastore_is_exposed_as_layer' : action.datastore_is_exposed_as_layer,
-                   'datastore_remove_exposed_layer' : action.datastore_remove_exposed_layer,
-                   'datastore_remove_all_exposed_layers' :action.datastore_remove_all_exposed_layers,
-                   'datastore_list_exposed_layers' : action.datastore_list_exposed_layers,
-                   'geoserver_create_workspace' : action.geoserver_create_workspace,
-                   'geoserver_delete_workspace' : action.geoserver_delete_workspace,
-                   'geoserver_create_store' : action.geoserver_create_store,
-                   'geoserver_delete_store' : action.geoserver_delete_store,
-                   'test':a.test }
-        '''
 
         actions = {
             'geoserver_publish_layer': action.publish,

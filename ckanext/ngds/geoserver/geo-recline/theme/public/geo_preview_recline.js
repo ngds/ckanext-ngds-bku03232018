@@ -1,3 +1,4 @@
+/* Copyright (c) 2014, Siemens Coporate Technology and Arizona Geological Survey */
 // recline preview module
 this.ckan.module('reclinepreview', function (jQuery, _) {
   return {

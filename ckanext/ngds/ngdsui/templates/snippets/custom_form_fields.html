@@ -65,7 +65,7 @@ File:
     <input type="hidden" name="extras__1__key" value="maintainer"/>
     {% set maintainer_attrs = {'data-module-key':'value','data-module-label':'name','data-module': 'autocomplete',
     'data-module-source': 'responsible_parties?q=?'} %}
-    {{ form.input('extras__1__value', id='field-maintainer', label=_('Maintainer'), placeholder=_('eg. John Doe'),
+    {{ form.input('extras__1__value', id='field-maintainer', label='%s <span class="mandatory">*</span>'|format(_('Maintainer'))|safe, placeholder=_('eg. John Doe'),
     value=get_value('maintainer',extras), error=errors.maintainer, classes=['control-full'], attrs=maintainer_attrs) }}
 
     <input type="hidden" name="extras__2__key" value="spatial_word"/>
@@ -136,7 +136,7 @@ File:
 
 
     <input type="hidden" name="extras__8__key" value="publication_date"/>
-    {{ form.input('extras__8__value', id='field-publication-date', label=_('Publication Date'),
+    {{ form.input('extras__8__value', id='field-publication-date', label='%s <span class="mandatory">*</span>'|format(_('Publication Date'))|safe,
     placeholder=_('eg. YYYY-MM-DD'),
     value=get_value('publication_date',extras), error=errors.publication_date, classes=['control-full', 'control-full'])
     }}
@@ -154,8 +154,13 @@ File:
         <div class="controls">
             <select id="field-language" name="extras__9__value" style="width:100%;">
                 {% for language_item in h.get_languages_for_ui() %}
-                <option value="{{language_item['code']}}"
-                {{ is_selected(language_item['code'],'dataset_lang',extras)}}>{{language_item['name']}}</option>
+                    {% if language_item['name'] == 'English' %}
+                        <option selected value="{{language_item['code']}}"
+                        {{ is_selected(language_item['code'],'dataset_lang',extras)}}>{{language_item['name']}}</option>
+                    {% else %}
+                        <option value="{{language_item['code']}}"
+                        {{ is_selected(language_item['code'],'dataset_lang',extras)}}>{{language_item['name']}}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
             {% if language_error %}
@@ -167,11 +172,20 @@ File:
     </div>
     <div class="additional-metadata-map-container">
         <div class="input-group">
-            <div class="sp-label"><label>{{_('Dataset Extent')}}</label></div>
-            <div id="bbox-map"></div>
+            <div class="control-label"><label>{{_('Dataset Extent')}}</label></div>
+            <div class="controls">
+                <label class="checkbox inline">
+                    <input type="checkbox" name="geo-check" id="spatial-geographic" value="geographic" data-toggle="collapse" data-target="#map-collapse" checked>Geographic
+                </label>
+                <label class="checkbox inline">
+                    <input type="checkbox" name="geo-check" id="spatial-non-geographic" value="non-geographic">Non-Geographic
+                </label>
+            </div>
+            <div id="map-collapse" class="collapse in">
+                <div id="bbox-map"></div>
+            </div>
         </div>
     </div>
-
 
     {% if get_value('spatial',extras) %}
     {% set saved_spatial = true %}
@@ -179,3 +193,5 @@ File:
     <input type="hidden" id="field-extras-10-key" name="extras__10__key" value="spatial"/>
     <input type="hidden" id="field-extras-10-value" name="extras__10__value" {% if saved_spatial %}data-restore-spatial
     data-key="spatial" data-dom-key="field-extras-10-value" data-pkg-id="{{pkg_id}}"{% endif %} />
+    <input type="hidden" id="field-extras-11-key" name="extras__11__key" value="non-geographic"/>
+    <input type="hidden" id="field-extras-11-value" name="extras__11__value"/>
