@@ -1,47 +1,32 @@
-{# ___NGDS_HEADER_BEGIN___
+{% ckan_extends %}
 
-National Geothermal Data System - NGDS
-https://github.com/ngds
+{% block package_basic_fields_org %}
+{% endblock %}
 
-File:
-<filename>
+{% block package_basic_fields_title %}
+{{ form.input('title', id='field-title', label='%s <span class="mandatory">*</span>'|format(_('Title'))|safe, placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
+{% endblock %}
 
-    Copyright (c) 2013, Siemens Corporate Technology and Arizona Geological Survey
+{% block package_basic_fields_description %}
+{{ form.markdown('notes', id='field-notes', label='%s <span class="mandatory">*</span>'|format(_('Description'))|safe, placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes) }}
+{% endblock %}
 
-    Please Refer to the README.txt file in the base directory of the NGDS
-    project:
-    https://github.com/ngds/ckanext-ngds/README.txt
+{% block package_basic_fields_license %}
 
-    ___NGDS_HEADER_END___ #}
-    {% ckan_extends %}
+<div class="control-group">
+    {% set error = errors.license_id %}
+    <label class="control-label" for="field-license">{{ _("License") }}</label>
 
-    {% block package_basic_fields_org %}
-    {% endblock %}
-
-    {% block package_basic_fields_title %}
-    {{ form.input('title', id='field-title', label='%s <span class="mandatory">*</span>'|format(_('Title'))|safe, placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
-    {% endblock %}
-
-    {% block package_basic_fields_description %}
-    {{ form.markdown('notes', id='field-notes', label='%s <span class="mandatory">*</span>'|format(_('Description'))|safe, placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes) }}
-    {% endblock %}
-
-    {% block package_basic_fields_license %}
-
-    <div class="control-group">
-        {% set error = errors.license_id %}
-        <label class="control-label" for="field-license">{{ _("License") }}</label>
-
-        <div class="controls">
-            <select id="field-license" name="license_id" data-module="autocomplete">
-                {% for licence_desc, licence_id in licences|sort if licence_desc %}
-                <option value="{{ licence_id }}"
-                {% if data.get('license_id', 'notspecified') == licence_id %}selected="selected"{% endif %}>{{
-                licence_desc
-                }}</option>
-                {% endfor %}
-            </select>
-            {% if error %}<span class="error-block">{{ error }}</span>{% endif %}
-        </div>
+    <div class="controls">
+        <select id="field-license" name="license_id" data-module="autocomplete">
+            {% for licence_desc, licence_id in licences|sort if licence_desc %}
+            <option value="{{ licence_id }}"
+            {% if data.get('license_id', 'notspecified') == licence_id %}selected="selected"{% endif %}>{{
+            licence_desc
+            }}</option>
+            {% endfor %}
+        </select>
+        {% if error %}<span class="error-block">{{ error }}</span>{% endif %}
     </div>
-    {% endblock %}
+</div>
+{% endblock %}
