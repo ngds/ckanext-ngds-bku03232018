@@ -53,7 +53,7 @@ setup(
 	ngds_harvester=ckanext.ngds.harvest.harvester.ngds:NgdsHarvester
 
 	# NGDS UI plugin.
-	ngds_client=ckanext.ngds.ngdsui.plugin:NgdsuiPlugin
+	ngds_client=ckanext.ngds.client.plugin:NGDSClient
 
 	[paste.paster_command]
     # Install NGDS additional tables

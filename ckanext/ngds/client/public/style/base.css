@@ -1,0 +1,29 @@
+/*
+=====================================================
+The "account masthead" bar across the top of the site
+=====================================================
+*/
+
+.account-masthead .navbar {
+    background-color: #4679B2;
+    min-height: 31px;
+}
+
+.account-masthead .navbar .container {
+    width: 100%;
+}
+
+.account-masthead .navbar .navbar-right a {
+    color: #ffffff;
+    text-shadow: none;
+    transition: color 0.1s ease;
+}
+
+.account-masthead .navbar .navbar-right a:hover {
+    color: #000000;
+}
+
+.account-masthead .navbar-nav li a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
