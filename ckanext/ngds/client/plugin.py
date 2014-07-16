@@ -5,13 +5,13 @@ class NGDSClient(p.SingletonPlugin):
 
 
     p.implements(p.IConfigurer, inherit=True)
+    p.implements(p.ITemplateHelpers, inherit=True)
 
     """
     p.implements(p.IActions)
     p.implements(p.IAuthFunctions)
     p.implements(p.IRoutes, inherit=True)
     p.implements(p.IFacets)
-    p.implements(p.ITemplateHelpers)
     p.implements(p.IPackageController)
     p.implements(p.IDatasetForm)
     """
@@ -25,6 +25,9 @@ class NGDSClient(p.SingletonPlugin):
         """
         p.toolkit.add_template_directory(config, 'templates')
         p.toolkit.add_public_directory(config, 'public')
+
+    def get_helpers(self):
+        return {}
 
     """
     def before_map(self, map):

@@ -4,13 +4,19 @@ The "account masthead" bar across the top of the site
 =====================================================
 */
 
+.account-masthead {
+    height: 31px;
+}
+
 .account-masthead .navbar {
     background-color: #4679B2;
     min-height: 31px;
+    border: none;
 }
 
-.account-masthead .navbar .container {
+.account-masthead .container {
     width: 100%;
+    padding: 0;
 }
 
 .account-masthead .navbar .navbar-right a {
@@ -26,4 +32,24 @@ The "account masthead" bar across the top of the site
 .account-masthead .navbar-nav li a {
     padding-top: 5px;
     padding-bottom: 5px;
+}
+
+/*
+========================================================
+The "navigation masthead" bar across the top of the site
+========================================================
+*/
+
+.masthead {
+    background: #ffffff;
+}
+
+.masthead .navbar {
+    background-color: #ffffff;
+    width: 100%;
+    border: none;
+}
+
+.masthead .navbar .container {
+    width: 100%;
 }

@@ -4,7 +4,7 @@
 {% block header_account %}
   <header class="account-masthead">
     <div class="container">
-      <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <nav class="navbar navbar-default navbar-static-top" role="navigation">
         <div class="container">
           <div class="navbar-right">
             <ul class="nav navbar-nav">
@@ -63,4 +63,54 @@
     </div>
   </header>
 {% endblock %}
+<header class="masthead">
+  {% block header_debug %}
+    {% if g.debug and not g.debug_supress_header %}
+      <div class="debug">Controller : {{ c.controller }}<br/>Action : {{ c.action }}</div>
+    {% endif %}
+  {% endblock %}
+  <div class="container">
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+
+        {# The .header-image class hides the main text and uses image replacement for the title #}
+        <hgroup class="{{ g.header_class }}">
+
+          {% block header_logo %}
+            {% if g.site_logo %}
+              <a class="logo" href="{{ h.url('home') }}"><img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }}" title="{{ g.site_title }}" /></a>
+            {% else %}
+              <h1>
+                <a href="{{ h.url('home') }}">{{ g.site_title }}</a>
+              </h1>
+              {% if g.site_description %}<h2>{{ g.site_description }}</h2>{% endif %}
+            {% endif %}
+          {% endblock %}
+
+        </hgroup>
+
+        <div class="content">
+
+          {% block header_site_navigation %}
+            <nav class="section navigation">
+              <ul class="nav nav-pills">
+                {% block header_site_navigation_tabs %}
+                  {{ h.build_nav_main(
+                    ('search', _('Datasets')),
+                    ('organizations_index', _('Organizations')),
+                    ('group_index', _('Groups')),
+                    ('about', _('About'))
+                  ) }}
+                {% endblock %}
+              </ul>
+            </nav>
+          {% endblock %}
+
+      </div>
+    </div>
+
+    </div>
+  </div>
+</header>
 {% endblock %}
