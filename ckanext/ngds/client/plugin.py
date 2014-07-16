@@ -6,11 +6,11 @@ class NGDSClient(p.SingletonPlugin):
 
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.ITemplateHelpers, inherit=True)
+    p.implements(p.IRoutes, inherit=True)
 
     """
     p.implements(p.IActions)
     p.implements(p.IAuthFunctions)
-    p.implements(p.IRoutes, inherit=True)
     p.implements(p.IFacets)
     p.implements(p.IPackageController)
     p.implements(p.IDatasetForm)
@@ -29,11 +29,19 @@ class NGDSClient(p.SingletonPlugin):
     def get_helpers(self):
         return {}
 
-    """
     def before_map(self, map):
-        controller = 'ckanext.ngds.controllers.view:ViewController'
-        return
+        controller = 'ckanext.ngds.client.controllers.view:ViewController'
+        map.connect('map_search', '/map_search', controller=controller,
+                    action='render_map_search')
+        map.connect('library_search', '/library_search', controller=controller,
+                    action='render_library_search')
+        map.connect('resources', '/resources', controller=controller,
+                    action='render_resources')
+        map.connect('contribute', '/contribute', controller=controller,
+                    action='render_contribute')
+        return map
 
+    """
     def after_map(self, map):
         return
 

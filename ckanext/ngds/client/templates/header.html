@@ -72,43 +72,53 @@
   <div class="container">
 
     <div class="navbar navbar-default navbar-static-top" role="navigation">
-      <div class="container">
-
+      <div class="container-fluid">
         {# The .header-image class hides the main text and uses image replacement for the title #}
-        <hgroup class="{{ g.header_class }}">
-
+        <div class="navbar-header">
           {% block header_logo %}
             {% if g.site_logo %}
-              <a class="logo" href="{{ h.url('home') }}"><img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }}" title="{{ g.site_title }}" /></a>
+              <a class="navbar-brand" href="{{ h.url('home') }}" alt="{{ g.site_title }}" title="{{ g.site_title }}">
+                <img style="margin-top: -10px;" src="{{ h.url_for_static(g.site_logo) }}">
+                {% if g.site_description %}
+                  <span>{{ g.site_description }}</span>
+                {% endif %}
+              </a>
             {% else %}
-              <h1>
-                <a href="{{ h.url('home') }}">{{ g.site_title }}</a>
-              </h1>
-              {% if g.site_description %}<h2>{{ g.site_description }}</h2>{% endif %}
+              <a class="navbar-brand" href="{{ h.url('home') }}">{{ g.site_title }}>
+                {% if g.site_description %}
+                  <span>{{ g.site_description }}</span>
+                {% endif %}
+              </a>
             {% endif %}
           {% endblock %}
+        </div>
 
-        </hgroup>
+        <div class="navbar-right">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_map_search') }}">
+                Map
+              </a>
+            </li>
+            <li>
+              <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_library_search') }}">
+                Library
+              </a>
+            </li>
+            <li>
+              <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_resources') }}">
+                Resources
+              </a>
+            </li>
+            <li>
+              <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_contribute') }}">
+                Contribute
+              </a>
+            </li>
 
-        <div class="content">
-
-          {% block header_site_navigation %}
-            <nav class="section navigation">
-              <ul class="nav nav-pills">
-                {% block header_site_navigation_tabs %}
-                  {{ h.build_nav_main(
-                    ('search', _('Datasets')),
-                    ('organizations_index', _('Organizations')),
-                    ('group_index', _('Groups')),
-                    ('about', _('About'))
-                  ) }}
-                {% endblock %}
-              </ul>
-            </nav>
-          {% endblock %}
-
+          </ul>
+        </div>
       </div>
-    </div>
 
     </div>
   </div>

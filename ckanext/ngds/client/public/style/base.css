@@ -6,6 +6,7 @@ The "account masthead" bar across the top of the site
 
 .account-masthead {
     height: 31px;
+    background: #4679B2;
 }
 
 .account-masthead .navbar {
@@ -15,7 +16,6 @@ The "account masthead" bar across the top of the site
 }
 
 .account-masthead .container {
-    width: 100%;
     padding: 0;
 }
 
@@ -42,6 +42,7 @@ The "navigation masthead" bar across the top of the site
 
 .masthead {
     background: #ffffff;
+    height: 80px;
 }
 
 .masthead .navbar {
@@ -52,4 +53,31 @@ The "navigation masthead" bar across the top of the site
 
 .masthead .navbar .container {
     width: 100%;
+}
+
+.masthead .navbar .navbar-brand span {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.masthead .navbar .container .navbar-right {
+    padding-top: 20px;
+}
+
+.masthead .navbar .container .navbar-right .nav {
+    margin: 0;
+}
+
+.masthead .navbar .container .navbar-right a {
+    color: #000000;
+    text-shadow: none;
+    font-size: 18px;
+    transition: color 0.1s ease;
+}
+
+.masthead .navbar .container .navbar-right a:hover {
+    color: #7DA1C9;
+    text-shadow: none;
+    transition: color 0.1s ease;
 }
