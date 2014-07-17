@@ -45,6 +45,10 @@ The "navigation masthead" bar across the top of the site
     height: 80px;
 }
 
+.masthead .container {
+    width: 100%;
+}
+
 .masthead .navbar {
     background-color: #ffffff;
     border: none;
