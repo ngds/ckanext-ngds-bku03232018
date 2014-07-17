@@ -47,12 +47,7 @@ The "navigation masthead" bar across the top of the site
 
 .masthead .navbar {
     background-color: #ffffff;
-    width: 100%;
     border: none;
-}
-
-.masthead .navbar .container {
-    width: 100%;
 }
 
 .masthead .navbar .navbar-brand span {
@@ -61,22 +56,22 @@ The "navigation masthead" bar across the top of the site
     font-weight: bold;
 }
 
-.masthead .navbar .container .navbar-right {
+.masthead .navbar .container-fluid .navbar-right {
     padding-top: 20px;
 }
 
-.masthead .navbar .container .navbar-right .nav {
+.masthead .navbar .container-fluid .navbar-right .nav {
     margin: 0;
 }
 
-.masthead .navbar .container .navbar-right a {
+.masthead .navbar .container-fluid .navbar-right a {
     color: #000000;
     text-shadow: none;
     font-size: 18px;
     transition: color 0.1s ease;
 }
 
-.masthead .navbar .container .navbar-right a:hover {
+.masthead .navbar .container-fluid .navbar-right a:hover {
     color: #7DA1C9;
     text-shadow: none;
     transition: color 0.1s ease;
