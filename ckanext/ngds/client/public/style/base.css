@@ -137,10 +137,22 @@ Footer styles on the bottom of page
     color: #60A1d3;
 }
 
+.site-footer .container .row-fluid p {
+    color: #5690bd;
+}
+
 .site-footer .container .row-fluid .simple-input .field input {
     margin: 0;
 }
 
 .site-footer .container .row-fluid .simple-input .field .btn-search {
     margin-right: 7px;
+}
+
+.site-footer .container .row-fluid .github-link {
+    font-size: 20px;
+}
+
+.site-footer .container .row-fluid .github-link i {
+    margin-right: 5px;
 }
