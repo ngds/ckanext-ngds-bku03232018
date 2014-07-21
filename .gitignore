@@ -1,9 +1,5 @@
 *.pyc
-ckanext_ngds.egg-info/
-dist/
-build/
+*.egg-info
+build/*
+dist/*
 .DS_Store
-*.mo
-ckanext/ngds/geoserver/your-last-test.log
-.idea/
-*codekit-config.json

@@ -1,0 +1,23 @@
+{# Tell CKAN to extend the base.html page instead of overwriting it #}
+{% ckan_extends %}
+
+{# Set custom NGDS website title #}
+{% block title %}
+    NGDS - National Geothermal Data System
+{% endblock %}
+
+{# Override CKAN's vanilla CSS #}
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="/style/base.css" />
+  <link rel="stylesheet" href="/vendor/bootstrap-responsive-v2.3.2.min.css" />
+  <link rel="stylesheet" href="/vendor/font-awesome-4.1.0/css/font-awesome.min.css" />
+{% endblock %}
+
+{% block ngds_container %}
+  <body>
+    <div class="ngds-body-container">
+
+    </div>
+  </body>
+{% endblock %}

@@ -1,2 +1,0 @@
-recursive-include ckanext/ngds/ngdsui/templates   *
-recursive-include ckanext/ngds/ngdsui/public      *

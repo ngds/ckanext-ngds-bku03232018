@@ -1,2 +1,0 @@
-OBJECTID,FacilityURI,PlantName,PlantType,Label,Owner,OperationalDate,Status,County,State,LatDegree,LongDegree,SRS,LocationUncertaintyStatement,Notes,UseApplication,Capacity_MW,FacilityContact,Source,UpdateTimeStamp,Shape
-15,,xyz,Fire,,xig3,2013-08-15,OK,,NJ,0.0,1,,,,,3,Xiang Gao,fake,,

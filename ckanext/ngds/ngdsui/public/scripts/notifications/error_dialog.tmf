@@ -1,9 +1,0 @@
-/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
-/* Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey */
-<div class="error_dialog" title="{{display}}">
-	{{#messages}}
-		<p>
-			{{field}}:{{message}}
-		</p>
-	{{/messages}}
-</div>

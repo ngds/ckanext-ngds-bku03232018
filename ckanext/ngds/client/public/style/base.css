@@ -1,0 +1,158 @@
+body {
+    background: #d8d8d8;
+}
+
+/*
+=====================================================
+The "account masthead" bar across the top of the site
+=====================================================
+*/
+
+.account-masthead {
+    height: 31px;
+    background: #4679B2;
+}
+
+.account-masthead .navbar {
+    background-color: #4679B2;
+    min-height: 31px;
+    border: none;
+}
+
+.account-masthead .container {
+    padding: 0;
+}
+
+.account-masthead .navbar .pull-right {
+    margin-right: 20px;
+}
+
+.account-masthead .navbar .pull-right a {
+    color: #ffffff;
+    text-shadow: none;
+    transition: color 0.1s ease;
+}
+
+.account-masthead .navbar .pull-right a:hover {
+    color: #000000;
+}
+
+.account-masthead .navbar li a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+/*
+========================================================
+The "navigation masthead" bar across the top of the site
+========================================================
+*/
+
+.masthead {
+    background: #ffffff;
+}
+
+.masthead .container .navbar {
+    margin-bottom: 0;
+}
+
+.masthead .container .navbar .navbar-inner {
+    background: #ffffff;
+    border: none;
+    box-shadow: none;
+}
+
+
+.masthead .navbar .brand span {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+}
+
+.masthead .navbar .container .nav-collapse {
+    overflow: visible;
+}
+
+.masthead .navbar .container .pull-right li a {
+    font-weight: normal;
+}
+
+.masthead .navbar .container .pull-right a {
+    color: #000000;
+    text-shadow: none;
+    font-size: 20px;
+    transition: color 0.1s ease;
+}
+
+.masthead .navbar .container .pull-right a:hover {
+    color: #7DA1C9;
+    text-shadow: none;
+    transition: color 0.1s ease;
+}
+
+.masthead .navbar .container .pull-right {
+    margin-top: 24px;
+}
+
+.masthead .navbar .container .btn {
+    background-color: transparent;
+    background-image: none;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #CCCCCC;
+    padding-top: 11px;
+    padding-bottom: 12px;
+    margin-top: 15px;
+}
+
+.masthead .navbar .container .btn-navbar:hover {
+    background-color: #DDDDDD;
+}
+
+.masthead .navbar .container .btn-navbar {
+    width: 22px;
+    height: 10px;
+}
+
+.masthead .navbar .container .btn-navbar .icon-bar {
+    background-color: #888888;
+    box-shadow: none;
+    width: 24px;
+}
+
+/*
+===================================
+Footer styles on the bottom of page
+===================================
+*/
+
+.site-footer {
+   color: #60a1d3;
+   background: #d8d8d8;
+}
+
+.site-footer a {
+    color: #60A1d3;
+}
+
+.site-footer .container .row-fluid p {
+    color: #5690bd;
+}
+
+.site-footer .container .row-fluid .simple-input .field input {
+    margin: 0;
+}
+
+.site-footer .container .row-fluid .simple-input .field .btn-search {
+    margin-right: 7px;
+}
+
+.site-footer .container .row-fluid .github-link {
+    font-size: 20px;
+}
+
+.site-footer .container .row-fluid .github-link i {
+    margin-right: 5px;
+}
