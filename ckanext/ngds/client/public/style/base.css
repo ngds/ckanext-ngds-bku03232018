@@ -1,3 +1,5 @@
+
+
 /*
 =====================================================
 The "account masthead" bar across the top of the site
@@ -19,17 +21,21 @@ The "account masthead" bar across the top of the site
     padding: 0;
 }
 
-.account-masthead .navbar .navbar-right a {
+.account-masthead .navbar .pull-right {
+    margin-right: 20px;
+}
+
+.account-masthead .navbar .pull-right a {
     color: #ffffff;
     text-shadow: none;
     transition: color 0.1s ease;
 }
 
-.account-masthead .navbar .navbar-right a:hover {
+.account-masthead .navbar .pull-right a:hover {
     color: #000000;
 }
 
-.account-masthead .navbar-nav li a {
+.account-masthead .navbar li a {
     padding-top: 5px;
     padding-bottom: 5px;
 }
@@ -42,41 +48,74 @@ The "navigation masthead" bar across the top of the site
 
 .masthead {
     background: #ffffff;
-    height: 80px;
 }
 
-.masthead .container {
-    width: 100%;
+.masthead .container .navbar {
+    margin-bottom: 0;
 }
 
-.masthead .navbar {
-    background-color: #ffffff;
+.masthead .container .navbar .navbar-inner {
+    background: #ffffff;
     border: none;
+    box-shadow: none;
 }
 
-.masthead .navbar .navbar-brand span {
+
+.masthead .navbar .brand span {
     display: block;
     font-size: 12px;
     font-weight: bold;
+    color: #000000;
 }
 
-.masthead .navbar .container-fluid .navbar-right {
-    padding-top: 20px;
+.masthead .navbar .container .nav-collapse {
+    overflow: visible;
 }
 
-.masthead .navbar .container-fluid .navbar-right .nav {
-    margin: 0;
+.masthead .navbar .container .pull-right li a {
+    font-weight: normal;
 }
 
-.masthead .navbar .container-fluid .navbar-right a {
+.masthead .navbar .container .pull-right a {
     color: #000000;
     text-shadow: none;
-    font-size: 18px;
+    font-size: 20px;
     transition: color 0.1s ease;
 }
 
-.masthead .navbar .container-fluid .navbar-right a:hover {
+.masthead .navbar .container .pull-right a:hover {
     color: #7DA1C9;
     text-shadow: none;
     transition: color 0.1s ease;
+}
+
+.masthead .navbar .container .pull-right {
+    margin-top: 24px;
+}
+
+.masthead .navbar .container .btn {
+    background-color: transparent;
+    background-image: none;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #CCCCCC;
+    padding-top: 11px;
+    padding-bottom: 12px;
+    margin-top: 15px;
+}
+
+.masthead .navbar .container .btn-navbar:hover {
+    background-color: #DDDDDD;
+}
+
+.masthead .navbar .container .btn-navbar {
+    width: 22px;
+    height: 10px;
+}
+
+.masthead .navbar .container .btn-navbar .icon-bar {
+    background-color: #888888;
+    box-shadow: none;
+    width: 24px;
 }

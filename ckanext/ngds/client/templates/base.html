@@ -8,14 +8,15 @@
 
 {# Override CKAN's vanilla CSS #}
 {% block styles %}
-    {{ super() }}
-    <link rel="stylesheet" href="/vendor/bootstrap-v3.2.0.min.css" />
-    <link rel="stylesheet" href="/style/base.css" />
+  {{ super() }}
+  <link rel="stylesheet" href="/style/base.css" />
+  <link rel="stylesheet" href="/vendor/bootstrap-responsive-v2.3.2.min.css" />
 {% endblock %}
 
-{# Override CKAN's vanilla javascript #}
-{% block scripts %}
-    {{ super() }}
-    <script type="text/javascript" src="/vendor/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="/vendor/bootstrap-v3.2.0.min.js"></script>
+{% block ngds_container %}
+  <body>
+    <div class="ngds-body-container">
+
+    </div>
+  </body>
 {% endblock %}

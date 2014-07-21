@@ -1,0 +1,13 @@
+{% ckan_extends %}
+
+{# Set a top-level container to make responsive CSS easier #}
+{%- block page -%}
+  <div class="ngds-top-container">
+    {{ super() }}
+  </div>
+{% endblock %}
+
+{# Override CKAN's vanilla javascript #}
+{%- block scripts -%}
+  {{ super() }}
+{% endblock %}
