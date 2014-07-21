@@ -2,26 +2,73 @@
 
 <footer class="site-footer">
   <div class="container">
-    {% block footer_content %}
-      <nav class="footer-links">
-        {% block footer_nav %}
+  {% block footer_content %}
+      {% block footer_nav %}
+      <div class="row-fluid">
+        <div class="span3">
           <ul class="unstyled">
-            {% block footer_links %}
-              <p>{% trans %}<strong>Who we are</strong>{% endtrans %}</p>
-              <li><a href="{{ h.url_for(controller='home', action='about') }}">{{ _('About {0}').format(g.site_title) }}</a></li>
+          {% block footer_site_search %}
+            <p>{% trans %}<strong>Sitewide Search</strong>{% endtrans %}</p>
+            <li>
+              <form class="section site-search simple-input" action="{% url_for controller='package', action='search' %}" method="get">
+                <div class="field">
+                  <label for="field-sitewide-search">{% block footer_site_search_label %}{{ _('Search NGDS') }}{% endblock %}</label>
+                  <input id="field-sitewide-search" type="text" name="q" placeholder="{{ _('Search NGDS') }}" />
+                  <button class="btn-search" type="submit"><i class="icon-search"></i></button>
+                </div>
+              </form>
+            </li>
+          {% endblock %}
+          </ul>
+          <br>
+          <br>
+        </div>
+        <div class="span3">
+          <ul class="unstyled">
+            {% block footer_data_links %}
+              <p>{% trans %}<strong>Find & Use Data</strong>{% endtrans %}</p>
+              <li>
+                <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_map_search') }}">
+                  Map
+                </a>
+              </li>
+              <li>
+                <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_library_search') }}">
+                  Library
+                </a>
+              </li>
+              <li>
+                <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_resources') }}">
+                  Resources
+                </a>
+              </li>
+              <li>
+                <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_contribute') }}">
+                  Contribute
+                </a>
+              </li>
             {% endblock %}
           </ul>
+        </div>
+        <div class="span3">
           <ul class="unstyled">
-            {% block footer_links_ckan %}
-              <p>{% trans %}<strong>Find and use data</strong>{% endtrans %}</p>
-              {% set api_url = 'http://docs.ckan.org/en/{0}/api/'.format(g.ckan_doc_version) %}
-              <li><a href="{{ api_url }}">{{ _('CKAN API') }}</a></li>
-              <li><a href="http://www.okfn.org/">{{ _('Open Knowledge Foundation') }}</a></li>
-              <li><a href="http://www.opendefinition.org/okd/"><img src="//assets.okfn.org/images/ok_buttons/od_80x15_blue.png"></a></li>
+            {% block footer_about_links %}
+              <p>{% trans %}<strong>Who We Are</strong>{% endtrans %}</p>
+              <li><a href="{{ h.url_for(controller='home', action='about') }}">{{ _('About the {0}').format(g.site_title) }}</a></li>
+              {% set partners_url = '' %}
+              <li><a href="{{ partners_url }}">{{ _('Our partners') }}</a></li>
+              {% set get_started_url = '' %}
+              <li><a href="{{ get_started_url }}">{{ _('Getting started') }}</a></li>
             {% endblock %}
           </ul>
-        {% endblock %}
-      </nav>
+        </div>
+        <div class="span3">
+          {% block footer_links %}
+            <p>{% trans %}<strong>For Contributors & Developers</strong>{% endtrans %}</p>
+          {% endblock %}
+        </div>
+      </div>
+      {% endblock %}
     {% endblock %}
   </div>
 

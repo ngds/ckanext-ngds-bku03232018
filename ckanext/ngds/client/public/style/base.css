@@ -1,4 +1,6 @@
-
+body {
+    background: #d8d8d8;
+}
 
 /*
 =====================================================
@@ -118,4 +120,27 @@ The "navigation masthead" bar across the top of the site
     background-color: #888888;
     box-shadow: none;
     width: 24px;
+}
+
+/*
+===================================
+Footer styles on the bottom of page
+===================================
+*/
+
+.site-footer {
+   color: #60a1d3;
+   background: #d8d8d8;
+}
+
+.site-footer a {
+    color: #60A1d3;
+}
+
+.site-footer .container .row-fluid .simple-input .field input {
+    margin: 0;
+}
+
+.site-footer .container .row-fluid .simple-input .field .btn-search {
+    margin-right: 7px;
 }
