@@ -52,7 +52,10 @@ setup(
 	# NGDS Harvest plugin
 	ngds_harvester=ckanext.ngds.harvest.harvester.ngds:NgdsHarvester
 
-	# NGDS UI plugin.
+    # NGDS Admin plugins
+    sysadmin=ckanext.ngds.sysadmin.plugin:SystemAdministrator
+
+	# NGDS UI plugin
 	ngds_client=ckanext.ngds.client.plugin:NGDSClient
 
 	[paste.paster_command]

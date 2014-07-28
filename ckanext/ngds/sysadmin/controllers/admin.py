@@ -1,28 +1,15 @@
-import ckan.plugins as p
+from ckanext.ngds.common import base, admin, app_globals, config, h
 
-class IAdminController(p.Interface):
-    """
-    Hook into the admin controller, mostly just to extend the custom config
-    options that the admin can set in the UI.  Vanilla CKAN currently only
-    supports extending the admin interface through Jinja2 macros which all fail.
-    """
-    def before(self, action, **params):
-        """
-        Authorization to make sure that the user trying to access admin pages
-        is an administrator.
+request = base.request
+_ = base._
 
-        :param action:
-        :param params:
-        :return:
-        """
-        pass
+app_globals.mappings['ngds.deployment'] = 'ngds.deployment'
+
+class NGDSAdminController(admin.AdminController):
 
     def get_config_form_items(self):
-        """
-        Set configuration items in the CKAN administrator UI, which will be used
-        as method parameters in the 'form.autoform()' Jinja2 macro.
-
-        Example:
+        deployment_types = [{'text': 'NGDS Aggregator', 'value': 'ngds_aggregator'},
+                            {'text': 'NGDS Publisher', 'value': 'ngds_publisher'}]
 
         styles = [{'text': 'Default', 'value': '/base/css/main.css'},
                   {'text': 'Red', 'value': '/base/css/red.css'},
@@ -35,6 +22,7 @@ class IAdminController(p.Interface):
                      {'value': '3', 'text': 'Search, introductory area and stats'}]
 
         items = [
+            {'name': 'ngds.deployment', 'control': 'select', 'options': deployment_types, 'label': _('Deployment'), 'placeholder': ''},
             {'name': 'ckan.site_title', 'control': 'input', 'label': _('Site Title'), 'placeholder': ''},
             {'name': 'ckan.main_css', 'control': 'select', 'options': styles, 'label': _('Style'), 'placeholder': ''},
             {'name': 'ckan.site_description', 'control': 'input', 'label': _('Site Tag Line'), 'placeholder': ''},
@@ -46,42 +34,24 @@ class IAdminController(p.Interface):
         ]
         return items
 
-        @return: [{items}]
-        """
-        pass
-
-    def reset_config(self):
-        """
-        Reset global pylons configuration object to the defaults set in the
-        development.ini file.
-
-        @return: render 'admin/confirm_reset.html'
-        """
-        pass
-
     def config(self):
-        """
-        Builds the admin configuration UI with the correct parameters in the
-        pylons global configuration object.  Updates the pylons global
-        configuration object with changed parameters if the user selects to
-        do so in the UI.
 
-        @return: render 'admin/config.html'
-        """
-        pass
+        items = self.get_config_form_items()
+        data = request.POST
+        if 'save' in data:
+            # update config from form
+            for item in items:
+                name = item['name']
+                if name in data:
+                    app_globals.set_global(name, data[name])
+            app_globals.reset()
+            h.redirect_to(controller='admin', action='config')
 
-    def index(self):
-        """
-        Generate a list of all admins in the system.
+        data = {}
+        for item in items:
+            name = item['name']
+            data[name] = config.get(name)
 
-        @return: render 'admin/index.html'
-        """
-        pass
-
-    def trash(self):
-        """
-        Not really sure what this does yet.
-
-        @return: Null?
-        """
-        pass
+        vars = {'data': data, 'errors': {}, 'form_items': items}
+        return base.render('admin/config.html',
+                           extra_vars = vars)
