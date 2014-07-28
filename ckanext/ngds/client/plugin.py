@@ -5,10 +5,10 @@ class NGDSClient(p.SingletonPlugin):
 
 
     p.implements(p.IConfigurer, inherit=True)
-    p.implements(p.ITemplateHelpers, inherit=True)
     p.implements(p.IRoutes, inherit=True)
 
     """
+    p.implements(p.ITemplateHelpers)
     p.implements(p.IActions)
     p.implements(p.IAuthFunctions)
     p.implements(p.IFacets)
@@ -27,7 +27,7 @@ class NGDSClient(p.SingletonPlugin):
         p.toolkit.add_public_directory(config, 'public')
 
     def get_helpers(self):
-        return {}
+        pass
 
     def before_map(self, map):
         controller = 'ckanext.ngds.client.controllers.view:ViewController'

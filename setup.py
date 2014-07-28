@@ -55,6 +55,9 @@ setup(
 	# NGDS UI plugin.
 	ngds_client=ckanext.ngds.client.plugin:NGDSClient
 
+	# NGDS System Admin plugin
+	sysadmin=ckanext.ngds.sysadmin.plugin:NGDSSystemAdmin
+
 	[paste.paster_command]
     # Install NGDS additional tables
 	ngds=ckanext.ngds.base.commands.ngds_tables:NgdsTables
