@@ -1,0 +1,46 @@
+{% ckan_extends %}
+
+{% block primary_content_inner %}
+  <form method='post' action="" class="form-horizontal">
+    {% block admin_form %}
+
+      {% set deployment_types = [{'text': 'NGDS Aggregator', 'value': 'ngds_aggregator'},
+                                 {'text': 'NGDS Publisher', 'value': 'ngds_publisher'}]
+      %}
+
+      {% set styles = [{'text': 'Default', 'value': '/base/css/main.css'},
+                  {'text': 'Red', 'value': '/base/css/red.css'},
+                  {'text': 'Green', 'value': '/base/css/green.css'},
+                  {'text': 'Maroon', 'value': '/base/css/maroon.css'},
+                  {'text': 'Fuchsia', 'value': '/base/css/fuchsia.css'}]
+      %}
+
+      {% set homepages = [{'value': '1', 'text': 'Introductory area, search, featured group and featured organization'},
+                     {'value': '2', 'text': 'Search, stats, introductory area, featured organization and featured group'},
+                     {'value': '3', 'text': 'Search, introductory area and stats'}]
+      %}
+
+      {% set form_info = [
+          {'name': 'ngds.deployment', 'control': 'select', 'options': deployment_types, 'label': _('Deployment'), 'placeholder': ''},
+          {'name': 'ckan.site_title', 'control': 'input', 'label': _('Site Title'), 'placeholder': ''},
+          {'name': 'ckan.main_css', 'control': 'select', 'options': styles, 'label': _('Style'), 'placeholder': ''},
+          {'name': 'ckan.site_description', 'control': 'input', 'label': _('Site Tag Line'), 'placeholder': ''},
+          {'name': 'ckan.site_logo', 'control': 'input', 'label': _('Site Tag Logo'), 'placeholder': ''},
+          {'name': 'ckan.site_about', 'control': 'markdown', 'label': _('About'), 'placeholder': _('About page text')},
+          {'name': 'ckan.site_intro_text', 'control': 'markdown', 'label': _('Intro Text'), 'placeholder': _('Text on home page')},
+          {'name': 'ckan.site_custom_css', 'control': 'textarea', 'label': _('Custom CSS'), 'placeholder': _('Customisable css inserted into the page header')},
+          {'name': 'ckan.homepage_style', 'control': 'select', 'options': homepages, 'label': _('Homepage'), 'placeholder': ''},
+          ]
+      %}
+
+      {% import 'macros/autoform.html' as autoform %}
+
+      {{ autoform.generate(form_info, data, errors) }}
+    {% endblock %}
+    <div class="form-actions">
+      {% set locale = h.dump_json({'content': _('Are you sure you want to reset the config?')}) %}
+      <a href="{% url_for controller='admin', action='reset_config' %}" class="btn btn-danger pull-left" data-module="confirm-action" data-module-i18n="{{ locale }}">{{ _('Reset') }}</a>
+      <button type="submit" class="btn btn-primary" name="save">{{ _('Update Config') }}</button>
+    </div>
+  </form>
+{% endblock %}
