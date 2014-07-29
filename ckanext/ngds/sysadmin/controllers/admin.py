@@ -74,13 +74,19 @@ class NGDSAdminController(admin.AdminController):
         """
         data = request.POST
 
-        if 'save' in data:
+        def update_config(data, config):
             for item in items:
                 name = item['name']
                 if name in data:
                     app_globals.set_global(name, data[name])
             app_globals.reset()
-            h.redirect_to(controller=self.controller, action='config')
+            h.redirect_to(controller=self.controller, action=config)
+
+        if 'save-data-config' in data:
+            update_config(data, 'data_config')
+
+        if 'save-style-config' in data:
+            update_config(data, 'style_config')
 
         data = {}
         for item in items:
