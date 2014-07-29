@@ -1,9 +1,28 @@
 import ckan.plugins as p
+import ckanext.ngds.sysadmin.model.db as db
 
 class SystemAdministrator(p.SingletonPlugin):
 
     p.implements(p.IConfigurer, inherit=True)
+    p.implements(p.IConfigurable, inherit=True)
     p.implements(p.IRoutes, inherit=True)
+
+    def configure(self, config):
+
+        data = {
+            'ngds_publish': config.get('ngds.publish'),
+            'ngds_harvest': config.get('ngds.harvest'),
+            'ngds_edit_metadata': config.get('ngds.edit_metadata'),
+            'ckan_site_title': config.get('ckan.site_title'),
+            'ckan_main_css': config.get('ckan.main_css'),
+            'ckan_site_description': config.get('ckan.site_description'),
+            'ckan_site_logo': config.get('ckan.site_logo'),
+            'ckan_site_about': config.get('ckan.site_about'),
+            'ckan_site_intro_text': config.get('ckan.site_intro_text'),
+            'ckan_homepage_style': config.get('ckan.homepage_style'),
+        }
+
+        db.init_db(data)
 
     def update_config(self, config):
         """
