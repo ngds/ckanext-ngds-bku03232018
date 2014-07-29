@@ -1,4 +1,5 @@
 import ckan.plugins as p
+from ckanext.ngds.common import model
 import ckanext.ngds.sysadmin.model.db as db
 
 class SystemAdministrator(p.SingletonPlugin):
@@ -22,7 +23,7 @@ class SystemAdministrator(p.SingletonPlugin):
             'ckan_homepage_style': config.get('ckan.homepage_style'),
         }
 
-        db.init_db(data)
+        db.init_table_populate(model, data)
 
     def update_config(self, config):
         """
@@ -31,6 +32,7 @@ class SystemAdministrator(p.SingletonPlugin):
 
         @config: Pylons global config object
         """
+        data = db.init_config_show(model)
         p.toolkit.add_template_directory(config, 'templates')
 
     def before_map(self, map):
