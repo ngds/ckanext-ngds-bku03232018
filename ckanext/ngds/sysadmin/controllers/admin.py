@@ -15,6 +15,9 @@ class NGDSAdminController(admin.AdminController):
     order to extend object.  Then we redirect the routes in the plugin.py file
     to use this controller.
     """
+    def __init__(self):
+        self.controller = 'ckanext.ngds.sysadmin.controllers.admin:NGDSAdminController'
+
     def get_style_config_form_items(self):
         """
         Just a copy of the AdminController's _get_config_form_items function
@@ -77,7 +80,7 @@ class NGDSAdminController(admin.AdminController):
                 if name in data:
                     app_globals.set_global(name, data[name])
             app_globals.reset()
-            h.redirect_to(controller='admin', action='config')
+            h.redirect_to(controller=self.controller, action='config')
 
         data = {}
         for item in items:
