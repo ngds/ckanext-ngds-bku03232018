@@ -10,23 +10,6 @@ class SystemAdministrator(p.SingletonPlugin):
     #p.implements(p.IActions, inherit=True)
     #p.implements(p.IAuthFunctions, inherit=True)
 
-    def configure(self, config):
-
-        data = {
-            'ngds_publish': config.get('ngds.publish'),
-            'ngds_harvest': config.get('ngds.harvest'),
-            'ngds_edit_metadata': config.get('ngds.edit_metadata'),
-            'ckan_site_title': config.get('ckan.site_title'),
-            'ckan_main_css': config.get('ckan.main_css'),
-            'ckan_site_description': config.get('ckan.site_description'),
-            'ckan_site_logo': config.get('ckan.site_logo'),
-            'ckan_site_about': config.get('ckan.site_about'),
-            'ckan_site_intro_text': config.get('ckan.site_intro_text'),
-            'ckan_homepage_style': config.get('ckan.homepage_style'),
-        }
-
-        db.init_table_populate(model, data)
-
     def update_config(self, config):
         """
         Extends 'update_config' function in IConfigurer object.  Registers the
@@ -34,7 +17,25 @@ class SystemAdministrator(p.SingletonPlugin):
 
         @config: Pylons global config object
         """
-        data = db.init_config_show(model)
+        data = {
+            'ngds.publish': config.get('ngds.publish'),
+            'ngds.harvest': config.get('ngds.harvest'),
+            'ngds.edit_metadata': config.get('ngds.edit_metadata'),
+            'ckan.site_title': config.get('ckan.site_title'),
+            'ckan.main_css': config.get('ckan.main_css'),
+            'ckan.site_description': config.get('ckan.site_description'),
+            'ckan.site_logo': config.get('ckan.site_logo'),
+            'ckan.site_about': config.get('ckan.site_about'),
+            'ckan.site_intro_text': config.get('ckan.site_intro_text'),
+            'ckan.homepage_style': config.get('ckan.homepage_style'),
+        }
+
+        db.init_table_populate(model, data)
+
+        db_config = db.init_config_show(model)
+
+        config.update(db_config)
+
         p.toolkit.add_template_directory(config, 'templates')
 
     def before_map(self, map):
