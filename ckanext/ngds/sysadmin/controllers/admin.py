@@ -1,13 +1,9 @@
+import datetime
 import ckanext.ngds.sysadmin.model.db as db
-from ckanext.ngds.common import base, admin, app_globals, config, h
+from ckanext.ngds.common import base, admin, app_globals, config, h, model
 
 request = base.request
 _ = base._
-
-# Register ngds admin configurations with pylons
-app_globals.mappings['ngds.publish'] = 'ngds.publish'
-app_globals.mappings['ngds.harvest'] = 'ngds.harvest'
-app_globals.mappings['ngds.edit_metadata'] = 'ngds.edit_metadata'
 
 class NGDSAdminController(admin.AdminController):
     """
@@ -66,31 +62,49 @@ class NGDSAdminController(admin.AdminController):
 
     def config(self, items):
         """
-        Renders global config items based on user input in the UI.  Returns a
-        dictionary of config parameters that are used to build the admin config
-        Jinja templates.
+        If this method gets called from the vanilla admin page for custom UI
+        settings, then we update the ckan.* config variables through the
+        'app_globals' module and CKAN stores that information in the
+        'system_info' table so that custom configs will persist through a server
+        failure.  If this method gets called from the NGDS admin page for data
+        settings, then the 'app_globals' module gets updated in memory but
+        we write the configs to a custom 'ngds_system_info' table.
 
         @param items: pylons global config options
         @return: dictionary
         """
-
         data = request.POST
 
-        def update_config(items, data, config):
-            if db.sysadmin_config_table is None:
-                db.init()
+        if 'save-data-config' in data:
+            # Set up ORM if it's not already set
+            if db.ngds_system_info is None:
+                db.init(model)
+            # Get db data to update
+            update_db = db.SysadminConfig.get(active_config=True)
+            for item in items:
+                name = item['name']
+                if name in data:
+                    # Update app_globals in memory
+                    app_globals.set_global(name, data[name])
+                    # Update database
+                    setattr(update_db, name, data.get(name))
+            app_globals.reset()
+            update_db.last_edited = datetime.datetime.utcnow()
+            update_db.save()
+            session = model.Session
+            session.add(update_db)
+            session.commit()
+            h.redirect_to(controller=self.controller,
+                          action='data_config')
+
+        if 'save-style-config' in data:
             for item in items:
                 name = item['name']
                 if name in data:
                     app_globals.set_global(name, data[name])
             app_globals.reset()
-            h.redirect_to(controller=self.controller, action=config)
-
-        if 'save-data-config' in data:
-            update_config(items, data, 'data_config')
-
-        if 'save-style-config' in data:
-            update_config(items, data, 'style_config')
+            h.redirect_to(controller=self.controller,
+                          action='style_config')
 
         data = {}
         for item in items:
