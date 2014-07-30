@@ -67,7 +67,7 @@ def init_config_show(model):
     if sysadmin_config_table is None:
         init(model)
     out = SysadminConfig.get(active_config=True)
-    return [{'last_edited': o.last_edited,
+    db_config = [{'last_edited': o.last_edited,
              'active_config': o.active_config,
              'ngds_publish': o.ngds_publish,
              'ngds_harvest': o.ngds_harvest,
@@ -80,3 +80,4 @@ def init_config_show(model):
              'ckan_site_intro_text': o.ckan_site_intro_text,
              'ckan_homepage_style': o.ckan_homepage_style,
             } for o in out]
+    return db_config[0]

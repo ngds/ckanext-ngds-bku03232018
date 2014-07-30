@@ -3,7 +3,7 @@ import ckanext.ngds.sysadmin.db as db
 from ckanext.ngds.common import df
 
 def _sysadmin_config_update(context, data_dict):
-    pass
+
 
 def sysadmin_config_update(context, data_dict):
     try:

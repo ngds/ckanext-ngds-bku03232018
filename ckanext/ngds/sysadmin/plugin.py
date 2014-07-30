@@ -7,6 +7,8 @@ class SystemAdministrator(p.SingletonPlugin):
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IConfigurable, inherit=True)
     p.implements(p.IRoutes, inherit=True)
+    p.implements(p.IActions, inherit=True)
+    p.implements(p.IAuthFunctions, inherit=True)
 
     def configure(self, config):
 
@@ -33,6 +35,10 @@ class SystemAdministrator(p.SingletonPlugin):
         @config: Pylons global config object
         """
         data = db.init_config_show(model)
+        config['ngds.publish'] = 'False'#data['ngds_publish']
+        config['ngds.harvest'] = data['ngds_harvest']
+        config['ngds.edit_metadata'] = data['ngds_edit_metadata']
+        config['ckan.site_title'] = data['ckan_site_title']
         p.toolkit.add_template_directory(config, 'templates')
 
     def before_map(self, map):

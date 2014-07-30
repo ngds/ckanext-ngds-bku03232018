@@ -1,3 +1,4 @@
+import ckanext.ngds.sysadmin.model.db as db
 from ckanext.ngds.common import base, admin, app_globals, config, h
 
 request = base.request
@@ -72,9 +73,12 @@ class NGDSAdminController(admin.AdminController):
         @param items: pylons global config options
         @return: dictionary
         """
+
         data = request.POST
 
-        def update_config(data, config):
+        def update_config(items, data, config):
+            if db.sysadmin_config_table is None:
+                db.init()
             for item in items:
                 name = item['name']
                 if name in data:
@@ -83,7 +87,7 @@ class NGDSAdminController(admin.AdminController):
             h.redirect_to(controller=self.controller, action=config)
 
         if 'save-data-config' in data:
-            update_config(data, 'data_config')
+            update_config(items, data, 'data_config')
 
         if 'save-style-config' in data:
             update_config(data, 'style_config')
