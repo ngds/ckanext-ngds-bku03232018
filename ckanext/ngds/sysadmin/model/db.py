@@ -80,4 +80,4 @@ def init_config_show(model):
              'ckan_site_intro_text': o.ckan_site_intro_text,
              'ckan_homepage_style': o.ckan_homepage_style,
             } for o in out]
-    return db_config[0]
+    return db_config
