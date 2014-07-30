@@ -90,7 +90,7 @@ class NGDSAdminController(admin.AdminController):
             update_config(items, data, 'data_config')
 
         if 'save-style-config' in data:
-            update_config(data, 'style_config')
+            update_config(items, data, 'style_config')
 
         data = {}
         for item in items:
