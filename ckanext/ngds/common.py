@@ -14,3 +14,4 @@ import ckan.controllers.admin as admin
 import ckan.tests as tests
 import ckan.plugins as plugins
 import ckan.config.middleware as middleware
+import pylons.config as pylons_config

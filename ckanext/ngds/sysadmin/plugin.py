@@ -1,6 +1,8 @@
 import ckan.plugins as p
 import ckanext.ngds.sysadmin.model.db as db
-from ckanext.ngds.common import model, app_globals
+
+import ckan.lib.app_globals as app_globals
+import ckan.model as model
 
 class SystemAdministrator(p.SingletonPlugin):
 
@@ -47,6 +49,7 @@ class SystemAdministrator(p.SingletonPlugin):
 
         # Add custom templates directory
         p.toolkit.add_template_directory(config, 'templates')
+
 
     def before_map(self, map):
         # Set routes for controller

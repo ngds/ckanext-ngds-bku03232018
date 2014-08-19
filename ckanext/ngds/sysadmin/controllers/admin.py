@@ -1,6 +1,12 @@
 import datetime
 import ckanext.ngds.sysadmin.model.db as db
-from ckanext.ngds.common import base, admin, app_globals, config, h, model
+
+from pylons import config
+import ckan.lib.base as base
+import ckan.lib.helpers as h
+import ckan.lib.app_globals as app_globals
+import ckan.model as model
+import ckan.controllers.admin as admin
 
 request = base.request
 _ = base._
