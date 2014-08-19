@@ -58,12 +58,12 @@ class NGDSAdminController(admin.AdminController):
         """
 
         data_controls = [{'text': 'Enabled', 'value': 'True'},
-                       {'text': 'Disabled', 'value': 'False'}]
+                         {'text': 'Disabled', 'value': 'False'}]
 
         items = [{'name': 'ngds.publish', 'control': 'select', 'options': data_controls, 'label': _('Data Publishing'), 'placeholder': ''},
-            {'name': 'ngds.harvest', 'control': 'select', 'options': data_controls, 'label': _('Data Harvesting'), 'placeholder': ''},
-            {'name': 'ngds.edit_metadata', 'control': 'select', 'options': data_controls, 'label': _('Metadata Editing'), 'placeholder': ''},
-        ]
+                 {'name': 'ngds.harvest', 'control': 'select', 'options': data_controls, 'label': _('Data Harvesting'), 'placeholder': ''},
+                 {'name': 'ngds.edit_metadata', 'control': 'select', 'options': data_controls, 'label': _('Metadata Editing'), 'placeholder': ''}]
+
         return items
 
     def config(self, items):
