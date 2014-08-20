@@ -1,3 +1,25 @@
-#metadata-sources ul {
+ul {
+    margin-left: 0px;
+}
+
+.metadata-list {
     list-style-type: none;
+    margin: -10px -10px 10px -10px;
+}
+
+.metadata-item {
+    position: relative;
+    padding: 10px 10px 1px 60px;
+    margin-bottom: 0px;
+    border-radius: 3px;
+}
+
+.metadata-item:hover {
+    background-color: #eeeeee;
+}
+
+.metadata-item .format-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
 }
