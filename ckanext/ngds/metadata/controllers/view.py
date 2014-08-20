@@ -1,9 +1,9 @@
 from ckanext.ngds.common import plugins as p
 from ckanext.ngds.common import model
-from ckanext.ngds.common.base import BaseController, c, abort, response
-from ckanext.ngds.common.pylons_i18n import _
+from ckanext.ngds.common import base
+from ckanext.ngds.common import pylons_i18n
 
-class ViewController(BaseController):
+class ViewController(base.BaseController):
     """
     Controller object for rendering an ISO 19139 XML representation of a CKAN
     package.
@@ -20,16 +20,16 @@ class ViewController(BaseController):
         @return: ISO 19139 XML representation of CKAN package
         """
         try:
-            context = {'model': model, 'user': c.user}
+            context = {'model': model, 'user': base.c.user}
             obj = p.toolkit.get_action('iso_19139')(context, {'id': id})
-            response.content_type = 'application/xml; charset=utf-8'
-            response.headers['Content-Length'] = len(obj)
+            base.response.content_type = 'application/xml; charset=utf-8'
+            base.response.headers['Content-Length'] = len(obj)
             return obj.encode('utf-8')
 
         except p.toolkit.ObjectNotFound, e:
-            abort(404, _(str(e)))
+            base.abort(404, pylons_i18n._(str(e)))
         except p.toolkit.NotAuthorized:
-            abort(401, self.not_auth_message)
+            base.abort(401, self.not_auth_message)
         except Exception, e:
             msg = 'An error ocurred: [%s]' % str(e)
-            abort(500, msg)
+            base.abort(500, msg)

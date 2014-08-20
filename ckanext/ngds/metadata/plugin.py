@@ -9,11 +9,13 @@ class MetadataPlugin(p.SingletonPlugin):
 
     def update_config(self, config):
         templates = 'templates'
+        public = 'public'
         p.toolkit._add_template_directory(config, templates)
+        p.toolkit.add_public_directory(config, public)
 
     def before_map(self, map):
         controller = 'ckanext.ngds.metadata.controllers.view:ViewController'
-        map.connect('metadata_iso_19139', '/metadata/iso_19139/:id',
+        map.connect('metadata_iso_19139', '/metadata/iso-19139/:id',
                     controller=controller, action='show_iso_19139')
         return map
 

@@ -131,7 +131,7 @@ def iso_19139(context, data_dict):
     pkg["additional"]["offline"] = [value for key, value in offline.iteritems()]
 
     # ---- All done, render the template
-    output = base.render("package_to_iso.xml", pkg)
+    output = base.render("xml/package_to_iso.xml", pkg)
 
     return output
 
