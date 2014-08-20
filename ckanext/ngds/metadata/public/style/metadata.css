@@ -7,6 +7,10 @@ ul {
     margin: -10px -10px 10px -10px;
 }
 
+.metadata-item:hover {
+    background-color: #eeeeee;
+}
+
 .metadata-item {
     position: relative;
     padding: 10px 10px 1px 60px;
@@ -14,12 +18,13 @@ ul {
     border-radius: 3px;
 }
 
-.metadata-item:hover {
-    background-color: #eeeeee;
-}
-
 .metadata-item .format-label {
     position: absolute;
     top: 10px;
     left: 10px;
+}
+
+.metadata-item .description {
+    font-size: 12px;
+    margin-bottom: 0px;
 }
