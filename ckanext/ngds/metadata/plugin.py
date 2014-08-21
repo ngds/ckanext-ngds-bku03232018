@@ -1,12 +1,36 @@
 import ckanext.ngds.metadata.logic.action as action
 from ckanext.ngds.common import plugins as p
 
+def create_protocol_codes():
+    user = p.toolkit.get_action('get_site_user')({'ignore_auth': True}, {})
+    context = {'user': user['name']}
+    try:
+        data = {'id': 'usgin_protocol'}
+        p.toolkit.get_action('vocabulary_show')(context, data)
+    except p.toolkit.ObjectNotFound:
+        data = {'name': 'usgin_protocol'}
+        vocab = p.toolkit.get_action('vocabulary_create')(context, data)
+        for tag in ('OGC:WMS', 'OGC:WFS', 'OGC:WCS', 'OGC:CSW', 'OGC:SOS',
+                    'OPeNDAP', 'ESRI', 'other'):
+            data = {'name': tag, 'vocabulary_id': vocab['id']}
+            p.toolkit.get_action('tag_create')(context, data)
+
+def protocol_codes():
+    create_protocol_codes()
+    try:
+        tag_list = p.toolkit.get_action('tag_list')
+        protocol_codes = tag_list(data_dict={'vocabulary_id': 'usgin_protocol'})
+        return protocol_codes
+    except p.toolkit.ObjectNotFound:
+        return None
+
 class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     p.implements(p.IConfigurer)
     p.implements(p.IActions)
     p.implements(p.IRoutes, inherit=True)
     p.implements(p.IDatasetForm)
+    p.implements(p.ITemplateHelpers)
 
     # IConfigurer
     def update_config(self, config):
@@ -54,6 +78,18 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'status': [p.toolkit.get_validator('ignore_missing'),
                        p.toolkit.get_converter('convert_to_extras')],
         })
+
+        schema['resources'].update({
+            'distributor': [p.toolkit.get_validator('ignore_missing')],
+            'resource_format': [p.toolkit.get_validator('ignore_missing')],
+            'format': [p.toolkit.get_validator('ignore_missing')],
+            'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
+            'content_model_version': [p.toolkit.get_validator('ignore_missing')],
+            'protocol': [p.toolkit.get_validator('ignore_missing'),
+                         p.toolkit.get_validator('convert_to_tags')('usgin_protocol')],
+            'layer': [p.toolkit.get_validator('ignore_missing')],
+            'ordering_procedure': [p.toolkit.get_validator('ignore_missing')],
+        })
         return schema
 
     def create_package_schema(self):
@@ -68,6 +104,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     def show_package_schema(self):
         schema = super(MetadataPlugin, self).show_package_schema()
+        schema['tags']['__extras'].append(p.toolkit.get_converter('free_tags_only'))
         schema.update({
             'authors': [p.toolkit.get_validator('ignore_missing'),
                         p.toolkit.get_converter('convert_from_extras')],
@@ -92,6 +129,18 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'status': [p.toolkit.get_validator('ignore_missing'),
                        p.toolkit.get_converter('convert_from_extras')],
         })
+
+        schema['resources'].update({
+            'distributor': [p.toolkit.get_validator('ignore_missing')],
+            'resource_format': [p.toolkit.get_validator('ignore_missing')],
+            'format': [p.toolkit.get_validator('ignore_missing')],
+            'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
+            'content_model_version': [p.toolkit.get_validator('ignore_missing')],
+            'protocol': [p.toolkit.get_validator('ignore_missing'),
+                         p.toolkit.get_validator('convert_to_tags')('usgin_protocol')],
+            'layer': [p.toolkit.get_validator('ignore_missing')],
+            'ordering_procedure': [p.toolkit.get_validator('ignore_missing')],
+        })
         return schema
 
     def is_fallback(self):
@@ -100,5 +149,8 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         return True
 
     def package_types(self):
-
         return []
+
+    # ITemplateHelpers
+    def get_helpers(self):
+        return {'protocol_codes': protocol_codes}
