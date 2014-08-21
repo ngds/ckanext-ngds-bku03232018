@@ -1,0 +1,5 @@
+{% ckan_extends %}
+
+{% block package_basic_fields_custom %}
+  {{ form.input('authors', label=_('Authors'), id='usgin-field-authors', placeholder=_('authors'), value=data.authors, error=errors.author, classes=['control-medium']) }}
+{% endblock %}

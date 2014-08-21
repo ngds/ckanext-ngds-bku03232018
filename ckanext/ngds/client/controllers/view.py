@@ -14,8 +14,8 @@ class ViewController(BaseController):
     def render_library_search(self):
         pass
 
-    def render_resources(self):
+    def render_contribute(self):
         pass
 
-    def render_contribute(self):
+    def render_help(self):
         pass

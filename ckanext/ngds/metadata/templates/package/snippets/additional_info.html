@@ -1,0 +1,10 @@
+{% ckan_extends %}
+
+{% block extras %}
+  {% if pkg_dict.authors %}
+    <tr>
+      <th scope="row" class="dataset-label">{{ _("Authors") }}</th>
+      <td class="dataset-details">{{ pkg_dict.authors }}</td>
+    </tr>
+  {% endif %}
+{% endblock %}

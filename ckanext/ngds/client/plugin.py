@@ -34,10 +34,10 @@ class NGDSClient(p.SingletonPlugin):
                     action='render_map_search')
         map.connect('library_search', '/library_search', controller=controller,
                     action='render_library_search')
-        map.connect('resources', '/resources', controller=controller,
-                    action='render_resources')
         map.connect('contribute', '/contribute', controller=controller,
                     action='render_contribute')
+        map.connect('help', '/help', controller=controller,
+                    action='render_help')
         return map
 
     """

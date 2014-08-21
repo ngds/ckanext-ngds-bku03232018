@@ -35,7 +35,7 @@
   {% endblock %}
 
   {% block package_metadata %}
-    {% snippet "package/snippets/metadata_list.html", pkg_id=pkg.id %}
+    {% snippet "package/snippets/metadata_list.html", pkg=pkg %}
   {% endblock %}
 
   {% block package_tags %}
