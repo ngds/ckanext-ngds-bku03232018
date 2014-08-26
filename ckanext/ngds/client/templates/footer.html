@@ -33,7 +33,7 @@
             {% block footer_data_links %}
               <p>{% trans %}<strong>Find & Use Data</strong>{% endtrans %}</p>
               <li>
-                <a href="{{ h.url_for(controller='ckanext.ngds.client.controllers.view:ViewController', action='render_map_search') }}">
+                <a href="{{ h.url_for(controller='ckanext.ngds.mapsearch.controllers.view:ViewController', action='render_map_search') }}">
                   Map
                 </a>
               </li>

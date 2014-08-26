@@ -1,6 +1,6 @@
 from ckanext.ngds.common import plugins as p
 
-class NGDSClient(p.SingletonPlugin):
+class MapSearch(p.SingletonPlugin):
 
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IRoutes, inherit=True)
@@ -24,27 +24,8 @@ class NGDSClient(p.SingletonPlugin):
         p.toolkit.add_template_directory(config, 'templates')
         p.toolkit.add_public_directory(config, 'public')
 
-    #def get_helpers(self):
-    #    return {}
-
     def before_map(self, map):
-        controller = 'ckanext.ngds.client.controllers.view:ViewController'
-        map.connect('library_search', '/library_search', controller=controller,
-                    action='render_library_search')
-        map.connect('contribute', '/contribute', controller=controller,
-                    action='render_contribute')
-        map.connect('help', '/help', controller=controller,
-                    action='render_help')
+        controller = 'ckanext.ngds.mapsearch.controllers.view:ViewController'
+        map.connect('map_search', '/map_search', controller=controller,
+                    action='render_map_search')
         return map
-
-    """
-    def after_map(self, map):
-        return
-
-    def is_fallback(self):
-        return False
-
-    # Note: Make sure that this is the correct package_type
-    def package_types(self):
-        return ['dataset']
-    """

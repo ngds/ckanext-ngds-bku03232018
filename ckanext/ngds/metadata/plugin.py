@@ -5,10 +5,10 @@ def create_protocol_codes():
     user = p.toolkit.get_action('get_site_user')({'ignore_auth': True}, {})
     context = {'user': user['name']}
     try:
-        data = {'id': 'usgin_protocol'}
+        data = {'id': 'protocol_codes'}
         p.toolkit.get_action('vocabulary_show')(context, data)
     except p.toolkit.ObjectNotFound:
-        data = {'name': 'usgin_protocol'}
+        data = {'name': 'protocol_codes'}
         vocab = p.toolkit.get_action('vocabulary_create')(context, data)
         for tag in ('OGC:WMS', 'OGC:WFS', 'OGC:WCS', 'OGC:CSW', 'OGC:SOS',
                     'OPeNDAP', 'ESRI', 'other'):
@@ -19,7 +19,7 @@ def protocol_codes():
     create_protocol_codes()
     try:
         tag_list = p.toolkit.get_action('tag_list')
-        protocol_codes = tag_list(data_dict={'vocabulary_id': 'usgin_protocol'})
+        protocol_codes = tag_list(data_dict={'vocabulary_id': 'protocol_codes'})
         return protocol_codes
     except p.toolkit.ObjectNotFound:
         return None
@@ -86,7 +86,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
             'content_model_version': [p.toolkit.get_validator('ignore_missing')],
             'protocol': [p.toolkit.get_validator('ignore_missing'),
-                         p.toolkit.get_validator('convert_to_tags')('usgin_protocol')],
+                         p.toolkit.get_validator('convert_to_tags')('protocol_codes')],
             'layer': [p.toolkit.get_validator('ignore_missing')],
             'ordering_procedure': [p.toolkit.get_validator('ignore_missing')],
         })
@@ -137,7 +137,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
             'content_model_version': [p.toolkit.get_validator('ignore_missing')],
             'protocol': [p.toolkit.get_validator('ignore_missing'),
-                         p.toolkit.get_validator('convert_to_tags')('usgin_protocol')],
+                         p.toolkit.get_validator('convert_to_tags')('protocol_codes')],
             'layer': [p.toolkit.get_validator('ignore_missing')],
             'ordering_procedure': [p.toolkit.get_validator('ignore_missing')],
         })

@@ -52,8 +52,11 @@ setup(
 	# NGDS Harvest plugin
 	ngds_harvester=ckanext.ngds.harvest.harvester.ngds:NgdsHarvester
 
-    # NGDS Admin plugins
-    sysadmin=ckanext.ngds.sysadmin.plugin:SystemAdministrator
+    # NGDS Admin plugin
+    ngds_sysadmin=ckanext.ngds.sysadmin.plugin:SystemAdministrator
+
+    # NGDS Map Search plugin
+    ngds_mapsearch=ckanext.ngds.mapsearch.plugin:MapSearch
 
 	# NGDS UI plugin
 	ngds_client=ckanext.ngds.client.plugin:NGDSClient
