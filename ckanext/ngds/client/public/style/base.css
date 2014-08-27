@@ -2,8 +2,20 @@ body {
     background: #d8d8d8;
 }
 
+@media (max-width: 767px) {
+    html {
+        margin-right: -20px;
+        margin-left: -20px;
+    }
+
+    .container {
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+}
+
 .container {
-    max-width: 980px;
+    max-width: 940px;
 }
 
 /*
@@ -13,7 +25,7 @@ The "account masthead" bar across the top of the site
 */
 
 .account-masthead {
-    height: 31px;
+    height: 32px;
     background: #4679B2;
 }
 
@@ -71,10 +83,6 @@ The "navigation masthead" bar across the top of the site
     font-size: 12px;
     font-weight: bold;
     color: #000000;
-}
-
-.masthead .navbar .container .nav-collapse {
-    overflow: visible;
 }
 
 .masthead .navbar .container .pull-right li a {
@@ -168,4 +176,15 @@ Footer styles on the bottom of page
 
 .site-footer .container .row-fluid .github-link i {
     margin-right: 5px;
+}
+
+/*
+==============
+Flash messages
+==============
+*/
+
+.container .flash-messages .alert {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

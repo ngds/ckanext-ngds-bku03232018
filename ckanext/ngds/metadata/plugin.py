@@ -86,7 +86,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
             'content_model_version': [p.toolkit.get_validator('ignore_missing')],
             'protocol': [p.toolkit.get_validator('ignore_missing'),
-                         p.toolkit.get_validator('convert_to_tags')('protocol_codes')],
+                         p.toolkit.get_converter('convert_to_tags')('protocol_codes')],
             'layer': [p.toolkit.get_validator('ignore_missing')],
             'ordering_procedure': [p.toolkit.get_validator('ignore_missing')],
         })
@@ -137,7 +137,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
             'content_model_version': [p.toolkit.get_validator('ignore_missing')],
             'protocol': [p.toolkit.get_validator('ignore_missing'),
-                         p.toolkit.get_validator('convert_to_tags')('protocol_codes')],
+                         p.toolkit.get_converter('convert_to_tags')('protocol_codes')],
             'layer': [p.toolkit.get_validator('ignore_missing')],
             'ordering_procedure': [p.toolkit.get_validator('ignore_missing')],
         })
