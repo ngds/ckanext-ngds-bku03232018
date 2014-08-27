@@ -29,10 +29,6 @@ class NGDSClient(p.SingletonPlugin):
 
     def before_map(self, map):
         controller = 'ckanext.ngds.client.controllers.view:ViewController'
-        map.connect('ngds_data', '/data_search', controller=controller,
-                    action='render_data_search')
-        map.connect('ngds_publish', '/ngds/publish', controller=controller,
-                    action='render_publish')
         map.connect('ngds_harvest', '/ngds/harvest', controller=controller,
                     action='render_harvest')
         map.connect('ngds_developers', '/ngds/developers', controller=controller,

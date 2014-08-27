@@ -1,3 +1,4 @@
+from ckanext.ngds.common import plugins as p
 from ckanext.ngds.common import base
 
 class ViewController(base.BaseController):
@@ -5,11 +6,6 @@ class ViewController(base.BaseController):
     Controller object for rendering custom NGDS views and templates.
     @param BaseController: Vanillan CKAN object for extending controllers.
     """
-    def render_data_search(self):
-        pass
-
-    def render_publish(self):
-        pass
 
     def render_harvest(self):
         pass

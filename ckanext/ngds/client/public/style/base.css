@@ -85,7 +85,7 @@ The "navigation masthead" bar across the top of the site
 .masthead .navbar .container .pull-right a {
     color: #000000;
     text-shadow: none;
-    font-size: 20px;
+    font-size: 18px;
     transition: color 0.1s ease;
 }
 

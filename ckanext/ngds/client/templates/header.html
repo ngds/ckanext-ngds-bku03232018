@@ -102,14 +102,14 @@
             {% block header_site_navigation_tabs %}
 
               {{ h.build_nav_main(
-                ('ngds_data', _('Data')),
+                ('search', _('Data')),
                 ('map_search', _('Map')),
               ) }}
 
               {% if h.data_publish_enabled() %}
 
                 {{ h.build_nav_main(
-                  ('ngds_publish', _('Publish'))
+                  ('add dataset', _('Publish'))
                 ) }}
 
               {% endif %}
