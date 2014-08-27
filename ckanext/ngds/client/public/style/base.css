@@ -2,6 +2,10 @@ body {
     background: #d8d8d8;
 }
 
+.container {
+    max-width: 980px;
+}
+
 /*
 =====================================================
 The "account masthead" bar across the top of the site
