@@ -7,14 +7,11 @@ class ViewController(base.BaseController):
     @param BaseController: Vanillan CKAN object for extending controllers.
     """
 
-    def render_harvest(self):
-        pass
-
     def render_developers(self):
-        pass
+        return p.toolkit.render('ngds/developers.html')
 
     def render_help(self):
-        pass
+        return p.toolkit.render('ngds/help.html')
 
     def render_contact(self):
-        pass
+        return p.toolkit.render('ngds/contact.html')

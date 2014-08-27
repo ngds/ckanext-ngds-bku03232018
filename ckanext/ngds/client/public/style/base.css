@@ -28,7 +28,6 @@ The "account masthead" bar across the top of the site
 }
 
 .account-masthead .navbar .pull-right {
-    margin-right: 20px;
 }
 
 .account-masthead .navbar .pull-right a {
@@ -42,8 +41,7 @@ The "account masthead" bar across the top of the site
 }
 
 .account-masthead .navbar li a {
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding: 5px 0px 5px 20px;
 }
 
 /*
@@ -64,8 +62,9 @@ The "navigation masthead" bar across the top of the site
     background: #ffffff;
     border: none;
     box-shadow: none;
+    padding-left: 0px;
+    padding-right: 0px;
 }
-
 
 .masthead .navbar .brand span {
     display: block;
@@ -80,6 +79,7 @@ The "navigation masthead" bar across the top of the site
 
 .masthead .navbar .container .pull-right li a {
     font-weight: normal;
+    padding: 10px 0px 10px 20px;
 }
 
 .masthead .navbar .container .pull-right a {
@@ -97,6 +97,15 @@ The "navigation masthead" bar across the top of the site
 
 .masthead .navbar .container .pull-right {
     margin-top: 24px;
+}
+
+.masthead .navbar .nav > .active > a {
+    background-color: inherit;
+    box-shadow: none;
+    /*
+    color: #4679B2;
+    font-weight: bold;
+    */
 }
 
 .masthead .navbar .container .btn {
