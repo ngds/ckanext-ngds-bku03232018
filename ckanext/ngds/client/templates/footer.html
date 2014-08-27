@@ -32,14 +32,33 @@
           <ul class="unstyled">
             <p>{% trans %}<strong>Find & Use Data</strong>{% endtrans %}</p>
             {% block header_site_navigation_tabs %}
+
               {{ h.build_nav_main(
                 ('ngds_data', _('Data')),
                 ('map_search', _('Map')),
-                ('ngds_contribute', _('Contribute')),
+              ) }}
+
+              {% if h.data_publish_enabled() %}
+
+                {{ h.build_nav_main(
+                  ('ngds_publish', _('Publish'))
+                ) }}
+
+              {% endif %}
+              {% if h.data_harvest_enabled() %}
+
+                {{ h.build_nav_main(
+                  ('ngds_harvest', _('Harvest'))
+                ) }}
+
+              {% endif %}
+
+              {{ h.build_nav_main(
                 ('ngds_developers', _('Developers')),
                 ('ngds_help', _('Help')),
                 ('ngds_contact', _('Contact'))
               ) }}
+            
             {% endblock %}
           </ul>
         </div>

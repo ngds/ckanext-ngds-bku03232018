@@ -4,10 +4,13 @@ import ckanext.ngds.sysadmin.model.db as db
 import ckan.lib.app_globals as app_globals
 import ckan.model as model
 
+import ckanext.ngds.sysadmin.helpers as h
+
 class SystemAdministrator(p.SingletonPlugin):
 
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IRoutes, inherit=True)
+    p.implements(p.ITemplateHelpers)
 
     def update_config(self, config):
         """
@@ -61,3 +64,9 @@ class SystemAdministrator(p.SingletonPlugin):
                     controller=controller, action='data_config',
                     ckan_icon='check')
         return map
+
+    def get_helpers(self):
+        return {'data_publish_enabled': h.data_publish_enabled,
+                'data_harvest_enabled': h.data_harvest_enabled,
+                'metadata_edit_enabled': h.metadata_edit_enabled
+                }

@@ -8,7 +8,7 @@ class ViewController(base.BaseController):
     def render_data_search(self):
         pass
 
-    def render_contribute(self):
+    def render_publish(self):
         pass
 
     def render_harvest(self):
