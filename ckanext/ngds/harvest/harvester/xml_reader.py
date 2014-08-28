@@ -23,7 +23,7 @@ http://www.gnu.org/licenses/agpl.html
 
 NGDS_HEADER_END """
 
-from ckanext.spatial.model import ISOElement, ISODocument, ISOResponsibleParty
+from ckanext.spatial.model import ISOElement, ISODocument, ISOResponsibleParty, ISODataFormat
 
 class NgdsResponsibleParty(ISOResponsibleParty):
     elements = [
@@ -48,6 +48,7 @@ class NgdsResponsibleParty(ISOResponsibleParty):
             ],
             multiplicity="0..1",
         ),
+        #responsible party contact information
         ISOElement(
             name="contact-info",
             search_paths=[
@@ -83,13 +84,11 @@ class NgdsResponsibleParty(ISOResponsibleParty):
             name="role",
             search_paths=[
                 "gmd:role/gmd:CI_RoleCode/@codeListValue",
+                "gmd:role/gmd:CI_RoleCode/text()",
             ],
             multiplicity="0..1",
         ),
     ]
-
-
-
 
 class NgdsXmlMapping(ISODocument):
     """
@@ -132,7 +131,7 @@ class NgdsXmlMapping(ISODocument):
         ),
 
         # Authors
-        ISOResponsibleParty(
+        NgdsResponsibleParty(
             name="authors",
             search_paths=[
                 "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:citedResponsibleParty/gmd:CI_ResponsibleParty"
@@ -163,14 +162,17 @@ class NgdsXmlMapping(ISODocument):
         #  its defined here as well...
          ISOElement(
              name="lineage",
-             search_paths="gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString/text()",
+              search_paths="gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement/gco:CharacterString/text()",
              multiplicity="0..1", # "*", "1..*", "1" are other options
          ),
 
         # Status  <<< NOte that CKAN ISODocument object harvests this element into 'progress'
         ISOElement(
             name="status",
-            search_paths="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status/gmd:MD_ProgressCode/@codeListValue",
+            search_paths=[
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status/gmd:MD_ProgressCode/@codeListValue",
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:status/gmd:MD_ProgressCode/text()",
+            ]
             multiplicity="0..1", # "*", "1..*", "1" are other options
         )
     ]

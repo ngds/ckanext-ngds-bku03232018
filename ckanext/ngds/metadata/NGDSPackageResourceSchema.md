@@ -67,6 +67,14 @@ More complex example:
 
 - **Dates**: 
 Dates commonly need more specific scoping than field names imply; ISO metadata includes a date type property; the value can be inferred in some contexts, but in general a date should be associated with a type.
+
+The CKAN package scheme includes these dates. Notes are NGDS interpretation of the content of these elements:
+
+  - package/cache_last_updated :  This is internal to CKAN, NGDS doesn't care.
+  - resource/created : create date for the metadata record
+  - resource/last_modified : the date when this resource content was last modified  
+
+USGIN/NGDS is interested in the following dates:
   - **publication_date**: The date on which the dataset was published. 'publication' is a pretty nebulous concept.  Date
 
 
