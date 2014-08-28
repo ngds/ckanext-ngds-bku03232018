@@ -4,21 +4,21 @@
 
 <div class="module module-search module-narrow module-shallow box">
   <form class="module-content search-form" method="get" action="{% url_for controller='package', action='search' %}">
-    <h2>Search {{ stats.dataset_count }} {{ _('dataset') if stats.dataset_count == 1 else _('datasets') }} and display results
+    <h2>Search {{ stats.dataset_count }} {{ _('dataset') if stats.dataset_count == 1 else _('datasets') }}</h2>
 
-    <select>
-      <option value="catalog_search">in a catalog</option>
-      <option value="map_search">on a map</option>
-    </select>
-
-    </h2>
-
-    <div class="search-input control-group search-giant">
-      <input type="text" class="search" name="q" value="" autocomplete="off" placeholder="{% block search_placeholder %}{{ placeholder }}{% endblock %}" />
-      <button type="submit">
-        <i class="icon-search"></i>
-        <span>{{ _('Search') }}</span>
-      </button>
+    <div class="homepage-search">
+      <div class="search-text">
+        <input type="text" class="search-input control-group search-giant" name="q" value="" autocomplete="off" placeholder="{% block search_placeholder %}{{ placeholder }}{% endblock %}" />
+      </div>
+      <div class="search-controls">
+        <select>
+          <option value="catalog_search">Catalog Search</option>
+          <option value="map_search">Map Search</option>
+        </select>
+        <button class="btn" type="submit">
+          <i class="icon-search"></i>
+        </button>
+      </div>
     </div>
   </form>
   <div class="tags">
