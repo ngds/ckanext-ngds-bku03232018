@@ -265,6 +265,7 @@ Custom NGDS homepage
     box-shadow: none;
 }
 
+
 .layout-4 .search-form .homepage-search .search-text {
     padding-right: 18px;
     float: left;
@@ -294,10 +295,44 @@ Custom NGDS homepage
     vertical-align: top;
 }
 
-
-@media (min-width: 480px) {
+@media (max-width: 480px) {
     .layout-4 .search-form .homepage-search .search-text {
-        width: 245px;
+        width: 100%;
+        float: none;
+    }
+
+    .layout-4 .search-form .homepage-search .search-text input {
+        width: 100%;
+        box-sizing: border-box;
+        height: 40px;
+    }
+
+    .layout-4 .search-form .homepage-search .search-controls {
+        float: right;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 600px) {
+    .layout-4 .search-form .homepage-search {
+        width: 465px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-4 .search-form .homepage-search .search-text {
+        width: 244px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 767px) {
+    .layout-4 .search-form .homepage-search {
+        width: 581px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-4 .search-form .homepage-search .search-text {
+        width: 365px;
     }
 }
 
