@@ -25,6 +25,72 @@ NGDS_HEADER_END """
 
 from ckanext.spatial.model import ISOElement, ISODocument, ISOResponsibleParty
 
+class NgdsResponsibleParty(ISOResponsibleParty):
+    elements = [
+        ISOElement(
+            name="individual-name",
+            search_paths=[
+                "gmd:individualName/gco:CharacterString/text()",
+            ],
+            multiplicity="0..1",
+        ),
+        ISOElement(
+            name="organisation-name",
+            search_paths=[
+                "gmd:organisationName/gco:CharacterString/text()",
+            ],
+            multiplicity="0..1",
+        ),
+        ISOElement(
+            name="position-name",
+            search_paths=[
+                "gmd:positionName/gco:CharacterString/text()",
+            ],
+            multiplicity="0..1",
+        ),
+        ISOElement(
+            name="contact-info",
+            search_paths=[
+                "gmd:contactInfo/gmd:CI_Contact",
+            ],
+            multiplicity="0..1",
+            elements = [
+                ISOElement(
+                    name="email",
+                    search_paths=[
+                        "gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString/text()",
+                    ],
+                    multiplicity="0..1"),
+                ISOElement(
+                    name="telephone",
+                    search_paths=[
+                        "gmd:phone/gmd:CI_Telephone/gmd:voice/gco:CharacterString/text()",
+                        "gmd:phone/gmd:CI_Telephone/gmd:facsimile/gco:CharacterString/text()",
+                    ],
+                    multiplicity="0..1"
+                ),
+                ISOResourceLocator(
+                    name="online-resource",
+                    search_paths=[
+                        "gmd:onlineResource/gmd:CI_OnlineResource",
+                    ],
+                    multiplicity="0..1",
+                ),
+
+            ]
+        ),
+        ISOElement(
+            name="role",
+            search_paths=[
+                "gmd:role/gmd:CI_RoleCode/@codeListValue",
+            ],
+            multiplicity="0..1",
+        ),
+    ]
+
+
+
+
 class NgdsXmlMapping(ISODocument):
     """
     Inherits from ckanext.spatial.model.MappedXmlDocument.
@@ -37,7 +103,7 @@ class NgdsXmlMapping(ISODocument):
 
     elements = [
         # Metadata Maintainer responsible party
-        ISOResponsibleParty(
+        NgdsResponsibleParty(
             name="maintainers",
             search_paths=[
                 "gmd:contact/gmd:CI_ResponsibleParty"
