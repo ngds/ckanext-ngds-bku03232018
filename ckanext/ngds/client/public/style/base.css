@@ -188,3 +188,25 @@ Flash messages
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+/*
+====================
+Custom NGDS homepage
+====================
+*/
+
+.layout-4 .hero {
+    padding: 0;
+    background: none;
+    background-color: #32567f;
+}
+
+.layout-4 .hero .hero-unit {
+    margin-bottom: 0;
+    background-color: #32567f;
+    color: #ffffff;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}

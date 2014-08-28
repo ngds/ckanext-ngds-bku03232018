@@ -1,0 +1,8 @@
+{% set intro = g.site_intro_text %}
+
+<div class="hero-unit">
+  {% if intro %}
+    {{ h.render_markdown(intro) }}
+  {% else %}
+  {% endif %}
+</div>
