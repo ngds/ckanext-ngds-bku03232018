@@ -210,3 +210,57 @@ Custom NGDS homepage
     padding-top: 30px;
     padding-bottom: 30px;
 }
+
+.layout-4 .search {
+    background: none;
+    background-color: #84a0bf;
+}
+
+.layout-4 .module-search {
+    padding: 0px;
+}
+
+.layout-4 .module-search .module-content {
+    background-color: #84a0bf;
+}
+
+.layout-4 .module-search .module-content h2 {
+    color: #003647;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.layout-4 .module-search .module-content h2 select {
+    width: 145px;
+    height: 30px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #003647;
+    margin-bottom: 5px;
+}
+
+.layout-4 .module-search .module-content .search-giant input {
+    background-color: #ffffff;
+}
+
+.layout-4 .module-search .module-content {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layout-4 .module-search .tags {
+    background-color: #84a0bf;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layout-4 .module-search .tags h3{
+    padding-left: 0px;
+}
+
+.layout-4 .search .box {
+    background-color: #84a0bf;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+}
