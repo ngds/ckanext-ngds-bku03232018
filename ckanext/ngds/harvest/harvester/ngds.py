@@ -59,9 +59,10 @@ class NgdsHarvester(CSWHarvester):
         # Then lets customize the package_dict further
         extras = package_dict['extras']
 
-        # Published or unpublished
+        # Published or unpublished, default to published
         package_dict['private'] = False
 
+        #SMR add telephone and role 2014-08-28
         def party2person(party):
             """For converting an ISOResponsibleParty to an NGDS contact"""
             name = ""
@@ -73,9 +74,15 @@ class NgdsHarvester(CSWHarvester):
                     name = party.get('organisation-name', '')
             if party.get('contact-info', {}):
                 email = party.get('contact-info', {}).get('email', '')
+            if party.get('telephone',{}):
+                telephone = party.get('telephone',{}).get('telephone','')
+            if party.get('role',{}):
+                role = party.get('role',{}).get('role','')
             return {
                 "name": name,
                 "email": email
+                "telephone": telephone
+                "role": role
             }
 
         # Any otherID
