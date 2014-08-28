@@ -63,6 +63,10 @@ class SystemAdministrator(p.SingletonPlugin):
         map.connect('ckanadmin_data_config', '/ckan-admin/data-config',
                     controller=controller, action='data_config',
                     ckan_icon='check')
+
+        controller = 'ckanext.ngds.sysadmin.controllers.view:ViewController'
+        map.connect('ngds_homepage_search', '/ngds/search',
+                    controller=controller, action='homepage_search')
         return map
 
     def get_helpers(self):
