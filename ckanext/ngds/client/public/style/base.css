@@ -265,7 +265,9 @@ Custom NGDS homepage
     box-shadow: none;
 }
 
-
+/*
+  ckanext/ngds/sysadmin/templates/home/snippets/ngds_search.html
+*/
 .layout-4 .search-form .homepage-search .search-text {
     padding-right: 18px;
     float: left;
@@ -346,4 +348,14 @@ Custom NGDS homepage
     .layout-4 .search-form .homepage-search .search-text {
         width: 77%;
     }
+}
+
+/*
+===================
+Admin featured data
+===================
+*/
+
+.featured-data-form .control-group .control-label {
+    text-align: left;
 }

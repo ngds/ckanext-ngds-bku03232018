@@ -53,14 +53,19 @@ class SystemAdministrator(p.SingletonPlugin):
         # Add custom templates directory
         p.toolkit.add_template_directory(config, 'templates')
 
+        # Register fanstatic directory for JavaScript files
+        p.toolkit.add_resource('fanstatic', 'sysadmin')
 
     def before_map(self, map):
         # Set routes for controller
         controller = 'ckanext.ngds.sysadmin.controllers.admin:NGDSAdminController'
-        map.connect('ckanadmin_style_config', '/ckan-admin/style-config',
+        map.connect('sysadmin_style_config', '/ckan-admin/style-config',
                     controller=controller, action='style_config',
                     ckan_icon='check')
-        map.connect('ckanadmin_data_config', '/ckan-admin/data-config',
+        map.connect('sysadmin_operating_config', '/ckan-admin/operating-config',
+                    controller=controller, action='operating_config',
+                    ckan_icon='check')
+        map.connect('sysadmin_data_config', '/ckan-admin/data-config',
                     controller=controller, action='data_config',
                     ckan_icon='check')
 

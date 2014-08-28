@@ -51,7 +51,7 @@ class NGDSAdminController(admin.AdminController):
         ]
         return items
 
-    def get_ngds_config_form_items(self):
+    def get_operating_config_form_items(self):
         """
         Custom config form controls for NGDS data contribution and interaction.
 
@@ -66,6 +66,12 @@ class NGDSAdminController(admin.AdminController):
                  {'name': 'ngds.edit_metadata', 'control': 'select', 'options': data_controls, 'label': _('Metadata Editing'), 'placeholder': ''}]
 
         return items
+
+    def get_data_config_form_items(self):
+
+        item = [{'name': 'ngds.featured_data', 'control': 'markdown', 'label': _('Featured Data')}]
+
+        return item
 
     def config(self, items):
         """
@@ -102,7 +108,7 @@ class NGDSAdminController(admin.AdminController):
             session.add(update_db)
             session.commit()
             h.redirect_to(controller=self.controller,
-                          action='data_config')
+                          action='operating_config')
 
         if 'save-style-config' in data:
             for item in items:
@@ -131,13 +137,24 @@ class NGDSAdminController(admin.AdminController):
         return base.render('admin/style-config.html',
                            extra_vars=vars)
 
+    def operating_config(self):
+        """
+        Render the admin config page for NGDS data contribution and interaction.
+
+        @return: web page
+        """
+        items = self.get_operating_config_form_items()
+        vars = self.config(items)
+        return base.render('admin/operating-config.html',
+                           extra_vars=vars)
+
     def data_config(self):
         """
         Render the admin config page for NGDS data contribution and interaction.
 
         @return: web page
         """
-        items = self.get_ngds_config_form_items()
+        items = self.get_data_config_form_items()
         vars = self.config(items)
         return base.render('admin/data-config.html',
                            extra_vars=vars)
