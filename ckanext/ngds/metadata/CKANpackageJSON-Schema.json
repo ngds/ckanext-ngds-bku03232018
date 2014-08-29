@@ -1,0 +1,427 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "id": "http://resources.usgin.org/uri-gin/okfn/ckandemoschema/json",
+    "description": "SMR 2014-08-28.  Update JSON scheme that was reverse engineered from OKFN CKAN demo site with CKAN api call to get a JSON package.  This is the metadata associated with a CKAN package, which we are thinking of in USGIN/NGDS as a repository object that may be compound, i.e. include more than one file as separate part files of the resource.  A repository object may have multiple distributions; in the case of a compound resource that would equate to different servers providing download access to the various part files. For datasets, the distributions might use different protocols, e.g. file download, WMS, WFS, OData, ESRI map service etc. The component parts and distributions are represented in CKAN-land as 'resources' (an unfortunate choice of language on their part...).  Element descriptions are from http://docs.ckan.org/en/ckan-1.8/domain-model-dataset.html.  See the schema in code (see default_package_schema): https://github.com/okfn/ckan/blob/master/ckan/logic/schema.py. Elements not in the 1.8 model but in the python code are noted. If the description element is empty, ",
+    "ckanpackage": {
+        "type": "object",
+        "description": "metadata elements for describing a repository object (package, dataset) in CKAN. Compiled 2014-08-28",
+        "required": ["id", "name"],
+        "properties": {
+            "author_email": {
+                "type": "string",
+                "description": "in schema.py 20140828"
+            },
+            "author": {
+                "type": "string",
+                "description": "(dc:creator): original creator of the dataset [v1.8]"
+            },
+            "creator_user_id": {
+                "type": "null",
+                "description": "added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268"
+            },
+            "extras": {
+                "type": "array",
+                "description": "arbitrary, unlimited additional key/value fields [v1.8]",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "string",
+                            "description": ""
+                        },
+                        "value": {
+                            "type": "string",
+                            "description": ""
+                        }
+                    }
+                }
+            },
+            "groups": {
+                "type": "array",
+                "description": "list of [[Domain Model/Group|Groups]] that this dataset (resource) is a member of [v1.8]",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "description": {
+                            "type": "string",
+                            "description": ""
+                        },
+                        "display_name": {
+                            "type": "string",
+                            "description": ""
+                        },
+                        "id": {
+                            "type": "string",
+                            "description": "in schema.py 20140828"
+                        },
+                        "image_display_url": {
+                            "type": "string",
+                            "description": ""
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "in schema.py 20140828"
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "in schema.py 20140828"
+                        }
+                    }
+                }
+            },
+            "id": {
+                "type": "string",
+                "description": " unique id v1.8 (for the respository object/dataset, I assume)"
+            },
+            "isopen": {
+                "type": "boolean",
+                "description": ""
+            },
+            "license_id": {
+                "type": "string",
+                "description": "in schema.py 20140828"
+            },
+            "license_title": {
+                "type": "string",
+                "description": "(dc:rights): license under which the dataset is made available [v1.8]; added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268"
+            },
+            "maintainer_email": {
+                "type": "string",
+                "description": "in schema.py 20140828"
+            },
+            "maintainer": {
+                "type": "string",
+                "description": "current maintainer or publisher of the dataset [v1.8]"
+            },
+            "metadata_created": {
+                "type": "string",
+                "description": "added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268"
+            },
+            "metadata_modified": {
+                "type": "string",
+                "description": "added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268"
+            },
+            "name": {
+                "type": "string",
+                "description": "(slug): unique name that is used in urls and for identification [v1.8]"
+            },
+            "notes": {
+                "type": "string",
+                "description": "(description) (dc:description): description and other information about the dataset [v1.8]"
+            },
+            "num_resources": {
+                "type": "number",
+                "description": "added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268"
+            },
+            "num_tags": {
+                "type": "number",
+                "description": "added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268"
+            },
+            "organization": {
+                "type": "object",
+                "description": "added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268",
+                "properties": {
+                    "approval_status": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "created": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "image_url": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "is_organization": {
+                        "type": "boolean",
+                        "description": ""
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "revision_id": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "revision_timestamp": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "state": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": ""
+                    }
+                }
+            },
+            "owner_org": {
+                "type": "string",
+                "description": "in schema.py 20140828"
+            },
+            "private": {
+                "type": "boolean",
+                "description": "Published or unpublished.  Added so validation doesnt strip the keys from the package dicts in schema.py 20140828, line 255-268"
+            },
+            "relationships_as_object": {
+                "type": "array",
+                "description": "in schema.py 20140828 line 387-393.  type key is required. have to assume that in this context, object should not be present.",
+                "items": {
+                    "id": {
+                        "type": "string",
+                        "description": "in schema.py 20140828"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "in schema.py 20140828"
+                    },
+                    "object": {
+                        "type": "string",
+                        "description": "in schema.py 20140828"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "in schema.py 20140828. limited to values in ckan.model.PackageRelationship.get_all_types()"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "in schema.py 20140828"
+                    }
+                }
+            },
+            "relationships_as_subject": {
+                "type": "array",
+                "description": "in schema.py 20140828 line 387-393.  type key is required.Have to assume that in this context, subject should not be present...",
+                "items": {
+                    "id": {
+                        "type": "string",
+                        "description": "in schema.py 20140828"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "in schema.py 20140828"
+                    },
+                    "object": {
+                        "type": "string",
+                        "description": "in schema.py 20140828"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Interpret that this is the relationship type, e.g. the predicate part of an RDF type triple.  In schema.py 20140828. limited to values in ckan.model.PackageRelationship.get_all_types()"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "in schema.py 20140828"
+                    }
+                }
+            },
+            "resources": {
+                "type": "array",
+                "description": "list of [[Domain Model/Resource|Resources]].  Resources: the actual data or APIs associated to a dataset are entered into Resources.  Descriptions for schema elements in this section are from http://docs.ckan.org/en/ckan-1.8/domain-model-resource.html [v1.8]",
+                "items": {
+                    "type": "object",
+                    "required": ["url"],
+                    "properties": {
+                        "cache_last_updated": {
+                            "type": "string",
+                            "description": "For resource data that have been archived into the FileStore or stored into the DataStore; timestamp when cached version was created [v1.8].  Use ISO 8601: 2011-10-11T14:30",
+                            "format": "date-time"
+                        },
+                        "cache_url": {
+                            "type": "string",
+                            "description": "For resource data that have been archived into the FileStore or stored into the DataStore; url for cache of object in FileStore and File Uploads. Note could be same as resource url if resource directly stored in storage [v1.8]"
+                        },
+                        "created": {
+                            "type": "string",
+                            "description": "in schema.py 20140828. Use ISO 8601: 2011-10-11T14:30",
+                            "format": "date-time"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "A brief description (one sentence) of the Resource. Longer descriptions can go in notes field of the associated Data Package. [v1.8]"
+                        },
+                        "format": {
+                            "type": "string",
+                            "description": "human created format string with possible nesting e.g. zip:csv. See below for details of the format field. [v1.8]"
+                        },
+                        "hash": {
+                            "type": "string",
+                            "description": "md5 or sha-1 hash"
+                        },
+                        "id": {
+                            "type": "string",
+                            "description": ""
+                        },
+                        "last_modified": {
+                            "type": "string",
+                            "description": "the date when this resources data was last modified (NB: not the date when the metadata was modified). [v1.8]",
+                            "format": "ISO8601"
+                        },
+                        "mimetype_inner": {
+                            "type": "string",
+                            "description": "mimetype of innermost object (so for example would be text/csv) [v1.8]"
+                        },
+                        "mimetype": {
+                            "type": "string",
+                            "description": "standard mimetype (e.g. for zipped csv would be application/zip) [v1.8]"
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "a name for this resource (could be used in a ckan url) [v1.8]"
+                        },
+                        "position": {
+                            "type": "number",
+                            "description": "[ignore] in schema.py 20140828"
+                        },
+                        "resource_group_id": {
+                            "type": "string",
+                            "description": "[ignore] in schema.py 20140828"
+                        },
+                        "resource_type": {
+                            "type": "string",
+                            "description": "the type of the resource. One of: file | file.upload | api | visualization | code | documentation [v1.8].  Name of element is reported as 'type' in the v1.8 documentation"
+                        },
+                        "revision_id": {
+                            "type": "string",
+                            "description": "[ignore] in schema.py 20140828"
+                        },
+                        "revision_timestamp": {
+                            "type": "string",
+                            "description": "[ignore] in schema.py 20140828"
+                        },
+                        "size": {
+                            "type": "string",
+                            "description": "size of the resource (content length). Usually only relevant for resources of type file. [v1.8]"
+                        },
+                        "state": {
+                            "type": "string",
+                            "description": "[ignore] in schema.py 20140828"
+                        },
+                        "tracking_summary": {
+                            "type": "object",
+                            "description": "in schema.py 20140828",
+                            "properties": {
+                                "recent": {
+                                    "type": "number",
+                                    "description": ""
+                                },
+                                "total": {
+                                    "type": "number",
+                                    "description": ""
+                                }
+                            }
+                        },
+                        "url_type": {
+                            "type": "null",
+                            "description": "in schema.py 20140828"
+                        },
+                        "url": {
+                            "type": "string",
+                            "description": "the key attribute of a resource (and the only required attribute). The url points to the location online where the content of that resource can be found. For a file this would be the location online of that file (or more generally a url which yields the bitstream representing the contents of that file – for example some 'files' are only generated on demand from a database). For an API this would be the endpoint for the api. [v1.8]"
+                        },
+                        "webstore_last_updated": {
+                            "type": "string",
+                            "description": "For resource data that have been archived into the FileStore or stored into the DataStore; timestamp when webstore was last updated [v1.8]. Use ISO 8601: 2011-10-11T14:30",
+                            "format": "date-time"
+                        },
+                        "webstore_url": {
+                            "type": "string",
+                            "description": "For resource data that have been archived into the FileStore or stored into the DataStore; set to non-empty value if data is in the doc:datastore (note unusual naming is a holdover from previous usage) [v1.8]"
+                        }
+                    }
+                }
+            },
+            "revision_id": {
+                "type": "string",
+                "description": "[ignore] in schema.py 20140828"
+            },
+            "revision_timestamp": {
+                "type": "string",
+                "description": "added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268"
+            },
+            "state": {
+                "type": "string",
+                "description": "state of dataset in CKAN system (active, deleted, pending) [v1.8]. in 20140828, validation is ignore_not_package_admin"
+            },
+            "tags": {
+                "type": "array",
+                "description": "arbitrary textual tags for the dataset [v1.8]",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "display_name": {
+                            "type": "string",
+                            "description": "[ignore] in schema.py 20140828"
+                        },
+                        "id": {
+                            "type": "string",
+                            "description": "You're not allowed to specify your own ID when creating a tag (in schema.py 20140828)"
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "in schema.py 20140828"
+                        },
+                        "revision_timestamp": {
+                            "type": "string",
+                            "description": "[ignore] in schema.py 20140828"
+                        },
+                        "state": {
+                            "type": "string",
+                            "description": "[ignore] in schema.py 20140828"
+                        },
+                        "vocabulary_id": {
+                            "type": "null",
+                            "description": "in schema.py 20140828"
+                        }
+                    }
+                }
+            },
+            "title": {
+                "type": "string",
+                "description": "(dc:title): short title for dataset [v1.8]"
+            },
+            "tracking_summary": {
+                "type": "object",
+                "description": "added so validation doesn't strip the keys from the package dicts in schema.py 20140828, line 255-268",
+                "properties": {
+                    "recent": {
+                        "type": "number",
+                        "description": ""
+                    },
+                    "total": {
+                        "type": "number",
+                        "description": ""
+                    }
+                }
+            },
+            "type": {
+                "type": "string",
+                "description": "in schema.py 20140828"
+            },
+            "url": {
+                "type": "string",
+                "description": "(home page): home page for this dataset [v1.8]"
+            },
+            "version": {
+                "type": "string",
+                "description": "dataset version [v1.8]"
+            }
+        }
+    }
+}
