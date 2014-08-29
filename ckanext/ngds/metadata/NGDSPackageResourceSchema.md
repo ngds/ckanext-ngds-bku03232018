@@ -36,9 +36,13 @@ More complex example:
     }
     ```
 
+- **Agents of interest**
 
+ - **authors**: Agent who created this dataset or publication? an array of Agent objects (see above) May be a person or an organization, and includes a role property on the relation specifying how the agent relates to the resource.
+ - **Metadata maintainers**: Who is responsible for maintaining this metadata? A JSON array of agent objects as outlined above. This maps to ISO19115 metadata contact.  For harvested metadata, this is not necessarily the same as the node operator 
+ - **Distributor**: who is responsible for maintenance of the online access to the resource; for services deployed on a node, it is the node operator, but for harvested metadata for resources hosted in other locations is is probably someone else.
+ - **Resource steward**: who is responsible for maintenance of the resource; this will commonly be the author, but in many cases the originator of the resource is no longer involved and the steward is likely to be some organization with a position contact.
 
-- **authors**: Agent who created this dataset or publication? an array of Agent objects (see above) May be a person or an organization, and includes a role property on the relation specifying how the agent relates to the resource.
 
 - **dataset_category**: The resource type; in addition to the CKAN resource types specified for the package 'type' property.  String. One of 
   - Catalog
@@ -54,11 +58,11 @@ More complex example:
   - Text Document
   - Web Application
 - **dataset_lang**: The language the dataset is compiled in. String. See [the second column of this CSV file](https://github.com/ngds/ckanext-ngds/blob/master/ckanext/ngds/base/resources/db/iso6392_languages.csv) for a list of acceptable values. These are ISO 639-2 language codes that are classified as "living".
+
 - **dataset_uri**: A unique identifier for this dataset. String
-- **lineage**: A description of history of the dataset, including references to source material. String. Maps to resourceLineage/lineageStatement in USGIN JSON metadata schema
-- **maintainers**: Who is responsible for maintaining this metadata? A JSON array of agent objects as outlined above. This maps to ISO19115 metadata contact.
 - **other_id**: other identifiers for dataset, 
 
+- **lineage**: A description of history of the dataset, including references to source material. String. Maps to resourceLineage/lineageStatement in USGIN JSON metadata schema
 - **quality**: A description of the how good the dataset is, including things like how recently it was updated, precision of quantitative measurements, etc. String. Maps to USGIN JSON metadata resourceQuality/qualityStatement with scope=dataset (the default).
 - **spatial**: The spatial extent of the dataset or its relevance. This must be a String of [GeoJSON](http://geojson.org, ); This is from ckan/ckanext-spatial/. A bounding box is the expected specification of the footprint.
 - **status**: Whether the dataset is finished, in progress or being updated. String. One of  `completed, ongoing, deprecated`
