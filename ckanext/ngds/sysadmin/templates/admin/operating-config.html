@@ -8,7 +8,7 @@
     <div class="form-actions">
       {% set locale = h.dump_json({'content': _('Are you sure you want to reset the config?')}) %}
       <a href="{{ h.url_for(controller='ckanext.ngds.sysadmin.controllers.admin:NGDSAdminController', action='data_config') }}" class="btn btn-danger pull-left" data-module="confirm-action" data-module-i18n="{{ locale }}">{{ _('Reset') }}</a>
-      <button type="submit" class="btn btn-primary" name="save-data-config">{{ _('Update Config') }}</button>
+      <button type="submit" class="btn btn-primary" name="save-operating-config">{{ _('Update Config') }}</button>
     </div>
   </form>
 {% endblock %}

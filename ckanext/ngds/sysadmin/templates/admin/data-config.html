@@ -3,9 +3,11 @@
 {% block primary_content_inner %}
   <form method='post' action="" class="form-horizontal featured-data-form">
     {% block admin_form %}
-      <div id="featured-data-md">
-        {{ autoform.generate(form_items, data, errors) }}
-      </div>
+      {% for item in data %}
+        <div id="featured-data-md">
+          {{ autoform.generate(form_items, item, errors) }}
+        </div>
+      {% endfor %}
       <button class="btn btn-success" type="button" data-module="ngds_sysadmin">Add another</button>
     {% endblock %}
     <div class="form-actions">

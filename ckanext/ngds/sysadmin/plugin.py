@@ -27,6 +27,7 @@ class SystemAdministrator(p.SingletonPlugin):
         app_globals.mappings['ngds.publish'] = 'ngds.publish'
         app_globals.mappings['ngds.harvest'] = 'ngds.harvest'
         app_globals.mappings['ngds.edit_metadata'] = 'ngds.edit_metadata'
+        app_globals.mappings['ngds.featured_data'] = 'ngds.featured_data'
 
         # Collect config data to populate 'ngds_system_info' table if this is
         # the first time this server is booting up with the 'sysadmin' plugin.
@@ -36,6 +37,7 @@ class SystemAdministrator(p.SingletonPlugin):
             'ngds.publish': config.get('ngds.publish', 'True'),
             'ngds.harvest': config.get('ngds.harvest', 'True'),
             'ngds.edit_metadata': config.get('ngds.edit_metadata', 'True'),
+            'ngds.featured_data': config.get('ngds.featured_data', None)
         }
 
         # If this is the first time booting up the server with the 'sysadmin'

@@ -40,6 +40,7 @@ def init(model):
         Column('ngds.publish', types.UnicodeText, default=u''),
         Column('ngds.harvest', types.UnicodeText, default=u''),
         Column('ngds.edit_metadata', types.UnicodeText, default=u''),
+        Column('ngds.featured_data', types.UnicodeText, default=u'')
     )
 
     # If/Else to create database table
