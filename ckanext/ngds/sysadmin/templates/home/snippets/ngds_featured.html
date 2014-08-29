@@ -1,9 +1,13 @@
-{% set intro = g.site_intro_text %}
+{% set featured = h.get_featured_data() %}
 
-<div class="module-content box">
+<div class="module-content">
   <header>
-    {% if intro %}
-      {{ h.render_markdown(intro) }}
+    {% if featured %}
+      {% for data in featured %}
+        {% for value in data.values() %}
+          {{ h.render_markdown(value) }}
+        {% endfor %}
+      {% endfor %}
     {% else %}
       <h1 class="page-heading">{{ _("Welcome to CKAN") }}</h1>
       <p>
@@ -13,15 +17,4 @@
       </p>
     {% endif %}
   </header>
-
-  {% block home_image %}
-    <section class="featured media-overlay">
-      <h2 class="media-heading">{% block home_image_caption %}{{ _("This is a featured section") }}{% endblock %}</h2>
-      {% block home_image_content %}
-        <a class="media-image" href="#">
-          <img src="http://placehold.it/420x220" alt="Placeholder" width="420" height="220" />
-        </a>
-      {% endblock %}
-    </section>
-  {% endblock %}
 </div>

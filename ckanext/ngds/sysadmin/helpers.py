@@ -1,3 +1,5 @@
+import json
+
 from ckanext.ngds.common import pylons_config as config
 from ckanext.ngds.common import plugins as p
 
@@ -14,4 +16,10 @@ def data_harvest_enabled():
 def metadata_edit_enabled():
     value = config.get('ngds.edit_metadata', True)
     value = p.toolkit.asbool(value)
+    return value
+
+def get_featured_data():
+    value = config.get('ngds.featured_data', None)
+    if value:
+        value = json.loads(value)
     return value

@@ -79,5 +79,6 @@ class SystemAdministrator(p.SingletonPlugin):
     def get_helpers(self):
         return {'data_publish_enabled': h.data_publish_enabled,
                 'data_harvest_enabled': h.data_harvest_enabled,
-                'metadata_edit_enabled': h.metadata_edit_enabled
+                'metadata_edit_enabled': h.metadata_edit_enabled,
+                'get_featured_data': h.get_featured_data,
                 }
