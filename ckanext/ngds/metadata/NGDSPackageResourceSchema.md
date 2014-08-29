@@ -38,10 +38,10 @@ More complex example:
 
 - **Agents of interest**
 
- - **authors**: Agent who created this dataset or publication? an array of Agent objects (see above) May be a person or an organization, and includes a role property on the relation specifying how the agent relates to the resource.
- - **Metadata maintainers**: Who is responsible for maintaining this metadata? A JSON array of agent objects as outlined above. This maps to ISO19115 metadata contact.  For harvested metadata, this is not necessarily the same as the node operator 
- - **Distributor**: who is responsible for maintenance of the online access to the resource; for services deployed on a node, it is the node operator, but for harvested metadata for resources hosted in other locations is is probably someone else.
- - **Resource steward**: who is responsible for maintenance of the resource; this will commonly be the author, but in many cases the originator of the resource is no longer involved and the steward is likely to be some organization with a position contact.
+ - **authors**: Agent who created this dataset or publication? an array of Agent objects (see above) May be a person or an organization, and includes a role property on the relation specifying how the agent relates to the resource. In ISO metadata this is MD_DataIdentification//citation//citedResponsibleParty
+ - **Metadata maintainers**: Who is responsible for maintaining this metadata? A JSON array of agent objects as outlined above. This maps to ISO19115 metadata contact.  For harvested metadata, this is not necessarily the same as the node operator. In ISO metadata this is MD_Metadata/contact
+ - **Distributor**: who is responsible for maintenance of the online access to the resource; for services deployed on a node, it is the node operator, but for harvested metadata for resources hosted in other locations is is probably someone else.  In ISO metadat this is MD_Distributor/distributorContact
+ - **Resource steward**: who is responsible for maintenance of the resource; this will commonly be the author, but in many cases the originator of the resource is no longer involved and the steward is likely to be some organization with a position contact. in ISO metadata this is MD_DataIdentification/pointOfContact
 
 
 - **dataset_category**: The resource type; in addition to the CKAN resource types specified for the package 'type' property.  String. One of 
