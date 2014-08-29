@@ -59,8 +59,10 @@ More complex example:
   - Web Application
 - **dataset_lang**: The language the dataset is compiled in. String. See [the second column of this CSV file](https://github.com/ngds/ckanext-ngds/blob/master/ckanext/ngds/base/resources/db/iso6392_languages.csv) for a list of acceptable values. These are ISO 639-2 language codes that are classified as "living".
 
-- **dataset_uri**: A unique identifier for this dataset. String
-- **other_id**: other identifiers for dataset, 
+- **Identifiers**
+ 
+ - **fileIdentifier** : A unique identifier that should be present in the gmd:fileIdentifier field in harvested ISO metadata, uniquely identifies the metadata record.
+ - **dataset_uri**: A unique identifier for this dataset. The identifier for the resource (e.g. a DOI). This might be encoded in the CI_Citation//gmd:identifier//gmd:code (0..*) or in gmd:MD_Metadata/gmd:datasetURI (0..1). ISO 19115(2006) is ambiguous about why there are two resource identifiers; USGIN metadata specification asserts that the resource identifeir should be in gmd:dataSetURI and identifiers in the citation section are specific to the citation, but this is not clearly definable or widely used. Take the datasetURI first, and then any other identifiers in the citation section
 
 - **lineage**: A description of history of the dataset, including references to source material. String. Maps to resourceLineage/lineageStatement in USGIN JSON metadata schema
 - **quality**: A description of the how good the dataset is, including things like how recently it was updated, precision of quantitative measurements, etc. String. Maps to USGIN JSON metadata resourceQuality/qualityStatement with scope=dataset (the default).

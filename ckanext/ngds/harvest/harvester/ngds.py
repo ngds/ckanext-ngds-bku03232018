@@ -126,21 +126,21 @@ class NgdsHarvester(CSWHarvester):
         status = {"key": "status", "value": ngds_values.get('status', '')}
         extras.append(status)
 
-        #***********************************************************************
-        # process Resources in the CKAN package object
-        # USGIN convention is that any parameters necessary to construct a request, in addition to the
-        #  CI_OnlineResource/linkage/URL, should be provided in a JSON object with the key 'parameters'.
-        #  The provided paramters should be the exact strings that are required in the user request.
-        #  Example use case-- a WMS distribution CI_Online resource provides a getCapabilities request URL,
-        #  But the service might include many layers, so the 'layers' parameter necessary for a getMap
-        #  request is provided in the CI_OnlineResource. This would look like this in the XML:
-        #  <gmd:description>
-        #	 <gco:CharacterString>
-        #		parameters:{"layers":"gtp_datagap_well_data_collection"}
-        #	  </gco:CharacterString>
-        #   </gmd:description>
-        # for a WFS, if more that one feature type is offerd by the service, a 'typeName' parameter should
-        # be provided in the CI_OnlineREsource/description.
+     '''   ***********************************************************************
+         process Resources in the CKAN package object
+         USGIN convention is that any parameters necessary to construct a request, in addition to the
+          CI_OnlineResource/linkage/URL, should be provided in a JSON object with the key 'parameters'.
+          The provided paramters should be the exact strings that are required in the user request.
+          Example use case-- a WMS distribution CI_Online resource provides a getCapabilities request URL,
+          But the service might include many layers, so the 'layers' parameter necessary for a getMap
+          request is provided in the CI_OnlineResource. This would look like this in the XML:
+          <gmd:description>
+        	 <gco:CharacterString>
+        		parameters:{"layers":"gtp_datagap_well_data_collection"}
+        	  </gco:CharacterString>
+           </gmd:description>
+         for a WFS, if more that one feature type is offerd by the service, a 'typeName' parameter should
+         be provided in the CI_OnlineREsource/description.  '''
 
         layer_expr = re.compile('parameters: (?P<layer_name>{.+})$')
         for res in package_dict.get('resources',[]):
