@@ -1,0 +1,327 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "id": "http://resources.usgin.org/uri-gin/okfn/ckandemoschema/json",
+    "description": "SMR 2014-08-28. JSON schema reverse engineered from a CKAN package pulled from NGDS CKAN",
+    "ckanpackage": {
+        "type": "object",
+        "description": "metadata elements for describing a repository object (package, dataset) in CKAN. Compiled 2014-08-28",
+        "required": ["id", "name"],
+        "properties": {
+            "author_email": {
+                "type": "string"
+            },
+            "author": {
+                "type": "string"
+            },
+            "extras": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "package_id": {
+                            "type": "string"
+                        },
+                        "revision_id": {
+                            "type": "string"
+                        },
+                        "revision_timestamp": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "groups": {
+                "type": "array",
+                "description": "list of [[Domain Model/Group|Groups]] that this dataset (resource) is a member of [v1.8]. Copied from CKANPackageJSON-Schema.json ",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "description": {
+                            "type": "string",
+                            "description": ""
+                        },
+                        "display_name": {
+                            "type": "string",
+                            "description": ""
+                        },
+                        "id": {
+                            "type": "string",
+                            "description": "in schema.py 20140828"
+                        },
+                        "image_display_url": {
+                            "type": "string",
+                            "description": ""
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "in schema.py 20140828"
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "in schema.py 20140828"
+                        }
+                    }
+                }
+            },
+            "id": {
+                "type": "string",
+                "description":"For harvested metadata, this should match the gmd:fileIdentifier in the harvested record if it is a UUID; "
+            },
+            "isopen": {
+                "type": "boolean"
+            },
+            "license_id": {
+                "type": "string"
+            },
+            "license_title": {
+                "type": "null"
+            },
+            "maintainer_email": {
+                "type": "string"
+            },
+            "maintainer": {
+                "type": "string"
+            },
+            "metadata_created": {
+                "type": "string"
+            },
+            "metadata_modified": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "notes": {
+                "type": "string"
+            },
+            "num_resources": {
+                "type": "number"
+            },
+            "num_tags": {
+                "type": "number"
+            },
+            "organization": {
+                "type": "object",
+                "properties": {
+                    "approval_status": {
+                        "type": "string"
+                    },
+                    "created": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    },
+                    "is_organization": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "revision_id": {
+                        "type": "string"
+                    },
+                    "revision_timestamp": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    }
+                }
+            },
+            "owner_org": {
+                "type": "string"
+            },
+            "private": {
+                "type": "boolean"
+            },
+            "relationships_as_object": {
+                "type": "array"
+            },
+            "relationships_as_subject": {
+                "type": "array"
+            },
+            "resources": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "cache_last_updated": {
+                            "type": "string",
+                            "format":"date/time"
+                        },
+                        "cache_url": {
+                            "type": "string",
+                            "format":"uri"
+                        },
+                        "created": {
+                            "type": "string",
+                            "format":"date/time"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "format": {
+                            "type": "string"
+                        },
+                        "hash": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "last_modified": {
+                            "type": "null"
+                        },
+                        "layer": {
+                            "type": "string"
+                        },
+                        "mimetype_inner": {
+                            "type": "string"
+                        },
+                        "mimetype": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "position": {
+                            "type": "number"
+                        },
+                        "protocol": {
+                            "type": "string"
+                        },
+                        "resource_group_id": {
+                            "type": "string"
+                        },
+                        "resource_locator_function": {
+                            "type": "string"
+                        },
+                        "resource_locator_protocol": {
+                            "type": "string"
+                        },
+                        "resource_type": {
+                            "type": "null"
+                        },
+                        "revision_id": {
+                            "type": "string"
+                        },
+                        "revision_timestamp": {
+                            "type": "string"
+                        },
+                        "size": {
+                            "type": "null"
+                        },
+                        "state": {
+                            "type": "string"
+                        },
+                        "tracking_summary": {
+                            "type": "object",
+                            "properties": {
+                                "recent": {
+                                    "type": "number"
+                                },
+                                "total": {
+                                    "type": "number"
+                                }
+                            }
+                        },
+                        "url": {
+                            "type": "string"
+                        },
+                        "webstore_last_updated": {
+                            "type": "null"
+                        },
+                        "webstore_url": {
+                            "type": "null"
+                        }
+                    }
+                }
+
+
+            },
+            "revision_id": {
+                "type": "string"
+            },
+            "revision_timestamp": {
+                "type": "string"
+            },
+            "state": {
+                "type": "string"
+            },
+            "tags": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "display_name": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "revision_timestamp": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string"
+                        },
+                        "vocabulary_id": {
+                            "type": "null"
+                        }
+                    }
+                }
+            },
+            "title": {
+                "type": "string"
+            },
+            "tracking_summary": {
+                "type": "object",
+                "properties": {
+                    "recent": {
+                        "type": "number"
+                    },
+                    "total": {
+                        "type": "number"
+                    }
+                }
+            },
+            "type": {
+                "type": "string"
+            },
+            "url": {
+                "type": "null"
+            },
+            "version": {
+                "type": "null"
+            }
+        }
+    }
+}
