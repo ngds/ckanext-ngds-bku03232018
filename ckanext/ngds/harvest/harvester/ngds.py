@@ -86,10 +86,13 @@ class NgdsHarvester(CSWHarvester):
             }
 
         # Any otherID
+
+
         other_id = {"key": "other_id", "value": json.dumps([ngds_values['other_id']])}
         extras.append(other_id)
 
-        # The data type
+        # The data type. This gets the gmd:hierarchyLevelName, used by USGIN to insert USGIN
+        #   resource category
         data_type = {"key": "dataset_category", "value": ngds_values['data_type']}
         extras.append(data_type)
 
@@ -97,14 +100,14 @@ class NgdsHarvester(CSWHarvester):
         publication_date = {"key": "publication_date", "value": ngds_values['publication_date']}
         extras.append(publication_date)
 
-        # Maintainers
+        # Metadata Maintainers
         maintainers = {
             "key": "maintainers",
             "value": json.dumps([party2person(party) for party in ngds_values.get('maintainers', [])])
         }
         extras.append(maintainers)
 
-        # Authors
+        # Authors (citation responsible party= originator)
         authors = {
             "key": "authors",
             "value": json.dumps([party2person(party) for party in ngds_values.get('authors', [])])
@@ -123,7 +126,22 @@ class NgdsHarvester(CSWHarvester):
         status = {"key": "status", "value": ngds_values.get('status', '')}
         extras.append(status)
 
+        #***********************************************************************
         # process Resources in the CKAN package object
+        # USGIN convention is that any parameters necessary to construct a request, in addition to the
+        #  CI_OnlineResource/linkage/URL, should be provided in a JSON object with the key 'parameters'.
+        #  The provided paramters should be the exact strings that are required in the user request.
+        #  Example use case-- a WMS distribution CI_Online resource provides a getCapabilities request URL,
+        #  But the service might include many layers, so the 'layers' parameter necessary for a getMap
+        #  request is provided in the CI_OnlineResource. This would look like this in the XML:
+        #  <gmd:description>
+        #	 <gco:CharacterString>
+        #		parameters:{"layers":"gtp_datagap_well_data_collection"}
+        #	  </gco:CharacterString>
+        #   </gmd:description>
+        # for a WFS, if more that one feature type is offerd by the service, a 'typeName' parameter should
+        # be provided in the CI_OnlineREsource/description.
+
         layer_expr = re.compile('parameters: (?P<layer_name>{.+})$')
         for res in package_dict.get('resources',[]):
             res['protocol'] = res.get('resource_locator_protocol', '')
@@ -135,8 +153,10 @@ class NgdsHarvester(CSWHarvester):
                 res['protocol'] = 'OGC:WMS'
             elif format == 'arcgis_rest':
                 res['protocol'] = 'ESRI'
-
-            layer_identifier = 'featureTypes' if res['protocol'] == 'OGC:WFS' else 'layers'
+            # this is hard wired for WFS or WMS only, can't handle parameters for other kinds of service
+            #  but since the USGIN-stack CKAN only displays WMS services, that's enough for here
+            #  The information is still in the XML
+            layer_identifier = 'typeName' if res['protocol'] == 'OGC:WFS' else 'layers'
             layer_name = layer_expr.search(res.get('description', ''))
             layer_name = layer_name.group('layer_name') if layer_name else '{}'
             layer_name = json.loads(layer_name).get(layer_identifier, '')
