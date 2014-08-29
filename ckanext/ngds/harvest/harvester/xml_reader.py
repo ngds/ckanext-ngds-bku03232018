@@ -23,7 +23,7 @@ http://www.gnu.org/licenses/agpl.html
 
 NGDS_HEADER_END """
 
-from ckanext.spatial.model import ISOElement, ISODocument, ISOResponsibleParty, ISODataFormat
+from ckanext.spatial.model import ISOElement, ISODocument, ISOResponsibleParty
 
 class NgdsResponsibleParty(ISOResponsibleParty):
     elements = [
@@ -48,7 +48,7 @@ class NgdsResponsibleParty(ISOResponsibleParty):
             ],
             multiplicity="0..1",
         ),
-        #responsible party contact information
+        #responsible party contact information, with telephone number
         ISOElement(
             name="contact-info",
             search_paths=[

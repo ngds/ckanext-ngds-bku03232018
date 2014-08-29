@@ -123,7 +123,7 @@ class NgdsHarvester(CSWHarvester):
         status = {"key": "status", "value": ngds_values.get('status', '')}
         extras.append(status)
 
-        # Resources
+        # process Resources in the CKAN package object
         layer_expr = re.compile('parameters: (?P<layer_name>{.+})$')
         for res in package_dict.get('resources',[]):
             res['protocol'] = res.get('resource_locator_protocol', '')
