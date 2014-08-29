@@ -109,6 +109,17 @@ class NgdsXmlMapping(ISODocument):
             ],
             multiplicity="*"
         ),
+     #resource point of contact (returns whole CI_ResponsibleParty element);
+        #   fix error in HarvestedMetadata from ckan/spatial-ext, remove gmd:/contact path
+        ISOResponsibleParty(
+            name="responsible-organisation",
+            search_paths=[
+                "gmd:identificationInfo/gmd:MD_DataIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty",
+                "gmd:identificationInfo/srv:SV_ServiceIdentification/gmd:pointOfContact/gmd:CI_ResponsibleParty",
+
+            ],
+            multiplicity="1..*",
+        ),
         # Other ID
         ISOElement(
             name="other_id",
