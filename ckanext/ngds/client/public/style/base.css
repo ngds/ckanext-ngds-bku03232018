@@ -359,3 +359,12 @@ Admin featured data
 .featured-data-form .control-group .control-label {
     text-align: left;
 }
+
+.featured .container .module-content {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.featured {
+    background: #cae3ff;
+}
