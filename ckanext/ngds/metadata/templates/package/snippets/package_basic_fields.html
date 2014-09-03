@@ -2,8 +2,8 @@
 
 {% block package_basic_fields_custom %}
 
-  {{ form.input('authors', label=_('Authors'), id='usgin-field-authors',
-    placeholder=_('authors'), value=data.authors, error=errors.authors,
+  {{ form.input('publication_date', label=_('Publication Date'), id='usgin-field-publication-date',
+    placeholder=_('YYYY-MM-DD'), value=data.publication_date, error=errors.publication_date,
     classes=['control-medium']) }}
 
 {% endblock %}
