@@ -56,41 +56,32 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     # IDatasetForm
     def _modify_package_schema(self, schema):
         schema.update({
+            'publication_date': [p.toolkit.get_converter('convert_to_extras')],
+            'resource_id': [p.toolkit.get_validator('ignore_missing'),
+                            p.toolkit.get_converter('convert_to_extras')],
             'authors': [p.toolkit.get_validator('ignore_missing'),
-                        converters.convert_to_authors],
-            'dataset_category': [p.toolkit.get_validator('ignore_missing'),
-                                 p.toolkit.get_converter('convert_to_extras')],
-            'dataset_lang': [p.toolkit.get_validator('ignore_missing'),
-                             p.toolkit.get_converter('convert_to_extras')],
-            'dataset_uri': [p.toolkit.get_validator('ignore_missing'),
-                            p.toolkit.get_converter('convert_to_extras')],
-            'lineage': [p.toolkit.get_validator('ignore_missing'),
                         p.toolkit.get_converter('convert_to_extras')],
-            'maintainers': [p.toolkit.get_validator('ignore_missing'),
-                            p.toolkit.get_converter('convert_to_extras')],
-            'other_id': [p.toolkit.get_validator('ignore_missing'),
+            'keywords': [p.toolkit.get_validator('ignore_missing'),
                          p.toolkit.get_converter('convert_to_extras')],
-            'publication_date': [p.toolkit.get_validator('ignore_missing'),
+            'geographic_extent': [p.toolkit.get_validator('ignore_missing'),
+                                  p.toolkit.get_converter('convert_to_extras')],
+            'distributors': [p.toolkit.get_validator('ignore_missing'),
+                             p.toolkit.get_converter('convert_to_extras')],
+            'metadata_contact': [p.toolkit.get_validator('ignore_missing'),
                                  p.toolkit.get_converter('convert_to_extras')],
-            'quality': [p.toolkit.get_validator('ignore_missing'),
-                        p.toolkit.get_converter('convert_to_extras')],
-            'spatial': [p.toolkit.get_validator('ignore_missing'),
-                        p.toolkit.get_converter('convert_to_extras')],
-            'status': [p.toolkit.get_validator('ignore_missing'),
-                       p.toolkit.get_converter('convert_to_extras')],
+            'harvest_information': [p.toolkit.get_validator('ignore_missing'),
+                                    p.toolkit.get_converter('convert_to_extras')]
         })
 
         schema['resources'].update({
+            'url': [p.toolkit.get_validator('ignore_missing')],
             'distributor': [p.toolkit.get_validator('ignore_missing')],
-            'resource_format': [p.toolkit.get_validator('ignore_missing')],
-            'format': [p.toolkit.get_validator('ignore_missing')],
-            'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
-            'content_model_version': [p.toolkit.get_validator('ignore_missing')],
-            'protocol': [p.toolkit.get_validator('ignore_missing'),
-                         p.toolkit.get_converter('convert_to_tags')('protocol_codes')],
+            'service_type': [p.toolkit.get_validator('ignore_missing')],
             'layer': [p.toolkit.get_validator('ignore_missing')],
-            'ordering_procedure': [p.toolkit.get_validator('ignore_missing')],
+            'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
+            'content_model_version': [p.toolkit.get_validator('ignore_missing')]
         })
+
         return schema
 
     def create_package_schema(self):
@@ -107,41 +98,32 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         schema = super(MetadataPlugin, self).show_package_schema()
         schema['tags']['__extras'].append(p.toolkit.get_converter('free_tags_only'))
         schema.update({
+            'publication_date': [p.toolkit.get_converter('convert_to_extras')],
+            'resource_id': [p.toolkit.get_validator('ignore_missing'),
+                            p.toolkit.get_converter('convert_from_extras')],
             'authors': [p.toolkit.get_validator('ignore_missing'),
                         p.toolkit.get_converter('convert_from_extras')],
-            'dataset_category': [p.toolkit.get_validator('ignore_missing'),
-                                 p.toolkit.get_converter('convert_from_extras')],
-            'dataset_lang': [p.toolkit.get_validator('ignore_missing'),
-                             p.toolkit.get_converter('convert_from_extras')],
-            'dataset_uri': [p.toolkit.get_validator('ignore_missing'),
-                            p.toolkit.get_converter('convert_from_extras')],
-            'lineage': [p.toolkit.get_validator('ignore_missing'),
-                        p.toolkit.get_converter('convert_from_extras')],
-            'maintainers': [p.toolkit.get_validator('ignore_missing'),
-                            p.toolkit.get_converter('convert_from_extras')],
-            'other_id': [p.toolkit.get_validator('ignore_missing'),
+            'keywords': [p.toolkit.get_validator('ignore_missing'),
                          p.toolkit.get_converter('convert_from_extras')],
-            'publication_date': [p.toolkit.get_validator('ignore_missing'),
+            'geographic_extent': [p.toolkit.get_validator('ignore_missing'),
+                                  p.toolkit.get_converter('convert_from_extras')],
+            'distributors': [p.toolkit.get_validator('ignore_missing'),
+                             p.toolkit.get_converter('convert_from_extras')],
+            'metadata_contact': [p.toolkit.get_validator('ignore_missing'),
                                  p.toolkit.get_converter('convert_from_extras')],
-            'quality': [p.toolkit.get_validator('ignore_missing'),
-                        p.toolkit.get_converter('convert_from_extras')],
-            'spatial': [p.toolkit.get_validator('ignore_missing'),
-                        p.toolkit.get_converter('convert_from_extras')],
-            'status': [p.toolkit.get_validator('ignore_missing'),
-                       p.toolkit.get_converter('convert_from_extras')],
+            'harvest_information': [p.toolkit.get_validator('ignore_missing'),
+                                    p.toolkit.get_converter('convert_from_extras')]
         })
 
         schema['resources'].update({
+            'url': [p.toolkit.get_validator('ignore_missing')],
             'distributor': [p.toolkit.get_validator('ignore_missing')],
-            'resource_format': [p.toolkit.get_validator('ignore_missing')],
-            'format': [p.toolkit.get_validator('ignore_missing')],
-            'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
-            'content_model_version': [p.toolkit.get_validator('ignore_missing')],
-            'protocol': [p.toolkit.get_validator('ignore_missing'),
-                         p.toolkit.get_converter('convert_to_tags')('protocol_codes')],
+            'service_type': [p.toolkit.get_validator('ignore_missing')],
             'layer': [p.toolkit.get_validator('ignore_missing')],
-            'ordering_procedure': [p.toolkit.get_validator('ignore_missing')],
+            'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
+            'content_model_version': [p.toolkit.get_validator('ignore_missing')]
         })
+
         return schema
 
     def is_fallback(self):
