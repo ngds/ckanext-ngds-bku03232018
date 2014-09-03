@@ -1,5 +1,8 @@
 def convert_to_authors(key, data, errors, context):
-    pass
+    extras = data.get(('extras',), [])
+    if not extras:
+        data[('extras',)] = extras
+    extras.append({'key': key[-1], 'value': data[key]})
 
 def convert_to_keywords(key, data, errors, context):
     pass

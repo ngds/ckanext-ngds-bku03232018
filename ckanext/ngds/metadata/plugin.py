@@ -1,4 +1,5 @@
 import ckanext.ngds.metadata.logic.action as action
+import ckanext.ngds.metadata.logic.converters as converters
 from ckanext.ngds.common import plugins as p
 
 def create_protocol_codes():
@@ -56,7 +57,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def _modify_package_schema(self, schema):
         schema.update({
             'authors': [p.toolkit.get_validator('ignore_missing'),
-                        p.toolkit.get_converter('convert_to_extras')],
+                        converters.convert_to_authors],
             'dataset_category': [p.toolkit.get_validator('ignore_missing'),
                                  p.toolkit.get_converter('convert_to_extras')],
             'dataset_lang': [p.toolkit.get_validator('ignore_missing'),
