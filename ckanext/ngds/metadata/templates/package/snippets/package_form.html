@@ -17,22 +17,10 @@ then itself be extended to add/remove blocks of functionality. #}
     {% snippet 'package/snippets/package_basic_fields.html', data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
   {% endblock %}
 
-  <div class="accordion" id="accordion2">
-    <div class="accordion-group">
-      <div class="accordion-heading">
-        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-          Authors
-        </a>
-      </div>
-      <div id="collapseOne" class="accordion-body in">
-        <div class="accordion-inner">
-          {% block ngds_author_fields %}
-            {% snippet 'package/snippets/ngds_author_fields.html', data=data, errors=errors %}
-          {% endblock %}
-        </div>
-      </div>
-    </div>
-  </div>
+  {% block ngds_author_form %}
+    {% snippet 'package/snippets/ngds_author_form.html', data=data, errors=errors %}
+  {% endblock %}
+
 
   {% block metadata_fields %}
     {% snippet 'package/snippets/package_metadata_fields.html', data=data, errors=errors %}

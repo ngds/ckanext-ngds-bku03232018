@@ -1,0 +1,83 @@
+{% import 'macros/form.html' as form %}
+
+{% block ngds_authors_form %}
+  <!-- author name field -->
+  <div class="control-group control-medium">
+    <label class="control-label" for="ngds-author-name">
+      Author
+    </label>
+    <div class="controls">
+      <input id="ngds-author-name" type="text" name="author-name">
+    </div>
+  </div>
+
+  <!-- organization name field -->
+  <div class="control-group control-medium">
+    <label class="control-label" for="ngds-organization-name">
+      Organization
+    </label>
+    <div class="controls">
+      <input id="ngds-organization-name" type="text" name="organization-name">
+    </div>
+  </div>
+
+  <!-- phone number field -->
+  <div class="control-group control-medium">
+    <label class="control-label" for="ngds-author-phone">
+      Phone
+    </label>
+    <div class="controls">
+      <input id="ngds-author-phone" type="text" name="author-phone" placeholder="123-456-7890">
+    </div>
+  </div>
+
+  <!-- email field -->
+  <div class="control-group control-medium">
+    <label class="control-label" for="ngds-author-email">
+      Email
+    </label>
+    <div class="controls">
+      <input id="ngds-author-email" type="text" name="author-email">
+    </div>
+  </div>
+
+  <!-- street field -->
+  <div class="control-group control-medium">
+    <label class="control-label" for="ngds-author-street">
+      Street
+    </label>
+    <div class="controls">
+      <input id="ngds-author-street" type="text" name="author-street">
+    </div>
+  </div>
+
+  <!-- city field -->
+  <div class="control-group control-medium">
+    <label class="control-label" for="ngds-author-city">
+      City
+    </label>
+    <div class="controls">
+      <input id="ngds-author-city" type="text" name="author-city">
+    </div>
+  </div>
+
+  <!-- state field -->
+  <div class="control-group control-medium">
+    <label class="control-label" for="ngds-author-state">
+      State
+    </label>
+    <div class="controls">
+      <input id="ngds-author-state" type="text" name="author-state">
+    </div>
+  </div>
+
+  <!-- zip field -->
+  <div class="control-group control-medium">
+    <label class="control-label" for="ngds-author-zip">
+      Zipcode
+    </label>
+    <div class="controls">
+      <input id="ngds-author-zip" type="text" name="author-zip">
+    </div>
+  </div>
+{% endblock %}

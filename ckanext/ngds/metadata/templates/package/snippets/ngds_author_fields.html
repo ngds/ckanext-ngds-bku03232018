@@ -1,9 +1,0 @@
-{% import 'macros/form.html' as form %}
-
-{% block ngds_authors_fields %}
-
-  {{ form.input('authors', label=_('Authors'), id='usgin-field-authors',
-    placeholder=_('authors'), value=data.authors, error=errors.authors,
-    classes=['control-medium']) }}
-
-{% endblock %}
