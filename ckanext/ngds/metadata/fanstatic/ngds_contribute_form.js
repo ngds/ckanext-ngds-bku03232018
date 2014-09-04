@@ -6,6 +6,8 @@ this.ckan.module('ngds-contribute', function (jQuery, _) {
         , button
         , ngdsPackage
         , ngdsRecord
+        , basic
+        , author
         ;
 
       message = _('There are unsaved modifications to this form').fetch();
@@ -90,7 +92,15 @@ this.ckan.module('ngds-contribute', function (jQuery, _) {
       };
 
       $('#ngds-dataset-edit').submit(function (e) {
-        console.log(e);
+
+        basic = $('#collapse-basic-fields');
+        author = $('#collapse-ngds-author-fields :input');
+
+        var map = {};
+        author.each(function () {
+          map[$(this).attr('name')] = $(this).val();
+        });
+
         return true;
       })
     }
