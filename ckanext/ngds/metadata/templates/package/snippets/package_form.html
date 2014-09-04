@@ -13,21 +13,84 @@ then itself be extended to add/remove blocks of functionality. #}
   <input type="hidden" name="pkg_name" value="{{ data.id }}" />
   {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
 
-  {% block basic_fields %}
-    {% snippet 'package/snippets/package_basic_fields.html', data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
-  {% endblock %}
+  <div class="accordion" id="accordion-two">
 
-  {% block ngds_author_form %}
-    {% snippet 'package/snippets/ngds_author_form.html', data=data, errors=errors %}
-  {% endblock %}
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-two" href="#collapse-basic-fields">
+          Basic Package Fields
+        </a>
+      </div>
+      <div id="collapse-basic-fields" class="accordion-body collapse in">
+        <div class="accordion-inner">
+          {% block basic_fields %}
+            {% snippet 'package/snippets/package_basic_fields.html', data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
 
-  {% block ngds_geographic_extent_form %}
-    {% snippet 'package/snippets/ngds_geographic_extent_form.html', data=data, errors=errors %}
-  {% endblock %}
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-two" href="#collapse-ngds-author-fields">
+          Authors
+        </a>
+      </div>
+      <div id="collapse-ngds-author-fields" class="accordion-body collapse">
+        <div class="accordion-inner">
+          {% block ngds_author_form %}
+            {% snippet 'package/snippets/ngds_author_form.html', data=data, errors=errors %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
 
-  {% block metadata_fields %}
-    {% snippet 'package/snippets/package_metadata_fields.html', data=data, errors=errors %}
-  {% endblock %}
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-two" href="#collapse-ngds-geographic-extent-fields">
+          Geographic Extent
+        </a>
+      </div>
+      <div id="collapse-ngds-geographic-extent-fields" class="accordion-body collapse">
+        <div class="accordion-inner">
+          {% block ngds_geographic_extent_form %}
+            {% snippet 'package/snippets/ngds_geographic_extent_form.html', data=data, errors=errors %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-two" href="#collapse-ngds-distributors-fields">
+          Distributors
+        </a>
+      </div>
+      <div id="collapse-ngds-distributors-fields" class="accordion-body collapse">
+        <div class="accordion-inner">
+          {% block ngds_distributors_form %}
+            {% snippet 'package/snippets/ngds_distributors_form.html', data=data, errors=errors %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-two" href="#collapse-ngds-metadata-contact-fields">
+          Metadata Contact
+        </a>
+      </div>
+      <div id="collapse-ngds-metadata-contact-fields" class="accordion-body collapse">
+        <div class="accordion-inner">
+          {% block metadata_fields %}
+            {% snippet 'package/snippets/ngds_metadata_contact_form.html', data=data, errors=errors %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+
+  </div>
 
   {% block form_actions %}
     <div class="form-actions">

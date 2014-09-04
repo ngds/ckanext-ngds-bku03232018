@@ -57,30 +57,12 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     # IDatasetForm
     def _modify_package_schema(self, schema):
         schema.update({
-            'publication_date': [p.toolkit.get_converter('convert_to_extras')],
-            'resource_id': [p.toolkit.get_validator('ignore_missing'),
-                            p.toolkit.get_converter('convert_to_extras')],
-            'authors': [p.toolkit.get_validator('ignore_missing'),
-                        p.toolkit.get_converter('convert_to_extras')],
-            'keywords': [p.toolkit.get_validator('ignore_missing'),
-                         p.toolkit.get_converter('convert_to_extras')],
-            'geographic_extent': [p.toolkit.get_validator('ignore_missing'),
-                                  p.toolkit.get_converter('convert_to_extras')],
-            'distributors': [p.toolkit.get_validator('ignore_missing'),
-                             p.toolkit.get_converter('convert_to_extras')],
-            'metadata_contact': [p.toolkit.get_validator('ignore_missing'),
-                                 p.toolkit.get_converter('convert_to_extras')],
-            'harvest_information': [p.toolkit.get_validator('ignore_missing'),
-                                    p.toolkit.get_converter('convert_to_extras')]
+            'ngds_package': [p.toolkit.get_validator('ignore_missing'),
+                             p.toolkit.get_converter('convert_from_extras')]
         })
 
         schema['resources'].update({
-            'url': [p.toolkit.get_validator('ignore_missing')],
-            'distributor': [p.toolkit.get_validator('ignore_missing')],
-            'service_type': [p.toolkit.get_validator('ignore_missing')],
-            'layer': [p.toolkit.get_validator('ignore_missing')],
-            'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
-            'content_model_version': [p.toolkit.get_validator('ignore_missing')]
+            'ngds_resource': [p.toolkit.get_validator('ignore_missing')],
         })
 
         return schema
@@ -99,30 +81,12 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         schema = super(MetadataPlugin, self).show_package_schema()
         schema['tags']['__extras'].append(p.toolkit.get_converter('free_tags_only'))
         schema.update({
-            'publication_date': [p.toolkit.get_converter('convert_to_extras')],
-            'resource_id': [p.toolkit.get_validator('ignore_missing'),
-                            p.toolkit.get_converter('convert_from_extras')],
-            'authors': [p.toolkit.get_validator('ignore_missing'),
-                        p.toolkit.get_converter('convert_from_extras')],
-            'keywords': [p.toolkit.get_validator('ignore_missing'),
-                         p.toolkit.get_converter('convert_from_extras')],
-            'geographic_extent': [p.toolkit.get_validator('ignore_missing'),
-                                  p.toolkit.get_converter('convert_from_extras')],
-            'distributors': [p.toolkit.get_validator('ignore_missing'),
-                             p.toolkit.get_converter('convert_from_extras')],
-            'metadata_contact': [p.toolkit.get_validator('ignore_missing'),
-                                 p.toolkit.get_converter('convert_from_extras')],
-            'harvest_information': [p.toolkit.get_validator('ignore_missing'),
-                                    p.toolkit.get_converter('convert_from_extras')]
+            'ngds_package': [p.toolkit.get_validator('ignore_missing'),
+                             p.toolkit.get_converter('convert_from_extras')]
         })
 
         schema['resources'].update({
-            'url': [p.toolkit.get_validator('ignore_missing')],
-            'distributor': [p.toolkit.get_validator('ignore_missing')],
-            'service_type': [p.toolkit.get_validator('ignore_missing')],
-            'layer': [p.toolkit.get_validator('ignore_missing')],
-            'content_model_uri': [p.toolkit.get_validator('ignore_missing')],
-            'content_model_version': [p.toolkit.get_validator('ignore_missing')]
+            'ngds_resource': [p.toolkit.get_validator('ignore_missing')],
         })
 
         return schema
