@@ -3,7 +3,7 @@
 
 {# This provides a full page that renders a form for adding a dataset. It can
 then itself be extended to add/remove blocks of functionality. #}
-<form id="dataset-edit" class="package-form form-horizontal" method="post" action="{{ action }}" data-module="basic-form">
+<form id="ngds-dataset-edit" class="package-form form-horizontal" method="post" action="{{ action }}" data-module="ngds-contribute">
   {% block stages %}
     {{ h.snippet('package/snippets/stages.html', stages=stage) }}
   {% endblock %}
@@ -17,9 +17,22 @@ then itself be extended to add/remove blocks of functionality. #}
     {% snippet 'package/snippets/package_basic_fields.html', data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
   {% endblock %}
 
-  {% block ngds_author_fields %}
-    {% snippet 'package/snippets/ngds_author_fields.html', data=data, errors=errors %}
-  {% endblock %}
+  <div class="accordion" id="accordion2">
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+          Authors
+        </a>
+      </div>
+      <div id="collapseOne" class="accordion-body in">
+        <div class="accordion-inner">
+          {% block ngds_author_fields %}
+            {% snippet 'package/snippets/ngds_author_fields.html', data=data, errors=errors %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
 
   {% block metadata_fields %}
     {% snippet 'package/snippets/package_metadata_fields.html', data=data, errors=errors %}
@@ -49,5 +62,6 @@ then itself be extended to add/remove blocks of functionality. #}
       {% endblock %}
       {{ form.required_message() }}
     </div>
+    {% resource "metadata/ngds_contribute_form.js" %}
   {% endblock %}
 </form>

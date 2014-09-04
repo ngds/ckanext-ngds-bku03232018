@@ -39,6 +39,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         public = 'public'
         p.toolkit.add_template_directory(config, templates)
         p.toolkit.add_public_directory(config, public)
+        p.toolkit.add_resource('fanstatic', 'metadata')
 
     # IRoutes
     def before_map(self, map):
