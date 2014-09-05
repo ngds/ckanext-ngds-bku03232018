@@ -1,4 +1,6 @@
-this.ckan.module('ngds-contribute', function (jQuery, _) {
+'use strict';
+
+ckan.module('ngds-contribute', function (jQuery, _) {
   return {
     initialize: function () {
       var message
@@ -7,6 +9,10 @@ this.ckan.module('ngds-contribute', function (jQuery, _) {
         , ngdsPackage
         , ngdsRecord
         , basic
+        , authors
+        , doc
+        , entry
+        , i
         , author
         ;
 
@@ -94,12 +100,20 @@ this.ckan.module('ngds-contribute', function (jQuery, _) {
       $('#ngds-dataset-edit').submit(function (e) {
 
         basic = $('#collapse-basic-fields');
-        author = $('#collapse-ngds-author-fields :input');
+        authors = $('#collapse-ngds-author-fields .ngds-input-form');
 
-        var map = {};
-        author.each(function () {
-          map[$(this).attr('name')] = $(this).val();
-        });
+        doc = {};
+        doc.Authors = [];
+
+        for (i=0; i < authors.length; i++) {
+          entry = {};
+          author = $(authors[i]);
+          author.find('input').each(function () {
+            entry[$(this).attr('name')] = $(this).val();
+          });
+
+          doc.Authors.push(entry);
+        }
 
         return true;
       })

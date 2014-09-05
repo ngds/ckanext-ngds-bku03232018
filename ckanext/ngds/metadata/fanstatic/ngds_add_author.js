@@ -11,7 +11,7 @@ ckan.module('ngds_add_author', function ($, _) {
         this.options, this._onReceiveSnippet);
     },
     _onReceiveSnippet: function (html) {
-      $('#collapse-ngds-author-fields').append(html);
+      $('#collapse-ngds-author-fields .form-fields').append(html);
     }
   }
 });

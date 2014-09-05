@@ -11,7 +11,7 @@ ckan.module('ngds_add_distributor', function ($, _) {
         this.options, this._onReceiveSnippet);
     },
     _onReceiveSnippet: function (html) {
-      $('#collapse-ngds-distributor-fields').append(html);
+      $('#collapse-ngds-distributor-fields .form-fields').append(html);
     }
   }
 });

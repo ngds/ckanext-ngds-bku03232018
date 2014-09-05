@@ -23,9 +23,11 @@ then itself be extended to add/remove blocks of functionality. #}
       </div>
       <div id="collapse-basic-fields" class="accordion-body collapse in">
         <div class="accordion-inner">
-          {% block basic_fields %}
-            {% snippet 'package/snippets/package_basic_fields.html', data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
-          {% endblock %}
+          <div class="form-fields">
+            {% block basic_fields %}
+              {% snippet 'package/snippets/package_basic_fields.html', data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
+            {% endblock %}
+          </div>
         </div>
       </div>
     </div>
@@ -38,10 +40,14 @@ then itself be extended to add/remove blocks of functionality. #}
       </div>
       <div id="collapse-ngds-author-fields" class="accordion-body collapse">
         <div class="accordion-inner">
-          {% block ngds_author_form %}
-            {% snippet 'package/snippets/ngds_author_form.html', data=data, errors=errors %}
-          {% endblock %}
-          <button class="btn btn-success" type="button" data-module="ngds_add_author">Add author</button>
+          <div class="form-fields">
+            {% block ngds_author_form %}
+              {% snippet 'package/snippets/ngds_author_form.html', data=data, errors=errors %}
+            {% endblock %}
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-success" type="button" data-module="ngds_add_author">Add author</button>
+          </div>
         </div>
       </div>
     </div>
@@ -54,9 +60,11 @@ then itself be extended to add/remove blocks of functionality. #}
       </div>
       <div id="collapse-ngds-geographic-extent-fields" class="accordion-body collapse">
         <div class="accordion-inner">
-          {% block ngds_geographic_extent_form %}
-            {% snippet 'package/snippets/ngds_geographic_extent_form.html', data=data, errors=errors %}
-          {% endblock %}
+          <div class="form-fields">
+            {% block ngds_geographic_extent_form %}
+              {% snippet 'package/snippets/ngds_geographic_extent_form.html', data=data, errors=errors %}
+            {% endblock %}
+          </div>
         </div>
       </div>
     </div>
@@ -69,10 +77,14 @@ then itself be extended to add/remove blocks of functionality. #}
       </div>
       <div id="collapse-ngds-distributor-fields" class="accordion-body collapse">
         <div class="accordion-inner">
-          {% block ngds_distributors_form %}
-            {% snippet 'package/snippets/ngds_distributor_form.html', data=data, errors=errors %}
-          {% endblock %}
-          <button class="btn btn-success" type="button" data-module="ngds_add_distributor">Add distributor</button>
+          <div class="form-fields">
+            {% block ngds_distributors_form %}
+              {% snippet 'package/snippets/ngds_distributor_form.html', data=data, errors=errors %}
+            {% endblock %}
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-success" type="button" data-module="ngds_add_distributor">Add distributor</button>
+          </div>
         </div>
       </div>
     </div>
@@ -85,9 +97,11 @@ then itself be extended to add/remove blocks of functionality. #}
       </div>
       <div id="collapse-ngds-metadata-contact-fields" class="accordion-body collapse">
         <div class="accordion-inner">
-          {% block metadata_fields %}
-            {% snippet 'package/snippets/ngds_metadata_contact_form.html', data=data, errors=errors %}
-          {% endblock %}
+          <div class="form-fields">
+            {% block metadata_fields %}
+              {% snippet 'package/snippets/ngds_metadata_contact_form.html', data=data, errors=errors %}
+            {% endblock %}
+          </div>
         </div>
       </div>
     </div>
