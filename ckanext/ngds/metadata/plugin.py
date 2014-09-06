@@ -58,7 +58,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def _modify_package_schema(self, schema):
         schema.update({
             'ngds_package': [p.toolkit.get_validator('ignore_missing'),
-                             p.toolkit.get_converter('convert_from_extras')]
+                             converters.convert_to_ngds_package]
         })
 
         schema['resources'].update({

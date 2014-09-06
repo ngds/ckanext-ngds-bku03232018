@@ -80,6 +80,8 @@ ckan.module('ngds-contribute', function (jQuery, _) {
         , form
         , button
         , obj
+        , data
+        , injection
         ;
 
       obj = this;
@@ -98,8 +100,15 @@ ckan.module('ngds-contribute', function (jQuery, _) {
       }
 
       $('#ngds-dataset-edit').submit(function (e) {
+        data = obj.buildSchema();
+        form = $(this);
 
-        var schema = obj.buildSchema();
+        injection = $('<input>')
+          .attr('type', 'hidden')
+          .attr('name', 'ngds_package')
+          .val(JSON.stringify(data));
+
+        $('#ngds-dataset-edit').append($(injection));
 
         return true;
       })
@@ -142,14 +151,14 @@ ckan.module('ngds-contribute', function (jQuery, _) {
         entry.ContactInformation.Address = {};
         author = $(authors[i]);
         author.find('input').each(function () {
-          entry.Name = obj.processInputs(this, 'ngds-author-name');
-          entry.OrganizationName = obj.processInputs(this, 'ngds-author-organization');
-          entry.ContactInformation.Phone = obj.processInputs(this, 'ngds-author-phone');
-          entry.ContactInformation.email = obj.processInputs(this, 'ngds-author-email');
-          entry.ContactInformation.Address.Street = obj.processInputs(this, 'ngds-author-street');
-          entry.ContactInformation.Address.City = obj.processInputs(this, 'ngds-author-city');
-          entry.ContactInformation.Address.State = obj.processInputs(this, 'ngds-author-state');
-          entry.ContactInformation.Address.Zip = obj.processInputs(this, 'ngds-author-zip');
+          entry.Name = obj.processInputs(this, 'ngds-name');
+          entry.OrganizationName = obj.processInputs(this, 'ngds-organization');
+          entry.ContactInformation.Phone = obj.processInputs(this, 'ngds-phone');
+          entry.ContactInformation.email = obj.processInputs(this, 'ngds-email');
+          entry.ContactInformation.Address.Street = obj.processInputs(this, 'ngds-street');
+          entry.ContactInformation.Address.City = obj.processInputs(this, 'ngds-city');
+          entry.ContactInformation.Address.State = obj.processInputs(this, 'ngds-state');
+          entry.ContactInformation.Address.Zip = obj.processInputs(this, 'ngds-zip');
         });
         doc.Authors.push(entry);
       }
@@ -169,14 +178,14 @@ ckan.module('ngds-contribute', function (jQuery, _) {
         entry.ContactInformation.Address = {};
         distributor = $(distributors[j]);
         distributor.find('input').each(function () {
-          entry.Name = obj.processInputs(this, 'ngds-distributors-name');
-          entry.OrganizationName = obj.processInputs(this, 'ngds-distributors-organization');
-          entry.ContactInformation.Phone = obj.processInputs(this, 'ngds-distributors-phone');
-          entry.ContactInformation.email = obj.processInputs(this, 'ngds-distributors-email');
-          entry.ContactInformation.Address.Street = obj.processInputs(this, 'ngds-distributors-street');
-          entry.ContactInformation.Address.City = obj.processInputs(this, 'ngds-distributors-city');
-          entry.ContactInformation.Address.State = obj.processInputs(this, 'ngds-distributors-state');
-          entry.ContactInformation.Address.Zip = obj.processInputs(this, 'ngds-distributors-zip');
+          entry.Name = obj.processInputs(this, 'ngds-name');
+          entry.OrganizationName = obj.processInputs(this, 'ngds-organization');
+          entry.ContactInformation.Phone = obj.processInputs(this, 'ngds-phone');
+          entry.ContactInformation.email = obj.processInputs(this, 'ngds-email');
+          entry.ContactInformation.Address.Street = obj.processInputs(this, 'ngds-street');
+          entry.ContactInformation.Address.City = obj.processInputs(this, 'ngds-city');
+          entry.ContactInformation.Address.State = obj.processInputs(this, 'ngds-state');
+          entry.ContactInformation.Address.Zip = obj.processInputs(this, 'ngds-zip');
         });
         doc.Distributors.push(entry);
       }
