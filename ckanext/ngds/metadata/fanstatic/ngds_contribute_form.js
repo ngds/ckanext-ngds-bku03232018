@@ -111,10 +111,12 @@ ckan.module('ngds-contribute', function (jQuery, _) {
         , author
         , authors
         , geo
+        , distributor
         , distributors
         , contact
         , obj
         , i
+        , j
         ;
 
       obj = this;
@@ -140,7 +142,14 @@ ckan.module('ngds-contribute', function (jQuery, _) {
         entry.ContactInformation.Address = {};
         author = $(authors[i]);
         author.find('input').each(function () {
-
+          entry.Name = obj.processInputs(this, 'ngds-author-name');
+          entry.OrganizationName = obj.processInputs(this, 'ngds-author-organization');
+          entry.ContactInformation.Phone = obj.processInputs(this, 'ngds-author-phone');
+          entry.ContactInformation.email = obj.processInputs(this, 'ngds-author-email');
+          entry.ContactInformation.Address.Street = obj.processInputs(this, 'ngds-author-street');
+          entry.ContactInformation.Address.City = obj.processInputs(this, 'ngds-author-city');
+          entry.ContactInformation.Address.State = obj.processInputs(this, 'ngds-author-state');
+          entry.ContactInformation.Address.Zip = obj.processInputs(this, 'ngds-author-zip');
         });
         doc.Authors.push(entry);
       }
@@ -148,10 +157,41 @@ ckan.module('ngds-contribute', function (jQuery, _) {
       doc.Keywords = [];
 
       doc.GeographicExtent = {};
+      doc.GeographicExtent.NorthBound = obj.processInputs(geo, 'ngds-geo-north');
+      doc.GeographicExtent.SouthBound = obj.processInputs(geo, 'ngds-geo-south');
+      doc.GeographicExtent.EastBound = obj.processInputs(geo, 'ngds-geo-east');
+      doc.GeographicExtent.WestBound = obj.processInputs(geo, 'ngds-geo-west');
 
       doc.Distributors = [];
+      for (j = 0; j < distributors.length; j++) {
+        entry = {};
+        entry.ContactInformation = {};
+        entry.ContactInformation.Address = {};
+        distributor = $(distributors[j]);
+        distributor.find('input').each(function () {
+          entry.Name = obj.processInputs(this, 'ngds-distributors-name');
+          entry.OrganizationName = obj.processInputs(this, 'ngds-distributors-organization');
+          entry.ContactInformation.Phone = obj.processInputs(this, 'ngds-distributors-phone');
+          entry.ContactInformation.email = obj.processInputs(this, 'ngds-distributors-email');
+          entry.ContactInformation.Address.Street = obj.processInputs(this, 'ngds-distributors-street');
+          entry.ContactInformation.Address.City = obj.processInputs(this, 'ngds-distributors-city');
+          entry.ContactInformation.Address.State = obj.processInputs(this, 'ngds-distributors-state');
+          entry.ContactInformation.Address.Zip = obj.processInputs(this, 'ngds-distributors-zip');
+        });
+        doc.Distributors.push(entry);
+      }
 
       doc.MetadataContact = {};
+      doc.MetadataContact.Name = obj.processInputs(contact, 'ngds-name');
+      doc.MetadataContact.OrganizationName = obj.processInputs(contact, 'ngds-organization');
+      doc.MetadataContact.ContactInformation = {};
+      doc.MetadataContact.ContactInformation.Phone = obj.processInputs(contact, 'ngds-phone');
+      doc.MetadataContact.ContactInformation.email = obj.processInputs(contact, 'ngds-email');
+      doc.MetadataContact.ContactInformation.Address = {};
+      doc.MetadataContact.ContactInformation.Address.Street = obj.processInputs(contact, 'ngds-street');
+      doc.MetadataContact.ContactInformation.Address.City = obj.processInputs(contact, 'ngds-city');
+      doc.MetadataContact.ContactInformation.Address.State = obj.processInputs(contact, 'ngds-state');
+      doc.MetadataContact.ContactInformation.Address.Zip = obj.processInputs(contact, 'ngds-zip');
 
       return doc;
     },
