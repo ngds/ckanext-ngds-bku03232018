@@ -207,62 +207,8 @@ Custom NGDS aggregator homepage
     color: #ffffff;
     padding-left: 0;
     padding-right: 0;
-    padding-top: 30px;
-    padding-bottom: 30px;
-}
-
-.layout-5 .search {
-    background: none;
-    background-color: #84a0bf;
-}
-
-.layout-5 .module-search {
-    padding: 0px;
-}
-
-.layout-5 .module-search .module-content {
-    background-color: #84a0bf;
-}
-
-.layout-5 .module-search .module-content h2 {
-    color: #003647;
-    text-align: center;
-    margin-bottom: 5px;
-}
-
-.layout-5 .module-search .module-content h2 select {
-    width: 145px;
-    height: 30px;
-    font-size: 19px;
-    font-weight: bold;
-    color: #003647;
-    margin-bottom: 5px;
-}
-
-.layout-5 .module-search .module-content .search-giant input {
-    background-color: #ffffff;
-}
-
-.layout-5 .module-search .module-content {
-    padding-left: 0px;
-    padding-right: 0px;
-}
-
-.layout-5 .module-search .tags {
-    background-color: #84a0bf;
-    padding-left: 0px;
-    padding-right: 0px;
-}
-
-.layout-5 .module-search .tags h3{
-    padding-left: 0px;
-}
-
-.layout-5 .search .box {
-    background-color: #84a0bf;
-    border: none;
-    border-radius: 0px;
-    box-shadow: none;
+    padding-top: 15px;
+    padding-bottom: 10px;
 }
 
 /*
@@ -296,6 +242,81 @@ Custom NGDS aggregator homepage
 .layout-5 .search-form .homepage-search .search-controls .btn button {
     vertical-align: top;
 }
+
+.layout-5 .search-carousel {
+    background: none;
+    background-color: #84a0bf;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+.layout-5 .search-carousel .carousel {
+    margin-bottom: 0px;
+}
+
+.layout-5 .search-carousel .box {
+    background-color: #84a0bf;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+.layout-5 .search-carousel .module-search {
+    padding: 0px;
+}
+
+.layout-5 .search-carousel .module-search .module-content {
+    background-color: #84a0bf;
+}
+
+.layout-5 .search-carousel .module-search .module-content h2 {
+    color: #003647;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.layout-5 .search-carousel .module-search .module-content h2 select {
+    width: 145px;
+    height: 30px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #003647;
+    margin-bottom: 5px;
+}
+
+.layout-5 .search-carousel .module-search .module-content .search-giant input {
+    background-color: #ffffff;
+}
+
+.layout-5 .search-carousel .module-search .module-content {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layout-5 .search-carousel .tags h3 {
+    font-size: 14px;
+    display: block;
+    float: left;
+    padding: 2px 8px;
+    line-height: 20px;
+    margin: 5px 10px 0 0;
+}
+
+.layout-5 .search-carousel .tags {
+    color: #ffffff;
+    background-color: #84a0bf;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 10px;
+}
+
+.layout-5 .search-carousel .tags .tag {
+    display: block;
+    float: left;
+    margin: 5px 10px 0 0;
+}
+
 
 @media (max-width: 480px) {
     .layout-5 .search-form .homepage-search .search-text {
@@ -340,19 +361,21 @@ Custom NGDS aggregator homepage
 
 @media (min-width: 768px) and (max-width: 979px) {
     .layout-5 .search-form .homepage-search .search-text {
-        width: 70%;
+        width: 95%;
+    }
+
+    .layout-5 .search-form .homepage-search .search-controls select {
+        width: 181px;
     }
 }
 
 @media (min-width: 980px) {
     .layout-5 .search-form .homepage-search .search-text {
-        width: 77%;
+        width: 95%;
     }
 
-    .layout-5 .slideshow .carousel {
-        max-width: 840px;
-        margin-left: auto;
-        margin-right: auto;
+    .layout-5 .search-form .homepage-search .search-controls select {
+        width: 252px;
     }
 }
 
