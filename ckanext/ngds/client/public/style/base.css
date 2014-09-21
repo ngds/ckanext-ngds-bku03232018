@@ -295,7 +295,7 @@ Custom NGDS aggregator homepage
 }
 
 .layout-5 .search-carousel .tags h3 {
-    font-size: 14px;
+    font-size: 16px;
     display: block;
     float: left;
     padding: 2px 8px;
@@ -317,6 +317,9 @@ Custom NGDS aggregator homepage
     margin: 5px 10px 0 0;
 }
 
+.layout-5 .helper-links .for-developers {
+    float: right;
+}
 
 @media (max-width: 480px) {
     .layout-5 .search-form .homepage-search .search-text {

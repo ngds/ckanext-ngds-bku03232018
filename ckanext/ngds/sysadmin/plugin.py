@@ -84,4 +84,5 @@ class SystemAdministrator(p.SingletonPlugin):
                 'data_harvest_enabled': h.data_harvest_enabled,
                 'metadata_edit_enabled': h.metadata_edit_enabled,
                 'get_featured_data': h.get_featured_data,
+                'get_recent_activity': h.get_recent_activity
                 }

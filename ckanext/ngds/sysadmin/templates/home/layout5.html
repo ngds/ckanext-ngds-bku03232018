@@ -38,7 +38,9 @@
   <div class="container">
     <div class="row-fluid">
       <div class="span4">
-
+        {% block recent_activity %}
+          {% snippet 'home/snippets/ngds_recent_activity.html' %}
+        {% endblock %}
       </div>
       <div class="span8">
         {% block helper_links %}
