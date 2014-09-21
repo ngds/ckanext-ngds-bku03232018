@@ -39,7 +39,8 @@ class NGDSAdminController(admin.AdminController):
         homepages = [{'value': '1', 'text': 'Introductory area, search, featured group and featured organization'},
                      {'value': '2', 'text': 'Search, stats, introductory area, featured organization and featured group'},
                      {'value': '3', 'text': 'Search, introductory area and stats'},
-                     {'value': '4', 'text': 'Custom NGDS homepage'}]
+                     {'value': '4', 'text': 'NGDS publisher homepage'},
+                     {'value': '5', 'text': 'NGDS aggregator homepage'}]
 
         items = [
             {'name': 'ckan.site_title', 'control': 'input', 'label': _('Site Title'), 'placeholder': ''},

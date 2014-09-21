@@ -55,6 +55,9 @@ class SystemAdministrator(p.SingletonPlugin):
         # Add custom templates directory
         p.toolkit.add_template_directory(config, 'templates')
 
+        # Add public assets directory
+        p.toolkit.add_public_directory(config, 'public')
+
         # Register fanstatic directory for JavaScript files
         p.toolkit.add_resource('fanstatic', 'sysadmin')
 

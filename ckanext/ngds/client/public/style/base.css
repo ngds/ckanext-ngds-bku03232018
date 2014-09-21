@@ -190,9 +190,176 @@ Flash messages
 }
 
 /*
-====================
-Custom NGDS homepage
-====================
+===============================
+Custom NGDS aggregator homepage
+===============================
+*/
+
+.layout-5 .hero {
+    padding: 0;
+    background: none;
+    background-color: #32567f;
+}
+
+.layout-5 .hero .hero-unit {
+    margin-bottom: 0;
+    background-color: #32567f;
+    color: #ffffff;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.layout-5 .search {
+    background: none;
+    background-color: #84a0bf;
+}
+
+.layout-5 .module-search {
+    padding: 0px;
+}
+
+.layout-5 .module-search .module-content {
+    background-color: #84a0bf;
+}
+
+.layout-5 .module-search .module-content h2 {
+    color: #003647;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.layout-5 .module-search .module-content h2 select {
+    width: 145px;
+    height: 30px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #003647;
+    margin-bottom: 5px;
+}
+
+.layout-5 .module-search .module-content .search-giant input {
+    background-color: #ffffff;
+}
+
+.layout-5 .module-search .module-content {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layout-5 .module-search .tags {
+    background-color: #84a0bf;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layout-5 .module-search .tags h3{
+    padding-left: 0px;
+}
+
+.layout-5 .search .box {
+    background-color: #84a0bf;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+/*
+  ckanext/ngds/sysadmin/templates/home/snippets/ngds_search.html
+*/
+.layout-5 .search-form .homepage-search .search-text {
+    padding-right: 18px;
+    float: left;
+}
+
+.layout-5 .search-form .homepage-search .search-text input {
+    width: 100%;
+    height: 30px;
+}
+
+.layout-5 .search-form .homepage-search .search-controls {
+}
+
+.layout-5 .search-form .homepage-search .search-controls select {
+    height: 40px;
+    width: 150px;
+    font-size: 16px;
+}
+
+.layout-5 .search-form .homepage-search .search-controls .btn {
+    height: 40px;
+    vertical-align: top;
+
+}
+
+.layout-5 .search-form .homepage-search .search-controls .btn button {
+    vertical-align: top;
+}
+
+@media (max-width: 480px) {
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 100%;
+        float: none;
+    }
+
+    .layout-5 .search-form .homepage-search .search-text input {
+        width: 100%;
+        box-sizing: border-box;
+        height: 40px;
+    }
+
+    .layout-5 .search-form .homepage-search .search-controls {
+        float: right;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 600px) {
+    .layout-5 .search-form .homepage-search {
+        width: 465px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 244px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 767px) {
+    .layout-5 .search-form .homepage-search {
+        width: 581px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 365px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 70%;
+    }
+}
+
+@media (min-width: 980px) {
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 77%;
+    }
+
+    .layout-5 .slideshow .carousel {
+        max-width: 840px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/*
+==============================
+Custom NGDS publisher homepage
+==============================
 */
 
 .layout-4 .hero {
