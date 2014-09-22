@@ -1,4 +1,5 @@
 import json
+import iso8601
 
 from ckanext.ngds.common import pylons_config as config
 from ckanext.ngds.common import plugins as p
@@ -39,3 +40,6 @@ def get_recent_activity():
     activity_dicts = dictization.model_dictize\
         .activity_list_dictize(activity_objects, context)
     return activity_dicts
+
+def get_formatted_date(timestamp):
+    return iso8601.parse_date(timestamp).strftime("%B %d, %Y")

@@ -220,6 +220,7 @@ Custom NGDS aggregator homepage
 }
 
 .layout-5 .search-form .homepage-search .search-text input {
+    border-color: #004a61;
     width: 100%;
     height: 30px;
 }
@@ -298,7 +299,7 @@ Custom NGDS aggregator homepage
     font-size: 16px;
     display: block;
     float: left;
-    padding: 2px 8px;
+    padding: 2px 0px;
     line-height: 20px;
     margin: 5px 10px 0 0;
 }
@@ -317,8 +318,22 @@ Custom NGDS aggregator homepage
     margin: 5px 10px 0 0;
 }
 
+.layout-5 .helper-links {
+    background: none;
+    background-color: #CBE3FF;
+}
+
 .layout-5 .helper-links .for-developers {
     float: right;
+}
+
+.layout-5 .helper-links .ngds-recent-activity h3 {
+    font-size: 16px;
+    margin-top: 0px;
+}
+
+.layout-5 .helper-links .ngds-recent-activity a {
+    font-weight: bold;
 }
 
 @media (max-width: 480px) {
@@ -558,6 +573,8 @@ Admin featured data
     padding-right: 0px;
 }
 
-.featured {
+.homepage .featured {
     background: #ffffff;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
