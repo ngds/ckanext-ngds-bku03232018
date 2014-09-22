@@ -43,9 +43,11 @@ then itself be extended to add/remove blocks of functionality. #}
       <div id="collapse-ngds-author-fields" class="accordion-body collapse">
         <div class="accordion-inner">
           <div class="form-fields">
-            {% block ngds_author_form %}
-              {% snippet 'package/snippets/ngds_author_form.html', data=data, errors=errors %}
-            {% endblock %}
+            <div class="md-cited-source-agent">
+              {% block cited_source_agent %}
+                {% snippet 'package/snippets/contrib_md_related_agent.html', data=data, errors=errors %}
+              {% endblock %}
+            </div>
           </div>
           <div class="form-actions">
             <button class="btn btn-success" type="button" data-module="ngds_add_author">Add author</button>
@@ -63,9 +65,11 @@ then itself be extended to add/remove blocks of functionality. #}
       <div id="collapse-ngds-geographic-extent-fields" class="accordion-body collapse">
         <div class="accordion-inner">
           <div class="form-fields">
-            {% block ngds_geographic_extent_form %}
-              {% snippet 'package/snippets/ngds_geographic_extent_form.html', data=data, errors=errors %}
-            {% endblock %}
+            <div class="md-geographic-extent">
+              {% block geographic_extent %}
+                {% snippet 'package/snippets/contrib_md_geographic_extent.html', data=data, errors=errors %}
+              {% endblock %}
+            </div>
           </div>
         </div>
       </div>
@@ -80,9 +84,11 @@ then itself be extended to add/remove blocks of functionality. #}
       <div id="collapse-ngds-distributor-fields" class="accordion-body collapse">
         <div class="accordion-inner">
           <div class="form-fields">
-            {% block ngds_distributors_form %}
-              {% snippet 'package/snippets/ngds_distributor_form.html', data=data, errors=errors %}
-            {% endblock %}
+            <div class="md-distributors">
+              {% block distributors %}
+                {% snippet 'package/snippets/contrib_md_related_agent.html', data=data, errors=errors %}
+              {% endblock %}
+            </div>
           </div>
           <div class="form-actions">
             <button class="btn btn-success" type="button" data-module="ngds_add_distributor">Add distributor</button>
@@ -100,9 +106,11 @@ then itself be extended to add/remove blocks of functionality. #}
       <div id="collapse-ngds-metadata-contact-fields" class="accordion-body collapse">
         <div class="accordion-inner">
           <div class="form-fields">
-            {% block metadata_fields %}
-              {% snippet 'package/snippets/ngds_metadata_contact_form.html', data=data, errors=errors %}
-            {% endblock %}
+            <div class="md-resource-contacts">
+              {% block resource_contacts %}
+                {% snippet 'package/snippets/contrib_md_related_agent.html', data=data, errors=errors %}
+              {% endblock %}
+            </div>
           </div>
         </div>
       </div>
@@ -134,8 +142,7 @@ then itself be extended to add/remove blocks of functionality. #}
       {% endblock %}
       {{ form.required_message() }}
     </div>
-    {% resource "metadata/ngds_contribute_form.js" %}
-    {% resource "metadata/ngds_add_author.js" %}
-    {% resource "metadata/ngds_add_distributor.js" %}
+    {% resource "metadata/ngds_contribute_form2.js" %}
+    {% resource "metadata/ngds_add_related_agent.js" %}
   {% endblock %}
 </form>

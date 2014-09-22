@@ -28,3 +28,7 @@ ul {
     font-size: 12px;
     margin-bottom: 0px;
 }
+
+#ngds-dataset-edit label {
+    width: 125px;
+}
