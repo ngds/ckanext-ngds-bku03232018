@@ -323,10 +323,6 @@ Custom NGDS aggregator homepage
     background-color: #CBE3FF;
 }
 
-.layout-5 .helper-links .for-developers {
-    float: right;
-}
-
 .layout-5 .helper-links .ngds-recent-activity h3 {
     font-size: 16px;
     margin-top: 0px;
@@ -351,6 +347,24 @@ Custom NGDS aggregator homepage
     .layout-5 .search-form .homepage-search .search-controls {
         float: right;
     }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 370px;
+        height: 211px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .for-developers img {
+        width: 100%;
+        min-height: 100%;
+    }
 }
 
 @media (min-width: 481px) and (max-width: 600px) {
@@ -362,6 +376,24 @@ Custom NGDS aggregator homepage
 
     .layout-5 .search-form .homepage-search .search-text {
         width: 244px;
+    }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 411px;
+        height: 231px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .for-developers img {
+        width: 100%;
+        min-height: 100%;
     }
 }
 
@@ -375,6 +407,24 @@ Custom NGDS aggregator homepage
     .layout-5 .search-form .homepage-search .search-text {
         width: 365px;
     }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 411px;
+        height: 231px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .for-developers img {
+        width: 100%;
+        min-height: 100%;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
@@ -385,6 +435,21 @@ Custom NGDS aggregator homepage
     .layout-5 .search-form .homepage-search .search-controls select {
         width: 181px;
     }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 230px;
+        height: 171px;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .for-developers img {
+        width: 100%;
+        min-height: 100%;
+    }
 }
 
 @media (min-width: 980px) {
@@ -393,7 +458,30 @@ Custom NGDS aggregator homepage
     }
 
     .layout-5 .search-form .homepage-search .search-controls select {
-        width: 252px;
+        width: 250px;
+    }
+
+    .layout-5 .helper-links .for-developers {
+        float: right;
+    }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 303px;
+        height: 171px;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .responsive-fixed-width {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .row-fluid .span8 .row-fluid {
+        width: 630px;
     }
 }
 
