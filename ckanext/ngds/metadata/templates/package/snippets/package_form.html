@@ -3,7 +3,7 @@
 
 {# This provides a full page that renders a form for adding a dataset. It can
 then itself be extended to add/remove blocks of functionality. #}
-<form id="ngds-dataset-edit" class="package-form form-horizontal" method="post" action="{{ action }}" data-module="ngds-contribute">
+<form id="md-dataset-edit" class="package-form form-horizontal" method="post" action="{{ action }}" data-module="metadata-contribute">
   {% block stages %}
     {{ h.snippet('package/snippets/stages.html', stages=stage) }}
   {% endblock %}
