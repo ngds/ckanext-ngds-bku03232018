@@ -1,3 +1,5 @@
+import json
+
 import ckanext.ngds.metadata.logic.action as action
 import ckanext.ngds.metadata.logic.converters as converters
 from ckanext.ngds.common import plugins as p
@@ -26,13 +28,44 @@ def protocol_codes():
         return None
 
 def ngds_package_extras_processor(extras):
-    '''
-    processed = {
-        'Citation Date': '',
-        ''
+    pkg = [extra for extra in extras if extra.get('key') == 'ngds_package'][0]
+    md = json.loads(pkg.get('value'))
+
+    authors = []
+    for agent in md['citedSourceAgents']:
+        agent = agent['relatedAgent']['agentRole']
+        author = {
+            'Name': agent['individual']['personName'],
+            'Position': agent['individual']['personPosition'],
+            'Organization': agent['organizationName'],
+            'Address': agent['contactAddress'],
+            'Phone': agent['phoneNumber'],
+            'Email': agent['contactEmail']
+        }
+        authors.append(author)
+
+    return {
+        'citation_date': md['citationDates']['EventDateObject']['dateTime'],
+        'authors': authors,
+        'geographic_extent': md['geographicExtent'][0],
     }
-    '''
-    pass
+
+def ngds_resource_extras_processer(res):
+    md = json.loads(res.get('ngds_resource'))
+    agent = md['resourceAccessOptions'][0]['distributor']\
+        ['relatedAgent']['agentRole']
+    distributor = {
+        'Name': agent['individual']['personName'],
+        'Position': agent['individual']['personPosition'],
+        'Organization': agent['organizationName'],
+        'Address': agent['contactAddress'],
+        'Phone': agent['phoneNumber'],
+        'Email': agent['contactEmail']
+    }
+
+    return {
+        'distributor': distributor,
+    }
 
 class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
@@ -114,5 +147,6 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def get_helpers(self):
         return {
             'protocol_codes': protocol_codes,
-            'ngds_package_extras_processor': ngds_package_extras_processor
+            'ngds_package_extras_processor': ngds_package_extras_processor,
+            'ngds_resource_extras_processer': ngds_resource_extras_processer
         }

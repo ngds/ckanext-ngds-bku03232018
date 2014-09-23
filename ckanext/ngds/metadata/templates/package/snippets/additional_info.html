@@ -1,70 +1,84 @@
+{% set md_data = h.ngds_package_extras_processor(pkg_dict.extras) %}
+
 <section class="additional-info">
   <h3>{{ _('Additional Info') }}</h3>
-  <table class="table table-striped table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th scope="col">{{ _('Field') }}</th>
-        <th scope="col">{{ _('Value') }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% block package_additional_info %}
-        {% if pkg_dict.url %}
+  {% block package_additional_info %}
+    <table class="table table-striped table-bordered table-condensed">
+      {% if md_data.citation_date %}
+        <tr>
+          <th scope="row" class="dataset-label">{{ _('Citation Date') }}</th>
+          <td class="dataset-details" property="rdf:value">{{ md_data.citation_date }}</td>
+        </tr>
+      {% endif %}
+    </table>
+
+    {% if md_data.authors|length > 1 %}
+      <h4>{{ _('Authors') }}</h4>
+    {% else %}
+      <h4>{{ _('Author') }}</h4>
+    {% endif %}
+    {% for author in md_data.authors %}
+      <table class="table table-striped table-bordered table-condensed">
+        {% if author.Name %}
           <tr>
-            <th scope="row" class="dataset-label">{{ _('Source') }}</th>
-            <td class="dataset-details" property="foaf:homepage">{{ h.link_to(pkg_dict.url, pkg_dict.url, rel='foaf:homepage', target='_blank') }}</td>
+            <th scope="row" class="dataset-label">{{ _('Name') }}</th>
+            <td class="dataset-details" property="rdf:value">{{ author.Name }}</td>
           </tr>
         {% endif %}
-
-        {% if pkg_dict.author_email %}
+        {% if author.Position %}
           <tr>
-            <th scope="row" class="dataset-label">{{ _("Author") }}</th>
-            <td class="dataset-details" property="dc:creator">{{ h.mail_to(email_address=pkg_dict.author_email, name=pkg_dict.author) }}</td>
-          </tr>
-        {% elif pkg_dict.author %}
-          <tr>
-            <th scope="row" class="dataset-label">{{ _("Author") }}</th>
-            <td class="dataset-details" property="dc:creator">{{ pkg_dict.author }}</td>
+            <th scope="row" class="dataset-label">{{ _('Position') }}</th>
+            <td class="dataset-details" property="rdf:value">{{ author.Position }}</td>
           </tr>
         {% endif %}
-
-        {% if pkg_dict.maintainer_email %}
+        {% if author.Organization %}
           <tr>
-            <th scope="row" class="dataset-label">{{ _('Maintainer') }}</th>
-            <td class="dataset-details" property="dc:contributor">{{ h.mail_to(email_address=pkg_dict.maintainer_email, name=pkg_dict.maintainer) }}</td>
-          </tr>
-        {% elif pkg_dict.maintainer %}
-          <tr>
-            <th scope="row" class="dataset-label">{{ _('Maintainer') }}</th>
-            <td class="dataset-details" property="dc:contributor">{{ pkg_dict.maintainer }}</td>
+            <th scope="row" class="dataset-label">{{ _('Organization') }}</th>
+            <td class="dataset-details" property="rdf:value">{{ author.Organization }}</td>
           </tr>
         {% endif %}
-
-        {% if pkg_dict.version %}
+        {% if author.Address %}
           <tr>
-            <th scope="row" class="dataset-label">{{ _("Version") }}</th>
-            <td class="dataset-details">{{ pkg_dict.version }}</td>
+            <th scope="row" class="dataset-label">{{ _('Address') }}</th>
+            <td class="dataset-details" property="rdf:value">{{ author.Address }}</td>
           </tr>
         {% endif %}
-
-        {% if h.check_access('package_update',{'id':pkg_dict.id}) %}
+        {% if author.Phone %}
           <tr>
-            <th scope="row" class="dataset-label">{{ _("State") }}</th>
-            <td class="dataset-details">{{ pkg_dict.state }}</td>
+            <th scope="row" class="dataset-label">{{ _('Phone') }}</th>
+            <td class="dataset-details" property="rdf:value">{{ author.Phone }}</td>
           </tr>
         {% endif %}
-
-      {% block extras scoped %}
-        {% for extra in h.sorted_extras(pkg_dict.extras) %}
-          {% set key, value = extra %}
-          <tr rel="dc:relation" resource="_:extra{{ i }}">
-            <th scope="row" class="dataset-label" property="rdfs:label">{{ _(key) }}</th>
-            <td class="dataset-details" property="rdf:value">{{ value }}</td>
+        {% if author.Email %}
+          <tr>
+            <th scope="row" class="dataset-label">{{ _('Email') }}</th>
+            <td class="dataset-details" property="rdf:value">{{ author.Email }}</td>
           </tr>
-        {% endfor %}
-      {% endblock %}
+        {% endif %}
+      </table>
+    {% endfor %}
 
-      {% endblock %}
-    </tbody>
-  </table>
+    {% if md_data.geographic_extent %}
+      <h4>{{ _('Geographic Extent') }}</h4>
+      {% set geo = md_data.geographic_extent %}
+      <table class="table table-striped table-bordered table-condensed">
+        <tr>
+          <th scope="row" class="dataset-label">{{ _('North Bound') }}</th>
+          <td class="dataset-details" property="rdf:value">{{ geo.northBoundLatitude }}</td>
+        </tr>
+        <tr>
+          <th scope="row" class="dataset-label">{{ _('South Bound') }}</th>
+          <td class="dataset-details" property="rdf:value">{{ geo.southBoundLatitude }}</td>
+        </tr>
+        <tr>
+          <th scope="row" class="dataset-label">{{ _('East Bound') }}</th>
+          <td class="dataset-details" property="rdf:value">{{ geo.eastBoundLongitude }}</td>
+        </tr>
+        <tr>
+          <th scope="row" class="dataset-label">{{ _('West Bound') }}</th>
+          <td class="dataset-details" property="rdf:value">{{ geo.westBoundLongitude }}</td>
+        </tr>
+      </table>
+    {% endif %}
+  {% endblock %}
 </section>
