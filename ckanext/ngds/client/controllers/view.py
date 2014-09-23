@@ -1,21 +1,17 @@
-import ckan.plugins as p
-from ckan import model
-from ckan.lib.base import BaseController, abort, response, render
-from pylons.i18n import _
+from ckanext.ngds.common import plugins as p
+from ckanext.ngds.common import base
 
-class ViewController(BaseController):
+class ViewController(base.BaseController):
     """
     Controller object for rendering custom NGDS views and templates.
     @param BaseController: Vanillan CKAN object for extending controllers.
     """
-    def render_map_search(self):
-        render('mapsearch/map_search.html')
 
-    def render_library_search(self):
-        pass
+    def render_developers(self):
+        return p.toolkit.render('ngds/developers.html')
 
-    def render_resources(self):
-        pass
+    def render_help(self):
+        return p.toolkit.render('ngds/help.html')
 
-    def render_contribute(self):
-        pass
+    def render_contact(self):
+        return p.toolkit.render('ngds/contact.html')

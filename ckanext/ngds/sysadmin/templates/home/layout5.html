@@ -1,0 +1,64 @@
+<div role="main" class="hero">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span12">
+        {% block welcome %}
+          {% snippet 'home/snippets/ngds_welcome.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div role="main" class="search-carousel">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span4">
+        {% block search %}
+          {% snippet 'home/snippets/ngds_search.html' %}
+        {% endblock %}
+      </div>
+      <div class="span8">
+        {% block carousel %}
+          {% snippet 'home/snippets/ngds_carousel.html' %}
+        {% endblock %}
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span12">
+        {% block popular_tags %}
+          {% snippet 'home/snippets/ngds_popular_tags.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div role="main" class="helper-links">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span4">
+        {% block recent_activity %}
+          {% snippet 'home/snippets/ngds_recent_activity.html' %}
+        {% endblock %}
+      </div>
+      <div class="span8">
+        {% block helper_links %}
+          {% snippet 'home/snippets/ngds_helpers.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div role="main" class="featured">
+  <div class="container">
+    <div class="row row2">
+      <div class="span6 col2">
+        {% block promoted %}
+          {% snippet 'home/snippets/ngds_featured.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>

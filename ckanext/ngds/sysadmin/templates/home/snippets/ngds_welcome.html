@@ -1,0 +1,12 @@
+{% set intro = g.site_intro_text %}
+
+<div class="hero-unit">
+  {% if intro %}
+    {{ h.render_markdown(intro) }}
+  {% else %}
+    <p>
+      Head over to the admin style configuration page to insert some custom
+      text here.
+    </p>
+  {% endif %}
+</div>

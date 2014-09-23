@@ -1,4 +1,5 @@
 import datetime
+import json
 import ckanext.ngds.sysadmin.model.db as db
 
 from pylons import config
@@ -37,7 +38,9 @@ class NGDSAdminController(admin.AdminController):
 
         homepages = [{'value': '1', 'text': 'Introductory area, search, featured group and featured organization'},
                      {'value': '2', 'text': 'Search, stats, introductory area, featured organization and featured group'},
-                     {'value': '3', 'text': 'Search, introductory area and stats'}]
+                     {'value': '3', 'text': 'Search, introductory area and stats'},
+                     {'value': '4', 'text': 'NGDS publisher homepage'},
+                     {'value': '5', 'text': 'NGDS aggregator homepage'}]
 
         items = [
             {'name': 'ckan.site_title', 'control': 'input', 'label': _('Site Title'), 'placeholder': ''},
@@ -50,7 +53,7 @@ class NGDSAdminController(admin.AdminController):
         ]
         return items
 
-    def get_ngds_config_form_items(self):
+    def get_operating_config_form_items(self):
         """
         Custom config form controls for NGDS data contribution and interaction.
 
@@ -65,6 +68,12 @@ class NGDSAdminController(admin.AdminController):
                  {'name': 'ngds.edit_metadata', 'control': 'select', 'options': data_controls, 'label': _('Metadata Editing'), 'placeholder': ''}]
 
         return items
+
+    def get_data_config_form_items(self):
+
+        item = [{'name': 'ngds.featured_data', 'control': 'markdown', 'label': _('Featured Data')}]
+
+        return item
 
     def config(self, items):
         """
@@ -81,7 +90,57 @@ class NGDSAdminController(admin.AdminController):
         """
         data = request.POST
 
-        if 'save-data-config' in data:
+        if 'data-config' in data:
+            if db.ngds_system_info is None:
+                db.init(model)
+
+            update_db = db.SysadminConfig.get(active_config=True)
+
+            if data.get('data-config') == 'save':
+                class Featured:
+                    def __init__(self, config, description):
+                        self.config = config
+                        self.description = description
+
+                posted_data = tuple([Featured(key, value) for (key, value)
+                    in data.iteritems() for item in items if key == item['name']])
+
+                if posted_data:
+                    posted_key = posted_data[0].config
+
+                    featured_data = []
+                    for post in posted_data:
+                        featured_data.append({post.config: post.description})
+
+                    featured_json = json.dumps(featured_data)
+
+                    app_globals.set_global(posted_key, featured_json)
+                    setattr(update_db, posted_key, featured_json)
+
+                    app_globals.reset()
+                    update_db.last_edited = datetime.datetime.utcnow()
+                    update_db.save()
+                    session = model.Session
+                    session.add(update_db)
+                    session.commit()
+                    h.redirect_to(controller=self.controller,
+                                  action='data_config')
+
+            if data.get('data-config') == 'reset':
+                app_globals.set_global('ngds.featured_data', None)
+                setattr(update_db, 'ngds.featured_data', None)
+
+                app_globals.reset()
+                update_db.last_edited = datetime.datetime.utcnow()
+                update_db.save()
+                session = model.Session
+                session.add(update_db)
+                session.commit()
+                h.redirect_to(controller=self.controller,
+                              action='data_config')
+
+
+        if 'save-operating-config' in data:
             # Set up ORM if it's not already set
             if db.ngds_system_info is None:
                 db.init(model)
@@ -101,7 +160,7 @@ class NGDSAdminController(admin.AdminController):
             session.add(update_db)
             session.commit()
             h.redirect_to(controller=self.controller,
-                          action='data_config')
+                          action='operating_config')
 
         if 'save-style-config' in data:
             for item in items:
@@ -117,6 +176,11 @@ class NGDSAdminController(admin.AdminController):
             name = item['name']
             data[name] = config.get(name)
 
+        try:
+            data = json.loads(data)
+        except:
+            pass
+
         return {'data': data, 'errors': {}, 'form_items': items}
 
     def style_config(self):
@@ -130,13 +194,28 @@ class NGDSAdminController(admin.AdminController):
         return base.render('admin/style-config.html',
                            extra_vars=vars)
 
+    def operating_config(self):
+        """
+        Render the admin config page for NGDS data contribution and interaction.
+
+        @return: web page
+        """
+        items = self.get_operating_config_form_items()
+        vars = self.config(items)
+        return base.render('admin/operating-config.html',
+                           extra_vars=vars)
+
     def data_config(self):
         """
         Render the admin config page for NGDS data contribution and interaction.
 
         @return: web page
         """
-        items = self.get_ngds_config_form_items()
+        items = self.get_data_config_form_items()
         vars = self.config(items)
+        data = vars.get('data')
+        if data.get('ngds.featured_data'):
+            as_array = json.loads(data.get('ngds.featured_data'))
+            vars['data'] = {'ngds.featured_data': as_array}
         return base.render('admin/data-config.html',
                            extra_vars=vars)

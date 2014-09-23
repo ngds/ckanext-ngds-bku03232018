@@ -1,0 +1,25 @@
+ <div role="main" class="hero">
+  <div class="container">
+    {% block welcome %}
+      {% snippet 'home/snippets/ngds_welcome.html' %}
+    {% endblock %}
+  </div>
+</div>
+<div role="main" class="search">
+  <div class="container">
+    {% block search %}
+      {% snippet 'home/snippets/ngds_search.html' %}
+    {% endblock %}
+  </div>
+</div>
+<div role="main" class="featured">
+  <div class="container">
+    <div class="row row2">
+      <div class="span6 col2">
+        {% block promoted %}
+          {% snippet 'home/snippets/ngds_featured.html' %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+{% set featured = h.get_featured_data() %}
+
+<div class="module-content">
+  <h3>Featured Data</h3>
+  <header>
+    {% if featured %}
+      {% for data in featured %}
+        {% for value in data.values() %}
+          {{ h.render_markdown(value) }}
+        {% endfor %}
+      {% endfor %}
+    {% else %}
+      <h1 class="page-heading">{{ _("Welcome to CKAN") }}</h1>
+      <p>
+        {% trans %}This is a nice introductory paragraph about CKAN or the site
+        in general. We don't have any copy to go here yet but soon we will
+        {% endtrans %}
+      </p>
+    {% endif %}
+  </header>
+</div>

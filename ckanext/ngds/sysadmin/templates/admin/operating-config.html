@@ -1,0 +1,35 @@
+{% extends "admin/config.html" %}
+
+{% block primary_content_inner %}
+  <form method='post' action="" class="form-horizontal">
+    {% block admin_form %}
+      {{ autoform.generate(form_items, data, errors) }}
+    {% endblock %}
+    <div class="form-actions">
+      {% set locale = h.dump_json({'content': _('Are you sure you want to reset the config?')}) %}
+      <a href="{{ h.url_for(controller='ckanext.ngds.sysadmin.controllers.admin:NGDSAdminController', action='data_config') }}" class="btn btn-danger pull-left" data-module="confirm-action" data-module-i18n="{{ locale }}">{{ _('Reset') }}</a>
+      <button type="submit" class="btn btn-primary" name="save-operating-config">{{ _('Update Config') }}</button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block secondary_content %}
+  <div class="module module-narrow module-shallow">
+    <h2 class="module-heading">
+      <i class="icon-info-sign"></i>
+      {{ _('CKAN config options') }}
+    </h2>
+    <div class="module-content">
+      {% block admin_form_help %}
+      {% trans %}
+        <p><strong>Data Publishing:</strong> Allow users to upload files either
+          individually or as a compilation and to create metadata.</p>
+        <p><strong>Data Harvesting:</strong> Allow users to harvest data and
+          metadata from external sources.</p>
+        <p><strong>Metadata Editing:</strong> Allow users to edit metadata that
+          has already been created from published or harvested sources.</p>
+      {% endtrans %}
+      {% endblock %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+<section id="metadata-sources">
+  <h3>{{ _('Metadata Source') }}</h3>
+  {% block metadata_list %}
+    <ul class="metadata-list">
+      {% snippet 'package/snippets/metadata_item.html', pkg_id=pkg.id %}
+    </ul>
+  {% endblock %}
+</section>

@@ -1,0 +1,44 @@
+{% block carousel_content %}
+  <div id="ngds-carousel" class="carousel slide" data-module="ngds_carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#ngds-carousel" data-slide-to="0" class="active"></li>
+      <li data-target="#ngds-carousel" data-slide-to="1"></li>
+      <li data-target="#ngds-carousel" data-slide-to="2"></li>
+      <li data-target="#ngds-carousel" data-slide-to="3"></li>
+      <li data-target="#ngds-carousel" data-slide-to="4"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="active item">
+        <a class="media-image" href="#">
+          <img src="/finan-plan.jpg"/>
+        </a>
+      </div>
+      <div class="item">
+        <a class="media-image" href="#">
+          <img src="/gdr.jpg"/>
+        </a>
+      </div>
+      <div class="item">
+        <a class="media-image" href="#">
+          <img src="/geo-explore.jpg"/>
+        </a>
+      </div>
+      <div class="item">
+        <a class="media-image" href="#">
+          <img src="/smu.jpg"/>
+        </a>
+      </div>
+      <div class="item">
+        <a class="media-image" href="#">
+          <img src="/usgs.jpg"/>
+        </a>
+      </div>
+      <div class="item">
+        <a class="media-image" href="#">
+          <img src="/web-map-app.jpg"/>
+        </a>
+      </div>
+    </div>
+  </div>
+  {% resource "sysadmin/ngds_carousel.js" %}
+{% endblock %}

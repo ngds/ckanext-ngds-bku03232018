@@ -1,75 +1,152 @@
-""" NGDS_HEADER_BEGIN
+import json
 
-National Geothermal Data System - NGDS
-https://github.com/ngds
+import ckanext.ngds.metadata.logic.action as action
+import ckanext.ngds.metadata.logic.converters as converters
+from ckanext.ngds.common import plugins as p
 
-File: <filename>
+def create_protocol_codes():
+    user = p.toolkit.get_action('get_site_user')({'ignore_auth': True}, {})
+    context = {'user': user['name']}
+    try:
+        data = {'id': 'protocol_codes'}
+        p.toolkit.get_action('vocabulary_show')(context, data)
+    except p.toolkit.ObjectNotFound:
+        data = {'name': 'protocol_codes'}
+        vocab = p.toolkit.get_action('vocabulary_create')(context, data)
+        for tag in ('OGC:WMS', 'OGC:WFS', 'OGC:WCS', 'OGC:CSW', 'OGC:SOS',
+                    'OPeNDAP', 'ESRI', 'other'):
+            data = {'name': tag, 'vocabulary_id': vocab['id']}
+            p.toolkit.get_action('tag_create')(context, data)
 
-Copyright (c) 2014, Siemens Corporate Technology and Arizona Geological Survey
+def protocol_codes():
+    create_protocol_codes()
+    try:
+        tag_list = p.toolkit.get_action('tag_list')
+        protocol_codes = tag_list(data_dict={'vocabulary_id': 'protocol_codes'})
+        return protocol_codes
+    except p.toolkit.ObjectNotFound:
+        return None
 
-Please refer the the README.txt file in the base directory of the NGDS project:
-https://github.com/ngds/ckanext-ngds/blob/master/README.txt
+def ngds_package_extras_processor(extras):
+    pkg = [extra for extra in extras if extra.get('key') == 'ngds_package'][0]
+    md = json.loads(pkg.get('value'))
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
-General Public License as published by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+    authors = []
+    for agent in md['citedSourceAgents']:
+        agent = agent['relatedAgent']['agentRole']
+        author = {
+            'Name': agent['individual']['personName'],
+            'Position': agent['individual']['personPosition'],
+            'Organization': agent['organizationName'],
+            'Address': agent['contactAddress'],
+            'Phone': agent['phoneNumber'],
+            'Email': agent['contactEmail']
+        }
+        authors.append(author)
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.  https://github.com/ngds/ckanext-ngds
-ngds/blob/master/LICENSE.md or
-http://www.gnu.org/licenses/agpl.html
+    return {
+        'citation_date': md['citationDates']['EventDateObject']['dateTime'],
+        'authors': authors,
+        'geographic_extent': md['geographicExtent'][0],
+    }
 
-NGDS_HEADER_END """
+def ngds_resource_extras_processer(res):
+    md = json.loads(res.get('ngds_resource'))
+    agent = md['resourceAccessOptions'][0]['distributor']\
+        ['relatedAgent']['agentRole']
+    distributor = {
+        'Name': agent['individual']['personName'],
+        'Position': agent['individual']['personPosition'],
+        'Organization': agent['organizationName'],
+        'Address': agent['contactAddress'],
+        'Phone': agent['phoneNumber'],
+        'Email': agent['contactEmail']
+    }
 
-from ckan.plugins import implements, SingletonPlugin
-from ckan.plugins import IConfigurer, IActions, IRoutes,IPackageController
-from ckanext.ngds.metadata.controllers.additional_metadata import dispatch
-from ckanext.ngds.metadata.controllers.transaction_data import dispatch as trans_dispatch
+    return {
+        'distributor': distributor,
+    }
 
-from ckan import model
+class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
+    p.implements(p.IConfigurer)
+    p.implements(p.IActions)
+    p.implements(p.IRoutes, inherit=True)
+    p.implements(p.IDatasetForm)
+    p.implements(p.ITemplateHelpers)
 
-class MetadataPlugin(SingletonPlugin):
-    """The purpose of this plugin is to adjust the metadata content to conform to our standards"""
-    
-    implements(IConfigurer) # Allows access to configurations (like template locations)
-    implements(IRoutes,inherit=True) 
-
+    # IConfigurer
     def update_config(self, config):
-        """IConfigurable function. config is a dictionary of configuration parameters"""
-        # Provides a point to do mappings from classes to database tables whenever CKAN is run
+        templates = 'templates'
+        public = 'public'
+        p.toolkit.add_template_directory(config, templates)
+        p.toolkit.add_public_directory(config, public)
+        p.toolkit.add_resource('fanstatic', 'metadata')
 
-        if not hasattr(model, "ResponsibleParty"):
-            from ckanext.ngds.metadata.model.additional_metadata import define_tables
-            define_tables()
-
-            from ckanext.ngds.metadata.model.transaction_tables import define_tables as trans_define_tables
-            trans_define_tables()            
-        
-            # Put IsoPackage into ckan.model for ease of access later
-            from ckanext.ngds.metadata.model.iso_package import IsoPackage
-            model.IsoPackage = IsoPackage
-        
-        '''
-        # First find the full path to my template directory
-        here = os.path.dirname(__file__)
-        template_dir = os.path.join(here, "templates") 
-        
-        # Now add that directory to the extra_template_paths, without removing the existing ones
-        config['extra_template_paths'] = ','.join([template_dir, config.get('extra_template_paths', '')])   
-        '''
-
-    def before_map(self,map):
-        map.connect("responsible_parties","/responsible_parties",controller="ckanext.ngds.metadata.controllers.additional_metadata:Responsible_Parties_UI",action="get_responsible_parties",conditions={"method":["GET"]})   
-        map.connect("languages","/languages",controller="ckanext.ngds.metadata.controllers.additional_metadata:Languages_UI",action="get_languages",conditions={"method":["GET"]})   
+    # IRoutes
+    def before_map(self, map):
+        controller = 'ckanext.ngds.metadata.controllers.view:ViewController'
+        map.connect('metadata_iso_19139', '/metadata/iso-19139/{id}.xml',
+                    controller=controller, action='show_iso_19139')
         return map
-    
-    implements(IActions) # Allows us to build a URL and associated binding to a python function
-    
+
+    # IActions
     def get_actions(self):
-        """IActions function. Should return a dict keys = function name and URL, value is the function to execute"""
         return {
-            "additional_metadata": dispatch,
-            "transaction_data": trans_dispatch
+            'iso_19139': action.iso_19139,
+        }
+
+    # IDatasetForm
+    def _modify_package_schema(self, schema):
+        schema.update({
+            'ngds_package': [p.toolkit.get_validator('ignore_missing'),
+                             converters.convert_to_ngds_package_extras]
+        })
+
+        schema['resources'].update({
+            'ngds_resource': [p.toolkit.get_validator('ignore_missing'),
+                              converters.convert_to_ngds_package_extras],
+        })
+
+        return schema
+
+    def create_package_schema(self):
+        schema = super(MetadataPlugin, self).create_package_schema()
+        schema = self._modify_package_schema(schema)
+        return schema
+
+    def update_package_schema(self):
+        schema = super(MetadataPlugin, self).update_package_schema()
+        schema = self._modify_package_schema(schema)
+        return schema
+
+    def show_package_schema(self):
+        schema = super(MetadataPlugin, self).show_package_schema()
+        schema['tags']['__extras'].append(p.toolkit.get_converter('free_tags_only'))
+        schema.update({
+            'ngds_package': [p.toolkit.get_validator('ignore_missing'),
+                             p.toolkit.get_converter('convert_from_extras')]
+        })
+
+        schema['resources'].update({
+            'ngds_resource': [p.toolkit.get_validator('ignore_missing'),
+                              p.toolkit.get_converter('convert_from_extras')],
+        })
+
+        return schema
+
+    def is_fallback(self):
+        # Return True to register this plugin as the default handler for
+        # packages not handled by any other IDatasetForm plugin
+        return True
+
+    def package_types(self):
+        return []
+
+    # ITemplateHelpers
+    def get_helpers(self):
+        return {
+            'protocol_codes': protocol_codes,
+            'ngds_package_extras_processor': ngds_package_extras_processor,
+            'ngds_resource_extras_processer': ngds_resource_extras_processer
         }

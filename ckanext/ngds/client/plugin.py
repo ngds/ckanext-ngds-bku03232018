@@ -1,5 +1,4 @@
-import ckan.plugins as p
-import ckan.model as model
+from ckanext.ngds.common import plugins as p
 
 class NGDSClient(p.SingletonPlugin):
 
@@ -30,14 +29,12 @@ class NGDSClient(p.SingletonPlugin):
 
     def before_map(self, map):
         controller = 'ckanext.ngds.client.controllers.view:ViewController'
-        map.connect('map_search', '/map_search', controller=controller,
-                    action='render_map_search')
-        map.connect('library_search', '/library_search', controller=controller,
-                    action='render_library_search')
-        map.connect('resources', '/resources', controller=controller,
-                    action='render_resources')
-        map.connect('contribute', '/contribute', controller=controller,
-                    action='render_contribute')
+        map.connect('ngds_developers', '/ngds/developers', controller=controller,
+                    action='render_developers')
+        map.connect('ngds_help', '/ngds/help', controller=controller,
+                    action='render_help')
+        map.connect('ngds_contact', '/ngds/contact', controller=controller,
+                    action='render_contact')
         return map
 
     """

@@ -1,0 +1,18 @@
+{% block recent_activity_content %}
+  <div class="ngds-recent-activity">
+    <h3>Recent Activity</h3>
+    {% for user in h.get_recent_activity() %}
+      <div>
+        <a href="{{ h.url_for(controller='package', action='read', id=user['data']['package']['name']) }}"
+         target="_blank">{{user['data']['package']['title']|truncate(100)}}
+        </a>
+
+        <p class="data-watch-feed-caption">
+          <span>
+            {{ h.get_formatted_date(user['timestamp']) }}
+          </span>
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

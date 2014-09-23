@@ -1,0 +1,9 @@
+{% import 'macros/autoform.html' as autoform %}
+
+{% set form_info = [{'name': 'ngds.featured_data', 'control': 'markdown', 'label': _('Featured Data')}] %}
+
+<div>
+  {% block admin_form %}
+    {{ autoform.generate(form_info) }}
+  {% endblock %}
+</div>

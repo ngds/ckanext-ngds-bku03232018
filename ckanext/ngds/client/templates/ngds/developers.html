@@ -1,0 +1,5 @@
+{% extends "ngds/base.html" %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Developers'), controller='ckanext.ngds.client.controllers.view:ViewController', action='render_developers' %}</li>
+{% endblock %}

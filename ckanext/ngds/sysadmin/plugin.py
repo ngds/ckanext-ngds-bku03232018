@@ -4,10 +4,13 @@ import ckanext.ngds.sysadmin.model.db as db
 import ckan.lib.app_globals as app_globals
 import ckan.model as model
 
+import ckanext.ngds.sysadmin.helpers as h
+
 class SystemAdministrator(p.SingletonPlugin):
 
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IRoutes, inherit=True)
+    p.implements(p.ITemplateHelpers)
 
     def update_config(self, config):
         """
@@ -24,6 +27,7 @@ class SystemAdministrator(p.SingletonPlugin):
         app_globals.mappings['ngds.publish'] = 'ngds.publish'
         app_globals.mappings['ngds.harvest'] = 'ngds.harvest'
         app_globals.mappings['ngds.edit_metadata'] = 'ngds.edit_metadata'
+        app_globals.mappings['ngds.featured_data'] = 'ngds.featured_data'
 
         # Collect config data to populate 'ngds_system_info' table if this is
         # the first time this server is booting up with the 'sysadmin' plugin.
@@ -33,6 +37,7 @@ class SystemAdministrator(p.SingletonPlugin):
             'ngds.publish': config.get('ngds.publish', 'True'),
             'ngds.harvest': config.get('ngds.harvest', 'True'),
             'ngds.edit_metadata': config.get('ngds.edit_metadata', 'True'),
+            'ngds.featured_data': config.get('ngds.featured_data', None)
         }
 
         # If this is the first time booting up the server with the 'sysadmin'
@@ -50,14 +55,35 @@ class SystemAdministrator(p.SingletonPlugin):
         # Add custom templates directory
         p.toolkit.add_template_directory(config, 'templates')
 
+        # Add public assets directory
+        p.toolkit.add_public_directory(config, 'public')
+
+        # Register fanstatic directory for JavaScript files
+        p.toolkit.add_resource('fanstatic', 'sysadmin')
 
     def before_map(self, map):
         # Set routes for controller
         controller = 'ckanext.ngds.sysadmin.controllers.admin:NGDSAdminController'
-        map.connect('ckanadmin_style_config', '/ckan-admin/style-config',
+        map.connect('sysadmin_style_config', '/ckan-admin/style-config',
                     controller=controller, action='style_config',
                     ckan_icon='check')
-        map.connect('ckanadmin_data_config', '/ckan-admin/data-config',
+        map.connect('sysadmin_operating_config', '/ckan-admin/operating-config',
+                    controller=controller, action='operating_config',
+                    ckan_icon='check')
+        map.connect('sysadmin_data_config', '/ckan-admin/data-config',
                     controller=controller, action='data_config',
                     ckan_icon='check')
+
+        controller = 'ckanext.ngds.sysadmin.controllers.view:ViewController'
+        map.connect('ngds_homepage_search', '/ngds/search',
+                    controller=controller, action='homepage_search')
         return map
+
+    def get_helpers(self):
+        return {'data_publish_enabled': h.data_publish_enabled,
+                'data_harvest_enabled': h.data_harvest_enabled,
+                'metadata_edit_enabled': h.metadata_edit_enabled,
+                'get_featured_data': h.get_featured_data,
+                'get_recent_activity': h.get_recent_activity,
+                'get_formatted_date': h.get_formatted_date
+                }
