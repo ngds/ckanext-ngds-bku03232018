@@ -58,11 +58,12 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def _modify_package_schema(self, schema):
         schema.update({
             'ngds_package': [p.toolkit.get_validator('ignore_missing'),
-                             converters.convert_to_ngds_package]
+                             converters.convert_to_ngds_package_extras]
         })
 
         schema['resources'].update({
-            'ngds_resource': [p.toolkit.get_validator('ignore_missing')],
+            'ngds_resource': [p.toolkit.get_validator('ignore_missing'),
+                              converters.convert_to_ngds_package_extras],
         })
 
         return schema
@@ -86,7 +87,8 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         })
 
         schema['resources'].update({
-            'ngds_resource': [p.toolkit.get_validator('ignore_missing')],
+            'ngds_resource': [p.toolkit.get_validator('ignore_missing'),
+                              p.toolkit.get_converter('convert_from_extras')],
         })
 
         return schema

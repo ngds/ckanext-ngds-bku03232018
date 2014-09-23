@@ -34,7 +34,7 @@ ckan.module('md-resource-contribute', function (jQuery, _) {
         form = $(this);
         injection = $('<input>')
           .attr('type', 'hidden')
-          .attr('name', 'md-resource')
+          .attr('name', 'ngds_resource')
           .val(JSON.stringify(data));
         $('#md-resource-edit').append($(injection));
       })

@@ -29,12 +29,12 @@ ckan.module('md-package-contribute', function (jQuery, _) {
         })
       }
 
-      $('#md-dataset-editmd-dataset-edit').submit(function () {
+      $('#md-dataset-edit').submit(function () {
         data = obj.buildSchema();
         form = $(this);
         injection = $('<input>')
           .attr('type', 'hidden')
-          .attr('name', 'md-package')
+          .attr('name', 'ngds_package')
           .val(JSON.stringify(data));
         $('#md-dataset-edit').append($(injection));
       })
