@@ -25,6 +25,15 @@ def protocol_codes():
     except p.toolkit.ObjectNotFound:
         return None
 
+def ngds_package_extras_processor(extras):
+    '''
+    processed = {
+        'Citation Date': '',
+        ''
+    }
+    '''
+    pass
+
 class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     p.implements(p.IConfigurer)
@@ -103,4 +112,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     # ITemplateHelpers
     def get_helpers(self):
-        return {'protocol_codes': protocol_codes}
+        return {
+            'protocol_codes': protocol_codes,
+            'ngds_package_extras_processor': ngds_package_extras_processor
+        }

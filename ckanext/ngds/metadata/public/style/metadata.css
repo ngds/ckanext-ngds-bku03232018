@@ -32,3 +32,466 @@ ul {
 #ngds-dataset-edit label {
     width: 125px;
 }
+
+
+
+
+
+
+/*
+===============================
+Custom NGDS aggregator homepage
+===============================
+*/
+
+.layout-5 .hero {
+    padding: 0;
+    background: none;
+    background-color: #32567f;
+}
+
+.layout-5 .hero .hero-unit {
+    margin-bottom: 0;
+    background-color: #32567f;
+    color: #ffffff;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+
+/*
+  ckanext/ngds/sysadmin/templates/home/snippets/ngds_search.html
+*/
+.layout-5 .search-form .homepage-search .search-text {
+    padding-right: 18px;
+    float: left;
+}
+
+.layout-5 .search-form .homepage-search .search-text input {
+    border-color: #004a61;
+    width: 100%;
+    height: 30px;
+}
+
+.layout-5 .search-form .homepage-search .search-controls {
+}
+
+.layout-5 .search-form .homepage-search .search-controls select {
+    height: 40px;
+    width: 150px;
+    font-size: 16px;
+}
+
+.layout-5 .search-form .homepage-search .search-controls .btn {
+    height: 40px;
+    vertical-align: top;
+
+}
+
+.layout-5 .search-form .homepage-search .search-controls .btn button {
+    vertical-align: top;
+}
+
+.layout-5 .search-carousel {
+    background: none;
+    background-color: #84a0bf;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+.layout-5 .search-carousel .carousel {
+    margin-bottom: 0px;
+}
+
+.layout-5 .search-carousel .box {
+    background-color: #84a0bf;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+.layout-5 .search-carousel .module-search {
+    padding: 0px;
+}
+
+.layout-5 .search-carousel .module-search .module-content {
+    background-color: #84a0bf;
+}
+
+.layout-5 .search-carousel .module-search .module-content h2 {
+    color: #003647;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.layout-5 .search-carousel .module-search .module-content h2 select {
+    width: 145px;
+    height: 30px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #003647;
+    margin-bottom: 5px;
+}
+
+.layout-5 .search-carousel .module-search .module-content .search-giant input {
+    background-color: #ffffff;
+}
+
+.layout-5 .search-carousel .module-search .module-content {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layout-5 .search-carousel .tags h3 {
+    font-size: 16px;
+    display: block;
+    float: left;
+    padding: 2px 0px;
+    line-height: 20px;
+    margin: 5px 10px 0 0;
+}
+
+.layout-5 .search-carousel .tags {
+    color: #ffffff;
+    background-color: #84a0bf;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 10px;
+}
+
+.layout-5 .search-carousel .tags .tag {
+    display: block;
+    float: left;
+    margin: 5px 10px 0 0;
+}
+
+.layout-5 .helper-links {
+    background: none;
+    background-color: #CBE3FF;
+}
+
+.layout-5 .helper-links .ngds-recent-activity h3 {
+    font-size: 16px;
+    margin-top: 0px;
+}
+
+.layout-5 .helper-links .ngds-recent-activity a {
+    font-weight: bold;
+}
+
+@media (max-width: 480px) {
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 100%;
+        float: none;
+    }
+
+    .layout-5 .search-form .homepage-search .search-text input {
+        width: 100%;
+        box-sizing: border-box;
+        height: 40px;
+    }
+
+    .layout-5 .search-form .homepage-search .search-controls {
+        float: right;
+    }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 370px;
+        height: 211px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .for-developers img {
+        width: 100%;
+        min-height: 100%;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 600px) {
+    .layout-5 .search-form .homepage-search {
+        width: 465px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 244px;
+    }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 411px;
+        height: 231px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .for-developers img {
+        width: 100%;
+        min-height: 100%;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 767px) {
+    .layout-5 .search-form .homepage-search {
+        width: 581px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 365px;
+    }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 411px;
+        height: 231px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .for-developers img {
+        width: 100%;
+        min-height: 100%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 95%;
+    }
+
+    .layout-5 .search-form .homepage-search .search-controls select {
+        width: 181px;
+    }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 230px;
+        height: 171px;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .for-developers img {
+        width: 100%;
+        min-height: 100%;
+    }
+}
+
+@media (min-width: 980px) {
+    .layout-5 .search-form .homepage-search .search-text {
+        width: 95%;
+    }
+
+    .layout-5 .search-form .homepage-search .search-controls select {
+        width: 250px;
+    }
+
+    .layout-5 .helper-links .for-developers {
+        float: right;
+    }
+
+    .layout-5 .helper-links .span8 .span6 {
+        width: 303px;
+        height: 171px;
+    }
+
+    .layout-5 .helper-links .ngds-youtube iframe {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .responsive-fixed-width {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    .layout-5 .helper-links .row-fluid .span8 .row-fluid {
+        width: 630px;
+    }
+}
+
+/*
+==============================
+Custom NGDS publisher homepage
+==============================
+*/
+
+.layout-4 .hero {
+    padding: 0;
+    background: none;
+    background-color: #32567f;
+}
+
+.layout-4 .hero .hero-unit {
+    margin-bottom: 0;
+    background-color: #32567f;
+    color: #ffffff;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.layout-4 .search {
+    background: none;
+    background-color: #84a0bf;
+}
+
+.layout-4 .module-search {
+    padding: 0px;
+}
+
+.layout-4 .module-search .module-content {
+    background-color: #84a0bf;
+}
+
+.layout-4 .module-search .module-content h2 {
+    color: #003647;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.layout-4 .module-search .module-content h2 select {
+    width: 145px;
+    height: 30px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #003647;
+    margin-bottom: 5px;
+}
+
+.layout-4 .module-search .module-content .search-giant input {
+    background-color: #ffffff;
+}
+
+.layout-4 .module-search .module-content {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layout-4 .module-search .tags {
+    background-color: #84a0bf;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.layout-4 .module-search .tags h3{
+    padding-left: 0px;
+}
+
+.layout-4 .search .box {
+    background-color: #84a0bf;
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+/*
+  ckanext/ngds/sysadmin/templates/home/snippets/ngds_search.html
+*/
+.layout-4 .search-form .homepage-search .search-text {
+    padding-right: 18px;
+    float: left;
+}
+
+.layout-4 .search-form .homepage-search .search-text input {
+    width: 100%;
+    height: 30px;
+}
+
+.layout-4 .search-form .homepage-search .search-controls {
+}
+
+.layout-4 .search-form .homepage-search .search-controls select {
+    height: 40px;
+    width: 150px;
+    font-size: 16px;
+}
+
+.layout-4 .search-form .homepage-search .search-controls .btn {
+    height: 40px;
+    vertical-align: top;
+
+}
+
+.layout-4 .search-form .homepage-search .search-controls .btn button {
+    vertical-align: top;
+}
+
+@media (max-width: 480px) {
+    .layout-4 .search-form .homepage-search .search-text {
+        width: 100%;
+        float: none;
+    }
+
+    .layout-4 .search-form .homepage-search .search-text input {
+        width: 100%;
+        box-sizing: border-box;
+        height: 40px;
+    }
+
+    .layout-4 .search-form .homepage-search .search-controls {
+        float: right;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 600px) {
+    .layout-4 .search-form .homepage-search {
+        width: 465px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-4 .search-form .homepage-search .search-text {
+        width: 244px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 767px) {
+    .layout-4 .search-form .homepage-search {
+        width: 581px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .layout-4 .search-form .homepage-search .search-text {
+        width: 365px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .layout-4 .search-form .homepage-search .search-text {
+        width: 70%;
+    }
+}
+
+@media (min-width: 980px) {
+    .layout-4 .search-form .homepage-search .search-text {
+        width: 77%;
+    }
+}
+
