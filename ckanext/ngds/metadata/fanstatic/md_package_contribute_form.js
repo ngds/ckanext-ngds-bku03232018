@@ -1,6 +1,6 @@
   'use strict';
 
-ckan.module('metadata-contribute', function (jQuery, _) {
+ckan.module('md-package-contribute', function (jQuery, _) {
   return {
     initialize: function () {
       var message
@@ -21,12 +21,15 @@ ckan.module('metadata-contribute', function (jQuery, _) {
           form = $(this);
           $('button', form).each(function () {
             button = $(this);
-            $('<input type="hidden">').prop('name', button.prop('name')).prop('value', button.val()).appendTo(form);
+            $('<input type="hidden">')
+              .prop('name', button.prop('name'))
+              .prop('value', button.val())
+              .appendTo(form);
           })
         })
       }
 
-      $('#md-dataset-edit').submit(function () {
+      $('#md-dataset-editmd-dataset-edit').submit(function () {
         data = obj.buildSchema();
         form = $(this);
         injection = $('<input>')
@@ -45,13 +48,9 @@ ckan.module('metadata-contribute', function (jQuery, _) {
         , sourceAgents
         , sourceAgent
         , resourceContact
-        , distributors
-        , distribs
-        , distributor
         , geo
         , geoExt
         , i
-        , j
         ;
 
       function buildRelatedAgent (section) {
@@ -94,7 +93,6 @@ ckan.module('metadata-contribute', function (jQuery, _) {
       basic = $('#collapse-basic-fields .ngds-input-form');
       citedSourceAgents = $('#collapse-ngds-author-fields .md-input-form');
       resourceContact = $('#collapse-ngds-metadata-contact-fields .md-input-form');
-      distributors = $('#collapse-ngds-distributor-fields .md-input-form');
       geo = $('#collapse-ngds-geographic-extent-fields .md-input-form');
 
       doc = {};
@@ -127,14 +125,6 @@ ckan.module('metadata-contribute', function (jQuery, _) {
       doc.citedSourceAgents = sourceAgents;
 
       doc.resourceContact = buildRelatedAgent(resourceContact);
-
-      distribs = [];
-      for (j = 0; j < distributors.length; j++) {
-        distributor = distributors[j];
-        distribs.push(buildRelatedAgent(distributor));
-      }
-      doc.resourceAccessOptions = {};
-      doc.resourceAccessOptions.distributors = distribs;
 
       geoExt = {};
       doc.geographicExtent = [];

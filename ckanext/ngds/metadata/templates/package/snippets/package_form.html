@@ -3,7 +3,7 @@
 
 {# This provides a full page that renders a form for adding a dataset. It can
 then itself be extended to add/remove blocks of functionality. #}
-<form id="md-dataset-edit" class="package-form form-horizontal" method="post" action="{{ action }}" data-module="metadata-contribute">
+<form id="md-dataset-edit" class="package-form form-horizontal" method="post" action="{{ action }}" data-module="md-package-contribute">
   {% block stages %}
     {{ h.snippet('package/snippets/stages.html', stages=stage) }}
   {% endblock %}
@@ -14,7 +14,6 @@ then itself be extended to add/remove blocks of functionality. #}
   {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
 
   <div class="accordion" id="accordion-two">
-
     <div class="accordion-group">
       <div class="accordion-heading">
         <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-two" href="#collapse-basic-fields">
@@ -50,7 +49,7 @@ then itself be extended to add/remove blocks of functionality. #}
             </div>
           </div>
           <div class="form-actions">
-            <button class="btn btn-success" type="button" data-module="ngds_add_author">Add author</button>
+            <button class="btn btn-success" type="button" data-module="md_add_author">Add author</button>
           </div>
         </div>
       </div>
@@ -70,28 +69,6 @@ then itself be extended to add/remove blocks of functionality. #}
                 {% snippet 'package/snippets/contrib_md_geographic_extent.html', data=data, errors=errors %}
               {% endblock %}
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-group">
-      <div class="accordion-heading">
-        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-two" href="#collapse-ngds-distributor-fields">
-          Distributors
-        </a>
-      </div>
-      <div id="collapse-ngds-distributor-fields" class="accordion-body collapse">
-        <div class="accordion-inner">
-          <div class="form-fields">
-            <div class="md-distributors">
-              {% block distributors %}
-                {% snippet 'package/snippets/contrib_md_related_agent.html', data=data, errors=errors %}
-              {% endblock %}
-            </div>
-          </div>
-          <div class="form-actions">
-            <button class="btn btn-success" type="button" data-module="ngds_add_distributor">Add distributor</button>
           </div>
         </div>
       </div>
@@ -142,7 +119,7 @@ then itself be extended to add/remove blocks of functionality. #}
       {% endblock %}
       {{ form.required_message() }}
     </div>
-    {% resource "metadata/ngds_contribute_form.js" %}
-    {% resource "metadata/ngds_add_related_agent.js" %}
+    {% resource "metadata/md_package_contribute_form.js" %}
+    {% resource "metadata/md_add_related_agent.js" %}
   {% endblock %}
 </form>
