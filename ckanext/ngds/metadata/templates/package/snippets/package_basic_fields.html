@@ -9,7 +9,25 @@
     </div>
     <div class="contrib-tab-pane" id="structured-tab">
 
+      <label class="control-label" for="usgin-content-model">
+        {{ _('Content Model') }}
+      </label>
+      <div class="controls">
+        <select id="usgin-content-model" name="md-usgin-content-model" data-module="autocomplete">
+          <option value="none">None</option>
+        </select>
+      </div>
+
+      <label class="control-label" for="usgin-content-model-version">
+        {{ _('Content Model Version') }}
+      </label>
+      <div class="controls">
+        <select id="usgin-content-model-version" name="md-usgin-content-model-version" data-module="autocomplete">
+          <option value="none">None</option>
+        </select>
+      </div>
     </div>
+
     <div class="contrib-tab-pane" id="unstructured-tab">
       {% block package_basic_fields_title %}
         {{ form.input('title', id='field-title', label=_('Title'), placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}

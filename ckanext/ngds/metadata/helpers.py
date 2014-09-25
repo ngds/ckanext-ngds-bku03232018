@@ -64,7 +64,3 @@ def ngds_resource_extras_processer(res):
     return {
         'distributor': distributor,
     }
-
-def get_content_models_for_ui():
-    models = p.toolkit.get_action('http_get_content_models')({},{})
-    return models

@@ -203,8 +203,8 @@ def usgin_validate(context, data_dict):
     else:
         return {'valid': False, 'usgin_errors': validation_msg}
 
-@logic.side_effect_free
-def http_get_content_models(context, data_dict):
+# This is a local function
+def http_get_content_models():
     cm_url = 'http://schemas.usgin.org/contentmodels.json'
     open_url = urllib2.urlopen(cm_url)
     content_models = simplejson.load(open_url)
@@ -225,3 +225,16 @@ def http_get_content_models(context, data_dict):
         m['label'] = model['label']
         models.append(m)
     return models
+
+@logic.side_effect_free
+def get_content_models(context, data_dict):
+    return http_get_content_models()
+
+@logic.side_effect_free
+def get_content_models_short(context, data_dict):
+    models = http_get_content_models()
+    short = map(lambda x: {'title': x['title'],
+        'uri': x['uri'],
+        'versions': x['versions']
+    }, models)
+    return short

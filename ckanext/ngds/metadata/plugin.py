@@ -31,7 +31,8 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def get_actions(self):
         return {
             'iso_19139': action.iso_19139,
-            'http_get_content_models': action.http_get_content_models,
+            'get_content_models': action.get_content_models,
+            'get_content_models_short': action.get_content_models_short,
             'usgin_validate': action.usgin_validate
         }
 
@@ -88,5 +89,4 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'protocol_codes': h.protocol_codes,
             'ngds_package_extras_processor': h.ngds_package_extras_processor,
             'ngds_resource_extras_processer': h.ngds_resource_extras_processer,
-            'get_content_models_for_ui': h.get_content_models_for_ui
         }
