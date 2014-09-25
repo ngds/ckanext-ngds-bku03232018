@@ -25,7 +25,7 @@ then itself be extended to add/remove blocks of functionality. #}
           <div class="form-fields">
             <div class="ngds-input-form">
               {% block basic_fields %}
-                {% snippet 'package/snippets/package_basic_fields.html', data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
+                {% snippet 'package/snippets/package_basic_fields.html', form=form, data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
               {% endblock %}
             </div>
           </div>
@@ -119,6 +119,7 @@ then itself be extended to add/remove blocks of functionality. #}
       {% endblock %}
       {{ form.required_message() }}
     </div>
+    {% resource "metadata/md_toggle_usgin_form.js" %}
     {% resource "metadata/md_package_contribute_form.js" %}
     {% resource "metadata/md_add_related_agent.js" %}
   {% endblock %}

@@ -2,6 +2,8 @@ import json
 import logging
 from shapely.geometry import asShape
 import usginmodels
+import simplejson
+import urllib2
 from dateutil import parser as date_parser
 from ckanext.ngds.common import plugins as p
 from ckanext.ngds.common import logic
@@ -200,3 +202,26 @@ def usgin_validate(context, data_dict):
         return {'valid': True, 'usgin_errors': None}
     else:
         return {'valid': False, 'usgin_errors': validation_msg}
+
+@logic.side_effect_free
+def http_get_content_models(context, data_dict):
+    cm_url = 'http://schemas.usgin.org/contentmodels.json'
+    open_url = urllib2.urlopen(cm_url)
+    content_models = simplejson.load(open_url)
+    models = []
+    for model in content_models:
+        m = {}
+        m['title'] = model['title']
+        m['description'] = model['description']
+        versions = []
+        for version in model['versions']:
+            v = {}
+            v['uri'] = version['uri']
+            v['version'] = version['version']
+            v['layers'] = version['layers_info']
+            versions.append(v)
+        m['versions'] = versions
+        m['uri'] = model['uri']
+        m['label'] = model['label']
+        models.append(m)
+    return models
