@@ -1,13 +1,14 @@
 from ckanext.ngds.common import plugins as p
+from ckanext.ngds.client.logic import action
 
 class NGDSClient(p.SingletonPlugin):
 
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IRoutes, inherit=True)
+    p.implements(p.IActions, inherit=True)
 
     """
     p.implements(p.ITemplateHelpers, inherit=True)
-    p.implements(p.IActions)
     p.implements(p.IAuthFunctions)
     p.implements(p.IFacets)
     p.implements(p.IPackageController)
@@ -24,9 +25,6 @@ class NGDSClient(p.SingletonPlugin):
         p.toolkit.add_template_directory(config, 'templates')
         p.toolkit.add_public_directory(config, 'public')
 
-    #def get_helpers(self):
-    #    return {}
-
     def before_map(self, map):
         controller = 'ckanext.ngds.client.controllers.view:ViewController'
         map.connect('ngds_developers', '/ngds/developers', controller=controller,
@@ -37,14 +35,7 @@ class NGDSClient(p.SingletonPlugin):
                     action='render_contact')
         return map
 
-    """
-    def after_map(self, map):
-        return
-
-    def is_fallback(self):
-        return False
-
-    # Note: Make sure that this is the correct package_type
-    def package_types(self):
-        return ['dataset']
-    """
+    def get_actions(self):
+        return {
+            'geothermal_prospector_url': action.geothermal_prospector_url
+        }
