@@ -75,7 +75,7 @@
       {% endif %}
       {% if res.format.lower() == 'wms' %}
         <li>
-          <a href="#" id="prospector-btn" res_id="{{ res.id }}">
+          <a href="#" id="prospector-btn" res_id="{{ res.id }}" data-module="ngds_geothermal_prospector">
             <i class="icon-circle-arrow-right"></i>
             {{ _('Geothermal Prospector') }}
           </a>
@@ -87,3 +87,5 @@
   {% endif %}
   {% endblock %}
 </li>
+
+{% resource "client/ngds_geothermal_prospector.js" %}
