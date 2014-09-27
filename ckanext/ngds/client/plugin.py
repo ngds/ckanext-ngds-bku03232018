@@ -24,6 +24,7 @@ class NGDSClient(p.SingletonPlugin):
         """
         p.toolkit.add_template_directory(config, 'templates')
         p.toolkit.add_public_directory(config, 'public')
+        p.toolkit.add_resource('fanstatic', 'client')
 
     def before_map(self, map):
         controller = 'ckanext.ngds.client.controllers.view:ViewController'

@@ -73,6 +73,14 @@
         </a>
       </li>
       {% endif %}
+      {% if res.format.lower() == 'wms' %}
+        <li>
+          <a href="#" id="prospector-btn" res_id="{{ res.id }}">
+            <i class="icon-circle-arrow-right"></i>
+            {{ _('Geothermal Prospector') }}
+          </a>
+        </li>
+      {% endif %}
       {% endblock %}
     </ul>
   </div>
