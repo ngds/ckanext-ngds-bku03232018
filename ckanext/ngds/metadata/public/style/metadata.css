@@ -489,3 +489,28 @@ Custom NGDS aggregator homepage
         width: 630px;
     }
 }
+
+#select-usgin h3 {
+    text-align: center;
+}
+
+.contrib-tab-pane {
+    display: none;
+}
+
+.contrib-tab-pane.active {
+    display: block;
+}
+
+.btn-justified{
+    display: inline-block;
+    width: 100%;
+    float: left;
+    margin-bottom: 15px;
+}
+
+.btn-justified .btn{
+    display: table-cell !important;
+    float: none;
+    width: 50%;
+}

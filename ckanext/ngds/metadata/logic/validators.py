@@ -16,3 +16,6 @@ def is_valid_json(key, data, errors, context):
         json.loads(data[key])
     except:
         errors[key].append(_('Must be JSON serializable'))
+
+def is_usgin_valid_data():
+    pass

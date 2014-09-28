@@ -1,55 +1,91 @@
 {% ckan_extends %}
 
-{% block package_basic_fields_title %}
-  {{ form.input('title', id='field-title', label=_('Title'), placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
-{% endblock %}
+{% set content_models = h.get_content_models_for_ui() %}
 
-{% block package_basic_fields_url %}
-  {% set prefix = h.url_for(controller='package', action='read', id='') %}
-  {% set domain = h.url_for(controller='package', action='read', id='', qualified=true) %}
-  {% set domain = domain|replace("http://", "")|replace("https://", "") %}
-  {% set attrs = {'data-module': 'slug-preview-slug', 'data-module-prefix': domain, 'data-module-placeholder': '<dataset>'} %}
+{% block contrib_format %}
+{#
+  <div id="select-usgin">
+    <h3>Use USGIN structured contribution form?</h3>
+    <div class="btn-group btn-justified">
+      <button type="button" id="toggle-structured-tab" class="btn" data-module="md_toggle_usgin">Yes</button>
+      <button type="button" id="toggle-unstructured-tab" class="btn" data-module="md_toggle_usgin">No</button>
+    </div>
+    <div class="contrib-tab-pane" id="structured-tab">
 
-  {{ form.prepend('name', id='field-name', label=_('URL'), prepend=prefix, placeholder=_('eg. my-dataset'), value=data.name, error=errors.name, attrs=attrs, is_required=true) }}
-{% endblock %}
+      <label class="control-label" for="usgin-content-model">
+        {{ _('Content Model') }}
+      </label>
+      <div class="controls">
+        <select id="usgin-content-model" name="md-usgin-content-model" data-module="autocomplete">
+          <option value="none">None</option>
+        </select>
+      </div>
 
-{% block package_basic_fields_description %}
-  {{ form.markdown('notes', id='field-notes', label=_('Description'), placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes) }}
-{% endblock %}
+      <label class="control-label" for="usgin-content-model-version">
+        {{ _('Content Model Version') }}
+      </label>
+      <div class="controls">
+        <select id="usgin-content-model-version" name="md-usgin-content-model-version" data-module="autocomplete">
+          <option value="none">None</option>
+        </select>
+      </div>
+    </div>
+#}
 
-{% block package_basic_fields_custom %}
-  {{ form.input('publication_date', label=_('Publication Date'), id='usgin-field-publication-date',
-    placeholder=_('YYYY-MM-DD'), value=data.publication_date, error=errors.publication_date,
-    classes=['control-medium']) }}
+    <div class="contrib-tab-pane" id="unstructured-tab">
+      {% block package_basic_fields_title %}
+        {{ form.input('title', id='field-title', label=_('Title'), placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
+      {% endblock %}
 
-  {{ form.input('resource_id', label=_('Resource URI'), id='usgin-field-resource_id',
-    placeholder=_(''), value=data.resource_id, error=errors.resource_id,
-    classes=['control-medium']) }}
-{% endblock %}
+      {% block package_basic_fields_url %}
+        {% set prefix = h.url_for(controller='package', action='read', id='') %}
+        {% set domain = h.url_for(controller='package', action='read', id='', qualified=true) %}
+        {% set domain = domain|replace("http://", "")|replace("https://", "") %}
+        {% set attrs = {'data-module': 'slug-preview-slug', 'data-module-prefix': domain, 'data-module-placeholder': '<dataset>'} %}
 
-{% block package_basic_fields_tags %}
-  {% set tag_attrs = {'data-module': 'autocomplete', 'data-module-tags': '', 'data-module-source': '/api/2/util/tag/autocomplete?incomplete=?'} %}
-  {{ form.input('tag_string', id='field-tags', label=_('Tags'), placeholder=_('eg. economy, mental health, government'), value=data.tag_string, error=errors.tags, classes=['control-full'], attrs=tag_attrs) }}
-{% endblock %}
+        {{ form.prepend('name', id='field-name', label=_('URL'), prepend=prefix, placeholder=_('eg. my-dataset'), value=data.name, error=errors.name, attrs=attrs, is_required=true) }}
+      {% endblock %}
 
-{% block package_basic_fields_license %}
-<div class="control-group">
-  {% set error = errors.license_id %}
-  <label class="control-label" for="field-license">{{ _("License") }}</label>
-  <div class="controls">
-    <select id="field-license" name="license_id" data-module="autocomplete">
-      {% for license_desc, license_id in licenses|sort if license_desc  %}
-        <option value="{{ license_id }}" {% if data.get('license_id', 'notspecified') == license_id %}selected="selected"{% endif %}>{{ license_desc }}</option>
-      {% endfor %}
-    </select>
-    {% if error %}<span class="error-block">{{ error }}</span>{% endif %}
-    <span class="info-block info-inline">
-      <i class="icon-info-sign"></i>
-      {% trans %}
-        License definitions and additional information can be found
-        at <a href="http://opendefinition.org/licenses/">opendefinition.org</a>
-      {% endtrans %}
-    </span>
+      {% block package_basic_fields_description %}
+        {{ form.markdown('notes', id='field-notes', label=_('Description'), placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes) }}
+      {% endblock %}
+
+      {% block package_basic_fields_custom %}
+        {{ form.input('publication_date', label=_('Publication Date'), id='usgin-field-publication-date',
+          placeholder=_('YYYY-MM-DD'), value=data.publication_date, error=errors.publication_date,
+          classes=['control-medium']) }}
+
+        {{ form.input('resource_id', label=_('Resource URI'), id='usgin-field-resource_id',
+          placeholder=_(''), value=data.resource_id, error=errors.resource_id,
+          classes=['control-medium']) }}
+      {% endblock %}
+
+      {% block package_basic_fields_tags %}
+        {% set tag_attrs = {'data-module': 'autocomplete', 'data-module-tags': '', 'data-module-source': '/api/2/util/tag/autocomplete?incomplete=?'} %}
+        {{ form.input('tag_string', id='field-tags', label=_('Tags'), placeholder=_('eg. economy, mental health, government'), value=data.tag_string, error=errors.tags, classes=['control-full'], attrs=tag_attrs) }}
+      {% endblock %}
+
+      {% block package_basic_fields_license %}
+      <div class="control-group">
+        {% set error = errors.license_id %}
+        <label class="control-label" for="field-license">{{ _("License") }}</label>
+        <div class="controls">
+          <select id="field-license" name="license_id" data-module="autocomplete">
+            {% for license_desc, license_id in licenses|sort if license_desc  %}
+              <option value="{{ license_id }}" {% if data.get('license_id', 'notspecified') == license_id %}selected="selected"{% endif %}>{{ license_desc }}</option>
+            {% endfor %}
+          </select>
+          {% if error %}<span class="error-block">{{ error }}</span>{% endif %}
+          <span class="info-block info-inline">
+            <i class="icon-info-sign"></i>
+            {% trans %}
+              License definitions and additional information can be found
+              at <a href="http://opendefinition.org/licenses/">opendefinition.org</a>
+            {% endtrans %}
+          </span>
+        </div>
+      </div>
+      {% endblock %}
+    </div>
   </div>
-</div>
 {% endblock %}
