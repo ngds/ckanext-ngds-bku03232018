@@ -10,6 +10,7 @@ from ckanext.ngds.common import logic
 from ckanext.ngds.common import base
 from ckanext.ngds.common import config
 from ckanext.ngds.common import storage
+from ckanext.ngds.common import app_globals
 
 log = logging.getLogger(__name__)
 
@@ -228,7 +229,13 @@ def http_get_content_models():
 
 @logic.side_effect_free
 def get_content_models(context, data_dict):
-    return http_get_content_models()
+    try:
+        return app_globals.config.get('ngds.content_models')
+    except:
+        try:
+            return http_get_content_models()
+        except:
+            return json.loads({'success': False})
 
 @logic.side_effect_free
 def get_content_models_short(context, data_dict):

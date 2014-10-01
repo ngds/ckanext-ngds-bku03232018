@@ -22,9 +22,12 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         p.toolkit.add_public_directory(config, public)
         p.toolkit.add_resource('fanstatic', 'metadata')
 
+        content_models = action.http_get_content_models()
         app_globals.mappings['ngds.content_models'] = 'ngds.content_models'
-        
-
+        data = {
+            'ngds.content_models': config.get('ngds.content_models', content_models)
+        }
+        config.update(data)
 
     # IRoutes
     def before_map(self, map):

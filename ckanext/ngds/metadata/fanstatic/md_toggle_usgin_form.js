@@ -15,9 +15,7 @@ ckan.module('md_toggle_usgin', function ($, _) {
           module.data.contentModels = res.result;
         }
       });
-      $('[name=md-usgin-content-model]').on('change', function (e) {
-        console.log(e);
-      })
+      module._buildContentModelLayerVersionSelect();
     },
     _getContentModels: function (callback) {
       $.ajax({
@@ -34,12 +32,45 @@ ckan.module('md_toggle_usgin', function ($, _) {
         , cm
         , i
         ;
+
       select = $('[name=md-usgin-content-model]');
       select.empty();
+
       for (i = 0; i < data.result.length; i++) {
         cm = data.result[i];
         select.append('<option value="' + cm.uri + '">' + cm.title + '</option>');
       }
+    },
+    _buildContentModelLayerVersionSelect: function () {
+      var module = this;
+      $('[name=md-usgin-content-model]').on('change', function (e) {
+        var uri
+          , versionSelect
+          , models
+          , model
+          , versions
+          , version
+          , i
+          , j
+          ;
+
+        uri = e.val;
+        versionSelect = $('[name=md-usgin-content-model-version]');
+        versionSelect.empty();
+
+        models = module.data.contentModels;
+        for (i = 0; i < models.length; i++) {
+          model = models[i];
+          if (model.uri === uri) {
+            versions = model.versions;
+          }
+        }
+
+        for (j = 0; j < versions.length; j++) {
+          version = versions[j];
+          versionSelect.append('<option value="' + version.uri + '">' + version.version + '</option>');
+        }
+      })
     },
     _loadForm: function (event) {
       var target
