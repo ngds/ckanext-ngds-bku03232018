@@ -1,9 +1,4 @@
-{% ckan_extends %}
-
-{% set content_models = h.get_content_models_for_ui() %}
-
 {% block contrib_format %}
-{#
   <div id="select-usgin">
     <h3>Use USGIN structured contribution form?</h3>
     <div class="btn-group btn-justified">
@@ -15,7 +10,7 @@
       <label class="control-label" for="usgin-content-model">
         {{ _('Content Model') }}
       </label>
-      <div class="controls">
+      <div class="control-group control-medium">
         <select id="usgin-content-model" name="md-usgin-content-model" data-module="autocomplete">
           <option value="none">None</option>
         </select>
@@ -24,13 +19,12 @@
       <label class="control-label" for="usgin-content-model-version">
         {{ _('Content Model Version') }}
       </label>
-      <div class="controls">
+      <div class="control-group control-medium">
         <select id="usgin-content-model-version" name="md-usgin-content-model-version" data-module="autocomplete">
           <option value="none">None</option>
         </select>
       </div>
     </div>
-#}
 
     <div class="contrib-tab-pane" id="unstructured-tab">
       {% block package_basic_fields_title %}

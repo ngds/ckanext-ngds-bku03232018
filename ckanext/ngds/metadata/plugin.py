@@ -3,6 +3,7 @@ import ckanext.ngds.metadata.logic.action as action
 import ckanext.ngds.metadata.logic.converters as converters
 import ckanext.ngds.metadata.helpers as h
 from ckanext.ngds.common import plugins as p
+from ckanext.ngds.common import app_globals
 
 class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
@@ -16,9 +17,14 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def update_config(self, config):
         templates = 'templates'
         public = 'public'
+
         p.toolkit.add_template_directory(config, templates)
         p.toolkit.add_public_directory(config, public)
         p.toolkit.add_resource('fanstatic', 'metadata')
+
+        app_globals.mappings['ngds.content_models'] = 'ngds.content_models'
+        
+
 
     # IRoutes
     def before_map(self, map):
@@ -31,9 +37,9 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def get_actions(self):
         return {
             'iso_19139': action.iso_19139,
-#            'get_content_models': action.get_content_models,
-#            'get_content_models_short': action.get_content_models_short,
-#            'usgin_validate': action.usgin_validate
+            'get_content_models': action.get_content_models,
+            'get_content_models_short': action.get_content_models_short,
+            'usgin_validate': action.usgin_validate
         }
 
     # IDatasetForm

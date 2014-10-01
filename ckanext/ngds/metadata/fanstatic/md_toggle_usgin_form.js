@@ -2,11 +2,46 @@
 
 ckan.module('md_toggle_usgin', function ($, _) {
   return {
-    initialize: function () {
-      $.proxyAll(this, /_on/);
-      this.el.on('click', this._onClick);
+    data: {
+      contentModels: ''
     },
-    _onClick: function (event) {
+    initialize: function () {
+      var module = this;
+      $.proxyAll(this, /_on/);
+      module.el.on('click', this._onClick);
+      module._getContentModels(function (res) {
+        if (res.success) {
+          module._buildContentModelSelect(res);
+          module.data.contentModels = res.result;
+        }
+      });
+      $('[name=md-usgin-content-model]').on('change', function (e) {
+        console.log(e);
+      })
+    },
+    _getContentModels: function (callback) {
+      $.ajax({
+        url: '/api/action/get_content_models',
+        success: function (res) {
+          if (res.success) {
+            callback(res);
+          }
+        }
+      })
+    },
+    _buildContentModelSelect: function (data) {
+      var select
+        , cm
+        , i
+        ;
+      select = $('[name=md-usgin-content-model]');
+      select.empty();
+      for (i = 0; i < data.result.length; i++) {
+        cm = data.result[i];
+        select.append('<option value="' + cm.uri + '">' + cm.title + '</option>');
+      }
+    },
+    _loadForm: function (event) {
       var target
         , targetBtn
         , otherBtn
@@ -43,6 +78,22 @@ ckan.module('md_toggle_usgin', function ($, _) {
 
         otherTab.removeClass('active');
         targetTab.addClass('active');
+      }
+    },
+    _onClick: function (event) {
+      var module
+        ;
+
+      module = this;
+      if (module.data.contentModels) {
+        module._loadForm(event);
+      } else {
+        module._getContentModels(function (res) {
+          if (res.success) {
+            console.log(res);
+            module.data.contentModels = res.result;
+          }
+        })
       }
     }
   }
