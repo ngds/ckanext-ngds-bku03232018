@@ -117,6 +117,16 @@ ckan.module('md-package-contribute', function (jQuery, _) {
         }
       });
 
+      basic.find('select').each(function () {
+        var name = $(this).attr('name');
+        if (name === 'md-usgin-content-model') {
+          doc.usginContentModel = $(this).val();
+        }
+        if (name === 'md-usgin-content-model-version') {
+          doc.usginContentModelVersion = $(this).val();
+        }
+      });
+
       sourceAgents = [];
       for (i = 0; i < citedSourceAgents.length; i++) {
         sourceAgent = citedSourceAgents[i];

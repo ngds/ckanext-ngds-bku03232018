@@ -1,12 +1,4 @@
-{% set prefix = h.url_for(controller='package', action='read', id='') %}
-{% set domain = h.url_for(controller='package', action='read', id='', qualified=true) %}
-{% set domain = domain|replace("http://", "")|replace("https://", "") %}
-{% set attrs = {'data-module': 'slug-preview-slug', 'data-module-prefix': domain, 'data-module-placeholder': '<dataset>'} %}
-
 {% block contrib_format %}
-
-  {{ attrs }}
-
   <div id="select-usgin">
     <h3>Use USGIN structured contribution form?</h3>
     <div class="btn-group btn-justified">
@@ -15,7 +7,6 @@
     </div>
     <div class="contrib-tab-pane" id="structured-tab">
       {{ form.input('title', id='field-title', label=_('Title'), placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
-      {{ form.prepend('name', id='field-name', label=_('URL'), prepend=prefix, placeholder=_('eg. my-dataset'), value=data.name, error=errors.name, attrs=attrs, is_required=true) }}
 
       {% block ngds_usgin_package %}
         {% snippet 'package/snippets/package_usgin_options.html', form=form, data=data, errors=errors %}
@@ -28,12 +19,10 @@
 
     <div class="contrib-tab-pane" id="unstructured-tab">
       {{ form.input('title', id='field-title', label=_('Title'), placeholder=_('eg. A descriptive title'), value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
-      {{ form.prepend('name', id='field-name', label=_('URL'), prepend=prefix, placeholder=_('eg. my-dataset'), value=data.name, error=errors.name, attrs=attrs, is_required=true) }}
 
       {% block ckan_vanilla_package %}
         {% snippet 'package/snippets/package_vanilla_options.html', licenses=licenses, form=form, data=data, errors=errors %}
       {% endblock %}
     </div>
   </div>
-
 {% endblock %}
