@@ -98,4 +98,5 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'protocol_codes': h.protocol_codes,
             'ngds_package_extras_processor': h.ngds_package_extras_processor,
             'ngds_resource_extras_processer': h.ngds_resource_extras_processer,
+            'ngds_check_package_for_content_model': h.ngds_check_package_for_content_model
         }
