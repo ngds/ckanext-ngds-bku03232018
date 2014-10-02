@@ -6,6 +6,9 @@
     <div class="control-group control-medium">
       <select id="usgin-content-model-layer" name="md-usgin-content-model-layer" data-module="autocomplete">
         <option value="none">None</option>
+        {% for layer in data['data'][0]['layers'].iterkeys() %}
+          <option value="{{ layer }}">{{ layer }}</option>
+        {% endfor %}
       </select>
     </div>
   </div>

@@ -38,7 +38,7 @@
 
                 {% if usgin['success'] == True %}
                   {% block usgin_content_model %}
-                    {% snippet 'package/snippets/contrib_md_usgin_content_model_layer.html' %}
+                    {% snippet 'package/snippets/contrib_md_usgin_content_model_layer.html', data=usgin %}
                   {% endblock %}
                 {% endif %}
 

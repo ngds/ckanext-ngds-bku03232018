@@ -111,6 +111,13 @@ ckan.module('md-resource-contribute', function (jQuery, _) {
         }
       });
 
+      resource.find('select').each(function () {
+        var name = $(this).attr('name');
+        if (name === 'md-usgin-content-model-layer') {
+          doc.usginContentModelLayer = $(this).val();
+        }
+      });
+
       doc.resourceAccessOptions.push(info);
 
       return doc;
