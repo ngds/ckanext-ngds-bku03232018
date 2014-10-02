@@ -11,11 +11,9 @@ ckan.module('md_toggle_usgin', function ($, _) {
       module.el.on('click', this._onClick);
       module._getContentModels(function (res) {
         if (res.success) {
-          module._buildContentModelSelect(res);
           module.data.contentModels = res.result;
         }
       });
-      module._buildContentModelLayerVersionSelect();
     },
     _getContentModels: function (callback) {
       $.ajax({
@@ -34,12 +32,12 @@ ckan.module('md_toggle_usgin', function ($, _) {
         ;
 
       select = $('[name=md-usgin-content-model]');
-      select.empty();
 
-      for (i = 0; i < data.result.length; i++) {
-        cm = data.result[i];
+      for (i = 0; i < data.length; i++) {
+        cm = data[i];
         select.append('<option value="' + cm.uri + '">' + cm.title + '</option>');
       }
+      this._buildContentModelLayerVersionSelect();
     },
     _buildContentModelLayerVersionSelect: function () {
       var module = this;
@@ -54,9 +52,10 @@ ckan.module('md_toggle_usgin', function ($, _) {
           , j
           ;
 
-        uri = e.val;
+        // 'e' and 'select' lose their scopes here, so make a direct call to
+        // the DOM element again #aintnopartylikeajqueryparty
+        uri = $('[name=md-usgin-content-model]').val();
         versionSelect = $('[name=md-usgin-content-model-version]');
-        versionSelect.empty();
 
         models = module.data.contentModels;
         for (i = 0; i < models.length; i++) {
@@ -74,8 +73,8 @@ ckan.module('md_toggle_usgin', function ($, _) {
     },
     _onReceiveSnippet: function (html) {
       var target = $('#unstructured-tab .usgin-content-model-select');
-      target.empty();
       target.append(html);
+      this._buildContentModelSelect(this.data.contentModels);
     },
     _onRemoveSnippet: function (html) {
       var target = $('#unstructured-tab .usgin-content-model-select');
