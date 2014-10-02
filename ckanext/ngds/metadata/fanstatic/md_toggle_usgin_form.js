@@ -72,18 +72,32 @@ ckan.module('md_toggle_usgin', function ($, _) {
         }
       })
     },
+    _onReceiveSnippet: function (html) {
+      var target = $('#unstructured-tab .usgin-content-model-select');
+      target.empty();
+      target.append(html);
+    },
+    _onRemoveSnippet: function (html) {
+      var target = $('#unstructured-tab .usgin-content-model-select');
+      target.empty();
+    },
     _loadForm: function (event) {
-      var target
+      var module
+        , target
         , targetBtn
         , otherBtn
         , targetTab
         , otherTab
         ;
 
+      module = this;
       target = event.currentTarget.id;
       target = target.split('toggle-')[1];
 
       if (target === 'structured-tab') {
+        module.sandbox.client.getTemplate('contrib_md_usgin_content_model.html',
+          module.options, module._onReceiveSnippet);
+
         targetBtn = $('#toggle-structured-tab');
         otherBtn = $('#toggle-unstructured-tab');
 
@@ -93,11 +107,14 @@ ckan.module('md_toggle_usgin', function ($, _) {
         targetTab = $('#structured-tab');
         otherTab = $('#unstructured-tab');
 
-        otherTab.removeClass('active');
-        targetTab.addClass('active');
+        otherTab.addClass('active');
+        targetTab.removeClass('active');
       }
 
       if (target === 'unstructured-tab') {
+        module.sandbox.client.getTemplate('contrib_md_usgin_content_model.html',
+          module.options, module._onRemoveSnippet);
+
         targetBtn = $('#toggle-unstructured-tab');
         otherBtn = $('#toggle-structured-tab');
 

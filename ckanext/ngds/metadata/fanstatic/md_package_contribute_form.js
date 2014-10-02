@@ -1,4 +1,4 @@
-  'use strict';
+'use strict';
 
 ckan.module('md-package-contribute', function (jQuery, _) {
   return {
