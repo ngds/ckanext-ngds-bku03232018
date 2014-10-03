@@ -1,6 +1,7 @@
 import json
 import ckanext.ngds.metadata.logic.action as action
 import ckanext.ngds.metadata.logic.converters as converters
+import ckanext.ngds.metadata.logic.validators as validators
 import ckanext.ngds.metadata.helpers as h
 from ckanext.ngds.common import plugins as p
 from ckanext.ngds.common import app_globals
@@ -55,6 +56,7 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         schema['resources'].update({
             'ngds_resource': [p.toolkit.get_validator('ignore_missing'),
                               converters.convert_to_ngds_package_extras],
+            'url': [validators.is_usgin_valid_data]
         })
 
         return schema
