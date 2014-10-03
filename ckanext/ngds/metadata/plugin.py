@@ -43,7 +43,6 @@ class MetadataPlugin(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'iso_19139': action.iso_19139,
             'get_content_models': action.get_content_models,
             'get_content_models_short': action.get_content_models_short,
-            'usgin_validate': action.usgin_validate
         }
 
     # IDatasetForm
