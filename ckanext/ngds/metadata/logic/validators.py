@@ -41,7 +41,9 @@ def is_usgin_valid_data(key, data, errors, context):
     validation_msg = []
     csv_file = get_file_path(resource_id)
 
-    if csv_file is None:
+    if csv_file:
+        log.info("Filename full path: %s " % csv_file)
+    else:
         msg = p.toolkit._("Cannot find the full path of the resources from %s"\
             % resource_name)
         validation_msg.append({
@@ -50,38 +52,41 @@ def is_usgin_valid_data(key, data, errors, context):
             'errorType': 'systemError',
             'message': msg
         })
-    else:
-        log.info("Filename full path: %s " % csv_file)
 
-    layer = logic.get_or_bust(data_dict, 'usgin_layer')
-    uri = logic.get_or_bust(data_dict, 'usgin_uri')
-    version_uri = logic.get_or_bust(data_dict, 'version_uri')
+    ngds_resource = data.get(('extras',), None)
+    ngds_resource = json.loads([i.get('value') for i in ngds_resource if \
+                    i.get('key') == 'ngds_resource'][0])
+    ngds_package = json.loads(data.get(('extras', 0, 'value'), None))
 
-    if layer.lower() and uri.lower() and version_uri.lower() == 'none':
-        log.debug("USGIN tier 2 data model/version/layer are none")
-        return {'valid': True}
-    else:
+    uri = ngds_package.get('usginContentModel', None)
+    version = ngds_package.get('usginContentModelVersion', None)
+    layer = ngds_resource.get('usginContentModelLayer', None)
+
+    if layer and uri and version:
+
         log.debug("Start USGIN content model validation")
+
         try:
-            csv_filename = csv_file.split('file://')[1]
-            csv = open(csv_filename, 'rbU')
+            csv = open(csv_file, 'rbU')
             valid, errors, dataCorrected, long_fields, srs = \
-                usginmodels.validate_file(csv, version_uri, layer)
+                usginmodels.validate_file(csv, version, layer)
             if errors: validation_msg.append({'valid': False})
         except:
             validation_msg.append({'valid': False})
 
         log.debug("Finished USGIN content model validation")
+
         if valid and not errors:
             log.debug("USGIN document is valid")
         if valid and errors:
             log.debug('With changes the USGIN document will be valid')
         else:
             log.debug('USGIN document is not valid')
+    else:
+        log.debug("USGIN tier 2 data model/version/layer are none")
+        return {'valid': True}
 
     if len(validation_msg) == 0:
         return {'valid': True, 'usgin_errors': None}
     else:
         return {'valid': False, 'usgin_errors': validation_msg}
-
-    pass
