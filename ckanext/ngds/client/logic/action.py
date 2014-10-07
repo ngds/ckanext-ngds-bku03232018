@@ -1,5 +1,5 @@
 from ckanext.ngds.common import plugins as p
-from ckanext.mapsearch.common import logic
+from ckanext.ngds.common import logic
 from ckanext.ngds.client.model import ogc
 
 def geothermal_prospector_url(context, data_dict):
