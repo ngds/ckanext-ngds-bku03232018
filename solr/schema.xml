@@ -141,6 +141,10 @@
 
     <dynamicField name="*_date" type="date" indexed="true" stored="true" multiValued="false"/>
 
+    <field name="md_author_names" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="md_organization_names" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="md_content_models" type="string" indexed="true" stored="true" multiValued="true" />
+
     <dynamicField name="extras_*" type="text" indexed="true" stored="true" multiValued="false"/>
     <dynamicField name="res_extras_*" type="text" indexed="true" stored="true" multiValued="true"/>
     <dynamicField name="vocab_*" type="string" indexed="true" stored="true" multiValued="true"/>
@@ -169,5 +173,9 @@
 <copyField source="res_description" dest="text"/>
 <copyField source="maintainer" dest="text"/>
 <copyField source="author" dest="text"/>
+
+<copyField source="md_author_names" dest="text" />
+<copyField source="md_organization_names" dest="text" />
+<copyField source="md_content_models" dest="text" />
 
 </schema>
