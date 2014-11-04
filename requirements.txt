@@ -1,7 +1,7 @@
 pycsw
 gsconfig
 iso8601
-gdal==1.10.0
+gdal==1.9.2
 flask
 owslib==0.8.2
 configobj
