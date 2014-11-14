@@ -45,6 +45,8 @@ class TestNgdsClientAction(object):
 
         resultOrg = tests.call_action_api(self.app, 'organization_create', apikey=self.sysadmin_user.apikey, **organization)
 
+	self.orgID = resultOrg['id']
+
         #Create Dataset and tied it to created org
         dataset = {'name': 'test_org_dataset',
                    'title': 'A Novel By Tolstoy',
@@ -53,6 +55,8 @@ class TestNgdsClientAction(object):
         resultDataset = tests.call_action_api(self.app, 'package_create',
                               apikey=self.sysadmin_user.apikey,
                               **dataset)
+
+	self.datasetID = resultDataset['id']
 
         #Create Resource and tied it to created dataset
         resource = {'package_id': resultDataset['id'], 'url': self.serviceUrl}
@@ -67,6 +71,22 @@ class TestNgdsClientAction(object):
     @classmethod
     def teardown_class(self):
         print ("")
+
+	#Delete Resource created for test
+        tests.call_action_api(self.app, 'resource_delete',
+                              apikey=self.sysadmin_user.apikey,
+                              **{'id': self.resourceID})
+
+        #Delete Dataset created for test
+        tests.call_action_api(self.app, 'package_delete',
+                              apikey=self.sysadmin_user.apikey,
+                              **{'id': self.datasetID})
+
+        #delete Org created
+        tests.call_action_api(self.app, 'organization_delete',
+                              apikey=self.sysadmin_user.apikey,
+                              **{'id': self.orgID})
+
         model.repo.rebuild_db()
 
         self.actions = None
