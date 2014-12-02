@@ -5,6 +5,7 @@ import paste.fixture
 import pylons.test
 import ConfigParser
 import os
+import uuid
 
 class TestNgdsClientAction(object):
 
@@ -122,3 +123,12 @@ class TestNgdsClientAction(object):
         result = self.actions.geothermal_prospector_url(context, {'id': self.resourceID})
 
 	assert result is not 'error'
+
+    #Test Bad ngdsClient logic geothermal_prospector_url method
+    def testBad_geothermalProspectorUrl(self):
+        print 'testBad_geothermalProspectorUrl(): Running actual test code ..........................'
+
+        context = {'user': self.sysadmin_user.name}
+        result = self.actions.geothermal_prospector_url(context, {'id': str(uuid.uuid4())})
+
+        assert result == 'error'

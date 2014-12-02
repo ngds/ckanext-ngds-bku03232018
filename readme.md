@@ -48,3 +48,27 @@ The installation of an entire CKAN system configured for ckanext-ngds on a clean
 Ubuntu 12.04 server can be accomplished using a simple installation script. See [here](https://github.com/ngds/install-and-run).
 
 For users who wish to install ckanext-ngds alongside an existing CKAN system, or for developers interested in working with the code in this repository see [this wiki](https://github.com/ngds/ckanext-ngds/wiki).
+
+
+### Run Tests
+
+This extension has 2 subpackages (CLient and Sysadmin). However the instructions below, applied for both of them).
+
+#### Step 1
+Before running tests, there are 2 configs files for test, need to be configured regarding the test environment of your machine:
+- ckanext-ngds/ckanext/ngds/client_or_sysadmin/test.ini: overrides ckan environment.ini variables or you can point it into a different environment.ini (e.g: use different database for test)
+- ckanext-ngds/ckanext/ngds/client_or_sysadmin/tests/tests_config.cfg:
+> ckan_host: by default, CKAN Host on your machine
+> ckan_web_map_service_url: by default, webMapService (WmsServer service).
+> ckan_ngds_sysadmin_search_path: by default, NGDS search URI
+> ckan_ngds_client_paths: by default, array of ngds routes to pages (URIs)
+
+#### Step 2
+Command line to perform the tests:
+
+```
+$ cd ckanext-ngds/ckanext/ngds/client_or_sysadmin/
+$ nosetests --ckan --with-pylons=test.ini tests/
+```
+- --with-pylons it's an option to specify the path to environment.ini to use for the test (override ckan default ini).
+- tests/ it's the path to all tests files where located
