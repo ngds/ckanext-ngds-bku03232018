@@ -3,7 +3,8 @@ import sqlalchemy.orm as orm
 from sqlalchemy import Table
 
 from ckanext.ngds.common import plugins
-from ckanext.ngds.common import tests
+#from ckanext.ngds.common import tests
+import ckan.tests as tests
 from ckanext.ngds.common import model
 from ckanext.ngds.common import config
 from ckanext.ngds.common import app_globals
@@ -17,13 +18,13 @@ class TestSysadmin(tests.WsgiAppCase):
     @classmethod
     def setup_class(cls):
         # Load sysadmin plugin
-        plugins.load('sysadmin')
+        plugins.load('ngds_sysadmin')
 
     @classmethod
     def teardown_class(self):
         # Rebuild DB and unload sysadmin plugin
         model.repo.rebuild_db()
-        plugins.unload('sysadmin')
+        plugins.unload('ngds_sysadmin')
 
     def test_build_table_and_orm(self):
         # Check if 'ngds_system_info' table exists, build it if it doesn't
