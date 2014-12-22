@@ -46,12 +46,11 @@ class HandleWMS():
     # first layer in the list of available layers
     def do_layer_check(self, data_dict):
         wms_layers = list(self.wms.contents)
-        resource = data_dict.get("resource", {})
-        res_layer = resource.get("layer", None)
+        res_layer = data_dict.get("layer", None)
 
         if res_layer and wms_layers:
             wms_lower = [x.lower() for x in wms_layers]
-            res_lower = resource.get("layer").lower()
+            res_lower = data_dict.get("layer").lower()
             if res_lower in wms_lower:
                 return res_layer
         elif wms_layers:
