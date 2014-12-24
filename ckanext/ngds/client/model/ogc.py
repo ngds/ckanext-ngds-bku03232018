@@ -94,7 +94,7 @@ class HandleWFS():
     def do_layer_check(self, data_dict):
         wfs_layers = list(self.wfs.contents)
         resource = data_dict.get("resource", {})
-        res_layer = resource.get("layer", None)
+        res_layer = resource.get("feature_type", None)
 
         if res_layer and wfs_layers:
             wfs_lower = [x.lower() for x in wfs_layers]
