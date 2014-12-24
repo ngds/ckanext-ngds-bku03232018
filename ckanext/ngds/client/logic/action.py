@@ -57,6 +57,8 @@ def geothermal_prospector_url(context, data_dict):
             		service_url = siteUrl+urlParsed.path.replace('/geoserver', ProxiedPath)+'?'+urlParsed.query
 
 		    url = url + '&wfsHost=' + urllib.quote(service_url, '') + '&wfsFeatureTypeName=' + wfs_feature
+
+	            break
     except:
         return url
 
