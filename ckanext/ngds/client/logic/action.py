@@ -13,7 +13,7 @@ def geothermal_prospector_url(context, data_dict):
         search = logic.action.get.resource_show(context, data_dict)
         gtp_url = 'https://maps-stage.nrel.gov/geothermal-prospector/#/'
         gtp_layer = '6'
-        wms = ogc.HandleWMS(search['url'])
+        wms = ogc.HandleWMS(search['url_ogc'])
         wms_info = wms.get_layer_info(search)
 	service_url = wms_info['service_url']
 
@@ -33,8 +33,8 @@ def geothermal_prospector_url(context, data_dict):
 	if count :
 	    #loop in resources until we find WFS
 	    for WFSResource in aWFSResources:
-		if WFSResource.get('protocol', None) == 'OGC:WFS' and WFSResource.get('url', None):
-		    wfs = ogc.HandleWFS(WFSResource.get('url', None))
+		if WFSResource.get('protocol', None) == 'OGC:WFS' and WFSResource.get('url_ogc', None):
+		    wfs = ogc.HandleWFS(WFSResource.get('url_ogc', None))
 		    wfs_feature = wfs.do_layer_check({'resource': WFSResource})
         	    service_url = wfs.get_service_url()
 
