@@ -11,6 +11,7 @@ class SystemAdministrator(p.SingletonPlugin):
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IRoutes, inherit=True)
     p.implements(p.ITemplateHelpers)
+    p.implements(p.IPackageController, inherit=True)
 
     def update_config(self, config):
         """
@@ -87,3 +88,17 @@ class SystemAdministrator(p.SingletonPlugin):
                 'get_recent_activity': h.get_recent_activity,
                 'get_formatted_date': h.get_formatted_date
                 }
+
+    def after_delete(self, context, data_dict):
+        ''' Purge deleted harvest sources '''
+
+        from ckan.lib.cli import DatasetCmd
+
+        package_dict = p.toolkit.get_action('package_show')(context, {'id': data_dict['id']})
+        
+        if 'type' in package_dict and package_dict['type'] == 'harvest':
+            # Purge the deleted dataset
+            #dataset_cmd = DatasetCmd('ngds_harvester_source_delete')
+            #dataset_cmd.purge(data_dict['id'])
+            #p.toolkit.redirect_to('www.google.com')
+            print "custom_after_delete"
