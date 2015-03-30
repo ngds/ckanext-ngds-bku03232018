@@ -30,5 +30,8 @@ setup(
 
     # NGDS UI plugin
     ngds_client=ckanext.ngds.client.plugin:NGDSClient
+
+    [paste.paster_command]
+    ngds=ckanext.ngds.commands:NgdsCommand
     """,
 )
