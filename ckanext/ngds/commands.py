@@ -31,7 +31,7 @@ class NgdsCommand(cli.CkanCommand):
     '''
     Commands:
 
-        paster ngds clean-deleted -c <config>
+        paster ngds purge-deleted-harvest-sources -c <config>
     '''
     summary = __doc__.split('\n')[0]
     usage = __doc__
@@ -52,31 +52,22 @@ class NgdsCommand(cli.CkanCommand):
         )
         self.user_name = user['name']
 
-        if cmd == 'clean-deleted':
-            self.clean_deleted()
+        if cmd == 'purge-deleted-harvest-sources':
+            self.purge_deleted_harvest_sources()
 
-    def clean_deleted(self):
-        print str(datetime.datetime.now()) + ' Starting delete'
-        sql = '''begin; update package set state = 'to_delete' where state <> 'active' and revision_id in (select id from revision where timestamp < now() - interval '1 day');
-        update package set state = 'to_delete' where owner_org is null;
-        delete from package_role where package_id in (select id from package where state = 'to_delete' );
-        delete from user_object_role where id not in (select user_object_role_id from package_role) and context = 'Package';
-        delete from resource_revision where resource_group_id in (select id from resource_group where package_id in (select id from package where state = 'to_delete'));
-        delete from resource_group_revision where package_id in (select id from package where state = 'to_delete');
-        delete from package_tag_revision where package_id in (select id from package where state = 'to_delete');
-        delete from member_revision where table_id in (select id from package where state = 'to_delete');
-        delete from package_extra_revision where package_id in (select id from package where state = 'to_delete');
-        delete from package_revision where id in (select id from package where state = 'to_delete');
-        delete from package_tag where package_id in (select id from package where state = 'to_delete');
-        delete from resource where resource_group_id in (select id from resource_group where package_id in (select id from package where state = 'to_delete'));
-        delete from package_extra where package_id in (select id from package where state = 'to_delete');
-        delete from member where table_id in (select id from package where state = 'to_delete');
-        delete from resource_group where package_id  in (select id from package where state = 'to_delete');
+    def purge_deleted_harvest_sources(self):
+        ''' Hard delete or purge harvest sources that have been deactivated'''
 
-        delete from harvest_object_error hoe using harvest_object ho where ho.id = hoe.harvest_object_id and package_id  in (select id from package where state = 'to_delete');
-        delete from harvest_object_extra hoe using harvest_object ho where ho.id = hoe.harvest_object_id and package_id  in (select id from package where state = 'to_delete');
-        delete from harvest_object where package_id in (select id from package where state = 'to_delete');
+        from ckan.lib.cli import DatasetCmd
 
-        delete from package where id in (select id from package where state = 'to_delete'); commit;'''
-        model.Session.execute(sql)
-        print str(datetime.datetime.now()) + ' Finished delete'
+        print str(datetime.datetime.now()) + ' Starting harvester source  purge'
+
+        sql  = 'SELECT id, state, type FROM package;'
+        rows = model.Session.execute(sql)
+
+        for row in rows:
+            if row.state == 'deleted' and row.type == 'harvest':
+                dataset_cmd = DatasetCmd('ngds_harvester_source_delete')
+                dataset_cmd.purge(row.id)
+
+        print str(datetime.datetime.now()) + ' Finished harvester source  purge'
