@@ -91,14 +91,9 @@ class SystemAdministrator(p.SingletonPlugin):
 
     def after_delete(self, context, data_dict):
         ''' Adds the "permanentently deleted message '''
-
-        from ckan.lib.cli import DatasetCmd
         import ckan.lib.helpers as h
 
         package_dict = p.toolkit.get_action('package_show')(context, {'id': data_dict['id']})
         
         if 'type' in package_dict and package_dict['type'] == 'harvest':
-            # Purge the deleted dataset
-            #dataset_cmd = DatasetCmd('ngds_harvester_source_delete')
-            #dataset_cmd.purge(data_dict['id'])
             h.flash_success('Harvesting source will be permanently deleted in approximately 5 minutes')

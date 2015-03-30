@@ -1,31 +1,10 @@
-import collections
-import os
-import sys
-import re
-import csv
 import datetime
-import json
-import urllib
-import lxml.etree
-import ckan
-import ckan.model as model
-import ckan.logic as logic
-import ckan.lib.search as search
-import ckan.logic.schema as schema
-import ckan.lib.cli as cli
-import requests
-import ckanext.harvest.model as harvest_model
-from ckanext.harvest.model import HarvestSource, HarvestJob
-import xml.etree.ElementTree as ET
-import ckan.lib.munge as munge
-import ckan.plugins as p
-from pylons import config
-from urllib2 import Request, urlopen, URLError, HTTPError
 import time
-import math
-
-import logging
-log = logging.getLogger()
+import ckan.lib.cli as cli
+import ckan.plugins as p
+import ckan.logic as logic
+import ckan.model as model
+from pylons import config
 
 class NgdsCommand(cli.CkanCommand):
     '''
