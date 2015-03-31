@@ -121,11 +121,9 @@
 
               {% endif %}
 
-              {{ h.build_nav_main(
-                ('ngds_developers', _('Developers')),
-                ('ngds_help', _('Help')),
-                ('ngds_contact', _('Contact'))
-              ) }}
+	      <li><a href="{{ h.ngds_aggregator_url() }}/data/develop">Developers</a></li>
+	      <li><a href="{{ h.ngds_aggregator_url() }}/help">Help</a></li>
+	      <li><a href="{{ h.ngds_aggregator_url() }}/contact">Contact</a></li>
 
             {% endblock %}
             </ul>

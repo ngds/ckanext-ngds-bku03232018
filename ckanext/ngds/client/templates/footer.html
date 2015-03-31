@@ -30,7 +30,7 @@
         </div>
         <div class="span2">
           <ul class="unstyled">
-            <p>{% trans %}<strong>Find & Use Data</strong>{% endtrans %}</p>
+            <p>{% trans %}<strong>Find & Use NGDS Data</strong>{% endtrans %}</p>
             {% block header_site_navigation_tabs %}
 
               {{ h.build_nav_main(
@@ -38,27 +38,9 @@
                 ('map_search', _('Map')),
               ) }}
 
-              {% if h.data_publish_enabled() %}
-
-                {{ h.build_nav_main(
-                  ('add dataset', _('Publish'))
-                ) }}
-
-              {% endif %}
-              {% if h.data_harvest_enabled() %}
-
-                {{ h.build_nav_main(
-                  ('harvest_search', _('Harvest'))
-                ) }}
-
-              {% endif %}
-
-              {{ h.build_nav_main(
-                ('ngds_developers', _('Developers')),
-                ('ngds_help', _('Help')),
-                ('ngds_contact', _('Contact'))
-              ) }}
-
+	      <li><a href="{{ h.ngds_aggregator_url() }}/data/develop">Developers</a></li>
+	      <li><a href="{{ h.ngds_aggregator_url() }}/help">Help</a></li>
+	      <li><a href="{{ h.ngds_aggregator_url() }}/contact">Contact</a></li>
 
             {% endblock %}
           </ul>
@@ -67,9 +49,9 @@
           <ul class="unstyled">
             {% block footer_about_links %}
               <p>{% trans %}<strong>Who We Are</strong>{% endtrans %}</p>
-              <li><a href="{{ h.url_for(controller='home', action='about') }}">{{ _('About the {0}').format(g.site_title) }}</a></li>
-              <li><a href="">{{ _('Our partners') }}</a></li>
-              <li><a href="">{{ _('Getting started') }}</a></li>
+              <li><a href="{{ h.ngds_aggregator_url() }}/about">{{ _('About the {0}').format(g.site_title) }}</a></li>
+              <li><a href="{{ h.ngds_aggregator_url() }}/about/partners">{{ _('Our partners') }}</a></li>
+              <li><a href="{{ h.ngds_aggregator_url() }}/about/getting-started">{{ _('Getting started') }}</a></li>
             {% endblock %}
           </ul>
         </div>
@@ -77,10 +59,10 @@
           <ul class="unstyled">
             {% block footer_links %}
               <p>{% trans %}<strong>Learn About NGDS</strong>{% endtrans %}</p>
-              <li><a href="">{{ _('How to submit data') }}</a></li>
-              <li><a href="">{{ _('Curate data contributions') }}</a></li>
-              <li><a href="">{{ _('Data models, exchange methods, and metadata') }}</a></li>
-              <li><a href="">{{ _('Develop custom applications') }}</a></li>
+              <li><a href="{{ h.ngds_aggregator_url() }}/data/publish-data">{{ _('How to submit data') }}</a></li>
+              <li><a href="{{ h.ngds_aggregator_url() }}/data/contribute-data">{{ _('Curate data contributions') }}</a></li>
+              <li><a href="{{ h.ngds_aggregator_url() }}/ngds-exchange-methods-and-metadata">{{ _('Data models, exchange methods, and metadata') }}</a></li>
+              <li><a href="{{ h.ngds_aggregator_url() }}/data/develop">{{ _('Develop custom applications') }}</a></li>
             {% endblock %}
           </ul>
         </div>

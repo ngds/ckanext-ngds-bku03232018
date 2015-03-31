@@ -1,14 +1,20 @@
 from ckanext.ngds.common import plugins as p
 from ckanext.ngds.client.logic import action
 
+def _ngds_aggregator_url():
+    from ckanext.ngds.common import config as ngds_config
+    ngds_aggregator_url = ngds_config.get('ngds.aggregator_url', 'http://www.geothermaldata.org')
+    return ngds_aggregator_url
+
+
 class NGDSClient(p.SingletonPlugin):
 
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.IRoutes, inherit=True)
     p.implements(p.IActions, inherit=True)
+    p.implements(p.ITemplateHelpers, inherit=True)
 
     """
-    p.implements(p.ITemplateHelpers, inherit=True)
     p.implements(p.IAuthFunctions)
     p.implements(p.IFacets)
     p.implements(p.IPackageController)
@@ -27,6 +33,7 @@ class NGDSClient(p.SingletonPlugin):
         p.toolkit.add_resource('fanstatic', 'client')
 
     def before_map(self, map):
+
         controller = 'ckanext.ngds.client.controllers.view:ViewController'
         map.connect('ngds_developers', '/ngds/developers', controller=controller,
                     action='render_developers')
@@ -40,3 +47,10 @@ class NGDSClient(p.SingletonPlugin):
         return {
             'geothermal_prospector_url': action.geothermal_prospector_url
         }
+
+    def get_helpers(self):
+        '''Register the ngds_aggregator_url() function above as a template
+        helper function.
+
+        '''
+        return {'ngds_aggregator_url': _ngds_aggregator_url}
