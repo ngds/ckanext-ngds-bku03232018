@@ -1,11 +1,6 @@
 from ckanext.ngds.common import plugins as p
 from ckanext.ngds.client.logic import action
-
-def _ngds_aggregator_url():
-    from ckanext.ngds.common import config as ngds_config
-    ngds_aggregator_url = ngds_config.get('ngds.aggregator_url', 'http://www.geothermaldata.org')
-    return ngds_aggregator_url
-
+from ckanext.ngds.client import helpers
 
 class NGDSClient(p.SingletonPlugin):
 
@@ -53,4 +48,4 @@ class NGDSClient(p.SingletonPlugin):
         helper function.
 
         '''
-        return {'ngds_aggregator_url': _ngds_aggregator_url}
+        return {'ngds_aggregator_url': helpers.ngds_aggregator_url}
