@@ -60,7 +60,7 @@ class NgdsCommand(cli.CkanCommand):
 
         print str(datetime.datetime.now()) + ' Starting dataset purge'
 
-        sql  = 'SELECT id, state, type FROM package WHERE state=\'deleted\';'
+        sql  = 'SELECT id, state, type FROM package WHERE state=\'deleted\' AND type=\'dataset\';'
         rows = model.Session.execute(sql)
 
         for row in rows:
@@ -74,7 +74,7 @@ class NgdsCommand(cli.CkanCommand):
         
         print str(datetime.datetime.now()) + ' Starting dataset soft delete'
 
-        sql  = 'SELECT id, state, type FROM package WHERE state=\'active\';'
+        sql  = 'SELECT id, state, type FROM package WHERE state=\'active\' AND type=\'dataset\';'
         rows = model.Session.execute(sql)
 
         for row in rows:
