@@ -60,7 +60,7 @@ class NgdsCommand(cli.CkanCommand):
 
         print str(datetime.datetime.now()) + ' Starting dataset purge'
 
-        sql  = 'SELECT id, state, type FROM package WHERE state=\'deleted\' AND type=\'dataset\';'
+        sql  = 'SELECT id, state, type FROM package WHERE state=\'deleted\' AND type=\'dataset\' ORDER BY RANDOM();'
         rows = model.Session.execute(sql)
 
         for row in rows:
