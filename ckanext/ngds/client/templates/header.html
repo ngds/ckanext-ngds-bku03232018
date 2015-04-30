@@ -82,7 +82,7 @@
       {# The .header-image class hides the main text and uses image replacement for the title #}
         {% block header_logo %}
           {% if g.site_logo %}
-            <a class="brand" href="{{ h.url('home') }}" alt="{{ g.site_title }}" title="{{ g.site_title }}">
+            <a class="brand" href="{{ h.ngds_aggregator_url() }}" alt="{{ g.site_title }}" title="{{ g.site_title }}">
               <img src="{{ h.url_for_static(g.site_logo) }}">
               {% if g.site_description %}
                 <span>{{ g.site_description }}</span>
