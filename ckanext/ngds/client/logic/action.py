@@ -21,7 +21,7 @@ def geothermal_prospector_url(context, data_dict):
 
         # use url_ogc if wms is hosted on the local geoserver
         wms_url_type  = 'url_ogc' if 'url_ogc' in search  else 'url' 
-        gtp_url       = 'https://maps-stage.nrel.gov/geothermal-prospector/#/'
+        gtp_url       = 'https://maps.nrel.gov/geothermal-prospector/#/'
         gtp_layer     = '6'
         wms           = ogc.HandleWMS(search[wms_url_type])
         wms_info      = wms.get_layer_info(search)
